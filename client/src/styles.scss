@@ -1,1 +1,25 @@
-/* You can add global styles to this file, and also import other style files */
+@import "colors.scss";
+
+// Global distances etc.
+$space-base: 10px;
+$space-large: $space-base * 2;
+$space-huge: $space-base * 4;
+
+// Alignments
+.center {
+	margin-right: auto;
+	margin-left: auto;
+	text-align: center;
+}
+
+// UI controls
+.button {
+	height: $space-huge;
+	padding-left: $space-large;
+	padding-right: $space-large;
+	background-color: $color-very-light;
+	border: none;
+}
+.button:hover {
+	border: 1px solid $color-mid;
+}

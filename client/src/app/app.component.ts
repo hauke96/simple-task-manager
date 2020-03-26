@@ -7,4 +7,8 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'simple-task-manager';
+
+  public onLoginButtonClick() : void {
+  	alert("OK");
+  }
 }

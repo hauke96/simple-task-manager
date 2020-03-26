@@ -2,10 +2,14 @@
 // In this case: "Teal"
 
 // Colors:
-$dark: #00796b; // #700
-$very-dark: #004d40; // #900
+$color-very-light: #e0f2f1; // #100
+$color-mid: #26a69a; // #400
+$color-dark: #00796b; // #700
+$color-very-dark: #004d40; // #900
 
-// Grey:
+// Grey-scale:
+$white: #ffffff;
+$very-light-gray: #e0e0e0;
 $very-dark-gray: #424242; // #900
 
 body {
@@ -13,9 +17,9 @@ body {
 }
 
 a {
-	color: $very-dark;
+	color: $color-very-dark;
 }
 a:hover {
-	color: $dark;
+	color: $color-dark;
 }
 
