@@ -4,7 +4,7 @@ import * as osmAuth from 'osm-auth';
 @Injectable({
   providedIn: 'root'
 })
-export class LoginService {
+export class AuthService {
   private auth: any;
 
   constructor() {

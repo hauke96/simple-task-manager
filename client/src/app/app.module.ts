@@ -4,14 +4,14 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ManagerComponent } from './manager/manager.component';
-import { LoginComponent } from './login/login.component';
-import { OauthLandingComponent } from './login/oauth-landing.component';
+import { AuthComponent } from './auth/auth.component';
+import { OauthLandingComponent } from './auth/oauth-landing.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ManagerComponent,
-    LoginComponent,
+    AuthComponent,
     OauthLandingComponent
   ],
   imports: [

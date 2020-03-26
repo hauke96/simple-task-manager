@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { LoginComponent } from './login/login.component';
-import { OauthLandingComponent } from './login/oauth-landing.component';
+import { AuthComponent } from './auth/auth.component';
+import { OauthLandingComponent } from './auth/oauth-landing.component';
 import { ManagerComponent } from './manager/manager.component';
 
 const routes: Routes = [
-	{ path: '', component: LoginComponent },
+	{ path: '', component: AuthComponent },
 	{ path: 'manager', component: ManagerComponent },
 	{ path: 'oauth-landing', component: OauthLandingComponent },
 ];
