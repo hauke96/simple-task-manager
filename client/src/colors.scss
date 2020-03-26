@@ -1,0 +1,21 @@
+// Use material design colors: http://hauke-stieler.de/public/color-palette/
+// In this case: "Teal"
+
+// Colors:
+$dark: #00796b; // #700
+$very-dark: #004d40; // #900
+
+// Grey:
+$very-dark-gray: #424242; // #900
+
+body {
+	color: $very-dark-gray;
+}
+
+a {
+	color: $very-dark;
+}
+a:hover {
+	color: $dark;
+}
+
