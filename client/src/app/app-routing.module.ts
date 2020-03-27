@@ -4,10 +4,12 @@ import { AuthComponent } from './auth/auth.component';
 import { AuthGuard } from './auth/auth.guard';
 import { OauthLandingComponent } from './auth/oauth-landing.component';
 import { ManagerComponent } from './manager/manager.component';
+import { ProjectComponent } from './project/project.component';
 
 const routes: Routes = [
     { path: '', component: AuthComponent },
     { path: 'manager', component: ManagerComponent, canActivate: [ AuthGuard ] },
+    { path: 'project/:id', component: ProjectComponent, canActivate: [ AuthGuard ] },
     { path: 'oauth-landing', component: OauthLandingComponent },
 ];
 

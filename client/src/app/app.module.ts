@@ -8,6 +8,7 @@ import { AuthComponent } from './auth/auth.component';
 import { AuthGuard } from './auth/auth.guard';
 import { OauthLandingComponent } from './auth/oauth-landing.component';
 import { ProjectListComponent } from './project/project-list.component';
+import { ProjectComponent } from './project/project.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { ProjectListComponent } from './project/project-list.component';
     ManagerComponent,
     AuthComponent,
     OauthLandingComponent,
-    ProjectListComponent
+    ProjectListComponent,
+    ProjectComponent
   ],
   imports: [
     BrowserModule,

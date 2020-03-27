@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ProjectService } from './project.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-project-list',
@@ -7,12 +8,16 @@ import { ProjectService } from './project.service';
   styleUrls: ['./project-list.component.scss']
 })
 export class ProjectListComponent implements OnInit {
-  constructor(private service: ProjectService) { }
+  constructor(private service: ProjectService, private router: Router) { }
 
   public get projects() {
     return this.service.getProjects();
   }
 
   ngOnInit(): void {
+  }
+
+  public onProjectListItemClicked(id: string) {
+    this.router.navigate(['/project', id]);
   }
 }

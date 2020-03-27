@@ -1,4 +1,4 @@
 <h1>Projekte</h1>
-<div *ngFor="let p of projects" class="list-item">
+<div *ngFor="let p of projects" class="list-item" (click)="onProjectListItemClicked(p.id)">
 	{{p.name}} <span class="id-label">({{p.id}})</span>
 </div>
