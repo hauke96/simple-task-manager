@@ -5,7 +5,7 @@ import { Project } from './project.material';
   providedIn: 'root'
 })
 export class ProjectService {
-  public projects: string[] = [];
+  public projects: Project[] = [];
 
   constructor() {
     this.projects[0] = new Project('1', 'Test');
