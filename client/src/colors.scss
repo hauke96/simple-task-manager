@@ -3,6 +3,7 @@
 
 // Colors:
 $color-very-light: #e0f2f1; // #100
+$color-light: #80cbc4; // #200
 $color-mid: #26a69a; // #400
 $color-dark: #00796b; // #700
 $color-very-dark: #004d40; // #900
@@ -11,15 +12,3 @@ $color-very-dark: #004d40; // #900
 $white: #ffffff;
 $very-light-gray: #e0e0e0;
 $very-dark-gray: #424242; // #900
-
-body {
-	color: $very-dark-gray;
-}
-
-a {
-	color: $color-very-dark;
-}
-a:hover {
-	color: $color-dark;
-}
-

@@ -5,6 +5,11 @@ $space-base: 10px;
 $space-large: $space-base * 2;
 $space-huge: $space-base * 4;
 
+// General things
+body {
+	color: $very-dark-gray;
+}
+
 // Alignments
 .center {
 	margin-right: auto;
@@ -12,14 +17,23 @@ $space-huge: $space-base * 4;
 	text-align: center;
 }
 
-// UI controls
+// UI elements
 .button {
 	height: $space-huge;
 	padding-left: $space-large;
 	padding-right: $space-large;
 	background-color: $color-very-light;
 	border: none;
+	border: 1px solid $color-light;
 }
 .button:hover {
 	border: 1px solid $color-mid;
 }
+
+a {
+	color: $color-very-dark;
+}
+a:hover {
+	color: $color-dark;
+}
+
