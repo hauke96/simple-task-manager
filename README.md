@@ -1,6 +1,7 @@
 # simple-task-manager
 
 Prototype of a simple OpenStreetMap tasking manager.
+Take a look at the latest version at [http://osm.hauke-stieler.de/stm-test](http://osm.hauke-stieler.de/stm-test).
 
 The idea behind this is to create a simple and general purpose tasking manager.
 A tasking manager is an application which helps multiple mappers to work in the same region without interfering with each other.
