@@ -1,0 +1,11 @@
+@import "../../styles.scss";
+
+.toolbar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.toolbar > p {
+	color: $very-light-gray;
+}

@@ -11,12 +11,17 @@ $font-small: 8pt;
 // General things
 body {
 	color: $very-dark-gray;
-	margin: $space-large;
+	margin: 0px;
 }
 
 * {
 	font-family: Dejavu Sans, sans-serif;
 	font-weight: 300;
+}
+
+// Container aroung a screen filling component for better spacing to the screen edges
+.root-container {
+	margin: $space-large;
 }
 
 // Alignments
@@ -64,4 +69,11 @@ a:hover {
 }
 .list-item:hover + .list-item { // hide border for next list item
 	border-top: none;
+}
+
+.toolbar {
+	left: 0px;
+	padding: $space-base;
+	background-color: $color-mid;
+	height: $space-huge;
 }
