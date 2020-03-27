@@ -13,8 +13,8 @@ export class ManagerComponent implements OnInit {
 
   ngOnInit(): void {
   	this.authService.getUserData((details, err) => {
-      this.userName = details.getElementsByTagName('user')[0].getAttribute('display_name');
       console.error(err);
+      this.userName = details.getElementsByTagName('user')[0].getAttribute('display_name');
 	});
   }
 }
