@@ -1,1 +1,8 @@
 <p>Task: {{task.id}}</p>
+<div>
+	Points:
+	<input [(ngModel)]="newProcessPoints">
+	/
+	{{task.maxProcessPoints}}
+	<button class="save-button" (click)="onSaveButtonClick()">Save</button>
+</div>

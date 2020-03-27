@@ -25,7 +25,16 @@ export class TaskService {
     this.selectedTaskChanged.emit(this.getSelectedTask());
   }
 
-  public getSelectedTask() {
-    return this.tasks.find(t => t.id === this.selectedTaskId);
+  public getSelectedTask(): Task {
+    return this.getTask(this.selectedTaskId);
+  }
+
+  private getTask(id: string): Task {
+    return this.tasks.find(t => t.id === id);
+  }
+
+  public setProcessPoints(id: string, newProcessPoints: number) {
+    this.getTask(id).processPoints = newProcessPoints;
+    this.selectedTaskChanged.emit(this.getTask(id));
   }
 }
