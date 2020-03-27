@@ -11,6 +11,9 @@ export class AuthComponent implements OnInit {
   constructor(private router: Router, private ngZone: NgZone, private authService: AuthService) { }
 
   ngOnInit(): void {
+  	if(this.authService.isAuthenticated()) {
+	  this.router.navigate(['/manager']);
+	}
   }
 
   public onLoginButtonClick() : void {

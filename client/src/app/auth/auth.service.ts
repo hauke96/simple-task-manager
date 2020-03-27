@@ -18,6 +18,10 @@ export class AuthService {
 	});
   }
 
+  public isAuthenticated() : boolean {
+  	return this.auth.authenticated();
+  }
+
   public requestLogin(callback: () => void) {
   	this.auth.authenticate(callback);
   }
