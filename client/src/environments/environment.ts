@@ -3,7 +3,11 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  oauth_consumer_key: "foo",
+  oauth_secret: "bar",
+  oauth_landing: "/oauth-landing",
+  osm_auth_url: "https://www.openstreetmap.org"
 };
 
 /*

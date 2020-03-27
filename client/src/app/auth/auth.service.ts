@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as osmAuth from 'osm-auth';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -9,10 +10,10 @@ export class AuthService {
 
   constructor() {
     this.auth = new osmAuth({
-      url: 'https://master.apis.dev.openstreetmap.org',
-      landing: '/oauth-landing',
-      oauth_consumer_key: 'TWaSD2RpZbtxuV5reVZ7jOQNDGmPjDux2BGK3zUy',
-      oauth_secret: 'a8K9wAU4Z8v8G7ayxnOpjnsLknkW72Txh62Nsu1C',
+      url: environment.osm_auth_url,
+      landing: environment.oauth_landing,
+      oauth_consumer_key: environment.oauth_consumer_key,
+      oauth_secret: environment.oauth_secret,
       auto: true // show a login form if the user is not authenticated and
                  // you try to do a call
     });
