@@ -13,14 +13,14 @@ export class ManagerComponent implements OnInit {
   constructor(private router: Router, private authService: AuthService) { }
 
   ngOnInit(): void {
-  	this.authService.getUserData((details, err) => {
+    this.authService.getUserData((details, err) => {
       console.error(err);
       this.userName = details.getElementsByTagName('user')[0].getAttribute('display_name');
-	});
+    });
   }
 
   public onLogoutClicked() {
-  	this.authService.logout();
-	this.router.navigate(['/']);
+    this.authService.logout();
+    this.router.navigate(['/']);
   }
 }

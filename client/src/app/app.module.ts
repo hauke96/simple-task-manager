@@ -22,7 +22,7 @@ import { ProjectListComponent } from './project/project-list.component';
     AppRoutingModule
   ],
   providers: [
-  	AuthGuard
+    AuthGuard
   ],
   bootstrap: [AppComponent]
 })

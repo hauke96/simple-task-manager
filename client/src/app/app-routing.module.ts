@@ -6,9 +6,9 @@ import { OauthLandingComponent } from './auth/oauth-landing.component';
 import { ManagerComponent } from './manager/manager.component';
 
 const routes: Routes = [
-	{ path: '', component: AuthComponent },
-	{ path: 'manager', component: ManagerComponent, canActivate: [ AuthGuard ] },
-	{ path: 'oauth-landing', component: OauthLandingComponent },
+    { path: '', component: AuthComponent },
+    { path: 'manager', component: ManagerComponent, canActivate: [ AuthGuard ] },
+    { path: 'oauth-landing', component: OauthLandingComponent },
 ];
 
 @NgModule({
