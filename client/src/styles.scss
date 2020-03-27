@@ -8,6 +8,7 @@ $space-huge: $space-base * 4;
 // General things
 body {
 	color: $very-dark-gray;
+	margin: $space-large;
 }
 
 * {
@@ -42,3 +43,22 @@ a:hover {
 	color: $color-dark;
 }
 
+.list-item {
+	height: $space-huge;
+	line-height: $space-huge;
+	border-left: 1px solid $color-light;
+	border-right: 1px solid $color-light;
+	border-top: 1px solid $color-light;
+	padding-left: $space-base;
+	padding-right: $space-base;
+}
+.list-item:last-child {
+	border: 1px solid $color-light;
+	margin-bottom: -10px;
+}
+.list-item:hover {
+	border: 1px solid $color-mid;
+}
+.list-item:hover + .list-item { // hide border for next list item
+	border-top: none;
+}
