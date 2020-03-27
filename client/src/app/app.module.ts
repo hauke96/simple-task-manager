@@ -5,6 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ManagerComponent } from './manager/manager.component';
 import { AuthComponent } from './auth/auth.component';
+import { AuthGuard } from './auth/auth.guard';
 import { OauthLandingComponent } from './auth/oauth-landing.component';
 
 @NgModule({
@@ -18,7 +19,9 @@ import { OauthLandingComponent } from './auth/oauth-landing.component';
     BrowserModule,
     AppRoutingModule
   ],
-  providers: [],
+  providers: [
+  	AuthGuard
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
