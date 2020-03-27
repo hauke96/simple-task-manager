@@ -1,10 +1,10 @@
 {
   "name": "simple-task-manager",
-  "version": "0.0.0",
+  "version": "0.1.0-dev",
   "scripts": {
     "ng": "ng",
     "dev": "ng serve --watch",
-    "build": "ng build",
+    "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

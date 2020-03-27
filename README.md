@@ -27,9 +27,9 @@ No creation or fancy "wow-effect-features" involved here.
 * [x] Authentication (login, logout, redirects, guards, etc.)
 * [x] Overview of all projects (list and click to see details)
 * [x] Overview of tasks (list of all tasks, click to see details and map etc.)
-* [ ] Manage tasks
+* [x] Manage tasks
   * [x] Set "process points" (e.g. setting it to 230/500)
-  * [ ] Automatically mark/highlight task as "finished" when all points are reached
+  * [x] Automatically mark/highlight task as "finished" when all points are reached
 
 ### Stage 2
 
