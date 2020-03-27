@@ -7,7 +7,7 @@ export const environment = {
   oauth_consumer_key: "foo",
   oauth_secret: "bar",
   oauth_landing: "/oauth-landing",
-  osm_auth_url: "https://www.openstreetmap.org"
+  osm_auth_url: "https://master.apis.dev.openstreetmap.org"
 };
 
 /*

@@ -8,6 +8,7 @@ import { AuthService } from './auth.service';
   styleUrls: ['./auth.component.scss']
 })
 export class AuthComponent implements OnInit {
+
   constructor(private router: Router, private ngZone: NgZone, private authService: AuthService) { }
 
   ngOnInit(): void {
