@@ -3,6 +3,7 @@
 .root-container {
 	display: flex;
 	height: 100%;
+	margin-top: 0px;
 }
 
 .root-container-item {
@@ -18,9 +19,11 @@
 	flex-direction: column;
 }
 
-.map-container,
+.map-container {
+	height: 65%;
+}
 .details-container {
-	height: 50%;
+	height: 35%;
 }
 
 .map-container {
