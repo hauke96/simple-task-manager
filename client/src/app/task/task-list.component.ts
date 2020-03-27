@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Task } from './task.material';
+import { TaskService } from './task.service';
 
 @Component({
   selector: 'app-task-list',
@@ -7,15 +8,14 @@ import { Task } from './task.material';
   styleUrls: ['./task-list.component.scss']
 })
 export class TaskListComponent implements OnInit {
-  public tasks: Task[] = [];
+  @Input() projectId: string;
 
-  constructor() {
-    this.tasks.push(new Task("t0", 40, 100));
-    this.tasks.push(new Task("t1", 100, 100));
-    this.tasks.push(new Task("t2", 10, 100));
-  }
+  constructor(private taskService: TaskService) { }
 
   ngOnInit(): void {
   }
 
+  public get tasks() : Task[] {
+    return this.taskService.getTasks(this.projectId);
+  }
 }
