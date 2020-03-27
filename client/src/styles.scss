@@ -5,6 +5,9 @@ $space-base: 10px;
 $space-large: $space-base * 2;
 $space-huge: $space-base * 4;
 
+// Fonts
+$font-small: 8pt;
+
 // General things
 body {
 	color: $very-dark-gray;
@@ -54,7 +57,7 @@ a:hover {
 }
 .list-item:last-child {
 	border: 1px solid $color-light;
-	margin-bottom: -10px;
+	margin-bottom: -$space-base;
 }
 .list-item:hover {
 	border: 1px solid $color-mid;
