@@ -10,6 +10,7 @@ import { OauthLandingComponent } from './auth/oauth-landing.component';
 import { ProjectListComponent } from './project/project-list.component';
 import { ProjectComponent } from './project/project.component';
 import { TaskListComponent } from './task/task-list.component';
+import { TaskDetailsComponent } from './task/task-details.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { TaskListComponent } from './task/task-list.component';
     OauthLandingComponent,
     ProjectListComponent,
     ProjectComponent,
-    TaskListComponent
+    TaskListComponent,
+    TaskDetailsComponent
   ],
   imports: [
     BrowserModule,

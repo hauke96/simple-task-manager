@@ -1,5 +1,17 @@
 @import '../../styles.scss';
 
+.root-container {
+	display: flex;
+}
+
+.root-container-item {
+	width: 50%;
+}
+
+.task-list-container {
+	margin-right: $space-large;
+}
+
 .project-label {
 	color: $very-light-gray;
 	margin-left: $space-base;
