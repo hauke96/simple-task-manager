@@ -18,7 +18,7 @@ body {
 }
 
 // UI elements
-.button {
+button {
 	height: $space-huge;
 	padding-left: $space-large;
 	padding-right: $space-large;
@@ -26,7 +26,7 @@ body {
 	border: none;
 	border: 1px solid $color-light;
 }
-.button:hover {
+button:hover {
 	border: 1px solid $color-mid;
 }
 
