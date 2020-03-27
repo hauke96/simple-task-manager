@@ -8,9 +8,9 @@ export class ProjectService {
   public projects: Project[] = [];
 
   constructor() {
-    this.projects[0] = new Project('1', 'Test');
-    this.projects[1] = new Project('2', 'foo');
-    this.projects[2] = new Project('3', 'bar');
+    this.projects[0] = new Project('p1', 'Test', ['t0', 't1']);
+    this.projects[1] = new Project('p2', 'foo', ['t2']);
+    this.projects[2] = new Project('p3', 'bar', ['t3', 't4']);
   }
 
   public getProjects() : Project[] {

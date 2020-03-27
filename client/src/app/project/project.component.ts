@@ -16,5 +16,4 @@ export class ProjectComponent implements OnInit {
   ngOnInit(): void {
     this.thisProject = this.projectService.getProject(this.route.snapshot.params['id']);
   }
-
 }

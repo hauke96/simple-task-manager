@@ -9,15 +9,15 @@ import { TaskService } from './task.service';
 })
 export class TaskListComponent implements OnInit {
   @Input() projectId: string;
+  @Input() taskIds: string[];
 
   constructor(private taskService: TaskService) { }
 
   ngOnInit(): void {
-    this.taskService.selectTask(this.tasks[0].id);
   }
 
-  public get tasks() : Task[] {
-    return this.taskService.getTasks(this.projectId);
+  public get tasks(): Task[] {
+    return this.taskService.getTasks(this.taskIds);
   }
 
   public get selectedTaskId(): string {
