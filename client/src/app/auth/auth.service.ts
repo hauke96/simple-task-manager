@@ -26,6 +26,10 @@ export class AuthService {
   	this.auth.authenticate(callback);
   }
 
+  public logout() {
+  	this.auth.logout();
+  }
+
   public getUserData(callback: (details, err) => void) {
 	this.auth.xhr({
       method: 'GET',
