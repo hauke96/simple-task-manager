@@ -11,6 +11,7 @@ import { ProjectListComponent } from './project/project-list.component';
 import { ProjectComponent } from './project/project.component';
 import { TaskListComponent } from './task/task-list.component';
 import { TaskDetailsComponent } from './task/task-details.component';
+import { TaskMapComponent } from './task/task-map.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { TaskDetailsComponent } from './task/task-details.component';
     ProjectListComponent,
     ProjectComponent,
     TaskListComponent,
-    TaskDetailsComponent
+    TaskDetailsComponent,
+    TaskMapComponent
   ],
   imports: [
     BrowserModule,

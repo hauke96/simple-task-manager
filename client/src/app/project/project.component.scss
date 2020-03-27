@@ -2,6 +2,7 @@
 
 .root-container {
 	display: flex;
+	height: 100%;
 }
 
 .root-container-item {
@@ -10,6 +11,25 @@
 
 .task-list-container {
 	margin-right: $space-large;
+}
+
+.task-details-map-container {
+	display: flex;
+	flex-direction: column;
+}
+
+.map-container,
+.details-container {
+	height: 50%;
+}
+
+.map-container {
+	display: flex;
+	flex-direction: column;
+}
+
+.map {
+	height: 100%;
 }
 
 .project-label {

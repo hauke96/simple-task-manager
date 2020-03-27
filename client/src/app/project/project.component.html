@@ -7,8 +7,14 @@
 		<h1>Tasks</h1>
 		<app-task-list [projectId]="thisProject.id"></app-task-list>
 	</div>
-	<div class="root-container-item">
-		<h1>Details</h1>
-		<app-task-details></app-task-details>
+	<div class="root-container-item task-details-map-container">
+		<div class="map-container">
+			<h1>Map</h1>
+			<app-task-map class="map"></app-task-map>
+		</div>
+		<div class="details-container">
+			<h1>Details</h1>
+			<app-task-details></app-task-details>
+		</div>
 	</div>
 </div>

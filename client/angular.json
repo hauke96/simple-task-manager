@@ -29,7 +29,8 @@
             ],
             "styles": [
 			  "src/colors.scss",
-              "src/styles.scss"
+              "src/styles.scss",
+			  "node_modules/ol/ol.css"
             ],
             "scripts": []
           },
@@ -94,7 +95,8 @@
             ],
             "styles": [
 			  "src/colors.scss",
-              "src/styles.scss"
+              "src/styles.scss",
+			  "node_modules/ol/ol.css"
             ],
             "scripts": []
           }

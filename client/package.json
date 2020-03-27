@@ -19,6 +19,8 @@
     "@angular/platform-browser": "~9.1.0",
     "@angular/platform-browser-dynamic": "~9.1.0",
     "@angular/router": "~9.1.0",
+    "@types/openlayers": "^4.6.17",
+    "ol": "^6.2.1",
     "osm-auth": "^1.0.2",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
