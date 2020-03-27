@@ -76,4 +76,6 @@ a:hover {
 	padding: $space-base;
 	background-color: $color-mid;
 	height: $space-huge;
+	display: flex;
+	align-items: center;
 }

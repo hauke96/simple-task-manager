@@ -16,4 +16,8 @@ export class ProjectService {
   public getProjects() : Project[] {
     return this.projects;
   }
+
+  public getProject(id: string) : Project {
+    return this.projects.find(p => p.id == id);
+  }
 }
