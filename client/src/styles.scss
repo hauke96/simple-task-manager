@@ -10,6 +10,11 @@ body {
 	color: $very-dark-gray;
 }
 
+* {
+	font-family: Dejavu Sans, sans-serif;
+	font-weight: 300;
+}
+
 // Alignments
 .center {
 	margin-right: auto;
