@@ -49,4 +49,8 @@ export class TaskService {
     this.getTask(id).processPoints = newProcessPoints;
     this.selectedTaskChanged.emit(this.getTask(id));
   }
+
+  public assign(id: string, user: string) {
+    this.getTask(id).assignedUser = user;
+  }
 }

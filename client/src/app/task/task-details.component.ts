@@ -25,7 +25,8 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   public onAssignButtonClicked() {
-    // TODO
+    // TODO get user name from user-service
+    this.taskService.assign(this.task.id, "TODO");
   }
 
   public onSaveButtonClick() {
