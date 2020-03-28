@@ -39,10 +39,10 @@ Stage 2 consists of the more interactive features like assigning yourself to a t
 * [x] Manage tasks
   * [x] Assign yourself to a task (even though you're currently alone, no others should then be able to change anything on that task e.g. setting points)
   * [x] Un-assign from task
-* [ ] Create project
+* [x] Create project
   * [x] Draw area on map
   * [x] Divide this area into squares of use defined size (-> so called tasks)
-  * [ ] Define how many "process points" are needed to complete a task
+  * [x] Define how many "process points" are needed to complete a task
 
 ### Stage 3
 
