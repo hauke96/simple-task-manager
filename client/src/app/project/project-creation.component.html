@@ -13,10 +13,10 @@
 			<h2>Divide into squares:</h2>
 			<div>
 				Sqaure size:
-				<input>
+				<input type="number" [(ngModel)]="gridCellSize">
 				meters
 			</div><br>
-			<button>Divide</button>
+			<button (click)="onDivideButtonClicked()">Divide</button>
 		</div>
 	</div>
 </div>

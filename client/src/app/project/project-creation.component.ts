@@ -12,6 +12,8 @@ import { Projection } from 'ol/proj';
 import { Style, Stroke, Fill } from 'ol/style';
 import { Feature } from 'ol';
 import { Draw } from 'ol/interaction';
+import squareGrid from '@turf/square-grid';
+import { Units, polygon as turfPolygon } from "@turf/helpers";
 
 @Component({
   selector: 'app-project-creation',
@@ -20,6 +22,7 @@ import { Draw } from 'ol/interaction';
 })
 export class ProjectCreationComponent implements OnInit, AfterViewInit {
   public newProjectName: string;
+  public gridCellSize: number;
 
   private map: Map;
   private vectorSource: VectorSource;
@@ -79,7 +82,34 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       type: 'Polygon'
     });
     this.map.addInteraction(draw);
-   }
+  }
+
+  public onDivideButtonClicked() {
+    const polygon = this.vectorSource.getFeatures()[0].getGeometry() as Polygon;
+    const extent = polygon.transform('EPSG:3857', 'EPSG:4326').getExtent();
+
+    // Use meters and only show grid cells within the original polygon (-> mask)
+    const options = {
+      units: 'meters' as Units,
+      mask: turfPolygon(polygon.getCoordinates())
+    };
+
+    let grid = squareGrid(extent, this.gridCellSize, options);
+
+    this.vectorSource.refresh(); // clears the source
+
+    grid.features.forEach(g => {
+      // Turn geo GeoJSON polygon from turf.js into an openlayers polygon and
+      // transform it into the used coordinate system.
+      let geometry = new Polygon(g.geometry.coordinates);
+      geometry = geometry.transform('EPSG:4326', 'EPSG:3857');
+  
+     // create the map feature and set the task-id to select the task when the
+     // polygon has been clicked
+     let feature = new Feature(geometry);
+     this.vectorSource.addFeature(feature);
+    });
+  }
 
   public onSaveButtonClicked() {
     const coordinates: [[number, number]][] = [];
