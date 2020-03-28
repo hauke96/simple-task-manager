@@ -17,9 +17,10 @@ export class TaskDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.task = this.taskService.getSelectedTask();
     this.newProcessPoints = this.task.processPoints;
+
     this.taskService.selectedTaskChanged.subscribe((task) => {
-      console.log(task);
       this.task = task;
+      this.newProcessPoints = this.task.processPoints;
     });
   }
 

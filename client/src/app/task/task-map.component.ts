@@ -79,13 +79,6 @@ export class TaskMapComponent implements AfterViewInit {
       })
     });
 
-// Test code for drawing polygons:
-//    const draw = new Draw({
-//      source: this.vectorSource,
-//      type: 'Polygon'
-//    });
-//    this.map.addInteraction(draw);
-
     this.taskService.getTasks(this.taskIds).forEach(t => this.showTaskPolygon(t));
 
     // Clicking on the map selects the clicked polygon (and therefore the according task)
@@ -99,6 +92,7 @@ export class TaskMapComponent implements AfterViewInit {
 
     // react to changed selection and update the map style
     this.taskService.selectedTaskChanged.subscribe((task) => {
+      this.task = task;
       this.vectorSource.changed();
     });
   }
