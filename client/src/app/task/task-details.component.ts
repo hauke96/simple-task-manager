@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TaskService } from './task.service';
 import { Task } from './task.material';
+import { UserService } from '../auth/user.service';
 
 @Component({
   selector: 'app-task-details',
@@ -14,19 +15,19 @@ export class TaskDetailsComponent implements OnInit {
 
   public test: string;
 
-  constructor(private taskService: TaskService) { }
+  constructor(private taskService: TaskService, private userService: UserService) { }
 
   ngOnInit(): void {
     this.task = this.taskService.getSelectedTask();
     this.newProcessPoints = this.task.processPoints;
     this.taskService.selectedTaskChanged.subscribe((task) => {
+      console.log(task);
       this.task = task;
     });
   }
 
   public onAssignButtonClicked() {
-    // TODO get user name from user-service
-    this.taskService.assign(this.task.id, "TODO");
+    this.taskService.assign(this.task.id, this.userService.getUser());
   }
 
   public onSaveButtonClick() {

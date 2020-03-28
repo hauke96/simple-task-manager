@@ -52,5 +52,6 @@ export class TaskService {
 
   public assign(id: string, user: string) {
     this.getTask(id).assignedUser = user;
+    this.selectedTaskChanged.emit(this.getTask(id));
   }
 }

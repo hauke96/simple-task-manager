@@ -1,6 +1,7 @@
 <div class="headline">
 	<p>Task: {{task.id}}</p>
-	<button (click)="onAssignButtonClicked()">Assign me</button>
+	<button *ngIf="!task.assignedUser" (click)="onAssignButtonClicked()">Assign me</button>
+	<p *ngIf="!!task.assignedUser">Assigned to: {{task.assignedUser}}</p>
 </div>
 <div>
 	Points:
