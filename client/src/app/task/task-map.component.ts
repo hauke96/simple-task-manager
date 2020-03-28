@@ -70,6 +70,9 @@ export class TaskMapComponent implements AfterViewInit {
 //      type: 'Polygon'
 //    });
 //    this.map.addInteraction(draw);
+    this.map.on('click', (evt) => {
+      this.map.forEachFeatureAtPixel(evt.pixel, (feature) => this.taskService.selectTask(feature.get('task_id')));
+    });
 
     this.taskService.getTasks(this.taskIds).forEach(t => this.showTaskPolygon(t));
 
@@ -82,6 +85,8 @@ export class TaskMapComponent implements AfterViewInit {
   private showTaskPolygon(task: Task) {
     let geometry = new Polygon([task.geometry]);
     geometry = geometry.clone().transform('EPSG:4326', 'EPSG:3857');
-    this.vectorSource.addFeature(new Feature(geometry));
+    let feature = new Feature(geometry);
+    feature.set('task_id', task.id);
+    this.vectorSource.addFeature(feature);
   }
 }
