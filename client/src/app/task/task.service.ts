@@ -26,6 +26,10 @@ export class TaskService {
 
       this.tasks.push(new Task("t"+i, 0, 100, geom as [[number, number]]));
     }
+
+    // Assign dome dummy users
+    this.tasks[0].assignedUser = 'Peter';
+    this.tasks[4].assignedUser = 'Maria';
   }
 
   public selectTask(id: string) {
