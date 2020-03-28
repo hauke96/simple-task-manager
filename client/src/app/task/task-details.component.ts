@@ -10,10 +10,7 @@ import { UserService } from '../auth/user.service';
 })
 export class TaskDetailsComponent implements OnInit {
   public task: Task;
-
   public newProcessPoints: number;
-
-  public test: string;
 
   constructor(private taskService: TaskService, private userService: UserService) { }
 
@@ -26,8 +23,16 @@ export class TaskDetailsComponent implements OnInit {
     });
   }
 
+  public get currentUser(): string {
+    return this.userService.getUser();
+  }
+
   public onAssignButtonClicked() {
     this.taskService.assign(this.task.id, this.userService.getUser());
+  }
+
+  public onUnassignButtonClicked() {
+    this.taskService.unassign(this.task.id);
   }
 
   public onSaveButtonClick() {

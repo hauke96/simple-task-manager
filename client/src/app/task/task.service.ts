@@ -54,4 +54,9 @@ export class TaskService {
     this.getTask(id).assignedUser = user;
     this.selectedTaskChanged.emit(this.getTask(id));
   }
+
+  public unassign(id: string) {
+    this.getTask(id).assignedUser = undefined;
+    this.selectedTaskChanged.emit(this.getTask(id));
+  }
 }
