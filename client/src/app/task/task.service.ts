@@ -11,11 +11,31 @@ export class TaskService {
   private selectedTaskId: string;
 
   constructor() {
-    this.tasks.push(new Task("t0", 40, 100));
-    this.tasks.push(new Task("t1", 100, 100));
-    this.tasks.push(new Task("t2", 10, 100));
-    this.tasks.push(new Task("t3", 10, 100));
-    this.tasks.push(new Task("t4", 10, 100));
+    let startY = 53.5484;
+    let startX = 9.9714;
+    
+    for (let i = 0; i < 5;i++) {
+      let geom = [];
+      geom.push([startX, startY]);
+      geom.push([startX + 0.01, startY]);
+      geom.push([startX + 0.01, startY+0.01]);
+      geom.push([startX, startY+0.01]);
+      geom.push([startX, startY]);
+
+      startX+=0.01;
+
+      this.tasks.push(new Task("t"+i, 0, 100, geom as [[number, number]]));
+    }
+
+    // Assign dome dummy users
+    this.tasks[0].assignedUser = 'Peter';
+    this.tasks[4].assignedUser = 'Maria';
+  }
+
+  public createNewTask(geometry: [[number, number]], maxProcessPoints: number): string {
+    const task = new Task('t-'+Math.random().toString(36).substring(7), 0, maxProcessPoints, geometry);
+    this.tasks.push(task);
+    return task.id;
   }
 
   public selectTask(id: string) {
@@ -37,6 +57,16 @@ export class TaskService {
 
   public setProcessPoints(id: string, newProcessPoints: number) {
     this.getTask(id).processPoints = newProcessPoints;
+    this.selectedTaskChanged.emit(this.getTask(id));
+  }
+
+  public assign(id: string, user: string) {
+    this.getTask(id).assignedUser = user;
+    this.selectedTaskChanged.emit(this.getTask(id));
+  }
+
+  public unassign(id: string) {
+    this.getTask(id).assignedUser = undefined;
     this.selectedTaskChanged.emit(this.getTask(id));
   }
 }

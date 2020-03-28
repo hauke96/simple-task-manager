@@ -1,7 +1,10 @@
-<div class="toolbar">
-	<p>Welcome {{userName}} :)</p>
-	<button (click)="onLogoutClicked()">Logout</button>
+<div>
+	<div class="toolbar">
+		<p>Welcome {{userName}} :)</p>
+		<button (click)="onLogoutClicked()">Logout</button>
+	</div>
+	<div class="root-container">
+		<app-project-list></app-project-list>
+	</div>
 </div>
-<div class="root-container">
-	<app-project-list></app-project-list>
-</div>
+<app-footer></app-footer>

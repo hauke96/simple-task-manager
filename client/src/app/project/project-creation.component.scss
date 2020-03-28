@@ -1,0 +1,36 @@
+@import '../../styles.scss';
+
+:host {
+	height: 100%;
+}
+
+.root-container {
+	height: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.project-properties-container {
+	display: flex;
+	flex-direction: column;
+}
+.project-properties-container > div {
+	margin-bottom: $space-base
+}
+
+.map-container {
+	height: 75%;
+	width: 50%;
+	display: flex;
+	flex-direction: column;
+}
+
+#map {
+	height: 100%;
+	width: 100%;
+}
+
+.save-button {
+	margin-left: $space-base;
+}

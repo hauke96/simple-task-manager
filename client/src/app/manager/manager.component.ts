@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { UserService } from '../auth/user.service';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
 
@@ -8,15 +9,14 @@ import { Router } from '@angular/router';
   styleUrls: ['./manager.component.scss']
 })
 export class ManagerComponent implements OnInit {
-  public userName: string;
 
-  constructor(private router: Router, private authService: AuthService) { }
+  constructor(private router: Router, private authService: AuthService, private userService: UserService) { }
 
   ngOnInit(): void {
-    this.authService.getUserData((details, err) => {
-      console.error(err);
-      this.userName = details.getElementsByTagName('user')[0].getAttribute('display_name');
-    });
+  }
+
+  public get userName(): string {
+    return this.userService.getUser();
   }
 
   public onLogoutClicked() {
