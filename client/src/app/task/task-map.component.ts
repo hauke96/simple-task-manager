@@ -28,16 +28,30 @@ export class TaskMapComponent implements AfterViewInit {
   constructor(private taskService: TaskService) { }
 
   ngAfterViewInit(): void {
-    const style = new Style({
-      stroke: new Stroke({
-        color: '#26a69a',
-        width: 2,
-      }),
-      fill: new Fill({
-        color: '#80cbc450'
+    // this style function will choose between default colors and colors for
+    // selected features
+    const style = (feature, resolution) => {
+      let borderColor = '#26a69a90';
+      let fillColor = '#80cbc430';
+
+      const selectedTaskId = this.taskService.getSelectedTask().id;
+      if (selectedTaskId == feature.get('task_id')) {
+        borderColor = '#26a69a';
+        fillColor = '#80cbc450';
+      }
+
+      return new Style({
+        stroke: new Stroke({
+          color: borderColor,
+          width: 2,
+        }),
+        fill: new Fill({
+          color: fillColor
+        })
       })
-    });
+    };
     
+    // this vector source contains all the task geometries
     this.vectorSource = new VectorSource();
     const vectorLayer = new VectorLayer({
       source: this.vectorSource,
@@ -65,28 +79,41 @@ export class TaskMapComponent implements AfterViewInit {
       })
     });
 
+// Test code for drawing polygons:
 //    const draw = new Draw({
 //      source: this.vectorSource,
 //      type: 'Polygon'
 //    });
 //    this.map.addInteraction(draw);
-    this.map.on('click', (evt) => {
-      this.map.forEachFeatureAtPixel(evt.pixel, (feature) => this.taskService.selectTask(feature.get('task_id')));
-    });
 
     this.taskService.getTasks(this.taskIds).forEach(t => this.showTaskPolygon(t));
 
-//    this.task = this.taskService.getSelectedTask();
-//    this.taskService.selectedTaskChanged.subscribe((task) => {
-//      this.showTaskPolygon(task);
-//    });
+    // Clicking on the map selects the clicked polygon (and therefore the according task)
+    this.map.on('click', (evt) => {
+      // When a feature was found on the map, it'll be selected in the task
+      // service. This will trigger the "selectedTaskChanged" event and causes
+      // the source-refresh below in the handler. This will then update the map
+      // style and highlights the correct geometry on the map.
+      this.map.forEachFeatureAtPixel(evt.pixel, (feature) => this.taskService.selectTask(feature.get('task_id')));
+    });
+
+    // react to changed selection and update the map style
+    this.taskService.selectedTaskChanged.subscribe((task) => {
+      this.vectorSource.changed();
+    });
   }
 
   private showTaskPolygon(task: Task) {
     let geometry = new Polygon([task.geometry]);
+
+    // transform from lat/long into WSG84 to show on map
     geometry = geometry.clone().transform('EPSG:4326', 'EPSG:3857');
+
+    // create the map feature and set the task-id to select the task when the
+    // polygon has been clicked
     let feature = new Feature(geometry);
     feature.set('task_id', task.id);
+
     this.vectorSource.addFeature(feature);
   }
 }
