@@ -10,12 +10,12 @@ import { Project } from './project.material';
   styleUrls: ['./project.component.scss']
 })
 export class ProjectComponent implements OnInit {
-  public thisProject : Project;
+  public thisProject: Project;
 
   constructor(private route: ActivatedRoute, private projectService: ProjectService, private taskService: TaskService) { }
 
   ngOnInit(): void {
-    this.thisProject = this.projectService.getProject(this.route.snapshot.params['id']);
+    this.thisProject = this.projectService.getProject(this.route.snapshot.params.id);
     this.taskService.selectTask(this.thisProject.taskIds[0]);
   }
 }

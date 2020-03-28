@@ -11,7 +11,7 @@ import { Polygon } from 'ol/geom';
 import { Projection } from 'ol/proj';
 import { Style, Stroke, Fill } from 'ol/style';
 import { Feature } from 'ol';
-//import { Draw } from 'ol/interaction';
+// import { Draw } from 'ol/interaction';
 
 @Component({
   selector: 'app-task-map',
@@ -35,7 +35,7 @@ export class TaskMapComponent implements AfterViewInit {
       let fillColor = '#80cbc430';
 
       const selectedTaskId = this.taskService.getSelectedTask().id;
-      if (selectedTaskId == feature.get('task_id')) {
+      if (selectedTaskId === feature.get('task_id')) {
         borderColor = '#26a69a';
         fillColor = '#80cbc450';
       }
@@ -48,14 +48,14 @@ export class TaskMapComponent implements AfterViewInit {
         fill: new Fill({
           color: fillColor
         })
-      })
+      });
     };
-    
+
     // this vector source contains all the task geometries
     this.vectorSource = new VectorSource();
     const vectorLayer = new VectorLayer({
       source: this.vectorSource,
-      style: style
+      style
     });
 
     this.map = new Map({
@@ -105,7 +105,7 @@ export class TaskMapComponent implements AfterViewInit {
 
     // create the map feature and set the task-id to select the task when the
     // polygon has been clicked
-    let feature = new Feature(geometry);
+    const feature = new Feature(geometry);
     feature.set('task_id', task.id);
 
     this.vectorSource.addFeature(feature);

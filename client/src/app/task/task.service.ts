@@ -11,20 +11,20 @@ export class TaskService {
   private selectedTaskId: string;
 
   constructor() {
-    let startY = 53.5484;
+    const startY = 53.5484;
     let startX = 9.9714;
-    
-    for (let i = 0; i < 5;i++) {
-      let geom = [];
+
+    for (let i = 0; i < 5; i++) {
+      const geom = [];
       geom.push([startX, startY]);
       geom.push([startX + 0.01, startY]);
-      geom.push([startX + 0.01, startY+0.01]);
-      geom.push([startX, startY+0.01]);
+      geom.push([startX + 0.01, startY + 0.01]);
+      geom.push([startX, startY + 0.01]);
       geom.push([startX, startY]);
 
-      startX+=0.01;
+      startX += 0.01;
 
-      this.tasks.push(new Task("t"+i, 0, 100, geom as [[number, number]]));
+      this.tasks.push(new Task('t' + i, 0, 100, geom as [[number, number]]));
     }
 
     // Assign dome dummy users
@@ -33,7 +33,7 @@ export class TaskService {
   }
 
   public createNewTask(geometry: [[number, number]], maxProcessPoints: number): string {
-    const task = new Task('t-'+Math.random().toString(36).substring(7), 0, maxProcessPoints, geometry);
+    const task = new Task('t-' + Math.random().toString(36).substring(7), 0, maxProcessPoints, geometry);
     this.tasks.push(task);
     return task.id;
   }

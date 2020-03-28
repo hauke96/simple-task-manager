@@ -1,6 +1,6 @@
 export class Project {
   constructor(public id: string,
-    public name: string,
-    public taskIds: string[]) {
+              public name: string,
+              public taskIds: string[]) {
   }
 }

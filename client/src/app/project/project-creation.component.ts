@@ -13,7 +13,7 @@ import { Style, Stroke, Fill } from 'ol/style';
 import { Feature } from 'ol';
 import { Draw } from 'ol/interaction';
 import squareGrid from '@turf/square-grid';
-import { Units, polygon as turfPolygon } from "@turf/helpers";
+import { Units, polygon as turfPolygon } from '@turf/helpers';
 
 @Component({
   selector: 'app-project-creation',
@@ -36,8 +36,8 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     // Simple style function the the polygons
     const style = (feature, resolution) => {
-      let borderColor = '#26a69a90';
-      let fillColor = '#80cbc430';
+      const borderColor = '#26a69a90';
+      const fillColor = '#80cbc430';
 
       return new Style({
         stroke: new Stroke({
@@ -47,14 +47,14 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
         fill: new Fill({
           color: fillColor
         })
-      })
+      });
     };
-    
+
     // this vector source contains all the task geometries
     this.vectorSource = new VectorSource();
     const vectorLayer = new VectorLayer({
       source: this.vectorSource,
-      style: style
+      style
     });
 
     this.map = new Map({
@@ -95,7 +95,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       mask: turfPolygon(polygon.getCoordinates())
     };
 
-    let grid = squareGrid(extent, this.gridCellSize, options);
+    const grid = squareGrid(extent, this.gridCellSize, options);
 
     this.vectorSource.refresh(); // clears the source
 
@@ -104,11 +104,11 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       // transform it into the used coordinate system.
       let geometry = new Polygon(g.geometry.coordinates);
       geometry = geometry.transform('EPSG:4326', 'EPSG:3857');
-  
+
      // create the map feature and set the task-id to select the task when the
      // polygon has been clicked
-     let feature = new Feature(geometry);
-     this.vectorSource.addFeature(feature);
+      const feature = new Feature(geometry);
+      this.vectorSource.addFeature(feature);
     });
   }
 
