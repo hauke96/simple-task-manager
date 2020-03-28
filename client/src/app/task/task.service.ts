@@ -32,8 +32,8 @@ export class TaskService {
     this.tasks[4].assignedUser = 'Maria';
   }
 
-  public createNewTask(geometry: [[number, number]]): string {
-    const task = new Task('t-'+Math.random().toString(36).substring(7), 0, 100, geometry);
+  public createNewTask(geometry: [[number, number]], maxProcessPoints: number): string {
+    const task = new Task('t-'+Math.random().toString(36).substring(7), 0, maxProcessPoints, geometry);
     this.tasks.push(task);
     return task.id;
   }

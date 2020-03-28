@@ -23,9 +23,9 @@ export class ProjectService {
     return this.projects.find(p => p.id == id);
   }
 
-  public createNewProject(name: string, geometries: [[number, number]][]) {
+  public createNewProject(name: string, maxPorcessPoints, geometries: [[number, number]][]) {
     // Create new tasks with the given geometries and collect their IDs
-    const tasks = geometries.map(g => this.taskService.createNewTask(g));
+    const tasks = geometries.map(g => this.taskService.createNewTask(g, maxPorcessPoints));
     console.log(tasks);
 
     const p = new Project('p-'+Math.random().toString(36).substring(7), name, tasks);

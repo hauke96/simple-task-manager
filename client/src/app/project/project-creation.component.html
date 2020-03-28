@@ -3,9 +3,15 @@
 	<button class="save-button" (click)="onSaveButtonClicked()">Save</button>
 </div>
 <div class="root-container">
-	<div>
-		Name: 
-		<input [(ngModel)]="newProjectName">
+	<div class="project-properties-container">
+		<div>
+			Name: 
+			<input [(ngModel)]="newProjectName">
+		</div>
+		<div>
+			Max. points per task:
+			<input type="number" [(ngModel)]="newMaxProcessPoints">
+		</div>
 	</div>
 	<div class="map-container">
 		<div id="map"></div>

@@ -22,6 +22,7 @@ import { Units, polygon as turfPolygon } from "@turf/helpers";
 })
 export class ProjectCreationComponent implements OnInit, AfterViewInit {
   public newProjectName: string;
+  public newMaxProcessPoints: number;
   public gridCellSize: number;
 
   private map: Map;
@@ -122,7 +123,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       coordinates.push(polygon.getCoordinates()[0]);
     });
 
-    this.projectService.createNewProject(this.newProjectName, coordinates);
+    this.projectService.createNewProject(this.newProjectName, this.newMaxProcessPoints, coordinates);
     this.router.navigate(['/manager']);
   }
 }

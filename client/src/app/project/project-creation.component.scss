@@ -11,6 +11,14 @@
 	justify-content: space-between;
 }
 
+.project-properties-container {
+	display: flex;
+	flex-direction: column;
+}
+.project-properties-container > div {
+	margin-bottom: $space-base
+}
+
 .map-container {
 	height: 75%;
 	width: 50%;
