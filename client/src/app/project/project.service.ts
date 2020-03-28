@@ -20,4 +20,9 @@ export class ProjectService {
   public getProject(id: string) : Project {
     return this.projects.find(p => p.id == id);
   }
+
+  public createNewProject(name: string) {
+    const p = new Project('p-'+Math.random().toString(36).substring(7), name, []);
+    this.projects.push(p);
+  }
 }
