@@ -1,5 +1,11 @@
 @import "../../styles.scss";
 
+.headline {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
 input {
 	width: 50px;
 }

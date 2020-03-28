@@ -1,4 +1,7 @@
-<p>Task: {{task.id}}</p>
+<div class="headline">
+	<p>Task: {{task.id}}</p>
+	<button (click)="onAssignButtonClicked()">Assign me</button>
+</div>
 <div>
 	Points:
 	<input [(ngModel)]="newProcessPoints">

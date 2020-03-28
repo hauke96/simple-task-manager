@@ -24,6 +24,10 @@ export class TaskDetailsComponent implements OnInit {
     });
   }
 
+  public onAssignButtonClicked() {
+    // TODO
+  }
+
   public onSaveButtonClick() {
     this.taskService.setProcessPoints(this.task.id, this.newProcessPoints);
   }
