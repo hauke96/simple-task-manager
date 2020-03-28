@@ -7,9 +7,17 @@
 	</div>
 </div>
 <div>
-	Points:
-	<input [(ngModel)]="newProcessPoints">
-	/
-	{{task.maxProcessPoints}}
-	<button class="save-button" (click)="onSaveButtonClick()">Save</button>
+	<div *ngIf="task.assignedUser === currentUser; else currentUserElse">
+		Points:
+		<input [(ngModel)]="newProcessPoints">
+		/
+		{{task.maxProcessPoints}}
+		<button class="save-button" (click)="onSaveButtonClick()">Save</button>
+	</div>
+	<ng-template #currentUserElse>
+		Points:
+		{{task.processPoints}}
+		/
+		{{task.maxProcessPoints}}
+	</ng-template>
 </div>
