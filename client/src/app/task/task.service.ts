@@ -11,11 +11,21 @@ export class TaskService {
   private selectedTaskId: string;
 
   constructor() {
-    this.tasks.push(new Task("t0", 40, 100));
-    this.tasks.push(new Task("t1", 100, 100));
-    this.tasks.push(new Task("t2", 10, 100));
-    this.tasks.push(new Task("t3", 10, 100));
-    this.tasks.push(new Task("t4", 10, 100));
+    let startY = 53.5484;
+    let startX = 9.9714;
+    
+    for (let i = 0; i < 5;i++) {
+      let geom = [];
+      geom.push([startX, startY]);
+      geom.push([startX + 0.01, startY]);
+      geom.push([startX + 0.01, startY+0.01]);
+      geom.push([startX, startY+0.01]);
+      geom.push([startX, startY]);
+
+      startX+=0.01;
+
+      this.tasks.push(new Task("t"+i, 0, 100, geom as [[number, number]]));
+    }
   }
 
   public selectTask(id: string) {
