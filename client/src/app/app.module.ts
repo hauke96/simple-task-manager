@@ -14,6 +14,7 @@ import { TaskListComponent } from './task/task-list.component';
 import { TaskDetailsComponent } from './task/task-details.component';
 import { TaskMapComponent } from './task/task-map.component';
 import { FooterComponent } from './footer.component';
+import { ProjectCreationComponent } from './project/project-creation.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { FooterComponent } from './footer.component';
     TaskListComponent,
     TaskDetailsComponent,
     TaskMapComponent,
-    FooterComponent
+    FooterComponent,
+    ProjectCreationComponent
   ],
   imports: [
     BrowserModule,

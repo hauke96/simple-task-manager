@@ -5,11 +5,13 @@ import { AuthGuard } from './auth/auth.guard';
 import { OauthLandingComponent } from './auth/oauth-landing.component';
 import { ManagerComponent } from './manager/manager.component';
 import { ProjectComponent } from './project/project.component';
+import { ProjectCreationComponent } from './project/project-creation.component';
 
 const routes: Routes = [
     { path: '', component: AuthComponent },
     { path: 'manager', component: ManagerComponent, canActivate: [ AuthGuard ] },
     { path: 'project/:id', component: ProjectComponent, canActivate: [ AuthGuard ] },
+    { path: 'new-project', component: ProjectCreationComponent, canActivate: [ AuthGuard ] },
     { path: 'oauth-landing', component: OauthLandingComponent },
 ];
 
