@@ -20,8 +20,4 @@ export class ProjectListComponent implements OnInit {
   public onProjectListItemClicked(id: string) {
     this.router.navigate(['/project', id]);
   }
-
-  public onCreateProjectButtonClicked() {
-    
-  }
 }
