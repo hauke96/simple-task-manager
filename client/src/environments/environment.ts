@@ -7,7 +7,9 @@ export const environment = {
   oauth_consumer_key: 'TWaSD2RpZbtxuV5reVZ7jOQNDGmPjDux2BGK3zUy',
   oauth_secret: 'a8K9wAU4Z8v8G7ayxnOpjnsLknkW72Txh62Nsu1C',
   oauth_landing: '/oauth-landing',
-  osm_auth_url: 'https://master.apis.dev.openstreetmap.org'
+  osm_auth_url: 'https://master.apis.dev.openstreetmap.org',
+
+  url_projects: "http://localhost:8080/projects"
 };
 
 /*

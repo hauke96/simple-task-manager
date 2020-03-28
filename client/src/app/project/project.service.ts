@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Project } from './project.material';
 import { Task } from './../task/task.material';
 import { TaskService } from './../task/task.service';
+import { HttpClient } from '@angular/common/http';
+import { environment } from './../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -9,10 +11,10 @@ import { TaskService } from './../task/task.service';
 export class ProjectService {
   public projects: Project[] = [];
 
-  constructor(private taskService: TaskService) {
-    this.projects[0] = new Project('p1', 'Test', ['t0', 't1']);
-    this.projects[1] = new Project('p2', 'foo', ['t2']);
-    this.projects[2] = new Project('p3', 'bar', ['t3', 't4']);
+  constructor(private taskService: TaskService, private http: HttpClient) {
+    this.http.get(environment.url_projects).subscribe(data => {
+      this.projects = (data as Project[]);
+    });
   }
 
   public getProjects(): Project[] {
