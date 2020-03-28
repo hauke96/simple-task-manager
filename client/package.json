@@ -5,7 +5,7 @@
     "ng": "ng",
     "dev": "ng serve --watch",
     "build": "ng build --prod",
-	"build-hst-stm-test": "ng build -c hst-stm-test --base-href \"/stm-test/\" --progress",
+    "build-hst-stm-test": "ng build -c hst-stm-test --base-href \"/stm-test/\" --progress",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -20,6 +20,7 @@
     "@angular/platform-browser": "~9.1.0",
     "@angular/platform-browser-dynamic": "~9.1.0",
     "@angular/router": "~9.1.0",
+    "@turf/square-grid": "^6.0.2",
     "@types/openlayers": "^4.6.17",
     "ol": "^6.2.1",
     "osm-auth": "^1.0.2",

@@ -11,9 +11,16 @@
 	justify-content: space-between;
 }
 
-#map {
-	height: 50%;
+.map-container {
+	height: 75%;
 	width: 50%;
+	display: flex;
+	flex-direction: column;
+}
+
+#map {
+	height: 100%;
+	width: 100%;
 }
 
 .save-button {
