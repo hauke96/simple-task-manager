@@ -34,6 +34,9 @@ func InitTasks() {
 			Geometry:         geom,
 		})
 	}
+
+	tasks[0].AssignesUser = "Peter"
+	tasks[4].AssignesUser = "Maria"
 }
 
 func GetTasks(taskIds []string) []Task {

@@ -15,17 +15,17 @@ func InitProjects() {
 	projects = append(projects, Project{
 		Id:      "p-" + GetId(),
 		Name:    "First project",
-		TaskIDs: []string{"t-0", "t-1"},
+		TaskIDs: []string{"t-3", "t-4"},
 	})
 	projects = append(projects, Project{
 		Id:      "p-" + GetId(),
 		Name:    "Foo",
-		TaskIDs: []string{"t-2"},
+		TaskIDs: []string{"t-5"},
 	})
 	projects = append(projects, Project{
 		Id:      "p-" + GetId(),
 		Name:    "Bar",
-		TaskIDs: []string{"t-3", "t-4"},
+		TaskIDs: []string{"t-6", "t-7"},
 	})
 }
 
