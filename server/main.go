@@ -1,11 +1,13 @@
 package main
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/hauke96/kingpin"
@@ -68,19 +70,28 @@ func main() {
 }
 
 func verifyRequest(r *http.Request) error {
-	token := r.FormValue("token")
+	encodedToken := r.FormValue("token")
 
-	if token == "abc123" {
-		return nil
+	tokenBytes, err := base64.StdEncoding.DecodeString(encodedToken)
+	if err != nil {
+		sigolo.Error(err.Error())
+		return err
 	}
 
-	// for _, t := range knownToken {
-	// 	if t == token {
-	// 		return nil
-	// 	}
-	// }
+	var token Token
+	json.Unmarshal(tokenBytes, &token)
 
-	return errors.New("Unknown token")
+	if token.Secret != "abc123" {
+		return errors.New("Secret not valid")
+	}
+
+	if token.ValidUntil < time.Now().Unix() {
+		return errors.New("Token expired")
+	}
+
+	sigolo.Info("User '%s' has valid token", token.User)
+
+	return nil
 }
 
 func getProjects(w http.ResponseWriter, r *http.Request) {
