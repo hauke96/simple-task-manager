@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
+import { Observable, zip } from 'rxjs';
+import { map, flatMap, filter } from 'rxjs/operators';
 import { Project } from './project.material';
 import { Task } from './../task/task.material';
 import { TaskService } from './../task/task.service';
@@ -28,11 +28,11 @@ export class ProjectService {
     }));
   }
 
-  public createNewProject(name: string, maxPorcessPoints, geometries: [[number, number]][]) {
+  public createNewProject(name: string, maxProcessPoints: number, geometries: [[number, number]][]): Observable<Project> {
     // Create new tasks with the given geometries and collect their IDs
-    const tasks = geometries.map(g => this.taskService.createNewTask(g, maxPorcessPoints));
-
-    this.http.post<Project>(environment.url_projects + "?name=" + name + "&task_ids=" + tasks.join(','), "")
-      .subscribe(p => this.projects.push(p));
+    return this.taskService.createNewTasks(geometries, maxProcessPoints)
+      .pipe(flatMap(tasks => {
+        return this.http.post<Project>(environment.url_projects + "?name=" + name + "&task_ids=" + tasks.map(t => t.id).join(','), "");
+      }));
   }
 }

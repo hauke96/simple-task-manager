@@ -35,7 +35,7 @@ func GetProjects() []Project {
 
 func AddProject(name string, taskIds []string) Project {
 	p := Project{
-		Id:      GetId(),
+		Id:      "p-" + GetId(),
 		Name:    name,
 		TaskIDs: taskIds,
 	}

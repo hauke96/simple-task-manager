@@ -17,11 +17,15 @@ export class TaskService {
   constructor(private http: HttpClient) {
   }
 
-  public createNewTask(geometry: [[number, number]], maxProcessPoints: number): string {
+  public createNewTasks(geometries: [[number, number]][], maxProcessPoints: number): Observable<Task[]> {
     // TODO server call
-    const task = new Task('t-' + Math.random().toString(36).substring(7), 0, maxProcessPoints, geometry);
-    this.tasks.push(task);
-    return task.id;
+    const tasks = geometries.map(g => new Task('', 0, maxProcessPoints, g));
+    return this.http.post<Task[]>(environment.url_tasks, JSON.stringify(tasks))
+      .pipe(map(t => {
+        this.tasks.concat(t);
+        return t;
+      })
+    );
   }
 
   public selectTask(task: Task) {

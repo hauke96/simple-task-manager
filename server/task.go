@@ -1,5 +1,9 @@
 package main
 
+import (
+	"github.com/hauke96/sigolo"
+)
+
 type Task struct {
 	Id               string      `json:"id"`
 	ProcessPoints    int         `json:"processPoints"`
@@ -50,4 +54,16 @@ func GetTasks(taskIds []string) []Task {
 	}
 
 	return result
+}
+
+// AddTasks sets the ID of the tasks and adds them to the storage.
+func AddTasks(newTasks []Task) []Task {
+	for i, t := range newTasks {
+		t.Id = "t-" + GetId()
+		tasks = append(tasks, t)
+		newTasks[i] = t
+	}
+	sigolo.Info("%#v", newTasks)
+
+	return newTasks
 }

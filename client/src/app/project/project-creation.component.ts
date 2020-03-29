@@ -1,4 +1,5 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { ProjectService } from './project.service';
 import { Map, View } from 'ol';
@@ -123,7 +124,9 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       coordinates.push(polygon.getCoordinates()[0]);
     });
 
-    this.projectService.createNewProject(this.newProjectName, this.newMaxProcessPoints, coordinates);
-    this.router.navigate(['/manager']);
+    this.projectService.createNewProject(this.newProjectName, this.newMaxProcessPoints, coordinates)
+      .subscribe(project => {
+        this.router.navigate(['/manager']);
+      });
   }
 }

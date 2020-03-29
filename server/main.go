@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"strconv"
@@ -61,6 +62,7 @@ func main() {
 	router.HandleFunc("/projects", authenticatedHandler(getProjects)).Methods(http.MethodGet)
 	router.HandleFunc("/projects", authenticatedHandler(addProject)).Methods(http.MethodPost)
 	router.HandleFunc("/tasks", authenticatedHandler(getTasks)).Methods(http.MethodGet)
+	router.HandleFunc("/tasks", authenticatedHandler(addTask)).Methods(http.MethodPost)
 
 	router.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
 		path, _ := route.GetPathTemplate()
@@ -131,13 +133,22 @@ func verifyRequest(r *http.Request) error {
 func getParam(param string, w http.ResponseWriter, r *http.Request) (string, error) {
 	value := r.FormValue(param)
 	if strings.TrimSpace(value) == "" {
-		errMsg := fmt.Sprintf("Parameter '%s' specified", param)
+		errMsg := fmt.Sprintf("Parameter '%s' not specified", param)
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(errMsg))
 		return "", errors.New(errMsg)
 	}
 
 	return value, nil
+}
+
+func getIntParam(param string, w http.ResponseWriter, r *http.Request) (int, error) {
+	valueString, err := getParam(param, w, r)
+	if err != nil {
+		return 0, err
+	}
+
+	return strconv.Atoi(valueString)
 }
 
 func getProjects(w http.ResponseWriter, r *http.Request) {
@@ -184,6 +195,24 @@ func getTasks(w http.ResponseWriter, r *http.Request) {
 	taskIds := strings.Split(taskIdsString, ",")
 
 	tasks := GetTasks(taskIds)
+
+	encoder := json.NewEncoder(w)
+	encoder.Encode(tasks)
+}
+
+func addTask(w http.ResponseWriter, r *http.Request) {
+	sigolo.Info("Called add task")
+
+	bodyBytes, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		sigolo.Error("Error reading request body: %s", err.Error())
+		return
+	}
+
+	var tasks []Task
+	json.Unmarshal(bodyBytes, &tasks)
+
+	tasks = AddTasks(tasks)
 
 	encoder := json.NewEncoder(w)
 	encoder.Encode(tasks)
