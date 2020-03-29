@@ -9,7 +9,8 @@ export const environment = {
   oauth_landing: '/oauth-landing',
   osm_auth_url: 'https://master.apis.dev.openstreetmap.org',
 
-  url_projects: "http://localhost:8080/projects"
+  url_projects: "http://localhost:8080/projects",
+  url_tasks: "http://localhost:8080/tasks"
 };
 
 /*

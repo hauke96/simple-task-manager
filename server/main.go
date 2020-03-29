@@ -58,6 +58,7 @@ func main() {
 	router.HandleFunc("/oauth_login", oauthLogin).Methods(http.MethodGet)
 	router.HandleFunc("/oauth_callback", oauthCallback).Methods(http.MethodGet)
 	router.HandleFunc("/projects", getProjects).Methods(http.MethodGet)
+	router.HandleFunc("/tasks", getTasks).Methods(http.MethodGet)
 
 	router.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
 		path, _ := route.GetPathTemplate()
@@ -137,4 +138,42 @@ func getProjects(w http.ResponseWriter, r *http.Request) {
 
 	encoder := json.NewEncoder(w)
 	encoder.Encode(projects)
+}
+
+func getTasks(w http.ResponseWriter, r *http.Request) {
+	sigolo.Info("Called get tasks")
+	err := verifyRequest(r)
+	if err != nil {
+		sigolo.Error("Request is not authorized: %s", err.Error())
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte("Request not authorized"))
+		return
+	}
+
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	startY := 53.5484
+	startX := 9.9714
+
+	tasks := make([]Task, 0)
+	for i := 0; i < 5; i++ {
+		geom := make([][]float64, 0)
+		geom = append(geom, []float64{startX, startY})
+		geom = append(geom, []float64{startX + 0.01, startY})
+		geom = append(geom, []float64{startX + 0.01, startY + 0.01})
+		geom = append(geom, []float64{startX, startY + 0.01})
+		geom = append(geom, []float64{startX, startY})
+
+		startX += 0.01
+
+		tasks = append(tasks, Task{
+			Id:               fmt.Sprintf("t-%d", i),
+			ProcessPoints:    0,
+			MaxProcessPoints: 100,
+			Geometry:         geom,
+		})
+	}
+
+	encoder := json.NewEncoder(w)
+	encoder.Encode(tasks)
 }

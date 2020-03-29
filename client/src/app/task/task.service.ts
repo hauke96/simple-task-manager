@@ -1,5 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { Task } from './task.material';
+import { HttpClient } from '@angular/common/http';
+import { environment } from './../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -10,26 +12,15 @@ export class TaskService {
 
   private selectedTaskId: string;
 
-  constructor() {
-    const startY = 53.5484;
-    let startX = 9.9714;
+  constructor(private http: HttpClient) {
+    this.http.get(environment.url_tasks).subscribe(data => {
+      this.tasks = (data as Task[]);
 
-    for (let i = 0; i < 5; i++) {
-      const geom = [];
-      geom.push([startX, startY]);
-      geom.push([startX + 0.01, startY]);
-      geom.push([startX + 0.01, startY + 0.01]);
-      geom.push([startX, startY + 0.01]);
-      geom.push([startX, startY]);
-
-      startX += 0.01;
-
-      this.tasks.push(new Task('t' + i, 0, 100, geom as [[number, number]]));
-    }
-
-    // Assign dome dummy users
-    this.tasks[0].assignedUser = 'Peter';
-    this.tasks[4].assignedUser = 'Maria';
+      // Assign dome dummy users
+      this.tasks[0].assignedUser = 'Peter';
+      this.tasks[4].assignedUser = 'Maria';
+      this.selectTask(this.tasks[0].id);
+    });
   }
 
   public createNewTask(geometry: [[number, number]], maxProcessPoints: number): string {
