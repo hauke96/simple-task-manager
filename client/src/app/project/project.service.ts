@@ -12,8 +12,7 @@ export class ProjectService {
   public projects: Project[] = [];
 
   constructor(private taskService: TaskService, private http: HttpClient) {
-    // TODO extract this into an interceptor
-    this.http.get(environment.url_projects + '?token=' + localStorage.getItem('auth_token')).subscribe(data => {
+    this.http.get(environment.url_projects).subscribe(data => {
       this.projects = (data as Project[]);
     });
   }
