@@ -76,7 +76,7 @@ func oauthCallback(w http.ResponseWriter, r *http.Request) {
 
 	sigolo.Info("Create token for user '%s'", userName)
 
-	tokenValidDuration, _ := time.ParseDuration("1h") // 1 hour
+	tokenValidDuration, _ := time.ParseDuration("10h") // 1 hour
 	validUntil := time.Now().Add(tokenValidDuration).Unix()
 
 	secret, err := createSecret(userName, validUntil)
