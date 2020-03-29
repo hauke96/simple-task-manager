@@ -49,9 +49,9 @@ Stage 2 consists of the more interactive features like assigning yourself to a t
 Stage 3 creates the server to persist everything.
 
 * [ ] Server
-  * [ ] Authentication (send OAuth token to server with each request, server checks token)
-  * [ ] Get project with tasks for a user
-  * [ ] Store project when created
+  * [x] Authentication (send OAuth token to server with each request, server checks token)
+  * [x] Get project with tasks for a user
+  * [x] Store project when created
   * [ ] Assign user to task
   * [ ] Set points on task
 
