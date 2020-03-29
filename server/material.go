@@ -1,13 +1,5 @@
 package main
 
-type Task struct {
-	Id               string      `json:"id"`
-	ProcessPoints    int         `json:"processPoints"`
-	MaxProcessPoints int         `json:"maxProcessPoints"`
-	Geometry         [][]float64 `json:"geometry"`
-	AssignesUser     string      `json:"assignedUser"`
-}
-
 // Structs when requesting user information
 type Osm struct {
 	User User `xml:"user"`

@@ -69,6 +69,7 @@ func main() {
 
 	// Init Dummy-Data
 	InitProjects()
+	InitTasks()
 
 	sigolo.Info("Registered all handler functions. Start serving...")
 
@@ -140,27 +141,7 @@ func getTasks(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	startY := 53.5484
-	startX := 9.9714
-
-	tasks := make([]Task, 0)
-	for i := 0; i < 5; i++ {
-		geom := make([][]float64, 0)
-		geom = append(geom, []float64{startX, startY})
-		geom = append(geom, []float64{startX + 0.01, startY})
-		geom = append(geom, []float64{startX + 0.01, startY + 0.01})
-		geom = append(geom, []float64{startX, startY + 0.01})
-		geom = append(geom, []float64{startX, startY})
-
-		startX += 0.01
-
-		tasks = append(tasks, Task{
-			Id:               fmt.Sprintf("t-%d", i),
-			ProcessPoints:    0,
-			MaxProcessPoints: 100,
-			Geometry:         geom,
-		})
-	}
+	tasks := GetTasks()
 
 	encoder := json.NewEncoder(w)
 	encoder.Encode(tasks)

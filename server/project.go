@@ -13,19 +13,19 @@ var (
 func InitProjects() {
 	projects = make([]Project, 0)
 	projects = append(projects, Project{
-		Id:      GetId(),
+		Id:      "p-" + GetId(),
 		Name:    "First project",
-		TaskIDs: []string{"t0", "t1"},
+		TaskIDs: []string{"t-0", "t-1"},
 	})
 	projects = append(projects, Project{
-		Id:      GetId(),
+		Id:      "p-" + GetId(),
 		Name:    "Foo",
-		TaskIDs: []string{"t2"},
+		TaskIDs: []string{"t-2"},
 	})
 	projects = append(projects, Project{
-		Id:      GetId(),
+		Id:      "p-" + GetId(),
 		Name:    "Bar",
-		TaskIDs: []string{"t3", "t4"},
+		TaskIDs: []string{"t-3", "t-4"},
 	})
 }
 
