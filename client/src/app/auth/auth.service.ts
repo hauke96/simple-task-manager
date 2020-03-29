@@ -8,6 +8,7 @@ import { UserService } from './user.service';
 })
 export class AuthService {
   private auth: any;
+  private localStorageTimer;
 
   constructor(private userService: UserService) {
     this.auth = new osmAuth({
@@ -36,14 +37,37 @@ export class AuthService {
   // performs the authentication process, sets the user name in the UserService
   // and then calls the "callback" function.
   public requestLogin(callback: () => void) {
-    this.auth.authenticate(() => {
-      this.getUserData((details, err) => {
-        console.error(err);
-        const userName = details.getElementsByTagName('user')[0].getAttribute('display_name');
-        this.userService.setUser(userName);
-        callback();
-      });
-    });
+  // Old auth mechanism:
+//    this.auth.authenticate(() => {
+//      this.getUserData((details, err) => {
+//        console.error(err);
+//        const userName = details.getElementsByTagName('user')[0].getAttribute('display_name');
+//        this.userService.setUser(userName);
+//        callback();
+//      });
+//    });
+    const w = 600, h = 550;
+    const settings = [
+      ['width', w], ['height', h],
+      ['left', screen.width / 2 - w / 2],
+      ['top', screen.height / 2 - h / 2]].map(function(x) {
+      return x.join('=');
+    }).join(',');
+    const popup = window.open('http://localhost:8080/oauth_login?+?qt='+new Date().getTime()+'&redirect=http://localhost:4200/oauth-landing', 'oauth_window', settings);
+
+    this.localStorageTimer = setInterval(this.waitForLocalStorageToken.bind(this), 1000, callback.bind(this));
+  }
+
+  private waitForLocalStorageToken(callback: () => void) {
+    const token = localStorage.getItem('auth_token');
+    console.log(token + ' // ' + this.localStorageTimer);
+    if (!!token && !!this.localStorageTimer) {
+      console.log("Token found");
+      clearInterval(this.localStorageTimer);
+      const userName = 'user123';//details.getElementsByTagName('user')[0].getAttribute('display_name');
+      this.userService.setUser(userName);
+      callback();
+    }
   }
 
   // Removes all login information from the local storage and also from the user service.

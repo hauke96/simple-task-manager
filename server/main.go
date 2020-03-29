@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -16,6 +17,8 @@ const VERSION string = "v0.0.1"
 var (
 	app      = kingpin.New("Simple Task Manager", "A tool dividing an area of the map into smaller tasks.")
 	appDebug = app.Flag("debug", "Verbose mode, showing additional debug information").Short('d').Bool()
+
+	knownToken = make([]string, 0)
 )
 
 func configureCliArgs() {
@@ -40,7 +43,20 @@ func main() {
 	sigolo.FatalCheck(err)
 	configureLogging()
 
+	// oauthConfig = &oauth2.Config{
+
+	// 	RedirectURL:  oauthRedirectUrl,
+	// 	ClientID:     oauthConsumerKey,
+	// 	ClientSecret: oauthSecret,
+	// 	Scopes:       []string{oauthScope},
+	// 	Endpoint:     oauthEndpoint,
+	// }
+
 	router := mux.NewRouter()
+
+	router.HandleFunc("/oauth_login", oauthLogin).Methods(http.MethodGet)
+	router.HandleFunc("/oauth_callback", oauthCallback).Methods(http.MethodGet)
+
 	router.HandleFunc("/projects", getProjects).Methods(http.MethodGet)
 
 	sigolo.Info("Registered handler functions. Start serving...")
@@ -51,8 +67,32 @@ func main() {
 	}
 }
 
+func verifyRequest(r *http.Request) error {
+	token := r.FormValue("token")
+
+	if token == "abc123" {
+		return nil
+	}
+
+	// for _, t := range knownToken {
+	// 	if t == token {
+	// 		return nil
+	// 	}
+	// }
+
+	return errors.New("Unknown token")
+}
+
 func getProjects(w http.ResponseWriter, r *http.Request) {
 	sigolo.Info("Called get projects")
+	err := verifyRequest(r)
+	if err != nil {
+		sigolo.Error("Request is not authorized: %s", err.Error())
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte("Request not authorized"))
+		return
+	}
+
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	projects := make([]Project, 0)

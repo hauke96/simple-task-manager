@@ -12,7 +12,7 @@ export class ProjectService {
   public projects: Project[] = [];
 
   constructor(private taskService: TaskService, private http: HttpClient) {
-    this.http.get(environment.url_projects).subscribe(data => {
+    this.http.get(environment.url_projects + '?token=' + localStorage.getItem('auth_token')).subscribe(data => {
       this.projects = (data as Project[]);
     });
   }
