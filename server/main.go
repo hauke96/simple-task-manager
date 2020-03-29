@@ -81,7 +81,13 @@ func verifyRequest(r *http.Request) error {
 	var token Token
 	json.Unmarshal(tokenBytes, &token)
 
-	if token.Secret != "abc123" {
+	targetSecret, err := createSecret(token.User, token.ValidUntil)
+	if err != nil {
+		sigolo.Error(err.Error())
+		return err
+	}
+
+	if token.Secret != targetSecret {
 		return errors.New("Secret not valid")
 	}
 
