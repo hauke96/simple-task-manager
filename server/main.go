@@ -58,8 +58,8 @@ func main() {
 
 	router.HandleFunc("/oauth_login", oauthLogin).Methods(http.MethodGet)
 	router.HandleFunc("/oauth_callback", oauthCallback).Methods(http.MethodGet)
-	router.HandleFunc("/projects", getProjects).Methods(http.MethodGet)
-	router.HandleFunc("/tasks", getTasks).Methods(http.MethodGet)
+	router.HandleFunc("/projects", authenticatedHandler(getProjects)).Methods(http.MethodGet)
+	router.HandleFunc("/tasks", authenticatedHandler(getTasks)).Methods(http.MethodGet)
 
 	router.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
 		path, _ := route.GetPathTemplate()
@@ -78,6 +78,21 @@ func main() {
 	err = http.ListenAndServe(":"+strconv.Itoa(*addPort), router)
 	if err != nil {
 		sigolo.Error(fmt.Sprintf("Error while serving: %s", err))
+	}
+}
+
+func authenticatedHandler(handler func(w http.ResponseWriter, r *http.Request)) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		err := verifyRequest(r)
+		if err != nil {
+			sigolo.Error("Request is not authorized: %s", err.Error())
+			w.WriteHeader(http.StatusUnauthorized)
+			w.Write([]byte("Request not authorized"))
+			return
+		}
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+
+		handler(w, r)
 	}
 }
 
@@ -114,15 +129,6 @@ func verifyRequest(r *http.Request) error {
 
 func getProjects(w http.ResponseWriter, r *http.Request) {
 	sigolo.Info("Called get projects")
-	err := verifyRequest(r)
-	if err != nil {
-		sigolo.Error("Request is not authorized: %s", err.Error())
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte("Request not authorized"))
-		return
-	}
-
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	projects := GetProjects()
 
@@ -132,15 +138,6 @@ func getProjects(w http.ResponseWriter, r *http.Request) {
 
 func getTasks(w http.ResponseWriter, r *http.Request) {
 	sigolo.Info("Called get tasks")
-	err := verifyRequest(r)
-	if err != nil {
-		sigolo.Error("Request is not authorized: %s", err.Error())
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte("Request not authorized"))
-		return
-	}
-
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	// Read task IDs from URL query parameter "task_ids" and split by ","
 	taskIdsString := r.FormValue("task_ids")
