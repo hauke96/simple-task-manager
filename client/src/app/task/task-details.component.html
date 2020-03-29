@@ -1,23 +1,23 @@
 <div class="headline">
-	<p>Task: {{task.id}}</p>
+	<p>Task: {{task?.id}}</p>
 	<div class="assign-container">
-		<button *ngIf="!task.assignedUser" (click)="onAssignButtonClicked()">Assign me</button>
-		<p *ngIf="!!task.assignedUser">Assigned to: {{task.assignedUser}}</p>
-		<button *ngIf="task.assignedUser === currentUser" (click)="onUnassignButtonClicked()">Unassign</button>
+		<button *ngIf="!task?.assignedUser" (click)="onAssignButtonClicked()">Assign me</button>
+		<p *ngIf="!!task?.assignedUser">Assigned to: {{task?.assignedUser}}</p>
+		<button *ngIf="task?.assignedUser === currentUser" (click)="onUnassignButtonClicked()">Unassign</button>
 	</div>
 </div>
 <div>
-	<div *ngIf="task.assignedUser === currentUser; else currentUserElse">
+	<div *ngIf="task?.assignedUser === currentUser; else currentUserElse">
 		Points:
 		<input [(ngModel)]="newProcessPoints">
 		/
-		{{task.maxProcessPoints}}
+		{{task?.maxProcessPoints}}
 		<button class="save-button" (click)="onSaveButtonClick()">Save</button>
 	</div>
 	<ng-template #currentUserElse>
 		Points:
-		{{task.processPoints}}
+		{{task?.processPoints}}
 		/
-		{{task.maxProcessPoints}}
+		{{task?.maxProcessPoints}}
 	</ng-template>
 </div>

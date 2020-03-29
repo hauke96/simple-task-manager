@@ -1,4 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Task } from './task.material';
 import { TaskService } from './task.service';
 
@@ -11,13 +13,17 @@ export class TaskListComponent implements OnInit {
   @Input() projectId: string;
   @Input() taskIds: string[];
 
+  public tasks: Task[];
+
   constructor(private taskService: TaskService) { }
 
   ngOnInit(): void {
-  }
-
-  public get tasks(): Task[] {
-    return this.taskService.getTasks(this.taskIds);
+    this.taskService.getTasks(this.taskIds).subscribe(t => {
+      this.tasks = t;
+      if (t.length > 0) {
+        this.taskService.selectTask(t[0]);
+      }
+    });
   }
 
   public get selectedTaskId(): string {
@@ -25,6 +31,6 @@ export class TaskListComponent implements OnInit {
   }
 
   public onListItemClicked(id: string) {
-    this.taskService.selectTask(id);
+    this.taskService.selectTask(this.tasks.find(t => t.id === id));
   }
 }

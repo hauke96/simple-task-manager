@@ -1,4 +1,6 @@
 import { Injectable, EventEmitter } from '@angular/core';
+import { Observable, throwError } from 'rxjs';
+import { map, filter, catchError } from 'rxjs/operators';
 import { Task } from './task.material';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
@@ -10,54 +12,70 @@ export class TaskService {
   public tasks: Task[] = [];
   public selectedTaskChanged: EventEmitter<Task> = new EventEmitter();
 
-  private selectedTaskId: string;
+  private selectedTask: Task;
 
   constructor(private http: HttpClient) {
-    this.http.get(environment.url_tasks).subscribe(data => {
-      this.tasks = (data as Task[]);
-
-      // Assign dome dummy users
-      this.tasks[0].assignedUser = 'Peter';
-      this.tasks[4].assignedUser = 'Maria';
-      this.selectTask(this.tasks[0].id);
-    });
   }
 
   public createNewTask(geometry: [[number, number]], maxProcessPoints: number): string {
+    // TODO server call
     const task = new Task('t-' + Math.random().toString(36).substring(7), 0, maxProcessPoints, geometry);
     this.tasks.push(task);
     return task.id;
   }
 
-  public selectTask(id: string) {
-    this.selectedTaskId = id;
-    this.selectedTaskChanged.emit(this.getSelectedTask());
+  public selectTask(task: Task) {
+    this.selectedTask = task;
+    this.selectedTaskChanged.emit(task);
   }
 
   public getSelectedTask(): Task {
-    return this.getTask(this.selectedTaskId);
+    return this.selectedTask;
   }
 
-  private getTask(id: string): Task {
-    return this.tasks.find(t => t.id === id);
+  private getTask(id: string): Observable<Task> {
+    return this.getTasks([id])
+      .pipe(map(t => t.find(t => t.id === id)))
+      .pipe(
+        catchError(e => {
+          console.error(e);
+          return throwError("err");
+        })
+      );
   }
 
-  public getTasks(ids: string[]): Task[] {
-    return this.tasks.filter(t => ids.includes(t.id));
+  public getTasks(ids: string[]): Observable<Task[]> {
+    return this.http.get<Task[]>(environment.url_tasks).pipe(map(tasks => {
+      // Assign dome dummy users
+      tasks[0].assignedUser = 'Peter';
+      tasks[4].assignedUser = 'Maria';
+
+      tasks.concat(this.tasks);
+      return tasks;
+    }));
   }
 
   public setProcessPoints(id: string, newProcessPoints: number) {
-    this.getTask(id).processPoints = newProcessPoints;
-    this.selectedTaskChanged.emit(this.getTask(id));
+    // TODO Call server and receive updated task
+    this.getTask(id).subscribe(t => {
+      t.processPoints = newProcessPoints; // TODO remove after server call implemented
+      this.selectedTaskChanged.emit(t);
+    });
   }
 
   public assign(id: string, user: string) {
-    this.getTask(id).assignedUser = user;
-    this.selectedTaskChanged.emit(this.getTask(id));
+    // TODO Call server and receive updated task
+    this.getTask(id).subscribe(t => {
+      t.assignedUser = user; // TODO remove after server call implemented
+      this.selectedTaskChanged.emit(t);
+    });
   }
 
   public unassign(id: string) {
-    this.getTask(id).assignedUser = undefined;
-    this.selectedTaskChanged.emit(this.getTask(id));
+    // TODO Call server and receive updated task
+    this.getTask(id).subscribe(t => {
+      t.assignedUser = undefined; // TODO remove after server call implemented
+      this.selectedTaskChanged.emit(t);
+    });
   }
 }

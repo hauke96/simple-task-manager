@@ -79,7 +79,7 @@ export class TaskMapComponent implements AfterViewInit {
       })
     });
 
-    this.taskService.getTasks(this.taskIds).forEach(t => this.showTaskPolygon(t));
+    this.taskService.getTasks(this.taskIds).subscribe(tasks => tasks.forEach(t => this.showTaskPolygon(t)));
 
     // Clicking on the map selects the clicked polygon (and therefore the according task)
     this.map.on('click', (evt) => {

@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map, filter } from 'rxjs/operators';
 import { Project } from './project.material';
 import { Task } from './../task/task.material';
 import { TaskService } from './../task/task.service';
@@ -12,17 +14,18 @@ export class ProjectService {
   public projects: Project[] = [];
 
   constructor(private taskService: TaskService, private http: HttpClient) {
-    this.http.get(environment.url_projects).subscribe(data => {
-      this.projects = (data as Project[]);
-    });
   }
 
-  public getProjects(): Project[] {
-    return this.projects;
+  public getProjects(): Observable<Project[]> {
+    return this.http.get<Project[]>(environment.url_projects);
   }
 
-  public getProject(id: string): Project {
-    return this.projects.find(p => p.id === id);
+  public getProject(id: string): Observable<Project> {
+    return this.getProjects().pipe(map(projects => {
+      const p = projects.find(p => p.id === id);
+      console.log(p);
+      return p;
+    }));
   }
 
   public createNewProject(name: string, maxPorcessPoints, geometries: [[number, number]][]) {
@@ -31,6 +34,8 @@ export class ProjectService {
     console.log(tasks);
 
     const p = new Project('p-' + Math.random().toString(36).substring(7), name, tasks);
+
+    // TODO make server call
     this.projects.push(p);
   }
 }

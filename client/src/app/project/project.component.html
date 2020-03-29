@@ -1,16 +1,16 @@
 <div class="toolbar">
 	<button [routerLink]="['/manager']">&#60; Back</button>
-	<p class="project-label">Project: {{thisProject.name}}</p>
+	<p class="project-label">Project: {{thisProject?.name}}</p>
 </div>
 <div class="root-container">
 	<div class="root-container-item task-list-container">
 		<h1>Tasks</h1>
-		<app-task-list [projectId]="thisProject.id" [taskIds]="thisProject.taskIds"></app-task-list>
+		<app-task-list [projectId]="thisProject?.id" [taskIds]="thisProject?.taskIds"></app-task-list>
 	</div>
 	<div class="root-container-item task-details-map-container">
 		<div class="map-container">
 			<h1>Map</h1>
-			<app-task-map [taskIds]="thisProject.taskIds" class="map"></app-task-map>
+			<app-task-map [taskIds]="thisProject?.taskIds" class="map"></app-task-map>
 		</div>
 		<div class="details-container">
 			<h1>Details</h1>
