@@ -59,6 +59,7 @@ func main() {
 	router.HandleFunc("/oauth_login", oauthLogin).Methods(http.MethodGet)
 	router.HandleFunc("/oauth_callback", oauthCallback).Methods(http.MethodGet)
 	router.HandleFunc("/projects", authenticatedHandler(getProjects)).Methods(http.MethodGet)
+	router.HandleFunc("/projects", authenticatedHandler(addProject)).Methods(http.MethodPost)
 	router.HandleFunc("/tasks", authenticatedHandler(getTasks)).Methods(http.MethodGet)
 
 	router.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
@@ -136,6 +137,26 @@ func getProjects(w http.ResponseWriter, r *http.Request) {
 	encoder.Encode(projects)
 }
 
+func addProject(w http.ResponseWriter, r *http.Request) {
+	sigolo.Info("Called add project")
+
+	name := r.FormValue("name")
+	taskIdsString := r.FormValue("task_ids")
+	if strings.TrimSpace(taskIdsString) == "" {
+		errMsg := "No task IDs specified"
+		sigolo.Error(errMsg)
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(errMsg))
+		return
+	}
+	taskIds := strings.Split(taskIdsString, ",")
+
+	project := AddProject(name, taskIds)
+
+	encoder := json.NewEncoder(w)
+	encoder.Encode(project)
+}
+
 func getTasks(w http.ResponseWriter, r *http.Request) {
 	sigolo.Info("Called get tasks")
 
@@ -148,7 +169,6 @@ func getTasks(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(errMsg))
 		return
 	}
-
 	taskIds := strings.Split(taskIdsString, ",")
 
 	tasks := GetTasks(taskIds)
