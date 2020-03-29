@@ -9,14 +9,6 @@ export class AuthGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router) {}
 
   canActivate() {
-//    const isAuthenticated = this.authService.isAuthenticated();
-//
-//    if (!isAuthenticated) {
-//      this.router.navigate(['/']);
-//    }
-//
-//    return isAuthenticated;
-
     // TODO ask server if Token is valid
     return !!localStorage.getItem('auth_token');
   }
