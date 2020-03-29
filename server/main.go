@@ -128,6 +128,18 @@ func verifyRequest(r *http.Request) error {
 	return nil
 }
 
+func getParam(param string, w http.ResponseWriter, r *http.Request) (string, error) {
+	value := r.FormValue(param)
+	if strings.TrimSpace(value) == "" {
+		errMsg := fmt.Sprintf("Parameter '%s' specified", param)
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(errMsg))
+		return "", errors.New(errMsg)
+	}
+
+	return value, nil
+}
+
 func getProjects(w http.ResponseWriter, r *http.Request) {
 	sigolo.Info("Called get projects")
 
@@ -140,13 +152,15 @@ func getProjects(w http.ResponseWriter, r *http.Request) {
 func addProject(w http.ResponseWriter, r *http.Request) {
 	sigolo.Info("Called add project")
 
-	name := r.FormValue("name")
-	taskIdsString := r.FormValue("task_ids")
-	if strings.TrimSpace(taskIdsString) == "" {
-		errMsg := "No task IDs specified"
-		sigolo.Error(errMsg)
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(errMsg))
+	name, err := getParam("name", w, r)
+	if err != nil {
+		sigolo.Error(err.Error())
+		return
+	}
+
+	taskIdsString, err := getParam("task_ids", w, r)
+	if err != nil {
+		sigolo.Error(err.Error())
 		return
 	}
 	taskIds := strings.Split(taskIdsString, ",")
@@ -162,12 +176,9 @@ func getTasks(w http.ResponseWriter, r *http.Request) {
 	sigolo.Info("Called get tasks")
 
 	// Read task IDs from URL query parameter "task_ids" and split by ","
-	taskIdsString := r.FormValue("task_ids")
-	if strings.TrimSpace(taskIdsString) == "" {
-		errMsg := "No task IDs specified"
-		sigolo.Error(errMsg)
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(errMsg))
+	taskIdsString, err := getParam("task_ids", w, r)
+	if err != nil {
+		sigolo.Error(err.Error())
 		return
 	}
 	taskIds := strings.Split(taskIdsString, ",")
