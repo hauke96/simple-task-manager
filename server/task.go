@@ -36,6 +36,15 @@ func InitTasks() {
 	}
 }
 
-func GetTasks() []Task {
-	return tasks
+func GetTasks(taskIds []string) []Task {
+	result := make([]Task, 0)
+	for _, t := range tasks {
+		for _, i := range taskIds {
+			if t.Id == i {
+				result = append(result, t)
+			}
+		}
+	}
+
+	return result
 }

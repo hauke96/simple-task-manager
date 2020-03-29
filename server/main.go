@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -141,7 +142,19 @@ func getTasks(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	tasks := GetTasks()
+	// Read task IDs from URL query parameter "task_ids" and split by ","
+	taskIdsString := r.FormValue("task_ids")
+	if strings.TrimSpace(taskIdsString) == "" {
+		errMsg := "No task IDs specified"
+		sigolo.Error(errMsg)
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(errMsg))
+		return
+	}
+
+	taskIds := strings.Split(taskIdsString, ",")
+
+	tasks := GetTasks(taskIds)
 
 	encoder := json.NewEncoder(w)
 	encoder.Encode(tasks)
