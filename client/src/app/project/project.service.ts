@@ -31,11 +31,8 @@ export class ProjectService {
   public createNewProject(name: string, maxPorcessPoints, geometries: [[number, number]][]) {
     // Create new tasks with the given geometries and collect their IDs
     const tasks = geometries.map(g => this.taskService.createNewTask(g, maxPorcessPoints));
-    console.log(tasks);
 
-    const p = new Project('p-' + Math.random().toString(36).substring(7), name, tasks);
-
-    // TODO make server call
-    this.projects.push(p);
+    this.http.post<Project>(environment.url_projects + "?name=" + name + "&task_ids=" + tasks.join(','), "")
+      .subscribe(p => this.projects.push(p));
   }
 }

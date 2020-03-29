@@ -150,6 +150,7 @@ func addProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	taskIds := strings.Split(taskIdsString, ",")
+	// TODO check wether tasks exist
 
 	project := AddProject(name, taskIds)
 
