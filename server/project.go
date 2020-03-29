@@ -33,14 +33,8 @@ func GetProjects() []Project {
 	return projects
 }
 
-func AddProject(name string, taskIds []string) Project {
-	p := Project{
-		Id:      "p-" + GetId(),
-		Name:    name,
-		TaskIDs: taskIds,
-	}
-
-	projects = append(projects, p)
-
-	return p
+func AddProject(project Project) Project {
+	project.Id = "p-" + GetId()
+	projects = append(projects, project)
+	return project
 }

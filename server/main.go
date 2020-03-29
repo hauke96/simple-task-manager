@@ -163,21 +163,16 @@ func getProjects(w http.ResponseWriter, r *http.Request) {
 func addProject(w http.ResponseWriter, r *http.Request) {
 	sigolo.Info("Called add project")
 
-	name, err := getParam("name", w, r)
+	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		sigolo.Error(err.Error())
+		sigolo.Error("Error reading request body: %s", err.Error())
 		return
 	}
 
-	taskIdsString, err := getParam("task_ids", w, r)
-	if err != nil {
-		sigolo.Error(err.Error())
-		return
-	}
-	taskIds := strings.Split(taskIdsString, ",")
-	// TODO check wether tasks exist
+	var project Project
+	json.Unmarshal(bodyBytes, &project)
 
-	project := AddProject(name, taskIds)
+	project = AddProject(project)
 
 	encoder := json.NewEncoder(w)
 	encoder.Encode(project)

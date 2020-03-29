@@ -32,7 +32,8 @@ export class ProjectService {
     // Create new tasks with the given geometries and collect their IDs
     return this.taskService.createNewTasks(geometries, maxProcessPoints)
       .pipe(flatMap(tasks => {
-        return this.http.post<Project>(environment.url_projects + "?name=" + name + "&task_ids=" + tasks.map(t => t.id).join(','), "");
+        const p = new Project('', name, tasks.map(t => t.id));
+        return this.http.post<Project>(environment.url_projects, JSON.stringify(p));
       }));
   }
 }
