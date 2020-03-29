@@ -1,12 +1,5 @@
 package main
 
-// Domain structs
-type Project struct {
-	Id      string   `json:"id"`
-	Name    string   `json:"name"`
-	TaskIDs []string `json:"taskIds"`
-}
-
 type Task struct {
 	Id               string      `json:"id"`
 	ProcessPoints    int         `json:"processPoints"`

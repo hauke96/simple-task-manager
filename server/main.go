@@ -67,6 +67,9 @@ func main() {
 		return nil
 	})
 
+	// Init Dummy-Data
+	InitProjects()
+
 	sigolo.Info("Registered all handler functions. Start serving...")
 
 	// Start serving
@@ -119,22 +122,7 @@ func getProjects(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	projects := make([]Project, 0)
-	projects = append(projects, Project{
-		Id:      "p-1",
-		Name:    "First project",
-		TaskIDs: []string{"t0", "t1"},
-	})
-	projects = append(projects, Project{
-		Id:      "p-2",
-		Name:    "Foo",
-		TaskIDs: []string{"t2"},
-	})
-	projects = append(projects, Project{
-		Id:      "p-3",
-		Name:    "Bar",
-		TaskIDs: []string{"t3", "t4"},
-	})
+	projects := GetProjects()
 
 	encoder := json.NewEncoder(w)
 	encoder.Encode(projects)
