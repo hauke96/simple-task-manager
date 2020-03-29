@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, AfterViewInit, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Task } from './task.material';
@@ -9,7 +9,7 @@ import { TaskService } from './task.service';
   templateUrl: './task-list.component.html',
   styleUrls: ['./task-list.component.scss']
 })
-export class TaskListComponent implements OnInit {
+export class TaskListComponent implements AfterViewInit {
   @Input() projectId: string;
   @Input() taskIds: string[];
 
@@ -17,7 +17,7 @@ export class TaskListComponent implements OnInit {
 
   constructor(private taskService: TaskService) { }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     this.taskService.getTasks(this.taskIds).subscribe(t => {
       this.tasks = t;
       if (t.length > 0) {

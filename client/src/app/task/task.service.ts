@@ -45,11 +45,8 @@ export class TaskService {
   }
 
   public getTasks(ids: string[]): Observable<Task[]> {
-    return this.http.get<Task[]>(environment.url_tasks).pipe(map(tasks => {
-      // Assign dome dummy users
-      tasks[0].assignedUser = 'Peter';
-      tasks[4].assignedUser = 'Maria';
-
+    const idsString = ids.join(',');
+    return this.http.get<Task[]>(environment.url_tasks + "?task_ids=" + idsString).pipe(map(tasks => {
       tasks.concat(this.tasks);
       return tasks;
     }));
