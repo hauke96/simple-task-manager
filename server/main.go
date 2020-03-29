@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -14,11 +15,12 @@ import (
 	"github.com/hauke96/sigolo"
 )
 
-const VERSION string = "v0.0.1"
+const VERSION string = "0.3.0-dev"
 
 var (
 	app      = kingpin.New("Simple Task Manager", "A tool dividing an area of the map into smaller tasks.")
 	appDebug = app.Flag("debug", "Verbose mode, showing additional debug information").Short('d').Bool()
+	addPort  = app.Flag("port", "The port to listen on. Default is 8080").Short('p').Default("8080").Int()
 
 	knownToken = make([]string, 0)
 )
@@ -45,25 +47,29 @@ func main() {
 	sigolo.FatalCheck(err)
 	configureLogging()
 
-	// oauthConfig = &oauth2.Config{
+	// Some init logging
+	sigolo.Info("Init simple-task-manager server version " + VERSION)
+	sigolo.Info("Debug logging? %v", sigolo.LogLevel == sigolo.LOG_DEBUG)
+	sigolo.Info("Use port %d", *addPort)
 
-	// 	RedirectURL:  oauthRedirectUrl,
-	// 	ClientID:     oauthConsumerKey,
-	// 	ClientSecret: oauthSecret,
-	// 	Scopes:       []string{oauthScope},
-	// 	Endpoint:     oauthEndpoint,
-	// }
-
+	// Register routes and print them
 	router := mux.NewRouter()
 
 	router.HandleFunc("/oauth_login", oauthLogin).Methods(http.MethodGet)
 	router.HandleFunc("/oauth_callback", oauthCallback).Methods(http.MethodGet)
-
 	router.HandleFunc("/projects", getProjects).Methods(http.MethodGet)
 
-	sigolo.Info("Registered handler functions. Start serving...")
+	router.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
+		path, _ := route.GetPathTemplate()
+		methods, _ := route.GetMethods()
+		sigolo.Info("Registered route: %s %v", path, methods)
+		return nil
+	})
 
-	err = http.ListenAndServe(":8080", router)
+	sigolo.Info("Registered all handler functions. Start serving...")
+
+	// Start serving
+	err = http.ListenAndServe(":"+strconv.Itoa(*addPort), router)
 	if err != nil {
 		sigolo.Error(fmt.Sprintf("Error while serving: %s", err))
 	}

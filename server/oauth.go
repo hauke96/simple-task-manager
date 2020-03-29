@@ -57,8 +57,8 @@ func oauthLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Printf("%#v\n", userConfig)
-	sigolo.Info(url)
+	sigolo.Debug("User config: %#v\n", userConfig)
+	sigolo.Debug("Redirect to URL %s", url)
 
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
@@ -92,7 +92,7 @@ func oauthCallback(w http.ResponseWriter, r *http.Request) {
 		Secret:     secret,
 	}
 
-	sigolo.Info("New token:\n%#v", token)
+	sigolo.Debug("New token:\n%#v", token)
 
 	jsonBytes, err := json.Marshal(token)
 	if err != nil {
@@ -126,7 +126,7 @@ func requestUserInformation(userConfig *oauth1a.UserConfig) (string, error) {
 		sigolo.Error("Requesting user information failed: %s", err.Error())
 		return "", err
 	}
-	fmt.Printf("%#v\n", userConfig)
+	sigolo.Debug("Updates user config: %#v\n", userConfig)
 	service.Sign(req, userConfig)
 
 	client := &http.Client{}
