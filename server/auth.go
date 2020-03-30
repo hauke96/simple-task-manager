@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"encoding/xml"
+	"errors"
 	"time"
 
 	"fmt"
@@ -16,6 +17,13 @@ import (
 
 	"github.com/hauke96/sigolo"
 )
+
+// Struct for authentication
+type Token struct {
+	ValidUntil int64  `json:"valid_until"`
+	User       string `json:"user"`
+	Secret     string `json:"secret"`
+}
 
 var (
 	oauthRedirectUrl  = "http://localhost:8080/oauth_callback"
@@ -169,4 +177,40 @@ func createSecret(user string, validTime int64) (string, error) {
 	secretEncryptedHashedBytes := sha256.Sum256([]byte(secretEncryptedBytes))
 
 	return base64.StdEncoding.EncodeToString(secretEncryptedHashedBytes[:]), nil
+}
+
+// verifyRequest checks the integrity of the token and the "valiUntil" date. It
+// then returns the token but without the secret part, just the metainformation
+// (e.g. user name) is set.
+func verifyRequest(r *http.Request) (*Token, error) {
+	encodedToken := r.FormValue("token")
+
+	tokenBytes, err := base64.StdEncoding.DecodeString(encodedToken)
+	if err != nil {
+		sigolo.Error(err.Error())
+		return nil, err
+	}
+
+	var token Token
+	json.Unmarshal(tokenBytes, &token)
+
+	targetSecret, err := createSecret(token.User, token.ValidUntil)
+	if err != nil {
+		sigolo.Error(err.Error())
+		return nil, err
+	}
+
+	if token.Secret != targetSecret {
+		return nil, errors.New("Secret not valid")
+	}
+
+	if token.ValidUntil < time.Now().Unix() {
+		return nil, errors.New("Token expired")
+	}
+
+	sigolo.Debug("User '%s' has valid token", token.User)
+	sigolo.Info("User '%s' called %s", token.User, r.URL.Path)
+
+	token.Secret = ""
+	return &token, nil
 }

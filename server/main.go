@@ -1,16 +1,13 @@
 package main
 
 import (
-	"encoding/base64"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/hauke96/kingpin"
@@ -23,8 +20,6 @@ var (
 	app      = kingpin.New("Simple Task Manager", "A tool dividing an area of the map into smaller tasks.")
 	appDebug = app.Flag("debug", "Verbose mode, showing additional debug information").Short('d').Bool()
 	addPort  = app.Flag("port", "The port to listen on. Default is 8080").Short('p').Default("8080").Int()
-
-	knownToken = make([]string, 0)
 )
 
 func configureCliArgs() {
@@ -100,71 +95,18 @@ func authenticatedHandler(handler func(w http.ResponseWriter, r *http.Request, t
 		token, err := verifyRequest(r)
 		if err != nil {
 			sigolo.Error("Request is not authorized: %s", err.Error())
-			w.WriteHeader(http.StatusUnauthorized)
-			w.Write([]byte("Request not authorized"))
+			// No further information to caller (which is a potential attacker)
+			response(w, "Not authorized", http.StatusUnauthorized)
 			return
 		}
+
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 
 		handler(w, r, token)
 	}
 }
 
-// verifyRequest checks the integrity of the token and the "valiUntil" date. It
-// then returns the token but without the secret part, just the metainformation
-// (e.g. user name) is set.
-func verifyRequest(r *http.Request) (*Token, error) {
-	encodedToken := r.FormValue("token")
 
-	tokenBytes, err := base64.StdEncoding.DecodeString(encodedToken)
-	if err != nil {
-		sigolo.Error(err.Error())
-		return nil, err
-	}
-
-	var token Token
-	json.Unmarshal(tokenBytes, &token)
-
-	targetSecret, err := createSecret(token.User, token.ValidUntil)
-	if err != nil {
-		sigolo.Error(err.Error())
-		return nil, err
-	}
-
-	if token.Secret != targetSecret {
-		return nil, errors.New("Secret not valid")
-	}
-
-	if token.ValidUntil < time.Now().Unix() {
-		return nil, errors.New("Token expired")
-	}
-
-	sigolo.Debug("User '%s' has valid token", token.User)
-	sigolo.Info("User '%s' called %s", token.User, r.URL.Path)
-
-	token.Secret = ""
-	return &token, nil
-}
-
-func getParam(param string, w http.ResponseWriter, r *http.Request) (string, error) {
-	value := r.FormValue(param)
-	if strings.TrimSpace(value) == "" {
-		errMsg := fmt.Sprintf("Parameter '%s' not specified", param)
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(errMsg))
-		return "", errors.New(errMsg)
-	}
-
-	return value, nil
-}
-
-func getIntParam(param string, w http.ResponseWriter, r *http.Request) (int, error) {
-	valueString, err := getParam(param, w, r)
-	if err != nil {
-		return 0, err
-	}
-
-	return strconv.Atoi(valueString)
 }
 
 func getProjects(w http.ResponseWriter, r *http.Request, token *Token) {
@@ -195,7 +137,7 @@ func getTasks(w http.ResponseWriter, r *http.Request, token *Token) {
 	// Read task IDs from URL query parameter "task_ids" and split by ","
 	taskIdsString, err := getParam("task_ids", w, r)
 	if err != nil {
-		sigolo.Error(err.Error())
+		responseBadRequest(w, err.Error())
 		return
 	}
 	taskIds := strings.Split(taskIdsString, ",")
@@ -211,6 +153,7 @@ func addTask(w http.ResponseWriter, r *http.Request, token *Token) {
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		sigolo.Error("Error reading request body: %s", err.Error())
+		responseBadRequest(w, err.Error())
 		return
 	}
 
@@ -227,6 +170,7 @@ func assignUser(w http.ResponseWriter, r *http.Request, token *Token) {
 	taskId, err := getParam("id", w, r)
 	if err != nil {
 		sigolo.Error(err.Error())
+		responseBadRequest(w, err.Error())
 		return
 	}
 	// TODO check wether task exists
@@ -237,8 +181,7 @@ func assignUser(w http.ResponseWriter, r *http.Request, token *Token) {
 	task, err := AssignUser(taskId, user)
 	if err != nil {
 		sigolo.Error(err.Error())
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		responseInternalError(w, err.Error())
 		return
 	}
 
@@ -252,6 +195,7 @@ func unassignUser(w http.ResponseWriter, r *http.Request, token *Token) {
 	taskId, err := getParam("id", w, r)
 	if err != nil {
 		sigolo.Error(err.Error())
+		responseBadRequest(w, err.Error())
 		return
 	}
 	// TODO check wether task exists
@@ -262,8 +206,7 @@ func unassignUser(w http.ResponseWriter, r *http.Request, token *Token) {
 	task, err := UnassignUser(taskId, user)
 	if err != nil {
 		sigolo.Error(err.Error())
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		responseInternalError(w, err.Error())
 		return
 	}
 
@@ -277,20 +220,21 @@ func setProcessPoints(w http.ResponseWriter, r *http.Request, token *Token) {
 	taskId, err := getParam("id", w, r)
 	if err != nil {
 		sigolo.Error(err.Error())
+		responseBadRequest(w, err.Error())
 		return
 	}
 
 	processPoints, err := getIntParam("process_points", w, r)
 	if err != nil {
 		sigolo.Error(err.Error())
+		responseBadRequest(w, err.Error())
 		return
 	}
 
 	task, err := SetProcessPoints(taskId, processPoints)
 	if err != nil {
 		sigolo.Error(err.Error())
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		responseInternalError(w, err.Error())
 		return
 	}
 
