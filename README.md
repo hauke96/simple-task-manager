@@ -53,9 +53,9 @@ Stage 3 creates the server to persist everything.
   * [x] Get project with tasks for a user
   * [x] Store project when created
   * [x] Assign user to task
-  * [ ] Unassign user to task
-  * [ ] Set points on task
-  * [ ] Request user information from server
+  * [x] Unassign user to task
+  * [x] Set points on task
+  * [x] Request user information from server
   * [ ] Store list of projects per user<sup>*</sup>
 
 <sup>*</sup>Store project-IDs in the user material because we know exactly what projects we have (and can check that) but we don't know what users exist (or at least it's more complicated to check and maintain).
