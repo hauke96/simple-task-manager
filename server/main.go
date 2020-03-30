@@ -172,6 +172,7 @@ func addProject(w http.ResponseWriter, r *http.Request) {
 
 	var project Project
 	json.Unmarshal(bodyBytes, &project)
+	// TODO check wether all neccessary fields are set
 
 	project = AddProject(project)
 
@@ -189,6 +190,7 @@ func getTasks(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	taskIds := strings.Split(taskIdsString, ",")
+	// TODO check wether task exists
 
 	tasks := GetTasks(taskIds)
 
@@ -222,12 +224,14 @@ func assignUser(w http.ResponseWriter, r *http.Request) {
 		sigolo.Error(err.Error())
 		return
 	}
+	// TODO check wether task exists
 
 	user, err := getParam("user", w, r)
 	if err != nil {
 		sigolo.Error(err.Error())
 		return
 	}
+	// TODO check wether login-user is the same as the user that should be assigned. If not -> error
 
 	task, err := AssignUser(taskId, user)
 	if err != nil {

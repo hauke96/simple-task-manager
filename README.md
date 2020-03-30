@@ -55,6 +55,10 @@ Stage 3 creates the server to persist everything.
   * [x] Assign user to task
   * [ ] Unassign user to task
   * [ ] Set points on task
+  * [ ] Request user information from server
+  * [ ] Store list of projects per user<sup>*</sup>
+
+<sup>*</sup>Store project-IDs in the user material because we know exactly what projects we have (and can check that) but we don't know what users exist (or at least it's more complicated to check and maintain).
 
 ### Stage 4
 
@@ -65,6 +69,12 @@ This will enable you to invite other to tasks.
   * [ ] Control to enter username and to invite user
   * [ ] Store information on server so that the invited user can see the project in the list
   * [ ] Make sure that only one user at a time can be assigned to and can modify a task
+
+## Stage 5
+
+Stage 5 finalizes things and adds the needed details to finish the prototype.
+
+* [ ] Use real database (probably `postgresql`)
 
 ### Beyond the prototype
 
@@ -80,12 +90,43 @@ Things that would be nice but are not necessary for a prototype.
 * [ ] Load regions
   * [ ] From `.osm` and/or `.gpx` file
   * [ ] From overpass-query / -result
+* [ ] Internal development
+  * [ ] Use go modules? (may or may not be useful)
+  * [ ] Create Docker container for client and server
 
 ## Client
 
 The client is an angular based web application and can be found in the `client` folder.
 The readme in this folder gives you further instruction on the setup, running, building, etc.
 
+### Run
+
+1. Go into the package.json and change the settings as you need them (URLs, OAuth keys, etc.)
+2. Go into the `client` folder
+3. Execute `npm run dev` which uses the `environment.ts` file as config
+
+### Build
+
+Same as above but with `npm run build`.
+
 ## Server
 
-*Currently no server exists. This will be something for the later development.*
+The server is written in go (aka *golang*) so you need to install go and setup your development environment (paths, IDE, etc.)
+
+### Setup
+This project uses some frameworks/libraries to make the development easier:
+
+* [https://github.com/gorilla/mux](gorilla/mux) to easily create REST endpoints
+* [https://github.com/kurrik/oauth1a](kurrik/oauth1a) for the OAuth1a authentication
+* [https://github.com/hauke96/sigolo](hauke96/sigolo) for logging
+* [https://github.com/hauke96/kingpin](hauke96/kingpin) for CLI parameter and flag parsing
+
+You need to install these using `go get github.com/gorilla/mux` and so on.
+
+### Run
+
+Just go into the `server` folder and execute `go run .`.
+
+### Build
+
+Just go into the `server` folder and execute `go build .`.
