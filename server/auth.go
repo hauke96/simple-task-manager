@@ -183,7 +183,7 @@ func createSecret(user string, validTime int64) (string, error) {
 // then returns the token but without the secret part, just the metainformation
 // (e.g. user name) is set.
 func verifyRequest(r *http.Request) (*Token, error) {
-	encodedToken := r.FormValue("token")
+	encodedToken := r.Header.Get("Authorization")
 
 	tokenBytes, err := base64.StdEncoding.DecodeString(encodedToken)
 	if err != nil {
@@ -192,7 +192,11 @@ func verifyRequest(r *http.Request) (*Token, error) {
 	}
 
 	var token Token
-	json.Unmarshal(tokenBytes, &token)
+	err = json.Unmarshal(tokenBytes, &token)
+	if err != nil {
+		sigolo.Error(err.Error())
+		return nil, err
+	}
 
 	targetSecret, err := createSecret(token.User, token.ValidUntil)
 	if err != nil {

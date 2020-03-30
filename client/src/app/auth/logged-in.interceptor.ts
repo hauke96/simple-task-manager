@@ -15,7 +15,9 @@ export class LoggedInInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     const token = localStorage.getItem('auth_token');
     request = request.clone({
-      url: request.url.includes('?') ? request.url + '&token=' + token : request.url + '?token=' + token
+      setHeaders: {
+        Authorization: token
+      }
     });
     return next.handle(request);
   }
