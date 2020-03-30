@@ -45,7 +45,7 @@ export class TaskService {
       throw 'Task with id \'' + id + '\' not selected';
     }
 
-    this.http.post<Task>(environment.url_task_processPoints + '?id=' + id + '&process_points=' + newProcessPoints)
+    this.http.post<Task>(environment.url_task_processPoints + '?id=' + id + '&process_points=' + newProcessPoints, '')
       .subscribe(t => this.selectedTaskChanged.emit(t));
   }
 
