@@ -115,3 +115,21 @@ func UnassignUser(id, user string) (*Task, error) {
 
 	return task, err
 }
+
+func SetProcessPoints(id string, newPoints int) (*Task, error) {
+	task, err := GetTask(id)
+	if err == nil {
+		if 0 <= newPoints && newPoints <= task.MaxProcessPoints {
+			task.ProcessPoints = newPoints
+		} else {
+			msg := fmt.Sprintf("Cannot set process points on task '%s'. The given amount of process points (%d) is lower than 0 or larger than the maximum number of points (%d)",
+				task.Id,
+				newPoints,
+				task.MaxProcessPoints)
+
+			return nil, errors.New(msg)
+		}
+	}
+
+	return task, nil
+}

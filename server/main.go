@@ -65,6 +65,7 @@ func main() {
 	router.HandleFunc("/tasks", authenticatedHandler(addTask)).Methods(http.MethodPost)
 	router.HandleFunc("/task/assignedUser", authenticatedHandler(assignUser)).Methods(http.MethodPost)
 	router.HandleFunc("/task/assignedUser", authenticatedHandler(unassignUser)).Methods(http.MethodDelete)
+	router.HandleFunc("/task/processPoints", authenticatedHandler(setProcessPoints)).Methods(http.MethodPost)
 
 	router.Methods(http.MethodOptions).HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -245,7 +246,7 @@ func assignUser(w http.ResponseWriter, r *http.Request, token *Token) {
 	task, err := AssignUser(taskId, user)
 	if err != nil {
 		sigolo.Error(err.Error())
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}
@@ -272,12 +273,41 @@ func unassignUser(w http.ResponseWriter, r *http.Request, token *Token) {
 	task, err := UnassignUser(taskId, user)
 	if err != nil {
 		sigolo.Error(err.Error())
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}
 
 	sigolo.Info("Successfully unassigned user '%s' from task '%s'", user, taskId)
+
+	encoder := json.NewEncoder(w)
+	encoder.Encode(*task)
+}
+
+func setProcessPoints(w http.ResponseWriter, r *http.Request, token *Token) {
+	sigolo.Info("Called unassign user")
+
+	taskId, err := getParam("id", w, r)
+	if err != nil {
+		sigolo.Error(err.Error())
+		return
+	}
+
+	processPoints, err := getIntParam("process_points", w, r)
+	if err != nil {
+		sigolo.Error(err.Error())
+		return
+	}
+
+	task, err := SetProcessPoints(taskId, processPoints)
+	if err != nil {
+		sigolo.Error(err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	sigolo.Info("Successfully set process points on task '%s'", taskId)
 
 	encoder := json.NewEncoder(w)
 	encoder.Encode(*task)

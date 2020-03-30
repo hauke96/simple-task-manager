@@ -56,11 +56,8 @@ export class TaskService {
   }
 
   public setProcessPoints(id: string, newProcessPoints: number) {
-    // TODO Call server and receive updated task
-    this.getTask(id).subscribe(t => {
-      t.processPoints = newProcessPoints; // TODO remove after server call implemented
-      this.selectedTaskChanged.emit(t);
-    });
+    this.http.post<Task>(environment.url_task_processPoints + '?id=' + id + '&process_points=' + newProcessPoints)
+      .subscribe(t => this.selectedTaskChanged.emit(t));
   }
 
   public assign(id: string, user: string) {
