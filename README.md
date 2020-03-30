@@ -52,7 +52,8 @@ Stage 3 creates the server to persist everything.
   * [x] Authentication (send OAuth token to server with each request, server checks token)
   * [x] Get project with tasks for a user
   * [x] Store project when created
-  * [ ] Assign user to task
+  * [x] Assign user to task
+  * [ ] Unassign user to task
   * [ ] Set points on task
 
 ### Stage 4

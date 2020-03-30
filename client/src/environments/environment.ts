@@ -2,6 +2,8 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+const baseUrl = "http://localhost:8080";
+
 export const environment = {
   production: false,
   oauth_consumer_key: 'TWaSD2RpZbtxuV5reVZ7jOQNDGmPjDux2BGK3zUy',
@@ -9,8 +11,9 @@ export const environment = {
   oauth_landing: '/oauth-landing',
   osm_auth_url: 'https://master.apis.dev.openstreetmap.org',
 
-  url_projects: "http://localhost:8080/projects",
-  url_tasks: "http://localhost:8080/tasks"
+  url_projects: baseUrl + "/projects",
+  url_tasks: baseUrl + "/tasks",
+  url_task_assign: baseUrl + "/task/assign"
 };
 
 /*

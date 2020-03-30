@@ -1,7 +1,9 @@
 package main
 
 import (
-	"github.com/hauke96/sigolo"
+	"errors"
+	"fmt"
+	"strings"
 )
 
 type Task struct {
@@ -9,18 +11,18 @@ type Task struct {
 	ProcessPoints    int         `json:"processPoints"`
 	MaxProcessPoints int         `json:"maxProcessPoints"`
 	Geometry         [][]float64 `json:"geometry"`
-	AssignesUser     string      `json:"assignedUser"`
+	AssignedUser     string      `json:"assignedUser"`
 }
 
 var (
-	tasks []Task
+	tasks []*Task
 )
 
 func InitTasks() {
 	startY := 53.5484
 	startX := 9.9714
 
-	tasks = make([]Task, 0)
+	tasks = make([]*Task, 0)
 	for i := 0; i < 5; i++ {
 		geom := make([][]float64, 0)
 		geom = append(geom, []float64{startX, startY})
@@ -31,7 +33,7 @@ func InitTasks() {
 
 		startX += 0.01
 
-		tasks = append(tasks, Task{
+		tasks = append(tasks, &Task{
 			Id:               "t-" + GetId(),
 			ProcessPoints:    0,
 			MaxProcessPoints: 100,
@@ -39,12 +41,12 @@ func InitTasks() {
 		})
 	}
 
-	tasks[0].AssignesUser = "Peter"
-	tasks[4].AssignesUser = "Maria"
+	tasks[0].AssignedUser = "Peter"
+	tasks[4].AssignedUser = "Maria"
 }
 
-func GetTasks(taskIds []string) []Task {
-	result := make([]Task, 0)
+func GetTasks(taskIds []string) []*Task {
+	result := make([]*Task, 0)
 	for _, t := range tasks {
 		for _, i := range taskIds {
 			if t.Id == i {
@@ -56,14 +58,40 @@ func GetTasks(taskIds []string) []Task {
 	return result
 }
 
-// AddTasks sets the ID of the tasks and adds them to the storage.
-func AddTasks(newTasks []Task) []Task {
-	for i, t := range newTasks {
-		t.Id = "t-" + GetId()
-		tasks = append(tasks, t)
-		newTasks[i] = t
+func GetTask(id string) (*Task, error) {
+	for _, t := range tasks {
+		if t.Id == id {
+			return t, nil
+		}
 	}
-	sigolo.Info("%#v", newTasks)
 
-	return newTasks
+	return nil, errors.New(fmt.Sprintf("Task with id '%s' not found", id))
+}
+
+// AddTasks sets the ID of the tasks and adds them to the storage.
+func AddTasks(newTasks []Task) []*Task {
+	result := make([]*Task, 0)
+
+	for _, t := range newTasks {
+		t.Id = "t-" + GetId()
+		result = append(result, &t)
+	}
+
+	tasks = append(tasks, result...)
+
+	return result
+}
+
+func AssignUser(id, user string) (*Task, error) {
+	task, err := GetTask(id)
+	if err == nil {
+		if strings.TrimSpace(task.AssignedUser) == "" {
+			task.AssignedUser = user
+		} else {
+			err = errors.New(fmt.Sprintf("User '%s' already assigned, cannot overwrite", task.AssignedUser))
+			task = nil
+		}
+	}
+
+	return task, err
 }

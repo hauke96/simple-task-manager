@@ -63,6 +63,7 @@ func main() {
 	router.HandleFunc("/projects", authenticatedHandler(addProject)).Methods(http.MethodPost)
 	router.HandleFunc("/tasks", authenticatedHandler(getTasks)).Methods(http.MethodGet)
 	router.HandleFunc("/tasks", authenticatedHandler(addTask)).Methods(http.MethodPost)
+	router.HandleFunc("/task/assign", authenticatedHandler(assignUser)).Methods(http.MethodPost)
 
 	router.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
 		path, _ := route.GetPathTemplate()
@@ -207,8 +208,35 @@ func addTask(w http.ResponseWriter, r *http.Request) {
 	var tasks []Task
 	json.Unmarshal(bodyBytes, &tasks)
 
-	tasks = AddTasks(tasks)
+	updatedTasks := AddTasks(tasks)
 
 	encoder := json.NewEncoder(w)
-	encoder.Encode(tasks)
+	encoder.Encode(updatedTasks)
+}
+
+func assignUser(w http.ResponseWriter, r *http.Request) {
+	sigolo.Info("Called assign user")
+
+	taskId, err := getParam("id", w, r)
+	if err != nil {
+		sigolo.Error(err.Error())
+		return
+	}
+
+	user, err := getParam("user", w, r)
+	if err != nil {
+		sigolo.Error(err.Error())
+		return
+	}
+
+	task, err := AssignUser(taskId, user)
+	if err != nil {
+		sigolo.Error(err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	encoder := json.NewEncoder(w)
+	encoder.Encode(*task)
 }
