@@ -52,6 +52,7 @@ func main() {
 	// Register routes and print them
 	router := mux.NewRouter()
 
+	router.HandleFunc("/info", getInfo).Methods(http.MethodGet)
 	router.HandleFunc("/oauth_login", oauthLogin).Methods(http.MethodGet)
 	router.HandleFunc("/oauth_callback", oauthCallback).Methods(http.MethodGet)
 	router.HandleFunc("/projects", authenticatedHandler(getProjects)).Methods(http.MethodGet)
@@ -106,7 +107,14 @@ func authenticatedHandler(handler func(w http.ResponseWriter, r *http.Request, t
 	}
 }
 
+func getInfo(w http.ResponseWriter, r *http.Request) {
+	fmtStr := "%-*s : %s\n"
+	fmtColWidth := 10
 
+	fmt.Fprintf(w, "Simple Task Manager Server\n")
+	fmt.Fprintf(w, "==========================\n\n")
+	fmt.Fprintf(w, fmtStr, fmtColWidth, "Version", VERSION)
+	fmt.Fprintf(w, fmtStr, fmtColWidth, "Code", "https://github.com/hauke96/simple-task-manager")
 }
 
 func getProjects(w http.ResponseWriter, r *http.Request, token *Token) {
