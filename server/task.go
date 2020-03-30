@@ -69,12 +69,12 @@ func GetTask(id string) (*Task, error) {
 }
 
 // AddTasks sets the ID of the tasks and adds them to the storage.
-func AddTasks(newTasks []Task) []*Task {
+func AddTasks(newTasks []*Task) []*Task {
 	result := make([]*Task, 0)
 
 	for _, t := range newTasks {
 		t.Id = "t-" + GetId()
-		result = append(result, &t)
+		result = append(result, t)
 	}
 
 	tasks = append(tasks, result...)

@@ -221,7 +221,7 @@ func addTask(w http.ResponseWriter, r *http.Request, token *Token) {
 		return
 	}
 
-	var tasks []Task
+	var tasks []*Task
 	json.Unmarshal(bodyBytes, &tasks)
 
 	updatedTasks := AddTasks(tasks)
