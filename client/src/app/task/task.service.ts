@@ -1,5 +1,5 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, of } from 'rxjs';
 import { map, filter, catchError } from 'rxjs/operators';
 import { Task } from './task.material';
 import { HttpClient } from '@angular/common/http';
@@ -18,7 +18,6 @@ export class TaskService {
   }
 
   public createNewTasks(geometries: [[number, number]][], maxProcessPoints: number): Observable<Task[]> {
-    // TODO server call
     const tasks = geometries.map(g => new Task('', 0, maxProcessPoints, g));
     return this.http.post<Task[]>(environment.url_tasks, JSON.stringify(tasks))
       .pipe(map(t => {
@@ -37,15 +36,14 @@ export class TaskService {
     return this.selectedTask;
   }
 
-  private getTask(id: string): Observable<Task> {
+  public getTask(id: string): Observable<Task> {
+    const localTask = this.tasks.filter(t => t.id === id)
+    if (!!localTask && localTask.length > 0) {
+      return of(localTask[0]);
+    }
+
     return this.getTasks([id])
-      .pipe(map(t => t.find(t => t.id === id)))
-      .pipe(
-        catchError(e => {
-          console.error(e);
-          return throwError("err");
-        })
-      );
+      .pipe(map(t => t.find(t => t.id === id)));
   }
 
   public getTasks(ids: string[]): Observable<Task[]> {

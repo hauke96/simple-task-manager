@@ -87,7 +87,10 @@ export class TaskMapComponent implements AfterViewInit {
       // service. This will trigger the "selectedTaskChanged" event and causes
       // the source-refresh below in the handler. This will then update the map
       // style and highlights the correct geometry on the map.
-      this.map.forEachFeatureAtPixel(evt.pixel, (feature) => this.taskService.selectTask(feature.get('task_id')));
+      this.map.forEachFeatureAtPixel(evt.pixel, (feature) => {
+        this.taskService.getTask(feature.get('task_id'))
+          .subscribe(t => this.taskService.selectTask(t));
+      })
     });
 
     // react to changed selection and update the map style
