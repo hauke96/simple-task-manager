@@ -140,6 +140,7 @@ func verifyRequest(r *http.Request) (*Token, error) {
 	}
 
 	sigolo.Debug("User '%s' has valid token", token.User)
+	sigolo.Info("User '%s' called %s", token.User, r.URL.Path)
 
 	token.Secret = ""
 	return &token, nil
@@ -167,8 +168,6 @@ func getIntParam(param string, w http.ResponseWriter, r *http.Request) (int, err
 }
 
 func getProjects(w http.ResponseWriter, r *http.Request, token *Token) {
-	sigolo.Info("Called get projects")
-
 	projects := GetProjects()
 
 	encoder := json.NewEncoder(w)
@@ -176,8 +175,6 @@ func getProjects(w http.ResponseWriter, r *http.Request, token *Token) {
 }
 
 func addProject(w http.ResponseWriter, r *http.Request, token *Token) {
-	sigolo.Info("Called add project")
-
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		sigolo.Error("Error reading request body: %s", err.Error())
@@ -195,8 +192,6 @@ func addProject(w http.ResponseWriter, r *http.Request, token *Token) {
 }
 
 func getTasks(w http.ResponseWriter, r *http.Request, token *Token) {
-	sigolo.Info("Called get tasks")
-
 	// Read task IDs from URL query parameter "task_ids" and split by ","
 	taskIdsString, err := getParam("task_ids", w, r)
 	if err != nil {
@@ -213,8 +208,6 @@ func getTasks(w http.ResponseWriter, r *http.Request, token *Token) {
 }
 
 func addTask(w http.ResponseWriter, r *http.Request, token *Token) {
-	sigolo.Info("Called add task")
-
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		sigolo.Error("Error reading request body: %s", err.Error())
@@ -231,8 +224,6 @@ func addTask(w http.ResponseWriter, r *http.Request, token *Token) {
 }
 
 func assignUser(w http.ResponseWriter, r *http.Request, token *Token) {
-	sigolo.Info("Called assign user")
-
 	taskId, err := getParam("id", w, r)
 	if err != nil {
 		sigolo.Error(err.Error())
@@ -258,8 +249,6 @@ func assignUser(w http.ResponseWriter, r *http.Request, token *Token) {
 }
 
 func unassignUser(w http.ResponseWriter, r *http.Request, token *Token) {
-	sigolo.Info("Called unassign user")
-
 	taskId, err := getParam("id", w, r)
 	if err != nil {
 		sigolo.Error(err.Error())
@@ -285,8 +274,6 @@ func unassignUser(w http.ResponseWriter, r *http.Request, token *Token) {
 }
 
 func setProcessPoints(w http.ResponseWriter, r *http.Request, token *Token) {
-	sigolo.Info("Called unassign user")
-
 	taskId, err := getParam("id", w, r)
 	if err != nil {
 		sigolo.Error(err.Error())
