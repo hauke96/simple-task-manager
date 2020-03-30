@@ -9,8 +9,6 @@ import { environment } from './../../environments/environment';
   providedIn: 'root'
 })
 export class TaskService {
-  public tasks: Task[] = [];
-
   public selectedTaskChanged: EventEmitter<Task> = new EventEmitter();
 
   private selectedTask: Task;
@@ -20,12 +18,7 @@ export class TaskService {
 
   public createNewTasks(geometries: [[number, number]][], maxProcessPoints: number): Observable<Task[]> {
     const tasks = geometries.map(g => new Task('', 0, maxProcessPoints, g));
-    return this.http.post<Task[]>(environment.url_tasks, JSON.stringify(tasks))
-      .pipe(map(t => {
-        this.tasks.concat(t);
-        return t;
-      })
-    );
+    return this.http.post<Task[]>(environment.url_tasks, JSON.stringify(tasks));
   }
 
   public selectTask(task: Task) {
@@ -38,24 +31,20 @@ export class TaskService {
   }
 
   public getTask(id: string): Observable<Task> {
-    const localTask = this.tasks.filter(t => t.id === id)
-    if (!!localTask && localTask.length > 0) {
-      return of(localTask[0]);
-    }
-
     return this.getTasks([id])
       .pipe(map(t => t.find(t => t.id === id)));
   }
 
   public getTasks(ids: string[]): Observable<Task[]> {
     const idsString = ids.join(',');
-    return this.http.get<Task[]>(environment.url_tasks + "?task_ids=" + idsString).pipe(map(tasks => {
-      tasks.concat(this.tasks);
-      return tasks;
-    }));
+    return this.http.get<Task[]>(environment.url_tasks + "?task_ids=" + idsString);
   }
 
   public setProcessPoints(id: string, newProcessPoints: number) {
+    if (id !== this.selectedTask.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
+      throw 'Task with id \'' + id + '\' not selected';
+    }
+
     this.http.post<Task>(environment.url_task_processPoints + '?id=' + id + '&process_points=' + newProcessPoints)
       .subscribe(t => this.selectedTaskChanged.emit(t));
   }
