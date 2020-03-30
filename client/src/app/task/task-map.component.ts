@@ -19,7 +19,7 @@ import { Feature } from 'ol';
   styleUrls: ['./task-map.component.scss']
 })
 export class TaskMapComponent implements AfterViewInit {
-  @Input() taskIds: string[];
+  @Input() tasks: Task[];
 
   private map: Map;
   private task: Task;
@@ -79,7 +79,7 @@ export class TaskMapComponent implements AfterViewInit {
       })
     });
 
-    this.taskService.getTasks(this.taskIds).subscribe(tasks => tasks.forEach(t => this.showTaskPolygon(t)));
+    this.tasks.forEach(t => this.showTaskPolygon(t));
 
     // Clicking on the map selects the clicked polygon (and therefore the according task)
     this.map.on('click', (evt) => {
@@ -88,8 +88,8 @@ export class TaskMapComponent implements AfterViewInit {
       // the source-refresh below in the handler. This will then update the map
       // style and highlights the correct geometry on the map.
       this.map.forEachFeatureAtPixel(evt.pixel, (feature) => {
-        this.taskService.getTask(feature.get('task_id'))
-          .subscribe(t => this.taskService.selectTask(t));
+        const clickedTask = this.tasks.find(t => t.id === feature.get('task_id'));
+        this.taskService.selectTask(clickedTask);
       })
     });
 

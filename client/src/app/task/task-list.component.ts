@@ -11,9 +11,7 @@ import { TaskService } from './task.service';
 })
 export class TaskListComponent implements AfterViewInit {
   @Input() projectId: string;
-  @Input() taskIds: string[];
-
-  public tasks: Task[];
+  @Input() tasks: Task[];
 
   constructor(private taskService: TaskService) { }
 
@@ -24,12 +22,6 @@ export class TaskListComponent implements AfterViewInit {
           this.tasks[i] = task
           break;
         }
-      }
-    });
-    this.taskService.getTasks(this.taskIds).subscribe(t => {
-      this.tasks = t;
-      if (t.length > 0) {
-        this.taskService.selectTask(t[0]);
       }
     });
   }
