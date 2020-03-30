@@ -10,6 +10,7 @@ import { environment } from './../../environments/environment';
 })
 export class TaskService {
   public tasks: Task[] = [];
+
   public selectedTaskChanged: EventEmitter<Task> = new EventEmitter();
 
   private selectedTask: Task;
@@ -63,6 +64,10 @@ export class TaskService {
   }
 
   public assign(id: string, user: string) {
+    if (id !== this.selectedTask.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
+      throw 'Task with id \'' + id + '\' not selected';
+    }
+
     this.http.post<Task>(environment.url_task_assign + '?id=' + id + '&user=' + user, '')
       .subscribe(t => this.selectedTaskChanged.emit(t));
   }
