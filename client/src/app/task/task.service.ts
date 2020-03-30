@@ -68,7 +68,7 @@ export class TaskService {
       throw 'Task with id \'' + id + '\' not selected';
     }
 
-    this.http.post<Task>(environment.url_task_assignedUser + '?id=' + id + '&user=' + user, '')
+    this.http.post<Task>(environment.url_task_assignedUser + '?id=' + id, '')
       .subscribe(t => this.selectedTaskChanged.emit(t));
   }
 
@@ -77,7 +77,7 @@ export class TaskService {
       throw 'Task with id \'' + id + '\' not selected';
     }
 
-    this.http.delete<Task>(environment.url_task_assignedUser + '?id=' + id + '&user=user123')
+    this.http.delete<Task>(environment.url_task_assignedUser + '?id=')
       .subscribe(t => this.selectedTaskChanged.emit(t));
   }
 }

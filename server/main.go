@@ -94,9 +94,9 @@ func main() {
 	}
 }
 
-func authenticatedHandler(handler func(w http.ResponseWriter, r *http.Request)) func(http.ResponseWriter, *http.Request) {
+func authenticatedHandler(handler func(w http.ResponseWriter, r *http.Request, token *Token)) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		err := verifyRequest(r)
+		token, err := verifyRequest(r)
 		if err != nil {
 			sigolo.Error("Request is not authorized: %s", err.Error())
 			w.WriteHeader(http.StatusUnauthorized)
@@ -105,17 +105,20 @@ func authenticatedHandler(handler func(w http.ResponseWriter, r *http.Request)) 
 		}
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 
-		handler(w, r)
+		handler(w, r, token)
 	}
 }
 
-func verifyRequest(r *http.Request) error {
+// verifyRequest checks the integrity of the token and the "valiUntil" date. It
+// then returns the token but without the secret part, just the metainformation
+// (e.g. user name) is set.
+func verifyRequest(r *http.Request) (*Token, error) {
 	encodedToken := r.FormValue("token")
 
 	tokenBytes, err := base64.StdEncoding.DecodeString(encodedToken)
 	if err != nil {
 		sigolo.Error(err.Error())
-		return err
+		return nil, err
 	}
 
 	var token Token
@@ -124,20 +127,21 @@ func verifyRequest(r *http.Request) error {
 	targetSecret, err := createSecret(token.User, token.ValidUntil)
 	if err != nil {
 		sigolo.Error(err.Error())
-		return err
+		return nil, err
 	}
 
 	if token.Secret != targetSecret {
-		return errors.New("Secret not valid")
+		return nil, errors.New("Secret not valid")
 	}
 
 	if token.ValidUntil < time.Now().Unix() {
-		return errors.New("Token expired")
+		return nil, errors.New("Token expired")
 	}
 
 	sigolo.Debug("User '%s' has valid token", token.User)
 
-	return nil
+	token.Secret = ""
+	return &token, nil
 }
 
 func getParam(param string, w http.ResponseWriter, r *http.Request) (string, error) {
@@ -161,7 +165,7 @@ func getIntParam(param string, w http.ResponseWriter, r *http.Request) (int, err
 	return strconv.Atoi(valueString)
 }
 
-func getProjects(w http.ResponseWriter, r *http.Request) {
+func getProjects(w http.ResponseWriter, r *http.Request, token *Token) {
 	sigolo.Info("Called get projects")
 
 	projects := GetProjects()
@@ -170,7 +174,7 @@ func getProjects(w http.ResponseWriter, r *http.Request) {
 	encoder.Encode(projects)
 }
 
-func addProject(w http.ResponseWriter, r *http.Request) {
+func addProject(w http.ResponseWriter, r *http.Request, token *Token) {
 	sigolo.Info("Called add project")
 
 	bodyBytes, err := ioutil.ReadAll(r.Body)
@@ -189,7 +193,7 @@ func addProject(w http.ResponseWriter, r *http.Request) {
 	encoder.Encode(project)
 }
 
-func getTasks(w http.ResponseWriter, r *http.Request) {
+func getTasks(w http.ResponseWriter, r *http.Request, token *Token) {
 	sigolo.Info("Called get tasks")
 
 	// Read task IDs from URL query parameter "task_ids" and split by ","
@@ -207,7 +211,7 @@ func getTasks(w http.ResponseWriter, r *http.Request) {
 	encoder.Encode(tasks)
 }
 
-func addTask(w http.ResponseWriter, r *http.Request) {
+func addTask(w http.ResponseWriter, r *http.Request, token *Token) {
 	sigolo.Info("Called add task")
 
 	bodyBytes, err := ioutil.ReadAll(r.Body)
@@ -225,7 +229,7 @@ func addTask(w http.ResponseWriter, r *http.Request) {
 	encoder.Encode(updatedTasks)
 }
 
-func assignUser(w http.ResponseWriter, r *http.Request) {
+func assignUser(w http.ResponseWriter, r *http.Request, token *Token) {
 	sigolo.Info("Called assign user")
 
 	taskId, err := getParam("id", w, r)
@@ -235,11 +239,7 @@ func assignUser(w http.ResponseWriter, r *http.Request) {
 	}
 	// TODO check wether task exists
 
-	user, err := getParam("user", w, r)
-	if err != nil {
-		sigolo.Error(err.Error())
-		return
-	}
+	user := token.User
 	// TODO check wether login-user is the same as the user that should be assigned. If not -> error
 
 	task, err := AssignUser(taskId, user)
@@ -256,7 +256,7 @@ func assignUser(w http.ResponseWriter, r *http.Request) {
 	encoder.Encode(*task)
 }
 
-func unassignUser(w http.ResponseWriter, r *http.Request) {
+func unassignUser(w http.ResponseWriter, r *http.Request, token *Token) {
 	sigolo.Info("Called unassign user")
 
 	taskId, err := getParam("id", w, r)
@@ -266,11 +266,7 @@ func unassignUser(w http.ResponseWriter, r *http.Request) {
 	}
 	// TODO check wether task exists
 
-	user, err := getParam("user", w, r)
-	if err != nil {
-		sigolo.Error(err.Error())
-		return
-	}
+	user := token.User
 	// TODO check wether login-user is the same as the user that should be assigned. If not -> error
 
 	task, err := UnassignUser(taskId, user)
