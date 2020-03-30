@@ -13,7 +13,7 @@ export const environment = {
 
   url_projects: baseUrl + "/projects",
   url_tasks: baseUrl + "/tasks",
-  url_task_assign: baseUrl + "/task/assign"
+  url_task_assignedUser: baseUrl + "/task/assignedUser"
 };
 
 /*

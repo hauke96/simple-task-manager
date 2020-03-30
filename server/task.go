@@ -95,3 +95,23 @@ func AssignUser(id, user string) (*Task, error) {
 
 	return task, err
 }
+
+func UnassignUser(id, user string) (*Task, error) {
+	task, err := GetTask(id)
+	if err == nil {
+		assignedUser := strings.TrimSpace(task.AssignedUser)
+		if assignedUser != "" {
+			if assignedUser == user {
+				task.AssignedUser = ""
+			} else {
+				err = errors.New(fmt.Sprintf("The assigned user and the user to unassign differ", task.AssignedUser))
+				task = nil
+			}
+		} else {
+			err = errors.New(fmt.Sprintf("User '%s' already assigned, cannot overwrite", task.AssignedUser))
+			task = nil
+		}
+	}
+
+	return task, err
+}

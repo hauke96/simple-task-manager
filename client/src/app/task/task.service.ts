@@ -68,15 +68,16 @@ export class TaskService {
       throw 'Task with id \'' + id + '\' not selected';
     }
 
-    this.http.post<Task>(environment.url_task_assign + '?id=' + id + '&user=' + user, '')
+    this.http.post<Task>(environment.url_task_assignedUser + '?id=' + id + '&user=' + user, '')
       .subscribe(t => this.selectedTaskChanged.emit(t));
   }
 
   public unassign(id: string) {
-    // TODO Call server and receive updated task
-    this.getTask(id).subscribe(t => {
-      t.assignedUser = undefined; // TODO remove after server call implemented
-      this.selectedTaskChanged.emit(t);
-    });
+    if (id !== this.selectedTask.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
+      throw 'Task with id \'' + id + '\' not selected';
+    }
+
+    this.http.delete<Task>(environment.url_task_assignedUser + '?id=' + id + '&user=user123')
+      .subscribe(t => this.selectedTaskChanged.emit(t));
   }
 }

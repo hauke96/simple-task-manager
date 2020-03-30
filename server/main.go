@@ -63,7 +63,16 @@ func main() {
 	router.HandleFunc("/projects", authenticatedHandler(addProject)).Methods(http.MethodPost)
 	router.HandleFunc("/tasks", authenticatedHandler(getTasks)).Methods(http.MethodGet)
 	router.HandleFunc("/tasks", authenticatedHandler(addTask)).Methods(http.MethodPost)
-	router.HandleFunc("/task/assign", authenticatedHandler(assignUser)).Methods(http.MethodPost)
+	router.HandleFunc("/task/assignedUser", authenticatedHandler(assignUser)).Methods(http.MethodPost)
+	router.HandleFunc("/task/assignedUser", authenticatedHandler(unassignUser)).Methods(http.MethodDelete)
+
+	router.Methods(http.MethodOptions).HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "Authorization")
+		w.Header().Set("Access-Control-Allow-Methods", "GET,POST,DELETE")
+		w.Header().Set("Access-Control-Allow-Request-Headers", "Authorization")
+		w.Header().Set("Access-Control-Allow-Request-Methods", "GET,POST,DELETE")
+	})
 
 	router.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
 		path, _ := route.GetPathTemplate()
@@ -126,7 +135,7 @@ func verifyRequest(r *http.Request) error {
 		return errors.New("Token expired")
 	}
 
-	sigolo.Info("User '%s' has valid token", token.User)
+	sigolo.Debug("User '%s' has valid token", token.User)
 
 	return nil
 }
@@ -240,6 +249,39 @@ func assignUser(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(err.Error()))
 		return
 	}
+
+	sigolo.Info("Successfully assigned user '%s' to task '%s'", user, taskId)
+
+	encoder := json.NewEncoder(w)
+	encoder.Encode(*task)
+}
+
+func unassignUser(w http.ResponseWriter, r *http.Request) {
+	sigolo.Info("Called unassign user")
+
+	taskId, err := getParam("id", w, r)
+	if err != nil {
+		sigolo.Error(err.Error())
+		return
+	}
+	// TODO check wether task exists
+
+	user, err := getParam("user", w, r)
+	if err != nil {
+		sigolo.Error(err.Error())
+		return
+	}
+	// TODO check wether login-user is the same as the user that should be assigned. If not -> error
+
+	task, err := UnassignUser(taskId, user)
+	if err != nil {
+		sigolo.Error(err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	sigolo.Info("Successfully unassigned user '%s' from task '%s'", user, taskId)
 
 	encoder := json.NewEncoder(w)
 	encoder.Encode(*task)
