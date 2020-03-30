@@ -11,13 +11,19 @@ export class AuthService {
   constructor(private userService: UserService) {
     // if already logged in, then get the user name and store it locally in the user service
     if (this.isAuthenticated()) {
-      // TODO Server call for user information
-      this.userService.setUser('user123');
+      this.setUserNameFromToken();
     }
+    // TODO else: Logout? Request Login? Just an error message?
+  }
+
+  private setUserNameFromToken() {
+    const encodedToken = localStorage.getItem('auth_token');
+    const decodedToken = atob(encodedToken);
+    const token = JSON.parse(decodedToken);
+    this.userService.setUser(token.user);
   }
 
   public isAuthenticated(): boolean {
-    // TODO ask server if Token is valid
     return !!localStorage.getItem('auth_token');
   }
 
@@ -36,13 +42,13 @@ export class AuthService {
     this.localStorageTimer = setInterval(this.waitForLocalStorageToken.bind(this), 250, callback.bind(this));
   }
 
+  // Checks wether the local storate contains a token. If so, the user will be
+  // set and the callback function called.
   private waitForLocalStorageToken(callback: () => void) {
-    const token = localStorage.getItem('auth_token');
-    if (!!token && !!this.localStorageTimer) {
-      console.log('Token found, login finished');
-      // TODO Ask server for user name. Only if that works (and the token is therefore valid), proceed. Otherwise show error message and abort timer.
-      const userName = 'user123';
-      this.userService.setUser(userName);
+    // Is authenticated and the timer exists (otherwise we'll get an error when
+    // we try to reset it)
+    if (this.isAuthenticated() && !!this.localStorageTimer) {
+      this.setUserNameFromToken();
 
       clearInterval(this.localStorageTimer);
 
