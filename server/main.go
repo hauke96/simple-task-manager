@@ -93,6 +93,8 @@ func main() {
 
 func authenticatedHandler(handler func(w http.ResponseWriter, r *http.Request, token *Token)) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+
 		token, err := verifyRequest(r)
 		if err != nil {
 			sigolo.Error("Request is not authorized: %s", err.Error())
@@ -100,8 +102,6 @@ func authenticatedHandler(handler func(w http.ResponseWriter, r *http.Request, t
 			response(w, "Not authorized", http.StatusUnauthorized)
 			return
 		}
-
-		w.Header().Set("Access-Control-Allow-Origin", "*")
 
 		handler(w, r, token)
 	}
