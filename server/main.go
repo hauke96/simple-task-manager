@@ -17,9 +17,10 @@ import (
 const VERSION string = "0.3.0-dev"
 
 var (
-	app      = kingpin.New("Simple Task Manager", "A tool dividing an area of the map into smaller tasks.")
-	appDebug = app.Flag("debug", "Verbose mode, showing additional debug information").Short('d').Bool()
-	addPort  = app.Flag("port", "The port to listen on. Default is 8080").Short('p').Default("8080").Int()
+	app       = kingpin.New("Simple Task Manager", "A tool dividing an area of the map into smaller tasks.")
+	appDebug  = app.Flag("debug", "Verbose mode, showing additional debug information").Short('d').Bool()
+	appPort   = app.Flag("port", "The port to listen on. Default is 8080").Short('p').Default("8080").Int()
+	appConfig = app.Flag("config", "The config file. CLI argument override the settings from that file.").Short('c').Default("./configs/default.json").String()
 )
 
 func configureCliArgs() {
@@ -39,15 +40,17 @@ func configureLogging() {
 }
 
 func main() {
+	sigolo.Info("Init simple-task-manager server v" + VERSION)
+
 	configureCliArgs()
 	_, err := app.Parse(os.Args[1:])
 	sigolo.FatalCheck(err)
 	configureLogging()
 
-	// Some init logging
-	sigolo.Info("Init simple-task-manager server version " + VERSION)
-	sigolo.Info("Debug logging? %v", sigolo.LogLevel == sigolo.LOG_DEBUG)
-	sigolo.Info("Use port %d", *addPort)
+	// Load config an override with CLI args
+	loadConfig(*appConfig)
+	Conf.Port = *appPort
+	Conf.DebugLogging = *appDebug
 
 	// Register routes and print them
 	router := mux.NewRouter()
@@ -78,14 +81,15 @@ func main() {
 		return nil
 	})
 
-	// Init Dummy-Data
+	// Init of Config, Services, Storages, etc.
 	InitProjects()
 	InitTasks()
+	InitAuth()
 
 	sigolo.Info("Registered all handler functions. Start serving...")
 
 	// Start serving
-	err = http.ListenAndServe(":"+strconv.Itoa(*addPort), router)
+	err = http.ListenAndServe(":"+strconv.Itoa(*appPort), router)
 	if err != nil {
 		sigolo.Error(fmt.Sprintf("Error while serving: %s", err))
 	}

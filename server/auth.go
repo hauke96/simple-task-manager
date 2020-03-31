@@ -28,16 +28,29 @@ type Token struct {
 }
 
 var (
-	oauthRedirectUrl  = "http://localhost:8080/oauth_callback"
-	oauthConsumerKey  = "TWaSD2RpZbtxuV5reVZ7jOQNDGmPjDux2BGK3zUy"
-	oauthSecret       = "a8K9wAU4Z8v8G7ayxnOpjnsLknkW72Txh62Nsu1C"
-	oauthBaseUrl      = "https://master.apis.dev.openstreetmap.org"
-	osmUserDetailsUrl = "https://master.apis.dev.openstreetmap.org/api/0.6/user/details"
+	oauthRedirectUrl  string
+	oauthConsumerKey  string
+	oauthSecret       string
+	oauthBaseUrl      string
+	osmUserDetailsUrl string
+
+	service *oauth1a.Service
+
+	configs          map[string]*oauth1a.UserConfig
+	tokenSecretNonce [32]byte
+)
+
+func InitAuth() {
+	oauthRedirectUrl = Conf.ServerUrl + "/oauth_callback"
+	oauthConsumerKey = Conf.OauthConsumerKey
+	oauthSecret = Conf.OauthSecret
+	oauthBaseUrl = Conf.OsmBaseUrl
+	osmUserDetailsUrl = Conf.OsmBaseUrl + "/api/0.6/user/details"
 
 	service = &oauth1a.Service{
-		RequestURL:   oauthBaseUrl + "/oauth/request_token",
-		AuthorizeURL: oauthBaseUrl + "/oauth/authorize",
-		AccessURL:    oauthBaseUrl + "/oauth/access_token",
+		RequestURL:   Conf.OsmBaseUrl + "/oauth/request_token",
+		AuthorizeURL: Conf.OsmBaseUrl + "/oauth/authorize",
+		AccessURL:    Conf.OsmBaseUrl + "/oauth/access_token",
 		ClientConfig: &oauth1a.ClientConfig{
 			ConsumerKey:    oauthConsumerKey,
 			ConsumerSecret: oauthSecret,
@@ -46,13 +59,16 @@ var (
 		Signer: new(oauth1a.HmacSha1Signer),
 	}
 
-	configs          map[string]*oauth1a.UserConfig = make(map[string]*oauth1a.UserConfig)
-	tokenSecretNonce [32]byte                       = sha256.Sum256(getRandomBytes(265))
-)
+	configs = make(map[string]*oauth1a.UserConfig)
+	tokenSecretNonce = sha256.Sum256(getRandomBytes(265))
+}
 
 func oauthLogin(w http.ResponseWriter, r *http.Request) {
 	userConfig := &oauth1a.UserConfig{}
 	configKey := fmt.Sprintf("%x", sha256.Sum256(getRandomBytes(64)))
+
+	sigolo.Info("%#v", Conf)
+	sigolo.Info("%#v", service)
 
 	service.ClientConfig.CallbackURL = oauthRedirectUrl + "?redirect=" + r.FormValue("redirect") + "&config=" + configKey
 
