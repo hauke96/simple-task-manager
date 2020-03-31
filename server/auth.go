@@ -2,11 +2,13 @@ package main
 
 import (
 	"crypto/aes"
+	"crypto/rand"
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
 	"encoding/xml"
 	"errors"
+	"strings"
 	"time"
 
 	"fmt"
@@ -44,13 +46,15 @@ var (
 		Signer: new(oauth1a.HmacSha1Signer),
 	}
 
-	userConfig        *oauth1a.UserConfig
-	clientRedirectUrl string
+	configs          map[string]*oauth1a.UserConfig = make(map[string]*oauth1a.UserConfig)
+	tokenSecretNonce [32]byte                       = sha256.Sum256(getRandomBytes(265))
 )
 
 func oauthLogin(w http.ResponseWriter, r *http.Request) {
-	userConfig = &oauth1a.UserConfig{}
-	clientRedirectUrl = r.FormValue("redirect")
+	userConfig := &oauth1a.UserConfig{}
+	configKey := fmt.Sprintf("%x", sha256.Sum256(getRandomBytes(64)))
+
+	service.ClientConfig.CallbackURL = oauthRedirectUrl + "?redirect=" + r.FormValue("redirect") + "&config=" + configKey
 
 	httpClient := new(http.Client)
 	err := userConfig.GetRequestToken(service, httpClient)
@@ -65,16 +69,28 @@ func oauthLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sigolo.Debug("User config: %#v\n", userConfig)
-	sigolo.Debug("Redirect to URL %s", url)
-
+	configs[configKey] = userConfig
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
 
 func oauthCallback(w http.ResponseWriter, r *http.Request) {
 	sigolo.Info("Callback called")
 
-	requestAccessToken(r, userConfig)
+	configKey := r.FormValue("config")
+	if strings.TrimSpace(configKey) == "" {
+		sigolo.Error("Config parameter not specified")
+		return
+	}
+	userConfig := configs[configKey]
+	configs[configKey] = nil
+
+	clientRedirectUrl := r.FormValue("redirect")
+
+	err := requestAccessToken(r, userConfig)
+	if err != nil {
+		sigolo.Error(err.Error())
+		return
+	}
 
 	userName, err := requestUserInformation(userConfig)
 	if err != nil {
@@ -100,8 +116,6 @@ func oauthCallback(w http.ResponseWriter, r *http.Request) {
 		Secret:     secret,
 	}
 
-	sigolo.Debug("New token:\n%#v", token)
-
 	jsonBytes, err := json.Marshal(token)
 	if err != nil {
 		sigolo.Error(err.Error())
@@ -113,29 +127,27 @@ func oauthCallback(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, clientRedirectUrl+"?token="+encodedTokenString, http.StatusTemporaryRedirect)
 }
 
-func requestAccessToken(r *http.Request, userConfig *oauth1a.UserConfig) {
+func requestAccessToken(r *http.Request, userConfig *oauth1a.UserConfig) error {
 	token := r.FormValue("oauth_token")
 	userConfig.AccessTokenSecret = token
 	userConfig.Verifier = r.FormValue("oauth_verifier")
 
-	// Redirect the user to <url> and parse out token and verifier from the response.
-	sigolo.Debug("%#v", userConfig)
 	httpClient := new(http.Client)
-	err := userConfig.GetAccessToken(userConfig.RequestTokenKey, userConfig.Verifier, service, httpClient)
-	if err != nil {
-		sigolo.Error(err.Error())
-		return
-	}
+	return userConfig.GetAccessToken(userConfig.RequestTokenKey, userConfig.Verifier, service, httpClient)
 }
 
 func requestUserInformation(userConfig *oauth1a.UserConfig) (string, error) {
 	req, err := http.NewRequest("GET", osmUserDetailsUrl, nil)
 	if err != nil {
-		sigolo.Error("Requesting user information failed: %s", err.Error())
+		sigolo.Error("Creating request user information failed: %s", err.Error())
 		return "", err
 	}
-	sigolo.Debug("Updates user config: %#v\n", userConfig)
-	service.Sign(req, userConfig)
+
+	err = service.Sign(req, userConfig)
+	if err != nil {
+		sigolo.Error("Signing request failed: %s", err.Error())
+		return "", err
+	}
 
 	client := &http.Client{}
 	response, err := client.Do(req)
@@ -162,7 +174,7 @@ func requestUserInformation(userConfig *oauth1a.UserConfig) (string, error) {
 // To have equal length secrets, hash it again.
 func createSecret(user string, validTime int64) (string, error) {
 	key := sha256.Sum256([]byte("some very secret key"))
-	secretBaseString := fmt.Sprintf("%s%s%d", "abc123", user, validTime)
+	secretBaseString := fmt.Sprintf("%x%s%d", tokenSecretNonce, user, validTime)
 	secretHashedBytes := sha256.Sum256([]byte(secretBaseString))
 
 	cipher, err := aes.NewCipher(key[:])
@@ -177,6 +189,12 @@ func createSecret(user string, validTime int64) (string, error) {
 	secretEncryptedHashedBytes := sha256.Sum256([]byte(secretEncryptedBytes))
 
 	return base64.StdEncoding.EncodeToString(secretEncryptedHashedBytes[:]), nil
+}
+
+func getRandomBytes(count int) []byte {
+	bytes := make([]byte, count)
+	rand.Read(bytes)
+	return bytes
 }
 
 // verifyRequest checks the integrity of the token and the "valiUntil" date. It
