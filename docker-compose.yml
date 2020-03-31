@@ -1,0 +1,21 @@
+version: '3.4'
+
+services:
+  stm-server:
+    build:
+      network: host
+      context: ./server/
+    container_name: stm-server
+    network_mode: host
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+  stm-client:
+    build:
+      network: host
+      context: ./client/
+    container_name: stm-client
+    network_mode: host
+    restart: unless-stopped
+    ports:
+      - "80:80"
