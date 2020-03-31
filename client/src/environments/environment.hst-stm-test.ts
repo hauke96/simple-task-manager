@@ -1,8 +1,12 @@
+const baseUrl = "http://osm.hauke-stieler.de/stm-test";
+
 export const environment = {
   production: true,
-  oauth_consumer_key: "foo",
-  oauth_secret: "bar",
-  oauth_landing: "/stm-test/oauth-landing",
-  osm_auth_url: "https://www.openstreetmap.org"
+  oauth_landing: document.location.origin + '/oauth-landing',
+
+  url_projects: baseUrl + "/projects",
+  url_tasks: baseUrl + "/tasks",
+  url_task_assignedUser: baseUrl + "/task/assignedUser",
+  url_task_processPoints: baseUrl + "/task/processPoints"
 };
 
