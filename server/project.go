@@ -25,7 +25,7 @@ func InitProjects() {
 	projects = append(projects, Project{
 		Id:      "p-" + GetId(),
 		Name:    "Bar",
-		TaskIDs: []string{"t-6", "t-7"},
+		TaskIDs: []string{"t-6", "t-7", "t-8", "t-9", "t-10"},
 	})
 }
 

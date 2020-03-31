@@ -23,7 +23,7 @@ func InitTasks() {
 	startX := 9.9714
 
 	tasks = make([]*Task, 0)
-	for i := 0; i < 5; i++ {
+	for i := 0; i < 8; i++ {
 		geom := make([][]float64, 0)
 		geom = append(geom, []float64{startX, startY})
 		geom = append(geom, []float64{startX + 0.01, startY})
