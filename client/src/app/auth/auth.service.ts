@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { UserService } from './user.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +9,7 @@ import { UserService } from './user.service';
 export class AuthService {
   private localStorageTimer;
 
-  constructor(private userService: UserService) {
+  constructor(private userService: UserService, private router: Router) {
     // if already logged in, then get the user name and store it locally in the user service
     if (this.isAuthenticated()) {
       this.setUserNameFromToken();
@@ -17,10 +18,16 @@ export class AuthService {
   }
 
   private setUserNameFromToken() {
-    const encodedToken = localStorage.getItem('auth_token');
-    const decodedToken = atob(encodedToken);
-    const token = JSON.parse(decodedToken);
-    this.userService.setUser(token.user);
+    try {
+      const encodedToken = localStorage.getItem('auth_token');
+      const decodedToken = atob(encodedToken);
+      const token = JSON.parse(decodedToken);
+      this.userService.setUser(token.user);
+    }
+    catch(e) {
+      console.error(e);
+      this.logout();
+    }
   }
 
   public isAuthenticated(): boolean {
@@ -60,5 +67,6 @@ export class AuthService {
   public logout() {
     this.userService.resetUser();
     localStorage.clear();
+    this.router.navigate(['/']);
   }
 }
