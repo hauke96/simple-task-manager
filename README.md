@@ -1,20 +1,21 @@
-# simple-task-manager
+# SimpleTaskManager
 
-Prototype of a simple OpenStreetMap tasking manager.
-Take a look at the latest version at [http://osm.hauke-stieler.de/stm-test](http://osm.hauke-stieler.de/stm-test).
+Prototype of a simple mapping tasking manager for e.g. [https://openstreetmap.org](OpenStreetMap (OSM)).
 
-The idea behind this is to create a simple and general purpose tasking manager.
+Take a look at the latest version at [https://stm.hauke-stieler.de/](https://stm.hauke-stieler.de/).
+
+The idea behind this project is to create a simple and general purpose tasking manager for mapping in OSM.
 A tasking manager is an application which helps multiple mappers to work in the same region without interfering with each other.
 Usually such region is divided into squares and only one mapper at a time works on one square.
 
-# The idea
+# Usage workflow
 
-A user can create a *project* with constists of a large region on the map.
-This region is devided into smaller parts the so called *tasks*.
-One user at a time can now work on such task and this user is able to update the process of the task.
-Once the task is done, the user finishes it and maybe starts working on the next task.
+A user can create a *project* with constists of a large region on the map (e.g. a city district).
+This region is devided into smaller areas (e.g. 1x1km large squares) the so called *tasks*.
+One user at a time can now work on such task and this user is able to update the process of the task by setting the *process points*.
+Once the region is fully mapped, the user finishes it by setting all process points and maybe starts working on the next task.
 
-In the end of this prototype, a user should be able to invite others to a project.
+In the end of this prototype, a user should also be able to invite others to a project.
 When one user works on a task, no other user should be able to also update the process of that task.
 This should prevent conflicts in mapping as every user has a distinct task to work on.
 
@@ -46,7 +47,7 @@ Stage 2 consists of the more interactive features like assigning yourself to a t
 
 ## Stage 3
 
-Stage 3 creates the server to persist everything.
+Stage 3 creates the server to handle and distribute everything.
 
 * [ ] Server
   * [x] Authentication (send OAuth token to server with each request, server checks token)
@@ -65,25 +66,37 @@ Stage 3 creates the server to persist everything.
 Stage 4 finally adds support for multiple users.
 This will enable you to invite other to tasks.
 
-* [ ] Invite user
-  * [ ] Control to enter username and to invite user
-  * [ ] Store information on server so that the invited user can see the project in the list
-  * [ ] Make sure that only one user at a time can be assigned to and can modify a task
+* [ ] Define creator of project (aka "admin")
+* [ ] Mark own projects
+* [ ] Invite user (only possible by admin)
+  * [ ] Enter username and to invite user
+  * [ ] Users should also see projects they've invited to
 
 ## Stage 5
 
 Stage 5 finalizes things and adds the needed details to finish the prototype.
 
-* [ ] Use real database (probably `postgresql`)
+* [ ] Abstract storage
+* [ ] Use real database (probably `postgresql`) and keep current in-memory storage (maybe useful for development)
+* [ ] Put Database into own docker container
+
+### Post Stage 5
+Things to do after finishing this stage (which will probably be version 1.0.0)
+
+* [ ] Hosted version
+  * [ ] Update everything
+  * [ ] Automatic update of SSL certificates (#10)
 
 ## Beyond the prototype
 
 Things that would be nice but are not necessary for a prototype.
 
+* [ ] Better shape handling when creating a project (e.g. remove drawn shapes)
 * [ ] Confirm invitation
 * [ ] Remove user from project
 * [ ] Add tasks to running project
 * [ ] Leave comments on a task
+* [ ] WebSocket connections for live updates
 * [ ] Chat in the project
 * [ ] Validation of tasks
   * [ ] Choose between optional validations (uses can mark a task as valid but that doesn't change anything) and mandatory validations (at leaxt *x* validations are needed to finish a task)
@@ -111,6 +124,13 @@ The readme in this folder gives you further instruction on the setup, running, b
 
 Same as above but with `npm run build`.
 
+### Configuration
+
+Currently the client is not very mich configurable.
+This has a reason: Currently the code is very simple and the authentication with the OSM servers is done by the server (s. below).
+
+Encryption (HTTPS) and HTTP-Server configs depend on the used Server (Apache-HTTP, nginx, ...), so take a look at their documentation or at the `./client/nginx.conf` for my nginx config.
+
 ## Server
 
 The server is written in go (aka *golang*) so you need to install go and setup your development environment (paths, IDE, etc.)
@@ -127,25 +147,55 @@ You need to install these using `go get github.com/gorilla/mux` and so on.
 
 ### Run
 
+*You need to go throuth the "Setup" section first ;)*
+
 Just go into the `server` folder and execute `go run .`.
 
 ### Build
 
+*You need to go throuth the "Setup" section first ;)*
+
 Just go into the `server` folder and execute `go build .`.
+
+### Configuration
+
+There are already some configuration files in the folder `./server/configs/`.
+Until there's further documentation, just take a look, the properties are quite simple and straight forward.
+
+### HTTPS
+
+I only tried it with letsencrypt certificates.
+At least for them, you only need to set the following properties in your configuration (next to the others of course):
+
+```json
+{
+	"server-url": "https://your.domain.com",
+	"ssl-cert-file": "/etc/letsencrypt/live/your.domain.com/fullchain.pem",
+	"ssl-key-file": "/etc/letsencrypt/live/your.domain.com/privkey.pem",
+	...
+}
+```
+
+**Important:** The `server-url` property has to begin with `https` in order to activate HTTPS.
 
 ## Docker
 
 Client and Server can easily be started/deployed as docker containers.
 Both cotainers do not clone any repo but copy the source files into the container.
 
-The according configs are in the `./server/Dockerfile` and `./client/Dockerfile` files.
-To make things easiert there's also the `./docker-compose.yml` file combining the two docker files.
+The according configuration and definition of the build process are in the `./server/Dockerfile` and `./client/Dockerfile` files.
+To make things easier there's also the `./docker-compose.yml` file combining the two docker files and adding port forwarding, mounts etc..
 
-The default docker configuration uses the production configurations for client and server, you probably want to change that.
+The default docker configuration uses the production configurations for the `stm.hauke-stieler.de` server, you probably want to change that.
+
+The `stm.hauke-stieler.de` uses Ubuntu so here's a workflow for Ubuntu:
 
 ```bash
-# 1. install "docker" if needed
-# 2. install "docker-compose" if needed (it's a separate tool)
+# 1. install docker, docker-compose and git
+apt install docker docker-compose git
+
+# 2. Setup letsencrypt
+#    It's best to look at their guidelines and tutorials
 
 # 3. clone repo
 git clone https://github.com/hauke96/simple-task-manager.git
@@ -153,6 +203,10 @@ git clone https://github.com/hauke96/simple-task-manager.git
 # 4. Go into the repo
 cd simple-task-manager
 
-# 5. Start the whole thing
-docker-compose up
+# 5. Change configs to your needs
+
+# 6. Start the whole thing
+docker-compose up --build
 ```
+
+There are several more CLI options, just take a look at `docker` and `docker-compose` guides/tutorials/documentation.
