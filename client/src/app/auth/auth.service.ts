@@ -44,7 +44,9 @@ export class AuthService {
       ['top', screen.height / 2 - h / 2]].map(function(x) {
       return x.join('=');
     }).join(',');
-    const popup = window.open('http://localhost:8080/oauth_login?+?qt='+new Date().getTime()+'&redirect=http://localhost:4200/oauth-landing', 'oauth_window', settings);
+
+    const landingUrl = document.location.protocol + '://' + document.location.hostname + ':' + document.location.port + '/oauth-landing';
+    const popup = window.open(environment.url_auth + '?+?t='+new Date().getTime()+'&redirect=' + landingUrl, 'oauth_window', settings);
 
     this.localStorageTimer = setInterval(this.waitForLocalStorageToken.bind(this), 250, callback.bind(this));
   }
