@@ -253,7 +253,7 @@ func verifyRequest(r *http.Request) (*Token, error) {
 	}
 
 	sigolo.Debug("User '%s' has valid token", token.User)
-	sigolo.Info("User '%s' called %s", token.User, r.URL.Path)
+	sigolo.Info("User '%s' called %s on %s", token.User, r.Method, r.URL.Path)
 
 	token.Secret = ""
 	return &token, nil
