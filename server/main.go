@@ -88,8 +88,7 @@ func main() {
 
 	sigolo.Info("Registered all handler functions. Start serving...")
 
-	// Start serving
-	err = http.ListenAndServe(":"+strconv.Itoa(*appPort), router)
+	err = http.ListenAndServeTLS(":"+strconv.Itoa(*appPort), "/etc/letsencrypt/live/stm.hauke-stieler.de/fullchain.pem", "/etc/letsencrypt/live/stm.hauke-stieler.de/privkey.pem", router)
 	if err != nil {
 		sigolo.Error(fmt.Sprintf("Error while serving: %s", err))
 	}

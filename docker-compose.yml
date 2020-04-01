@@ -10,6 +10,8 @@ services:
     restart: unless-stopped
     ports:
       - "8080:8080"
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
   stm-client:
     build:
       network: host
@@ -20,4 +22,4 @@ services:
     ports:
       - "80:80"
     volumes:
-      - /etc/letsencrypt:/nginx-ssl
+      - /etc/letsencrypt:/etc/letsencrypt
