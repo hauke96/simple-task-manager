@@ -84,7 +84,7 @@ func TestAddProject(t *testing.T) {
 		t.Errorf("Project should have ID 'p-100'")
 		t.Fail()
 	}
-	if len(newProject.Users) != 1 || newProject.Users[0] == "Maria" {
+	if len(newProject.Users) != 1 || newProject.Users[0] != "Maria" {
 		t.Errorf("User should be 'Maria'")
 		t.Fail()
 	}
