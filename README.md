@@ -49,7 +49,7 @@ Stage 2 consists of the more interactive features like assigning yourself to a t
 
 Stage 3 creates the server to handle and distribute everything.
 
-* [ ] Server
+* [x] Server
   * [x] Authentication (send OAuth token to server with each request, server checks token)
   * [x] Get project with tasks for a user
   * [x] Store project when created
@@ -57,9 +57,7 @@ Stage 3 creates the server to handle and distribute everything.
   * [x] Unassign user to task
   * [x] Set points on task
   * [x] Request user information from server
-  * [ ] Store list of projects per user<sup>*</sup>
-
-<sup>*</sup>Store project-IDs in the user material because we know exactly what projects we have (and can check that) but we don't know what users exist (or at least it's more complicated to check and maintain).
+  * [x] Store users per project (any only return project where user is part of)
 
 ## Stage 4
 
