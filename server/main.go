@@ -129,7 +129,9 @@ func getInfo(w http.ResponseWriter, r *http.Request) {
 }
 
 func getProjects(w http.ResponseWriter, r *http.Request, token *Token) {
-	projects := GetProjects()
+	user := token.User
+
+	projects := GetProjects(user)
 
 	encoder := json.NewEncoder(w)
 	encoder.Encode(projects)
@@ -195,7 +197,6 @@ func assignUser(w http.ResponseWriter, r *http.Request, token *Token) {
 	// TODO check wether task exists
 
 	user := token.User
-	// TODO check wether login-user is the same as the user that should be assigned. If not -> error
 
 	task, err := AssignUser(taskId, user)
 	if err != nil {
@@ -220,7 +221,6 @@ func unassignUser(w http.ResponseWriter, r *http.Request, token *Token) {
 	// TODO check wether task exists
 
 	user := token.User
-	// TODO check wether login-user is the same as the user that should be assigned. If not -> error
 
 	task, err := UnassignUser(taskId, user)
 	if err != nil {

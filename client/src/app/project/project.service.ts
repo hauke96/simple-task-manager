@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable, zip } from 'rxjs';
-import { map, flatMap, filter } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { map, flatMap } from 'rxjs/operators';
 import { Project } from './project.material';
 import { Task } from './../task/task.material';
 import { TaskService } from './../task/task.service';
@@ -21,11 +21,17 @@ export class ProjectService {
   }
 
   public getProject(id: string): Observable<Project> {
-    return this.getProjects().pipe(map(projects => {
-      const p = projects.find(p => p.id === id);
-      console.log(p);
-      return p;
-    }));
+    return this.getProjects()
+      .pipe(map(projects => {
+        const p = projects.find(p => p.id === id);
+
+        if (!p) {
+          throw new Error("Project not found");
+        }
+
+        return p;
+      })
+    );
   }
 
   public createNewProject(name: string, maxProcessPoints: number, geometries: [[number, number]][]): Observable<Project> {
