@@ -41,7 +41,7 @@ var (
 )
 
 func InitAuth() {
-	oauthRedirectUrl = Conf.ServerUrl + "/oauth_callback"
+	oauthRedirectUrl = fmt.Sprintf("%s:%d/oauth_callback", Conf.ServerUrl, Conf.Port)
 	oauthConsumerKey = Conf.OauthConsumerKey
 	oauthSecret = Conf.OauthSecret
 	oauthBaseUrl = Conf.OsmBaseUrl
@@ -67,10 +67,8 @@ func oauthLogin(w http.ResponseWriter, r *http.Request) {
 	userConfig := &oauth1a.UserConfig{}
 	configKey := fmt.Sprintf("%x", sha256.Sum256(getRandomBytes(64)))
 
-	sigolo.Info("%#v", Conf)
-	sigolo.Info("%#v", service)
-
 	service.ClientConfig.CallbackURL = oauthRedirectUrl + "?redirect=" + r.FormValue("redirect") + "&config=" + configKey
+	sigolo.Info("%s", service.ClientConfig.CallbackURL)
 
 	httpClient := new(http.Client)
 	err := userConfig.GetRequestToken(service, httpClient)
