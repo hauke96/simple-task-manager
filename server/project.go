@@ -47,8 +47,9 @@ func GetProjects(user string) []Project {
 	return result
 }
 
-func AddProject(project Project) Project {
+func AddProject(project Project, user string) Project {
 	project.Id = "p-" + GetId()
+	project.Users = []string{user}
 	projects = append(projects, project)
 	return project
 }

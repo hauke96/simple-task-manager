@@ -146,7 +146,7 @@ func addProject(w http.ResponseWriter, r *http.Request, token *Token) {
 	json.Unmarshal(bodyBytes, &project)
 	// TODO check wether all neccessary fields are set
 
-	project = AddProject(project)
+	project = AddProject(project, token.User)
 
 	encoder := json.NewEncoder(w)
 	encoder.Encode(project)
