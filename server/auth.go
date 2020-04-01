@@ -89,7 +89,7 @@ func oauthLogin(w http.ResponseWriter, r *http.Request) {
 func oauthCallback(w http.ResponseWriter, r *http.Request) {
 	sigolo.Info("Callback called")
 
-	configKey, err := getParam("config", w, r)
+	configKey, err := getParam("config", r)
 	if err != nil {
 		responseBadRequest(w, err.Error())
 		return
@@ -102,7 +102,7 @@ func oauthCallback(w http.ResponseWriter, r *http.Request) {
 	}
 	configs[configKey] = nil
 
-	clientRedirectUrl, err := getParam("redirect", w, r)
+	clientRedirectUrl, err := getParam("redirect", r)
 	if err != nil {
 		responseBadRequest(w, err.Error())
 		return

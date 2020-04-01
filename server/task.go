@@ -104,7 +104,7 @@ func UnassignUser(id, user string) (*Task, error) {
 			if assignedUser == user {
 				task.AssignedUser = ""
 			} else {
-				err = errors.New(fmt.Sprintf("The assigned user and the user to unassign differ", task.AssignedUser))
+				err = errors.New(fmt.Sprintf("The assigned user (%s) and the user to unassign (%s) differ", task.AssignedUser, user))
 				task = nil
 			}
 		} else {

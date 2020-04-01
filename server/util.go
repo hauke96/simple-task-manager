@@ -18,7 +18,7 @@ func GetId() string {
 	return strconv.Itoa(id)
 }
 
-func getParam(param string, w http.ResponseWriter, r *http.Request) (string, error) {
+func getParam(param string, r *http.Request) (string, error) {
 	value := r.FormValue(param)
 	if strings.TrimSpace(value) == "" {
 		errMsg := fmt.Sprintf("Parameter '%s' not specified", param)
@@ -29,7 +29,7 @@ func getParam(param string, w http.ResponseWriter, r *http.Request) (string, err
 }
 
 func getIntParam(param string, w http.ResponseWriter, r *http.Request) (int, error) {
-	valueString, err := getParam(param, w, r)
+	valueString, err := getParam(param, r)
 	if err != nil {
 		return 0, err
 	}

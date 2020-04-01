@@ -154,7 +154,7 @@ func addProject(w http.ResponseWriter, r *http.Request, token *Token) {
 
 func getTasks(w http.ResponseWriter, r *http.Request, token *Token) {
 	// Read task IDs from URL query parameter "task_ids" and split by ","
-	taskIdsString, err := getParam("task_ids", w, r)
+	taskIdsString, err := getParam("task_ids", r)
 	if err != nil {
 		responseBadRequest(w, err.Error())
 		return
@@ -193,7 +193,7 @@ func addTask(w http.ResponseWriter, r *http.Request, token *Token) {
 }
 
 func assignUser(w http.ResponseWriter, r *http.Request, token *Token) {
-	taskId, err := getParam("id", w, r)
+	taskId, err := getParam("id", r)
 	if err != nil {
 		sigolo.Error(err.Error())
 		responseBadRequest(w, err.Error())
@@ -217,7 +217,7 @@ func assignUser(w http.ResponseWriter, r *http.Request, token *Token) {
 }
 
 func unassignUser(w http.ResponseWriter, r *http.Request, token *Token) {
-	taskId, err := getParam("id", w, r)
+	taskId, err := getParam("id", r)
 	if err != nil {
 		sigolo.Error(err.Error())
 		responseBadRequest(w, err.Error())
@@ -241,7 +241,7 @@ func unassignUser(w http.ResponseWriter, r *http.Request, token *Token) {
 }
 
 func setProcessPoints(w http.ResponseWriter, r *http.Request, token *Token) {
-	taskId, err := getParam("id", w, r)
+	taskId, err := getParam("id", r)
 	if err != nil {
 		sigolo.Error(err.Error())
 		responseBadRequest(w, err.Error())
