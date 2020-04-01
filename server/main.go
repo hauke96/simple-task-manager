@@ -74,10 +74,11 @@ func main() {
 		w.Header().Set("Access-Control-Allow-Request-Methods", "GET,POST,DELETE")
 	})
 
+	sigolo.Info("Registered routes:")
 	router.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
 		path, _ := route.GetPathTemplate()
 		methods, _ := route.GetMethods()
-		sigolo.Info("Registered route: %s %v", path, methods)
+		sigolo.Info("  %-*v %s", 7, methods, path)
 		return nil
 	})
 
@@ -85,10 +86,17 @@ func main() {
 	InitProjects()
 	InitTasks()
 	InitAuth()
+	sigolo.Info("Initializes services, storages, etc.")
 
-	sigolo.Info("Registered all handler functions. Start serving...")
+	if strings.HasPrefix(Conf.ServerUrl, "https") {
+		sigolo.Info("Use HTTPS? yes")
+		err = http.ListenAndServeTLS(":"+strconv.Itoa(*appPort), Conf.SslCertFile, Conf.SslKeyFile, router)
+	} else {
+		sigolo.Info("Use HTTPS? no")
+		err = http.ListenAndServe(":"+strconv.Itoa(*appPort), router)
+	}
+	sigolo.Info("Start serving ...")
 
-	err = http.ListenAndServeTLS(":"+strconv.Itoa(*appPort), "/etc/letsencrypt/live/stm.hauke-stieler.de/fullchain.pem", "/etc/letsencrypt/live/stm.hauke-stieler.de/privkey.pem", router)
 	if err != nil {
 		sigolo.Error(fmt.Sprintf("Error while serving: %s", err))
 	}

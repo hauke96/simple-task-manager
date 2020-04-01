@@ -4,5 +4,7 @@
 	"oauth-consumer-key": "chVXaqn6VIW3DTXQCFYHHn9jrI7ZzcZJU8W2r5tv",
 	"oauth-secret": "u9hifbxqUcGCKlxRdOJKZBMyvAVtR5ZCz2n4lnwg",
 	"osm-base-url": "https://www.openstreetmap.org",
-	"debug-logging": false
+	"debug-logging": false,
+	"ssl-cert-file": "/etc/letsencrypt/live/stm.hauke-stieler.de/fullchain.pem",
+	"ssl-key-file": "/etc/letsencrypt/live/stm.hauke-stieler.de/privkey.pem"
 }

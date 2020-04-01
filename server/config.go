@@ -20,6 +20,8 @@ type Config struct {
 	OauthSecret      string `json:"oauth-secret"`
 	OsmBaseUrl       string `json:"osm-base-url"`
 	DebugLogging     bool   `json:"debug-logging"`
+	SslCertFile      string `json:"ssl-cert-file"`
+	SslKeyFile       string `json:"ssl-key-file"`
 }
 
 func loadConfig(file string) {
@@ -42,9 +44,10 @@ func loadConfig(file string) {
 	propertyString := splittedConfStr[1][0 : len(splittedConfStr[1])-1] // clut last "}" off
 	propertyList := strings.Split(propertyString, ", ")
 
+	sigolo.Info("Config:")
 	for _, p := range propertyList {
 		propertyName := strings.Split(p, ":")[0]
 		propertyValue := strings.Join(strings.Split(p, ":")[1:], ":") // Join remaining parts back together
-		sigolo.Info("%-*s = %s", 20, propertyName, propertyValue)
+		sigolo.Info("  %-*s = %s", 20, propertyName, propertyValue)
 	}
 }
