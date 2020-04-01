@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"errors"
-	"strings"
 	"time"
 
 	"fmt"
@@ -90,17 +89,26 @@ func oauthLogin(w http.ResponseWriter, r *http.Request) {
 func oauthCallback(w http.ResponseWriter, r *http.Request) {
 	sigolo.Info("Callback called")
 
-	configKey := r.FormValue("config")
-	if strings.TrimSpace(configKey) == "" {
-		sigolo.Error("Config parameter not specified")
+	configKey, err := getParam("config", w, r)
+	if err != nil {
+		responseBadRequest(w, err.Error())
 		return
 	}
-	userConfig := configs[configKey]
+
+	userConfig, ok := configs[configKey]
+	if !ok || userConfig == nil {
+		sigolo.Error("User config not found")
+		return
+	}
 	configs[configKey] = nil
 
-	clientRedirectUrl := r.FormValue("redirect")
+	clientRedirectUrl, err := getParam("redirect", w, r)
+	if err != nil {
+		responseBadRequest(w, err.Error())
+		return
+	}
 
-	err := requestAccessToken(r, userConfig)
+	err = requestAccessToken(r, userConfig)
 	if err != nil {
 		sigolo.Error(err.Error())
 		return
