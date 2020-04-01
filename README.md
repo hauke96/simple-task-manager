@@ -7,7 +7,7 @@ The idea behind this is to create a simple and general purpose tasking manager.
 A tasking manager is an application which helps multiple mappers to work in the same region without interfering with each other.
 Usually such region is divided into squares and only one mapper at a time works on one square.
 
-## The idea
+# The idea
 
 A user can create a *project* with constists of a large region on the map.
 This region is devided into smaller parts the so called *tasks*.
@@ -18,9 +18,9 @@ In the end of this prototype, a user should be able to invite others to a projec
 When one user works on a task, no other user should be able to also update the process of that task.
 This should prevent conflicts in mapping as every user has a distinct task to work on.
 
-## Stages of the prototype
+# Stages of the prototype
 
-### Stage 1
+## Stage 1
 
 Stage 1 consists of the basic functionality to only see things.
 No creation or fancy "wow-effect-features" involved here.
@@ -32,7 +32,7 @@ No creation or fancy "wow-effect-features" involved here.
   * [x] Set "process points" (e.g. setting it to 230/500)
   * [x] Automatically mark/highlight task as "finished" when all points are reached
 
-### Stage 2
+## Stage 2
 
 Stage 2 consists of the more interactive features like assigning yourself to a task or create new tasks.
 
@@ -44,7 +44,7 @@ Stage 2 consists of the more interactive features like assigning yourself to a t
   * [x] Divide this area into squares of use defined size (-> so called tasks)
   * [x] Define how many "process points" are needed to complete a task
 
-### Stage 3
+## Stage 3
 
 Stage 3 creates the server to persist everything.
 
@@ -60,7 +60,7 @@ Stage 3 creates the server to persist everything.
 
 <sup>*</sup>Store project-IDs in the user material because we know exactly what projects we have (and can check that) but we don't know what users exist (or at least it's more complicated to check and maintain).
 
-### Stage 4
+## Stage 4
 
 Stage 4 finally adds support for multiple users.
 This will enable you to invite other to tasks.
@@ -76,7 +76,7 @@ Stage 5 finalizes things and adds the needed details to finish the prototype.
 
 * [ ] Use real database (probably `postgresql`)
 
-### Beyond the prototype
+## Beyond the prototype
 
 Things that would be nice but are not necessary for a prototype.
 
@@ -93,6 +93,8 @@ Things that would be nice but are not necessary for a prototype.
 * [ ] Internal development
   * [ ] Use go modules? (may or may not be useful)
   * [ ] Create Docker container for client and server
+
+# Development
 
 ## Client
 
@@ -130,3 +132,27 @@ Just go into the `server` folder and execute `go run .`.
 ### Build
 
 Just go into the `server` folder and execute `go build .`.
+
+## Docker
+
+Client and Server can easily be started/deployed as docker containers.
+Both cotainers do not clone any repo but copy the source files into the container.
+
+The according configs are in the `./server/Dockerfile` and `./client/Dockerfile` files.
+To make things easiert there's also the `./docker-compose.yml` file combining the two docker files.
+
+The default docker configuration uses the production configurations for client and server, you probably want to change that.
+
+```bash
+# 1. install "docker" if needed
+# 2. install "docker-compose" if needed (it's a separate tool)
+
+# 3. clone repo
+git clone https://github.com/hauke96/simple-task-manager.git
+
+# 4. Go into the repo
+cd simple-task-manager
+
+# 5. Start the whole thing
+docker-compose up
+```
