@@ -129,9 +129,7 @@ func getInfo(w http.ResponseWriter, r *http.Request) {
 }
 
 func getProjects(w http.ResponseWriter, r *http.Request, token *Token) {
-	user := token.User
-
-	projects := GetProjects(user)
+	projects := GetProjects(token.User)
 
 	encoder := json.NewEncoder(w)
 	encoder.Encode(projects)
@@ -161,8 +159,15 @@ func getTasks(w http.ResponseWriter, r *http.Request, token *Token) {
 		responseBadRequest(w, err.Error())
 		return
 	}
+
 	taskIds := strings.Split(taskIdsString, ",")
-	// TODO check wether task exists
+
+	userOwnsTasks := VerifyOwnership(token.User, taskIds)
+	if !userOwnsTasks {
+		sigolo.Error("At least one task belongs to a project where the user '%s' is not part of", token.User)
+		response(w, "Not all tasks belong to user", http.StatusForbidden)
+		return
+	}
 
 	tasks := GetTasks(taskIds)
 
