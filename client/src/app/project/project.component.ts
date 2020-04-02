@@ -20,11 +20,10 @@ export class ProjectComponent implements OnInit {
   ngOnInit(): void {
     this.projectService.getProject(this.route.snapshot.params.id)
       .subscribe(p => {
-        console.log(p);
-        this.thisProject = p
-        this.taskService.getTasks(this.thisProject.taskIds).subscribe(t => {
-          this.taskService.selectTask(t[0]);
+        this.taskService.getTasks(p.taskIds).subscribe(t => {
           this.tasks = t
+          this.thisProject = p
+          this.taskService.selectTask(t[0]);
         }, e => {
           console.error(e);
           this.router.navigate(['/manager']);

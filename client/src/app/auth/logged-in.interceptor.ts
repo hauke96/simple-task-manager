@@ -24,8 +24,8 @@ export class LoggedInInterceptor implements HttpInterceptor {
     });
     return next.handle(request)
       .pipe(catchError((e: HttpErrorResponse) => {
+        console.error(e);
         if (e.status === 401) {
-          console.error(e);
           this.authService.logout();
         }
         throw e;

@@ -13,8 +13,9 @@ export class AuthService {
     // if already logged in, then get the user name and store it locally in the user service
     if (this.isAuthenticated()) {
       this.setUserNameFromToken();
+    } else {
+      this.logout();
     }
-    // TODO else: Logout? Request Login? Just an error message?
   }
 
   private setUserNameFromToken() {
@@ -49,18 +50,18 @@ export class AuthService {
     console.log(environment.url_auth + '?+?t='+new Date().getTime()+'&redirect=' + landingUrl);
     const popup = window.open(environment.url_auth + '?+?t='+new Date().getTime()+'&redirect=' + landingUrl, 'oauth_window', settings);
 
-    this.localStorageTimer = setInterval(this.waitForLocalStorageToken.bind(this), 250, callback.bind(this));
+    const localStorageTimer = setInterval(() => this.waitForLocalStorageToken(localStorageTimer, callback), 250);
   }
 
   // Checks wether the local storate contains a token. If so, the user will be
   // set and the callback function called.
-  private waitForLocalStorageToken(callback: () => void) {
+  private waitForLocalStorageToken(timer: number, callback: () => void) {
     // Is authenticated and the timer exists (otherwise we'll get an error when
     // we try to reset it)
-    if (this.isAuthenticated() && !!this.localStorageTimer) {
+    if (this.isAuthenticated() && !!timer) {
       this.setUserNameFromToken();
 
-      clearInterval(this.localStorageTimer);
+      clearInterval(timer);
 
       callback();
     }
