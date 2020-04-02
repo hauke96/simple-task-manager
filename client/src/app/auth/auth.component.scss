@@ -16,3 +16,26 @@
 .login-buttons {
 	margin-top: $space-huge;
 }
+
+.notice {
+	display: flex;
+	justify-content: center;
+	margin-top: 100px;
+}
+
+.notice-text {
+	font-weight: 500;
+}
+
+.notice-bar {
+	width: 3px;
+	background-color: $gray-mid;
+	margin-left: 15px;
+	margin-right: 15px;
+	margin-top: -5px;
+	margin-bottom: -5px;
+}
+
+.notice-description {
+	width: 380px;
+}

@@ -20,6 +20,10 @@ body {
 	font-weight: 300;
 }
 
+b {
+	font-weight: 500;
+}
+
 // Container aroung a screen filling component for better spacing to the screen edges
 .root-container {
 	margin: $space-large;
