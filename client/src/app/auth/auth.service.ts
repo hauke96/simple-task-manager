@@ -9,12 +9,16 @@ import { Router } from '@angular/router';
 export class AuthService {
   private localStorageTimer;
 
-  constructor(private userService: UserService, private router: Router) {
+  constructor(
+    private userService: UserService,
+    private router: Router
+  ) {
     // if already logged in, then get the user name and store it locally in the user service
     if (this.isAuthenticated()) {
       this.setUserNameFromToken();
+    } else {
+      this.logout();
     }
-    // TODO else: Logout? Request Login? Just an error message?
   }
 
   private setUserNameFromToken() {
@@ -24,7 +28,7 @@ export class AuthService {
       const token = JSON.parse(decodedToken);
       this.userService.setUser(token.user);
     }
-    catch(e) {
+    catch (e) {
       console.error(e);
       this.logout();
     }
@@ -37,30 +41,33 @@ export class AuthService {
   // performs the authentication process, sets the user name in the UserService
   // and then calls the "callback" function.
   public requestLogin(callback: () => void) {
-    const w = 600, h = 550;
+    const w = 600;
+    const h = 550;
     const settings = [
-      ['width', w], ['height', h],
+      ['width', w],
+      ['height', h],
       ['left', screen.width / 2 - w / 2],
-      ['top', screen.height / 2 - h / 2]].map(function(x) {
+      ['top', screen.height / 2 - h / 2]
+    ].map(x => {
       return x.join('=');
     }).join(',');
 
     const landingUrl = document.location.protocol + '//' + document.location.hostname + ':' + document.location.port + '/oauth-landing';
-    console.log(environment.url_auth + '?+?t='+new Date().getTime()+'&redirect=' + landingUrl);
-    const popup = window.open(environment.url_auth + '?+?t='+new Date().getTime()+'&redirect=' + landingUrl, 'oauth_window', settings);
+    console.log(environment.url_auth + '?+?t=' + new Date().getTime() + '&redirect=' + landingUrl);
+    const popup = window.open(environment.url_auth + '?+?t=' + new Date().getTime() + '&redirect=' + landingUrl, 'oauth_window', settings);
 
-    this.localStorageTimer = setInterval(this.waitForLocalStorageToken.bind(this), 250, callback.bind(this));
+    const localStorageTimer = setInterval(() => this.waitForLocalStorageToken(localStorageTimer, callback), 250);
   }
 
   // Checks wether the local storate contains a token. If so, the user will be
   // set and the callback function called.
-  private waitForLocalStorageToken(callback: () => void) {
+  private waitForLocalStorageToken(timer: number, callback: () => void) {
     // Is authenticated and the timer exists (otherwise we'll get an error when
     // we try to reset it)
-    if (this.isAuthenticated() && !!this.localStorageTimer) {
+    if (this.isAuthenticated() && !!timer) {
       this.setUserNameFromToken();
 
-      clearInterval(this.localStorageTimer);
+      clearInterval(timer);
 
       callback();
     }

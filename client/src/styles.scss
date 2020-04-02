@@ -20,6 +20,10 @@ body {
 	font-weight: 300;
 }
 
+b {
+	font-weight: 500;
+}
+
 // Container aroung a screen filling component for better spacing to the screen edges
 .root-container {
 	margin: $space-large;
@@ -73,7 +77,10 @@ a:hover {
 
 .toolbar {
 	left: 0px;
-	padding: $space-base;
+	padding-left: $space-large;
+	padding-right: $space-large;
+	padding-top: $space-base;
+	padding-bottom: $space-base;
 	background-color: $color-mid;
 	height: $space-huge;
 	display: flex;

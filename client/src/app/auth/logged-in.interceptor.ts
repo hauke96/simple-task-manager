@@ -12,8 +12,7 @@ import { AuthService } from './auth.service';
 
 @Injectable()
 export class LoggedInInterceptor implements HttpInterceptor {
-
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     const token = localStorage.getItem('auth_token');
@@ -24,8 +23,8 @@ export class LoggedInInterceptor implements HttpInterceptor {
     });
     return next.handle(request)
       .pipe(catchError((e: HttpErrorResponse) => {
+        console.error(e);
         if (e.status === 401) {
-          console.error(e);
           this.authService.logout();
         }
         throw e;

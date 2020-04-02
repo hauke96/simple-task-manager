@@ -1,9 +1,20 @@
 <div>
-	<div class="center heading">
-		Welcome to the SimpleTaskManager for <a href="https://openstreetmap.org" target="_blank">OpenStreetMap</a>.
+	<div class="center logo">
+		<img src="./assets/icon.png">
 	</div>
-	<div class="center login-buttons">
+	<div class="center heading">
+		Welcome to the SimpleTaskManager for <a href="https://openstreetmap.org" target="_blank">OpenStreetMap</a>
+	</div>
+	<div class="center login-button">
 		<button (click)="onLoginButtonClick()">Login</button>
+	</div>
+	<div class="notice">
+		<b>Warning</b>
+		<div class="notice-bar"></div>
+		<div class="notice-description">
+			Currently there is <b>no database</b>. When the server is restarted, everything will be reset. A database will be added in one of the following releases.<br><br>
+			So: Stay tuned ;)
+		</div>
 	</div>
 </div>
 <app-footer></app-footer>

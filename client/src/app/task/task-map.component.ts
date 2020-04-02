@@ -26,13 +26,16 @@ export class TaskMapComponent implements AfterViewInit {
   private task: Task;
   private vectorSource: VectorSource;
 
-  constructor(private taskService: TaskService, private userService: UserService) { }
+  constructor(
+    private taskService: TaskService,
+    private userService: UserService
+  ) { }
 
   ngAfterViewInit(): void {
     // this style function will choose between default colors and colors for
     // selected features
     const style = (feature, resolution) => {
-      let task = this.tasks.find(t => t.id === feature.get('task_id'));
+      const task = this.tasks.find(t => t.id === feature.get('task_id'));
 
       // Convert process point count to color (0 points = red; max points = green)
       let r = Math.round(Math.min(255, 512 * (1 - (task.processPoints / task.maxProcessPoints)))).toString(16);
@@ -47,10 +50,10 @@ export class TaskMapComponent implements AfterViewInit {
 
       // Border color and fill transparency
       let borderColor = '#009688b0';
-      let borderWidth = 2
+      let borderWidth = 2;
       if (this.taskService.getSelectedTask().id === feature.get('task_id')) {
         borderColor = '#009688';
-        borderWidth = 4
+        borderWidth = 4;
         fillColor += '50';
 
         // Move feature to top so that the border is good visible
@@ -113,7 +116,13 @@ export class TaskMapComponent implements AfterViewInit {
       })
     });
 
-    this.tasks.forEach(t => this.showTaskPolygon(t));
+    this.tasks.forEach(t => {
+      this.showTaskPolygon(t);
+      this.map.getView().fit(this.vectorSource.getExtent(), {
+        size: this.map.getSize(),
+        padding: [25, 25, 25, 25] // in pixels
+      });
+    });
 
     // Clicking on the map selects the clicked polygon (and therefore the according task)
     this.map.on('click', (evt) => {
@@ -124,7 +133,7 @@ export class TaskMapComponent implements AfterViewInit {
       this.map.forEachFeatureAtPixel(evt.pixel, (feature) => {
         const clickedTask = this.tasks.find(t => t.id === feature.get('task_id'));
         this.taskService.selectTask(clickedTask);
-      })
+      });
     });
 
     // react to changed selection and update the map style

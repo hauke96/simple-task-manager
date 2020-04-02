@@ -36,7 +36,7 @@ import { ProjectCreationComponent } from './project/project-creation.component';
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-	HttpClientModule
+  HttpClientModule
   ],
   providers: [
     AuthGuard,

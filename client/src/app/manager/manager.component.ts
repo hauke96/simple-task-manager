@@ -9,8 +9,11 @@ import { Router } from '@angular/router';
   styleUrls: ['./manager.component.scss']
 })
 export class ManagerComponent implements OnInit {
-
-  constructor(private router: Router, private authService: AuthService, private userService: UserService) { }
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private userService: UserService
+  ) { }
 
   ngOnInit(): void {
   }

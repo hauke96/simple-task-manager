@@ -9,8 +9,12 @@ import { UserService } from './user.service';
   styleUrls: ['./auth.component.scss']
 })
 export class AuthComponent implements OnInit {
-
-  constructor(private router: Router, private ngZone: NgZone, private authService: AuthService, private userService: UserService) { }
+  constructor(
+    private router: Router,
+    private ngZone: NgZone,
+    private authService: AuthService,
+    private userService: UserService
+  ) { }
 
   ngOnInit(): void {
     if (this.authService.isAuthenticated()) {
