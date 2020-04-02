@@ -103,7 +103,7 @@ Things that would be nice but are not necessary for a prototype.
   * [ ] From overpass-query / -result
 * [ ] Internal development
   * [ ] Use go modules? (may or may not be useful)
-  * [ ] Create Docker container for client and server
+  * [x] Create Docker container for client and server
 
 # Development
 
