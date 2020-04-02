@@ -9,7 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 export class OauthLandingComponent implements OnInit {
   constructor(private route: ActivatedRoute) {
     this.route.queryParams.subscribe(params => {
-       localStorage.setItem('auth_token', params['token']);
+       localStorage.setItem('auth_token', params.token);
        window.close();
     });
   }

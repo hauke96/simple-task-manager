@@ -13,8 +13,10 @@ import { environment } from './../../environments/environment';
 export class ProjectService {
   public projects: Project[] = [];
 
-  constructor(private taskService: TaskService, private http: HttpClient) {
-  }
+  constructor(
+    private taskService: TaskService,
+    private http: HttpClient
+  ) { }
 
   public getProjects(): Observable<Project[]> {
     return this.http.get<Project[]>(environment.url_projects);
@@ -23,13 +25,13 @@ export class ProjectService {
   public getProject(id: string): Observable<Project> {
     return this.getProjects()
       .pipe(map(projects => {
-        const p = projects.find(p => p.id === id);
+        const project = projects.find(p => p.id === id);
 
-        if (!p) {
-          throw new Error("Project not found");
+        if (!project) {
+          throw new Error('Project not found');
         }
 
-        return p;
+        return project;
       })
     );
   }

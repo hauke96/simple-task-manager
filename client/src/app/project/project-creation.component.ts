@@ -29,7 +29,10 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   private map: Map;
   private vectorSource: VectorSource;
 
-  constructor(private projectService: ProjectService, private router: Router) { }
+  constructor(
+    private projectService: ProjectService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
   }

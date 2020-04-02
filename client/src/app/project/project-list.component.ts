@@ -11,7 +11,10 @@ import { Router } from '@angular/router';
 export class ProjectListComponent implements OnInit {
   public projects: Project[];
 
-  constructor(private projectService: ProjectService, private router: Router) { }
+  constructor(
+    private projectService: ProjectService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.projectService.getProjects().subscribe(p => this.projects = p);

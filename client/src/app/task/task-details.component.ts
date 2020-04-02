@@ -13,7 +13,10 @@ export class TaskDetailsComponent implements OnInit {
   public task: Task;
   public newProcessPoints: number;
 
-  constructor(private taskService: TaskService, private userService: UserService) { }
+  constructor(
+    private taskService: TaskService,
+    private userService: UserService
+  ) { }
 
   ngOnInit(): void {
     this.taskService.selectedTaskChanged.subscribe((task) => {

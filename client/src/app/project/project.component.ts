@@ -15,14 +15,19 @@ export class ProjectComponent implements OnInit {
   public thisProject: Project;
   public tasks: Task[];
 
-  constructor(private router: Router, private route: ActivatedRoute, private projectService: ProjectService, private taskService: TaskService) { }
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private projectService: ProjectService,
+    private taskService: TaskService
+  ) { }
 
   ngOnInit(): void {
     this.projectService.getProject(this.route.snapshot.params.id)
       .subscribe(p => {
         this.taskService.getTasks(p.taskIds).subscribe(t => {
-          this.tasks = t
-          this.thisProject = p
+          this.tasks = t;
+          this.thisProject = p;
           this.taskService.selectTask(t[0]);
         }, e => {
           console.error(e);

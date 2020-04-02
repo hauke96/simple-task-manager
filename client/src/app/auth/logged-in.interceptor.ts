@@ -12,8 +12,7 @@ import { AuthService } from './auth.service';
 
 @Injectable()
 export class LoggedInInterceptor implements HttpInterceptor {
-
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     const token = localStorage.getItem('auth_token');
