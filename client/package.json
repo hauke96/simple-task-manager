@@ -1,11 +1,10 @@
 {
   "name": "simple-task-manager",
-  "version": "0.2.0",
+  "version": "0.3.0-dev",
   "scripts": {
     "ng": "ng",
     "dev": "ng serve --watch",
     "build": "ng build --prod",
-    "build-hst-stm-test": "ng build -c hst-stm-test --base-href \"/stm-test/\" --progress",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -23,7 +22,6 @@
     "@turf/square-grid": "^6.0.2",
     "@types/openlayers": "^4.6.17",
     "ol": "^6.2.1",
-    "osm-auth": "^1.0.2",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"

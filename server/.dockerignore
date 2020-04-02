@@ -1,0 +1,7 @@
+docker-compose*
+.dockerignore
+.git
+.gitignore
+server
+server.debug
+

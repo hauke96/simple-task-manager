@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-oauth-landing',
@@ -6,11 +7,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./oauth-landing.component.scss']
 })
 export class OauthLandingComponent implements OnInit {
-
-  constructor() { }
+  constructor(private route: ActivatedRoute) {
+    this.route.queryParams.subscribe(params => {
+       localStorage.setItem('auth_token', params['token']);
+       window.close();
+    });
+  }
 
   ngOnInit(): void {
-    window.opener.authComplete(window.location.href);
-    window.close();
   }
 }

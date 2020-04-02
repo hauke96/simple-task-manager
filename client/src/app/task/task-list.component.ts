@@ -1,4 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, AfterViewInit, Input } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Task } from './task.material';
 import { TaskService } from './task.service';
 
@@ -7,17 +9,21 @@ import { TaskService } from './task.service';
   templateUrl: './task-list.component.html',
   styleUrls: ['./task-list.component.scss']
 })
-export class TaskListComponent implements OnInit {
+export class TaskListComponent implements AfterViewInit {
   @Input() projectId: string;
-  @Input() taskIds: string[];
+  @Input() tasks: Task[];
 
   constructor(private taskService: TaskService) { }
 
-  ngOnInit(): void {
-  }
-
-  public get tasks(): Task[] {
-    return this.taskService.getTasks(this.taskIds);
+  ngAfterViewInit(): void {
+    this.taskService.selectedTaskChanged.subscribe((task) => {
+      for (let i in this.tasks) {
+        if (this.tasks[i].id === task.id) {
+          this.tasks[i] = task
+          break;
+        }
+      }
+    });
   }
 
   public get selectedTaskId(): string {
@@ -25,6 +31,6 @@ export class TaskListComponent implements OnInit {
   }
 
   public onListItemClicked(id: string) {
-    this.taskService.selectTask(id);
+    this.taskService.selectTask(this.tasks.find(t => t.id === id));
   }
 }

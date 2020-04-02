@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
+import { Observable, throwError } from 'rxjs';
+import { map, flatMap } from 'rxjs/operators';
 import { Project } from './project.material';
 import { Task } from './../task/task.material';
 import { TaskService } from './../task/task.service';
+import { HttpClient } from '@angular/common/http';
+import { environment } from './../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -9,26 +13,33 @@ import { TaskService } from './../task/task.service';
 export class ProjectService {
   public projects: Project[] = [];
 
-  constructor(private taskService: TaskService) {
-    this.projects[0] = new Project('p1', 'Test', ['t0', 't1']);
-    this.projects[1] = new Project('p2', 'foo', ['t2']);
-    this.projects[2] = new Project('p3', 'bar', ['t3', 't4']);
+  constructor(private taskService: TaskService, private http: HttpClient) {
   }
 
-  public getProjects() : Project[] {
-    return this.projects;
+  public getProjects(): Observable<Project[]> {
+    return this.http.get<Project[]>(environment.url_projects);
   }
 
-  public getProject(id: string) : Project {
-    return this.projects.find(p => p.id == id);
+  public getProject(id: string): Observable<Project> {
+    return this.getProjects()
+      .pipe(map(projects => {
+        const p = projects.find(p => p.id === id);
+
+        if (!p) {
+          throw new Error("Project not found");
+        }
+
+        return p;
+      })
+    );
   }
 
-  public createNewProject(name: string, maxPorcessPoints, geometries: [[number, number]][]) {
+  public createNewProject(name: string, maxProcessPoints: number, geometries: [[number, number]][]): Observable<Project> {
     // Create new tasks with the given geometries and collect their IDs
-    const tasks = geometries.map(g => this.taskService.createNewTask(g, maxPorcessPoints));
-    console.log(tasks);
-
-    const p = new Project('p-'+Math.random().toString(36).substring(7), name, tasks);
-    this.projects.push(p);
+    return this.taskService.createNewTasks(geometries, maxProcessPoints)
+      .pipe(flatMap(tasks => {
+        const p = new Project('', name, tasks.map(t => t.id));
+        return this.http.post<Project>(environment.url_projects, JSON.stringify(p));
+      }));
   }
 }
