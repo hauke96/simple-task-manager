@@ -25,6 +25,9 @@ export class ProjectComponent implements OnInit {
         this.taskService.getTasks(this.thisProject.taskIds).subscribe(t => {
           this.taskService.selectTask(t[0]);
           this.tasks = t
+        }, e => {
+          console.error(e);
+          this.router.navigate(['/manager']);
         });
       }, e => {
         console.error(e);
