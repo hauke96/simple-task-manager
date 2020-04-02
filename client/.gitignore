@@ -48,3 +48,6 @@ Thumbs.db
 
 # Scripts
 *.sh
+
+# Image files and assets
+src/favicon.png
