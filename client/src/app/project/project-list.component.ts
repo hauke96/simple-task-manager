@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ProjectService } from './project.service';
+import { Project } from './project.material';
 import { Router } from '@angular/router';
 
 @Component({
@@ -8,13 +9,12 @@ import { Router } from '@angular/router';
   styleUrls: ['./project-list.component.scss']
 })
 export class ProjectListComponent implements OnInit {
+  public projects: Project[];
+
   constructor(private projectService: ProjectService, private router: Router) { }
 
-  public get projects() {
-    return this.projectService.getProjects();
-  }
-
   ngOnInit(): void {
+    this.projectService.getProjects().subscribe(p => this.projects = p);
   }
 
   public onProjectListItemClicked(id: string) {

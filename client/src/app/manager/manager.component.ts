@@ -21,6 +21,5 @@ export class ManagerComponent implements OnInit {
 
   public onLogoutClicked() {
     this.authService.logout();
-    this.router.navigate(['/']);
   }
 }

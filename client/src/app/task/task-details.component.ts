@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable, of } from 'rxjs';
 import { TaskService } from './task.service';
 import { Task } from './task.material';
 import { UserService } from '../auth/user.service';
@@ -15,12 +16,9 @@ export class TaskDetailsComponent implements OnInit {
   constructor(private taskService: TaskService, private userService: UserService) { }
 
   ngOnInit(): void {
-    this.task = this.taskService.getSelectedTask();
-    this.newProcessPoints = this.task.processPoints;
-
     this.taskService.selectedTaskChanged.subscribe((task) => {
       this.task = task;
-      this.newProcessPoints = this.task.processPoints;
+      this.newProcessPoints = task.processPoints;
     });
   }
 
