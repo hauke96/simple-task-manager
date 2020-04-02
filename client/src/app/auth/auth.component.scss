@@ -7,20 +7,31 @@
 	justify-content: space-between;
 }
 
+.logo {
+	margin-top: $space-huge;
+	opacity: 0.75;
+}
+
 .heading {
 	max-width: 500px;
 	font-size: 20pt;
 	margin-top: $space-huge;
 }
 
-.login-buttons {
+.login-button {
+	padding: $space-large;
 	margin-top: $space-huge;
+	margin-bottom: $space-huge;
+	margin-right: $space-huge;
+	margin-left: $space-huge;
+	border-top: 1px solid $very-light-gray;
+	border-bottom: 1px solid $very-light-gray;
 }
 
 .notice {
 	display: flex;
 	justify-content: center;
-	margin-top: 100px;
+	padding-top: 10px; // compensate the -5px from below and get 5px actual space
 }
 
 .notice-text {
@@ -28,7 +39,7 @@
 }
 
 .notice-bar {
-	width: 3px;
+	width: 1px;
 	background-color: $gray-mid;
 	margin-left: 15px;
 	margin-right: 15px;

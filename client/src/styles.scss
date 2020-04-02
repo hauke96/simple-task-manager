@@ -77,7 +77,10 @@ a:hover {
 
 .toolbar {
 	left: 0px;
-	padding: $space-base;
+	padding-left: $space-large;
+	padding-right: $space-large;
+	padding-top: $space-base;
+	padding-bottom: $space-base;
 	background-color: $color-mid;
 	height: $space-huge;
 	display: flex;
