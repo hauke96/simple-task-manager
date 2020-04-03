@@ -2,26 +2,30 @@
 
 :host {
 	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: stretch;
 }
 
 .root-container {
-	height: 100%;
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
+	flex-grow: 1;
+	margin-top: 0px;
+	min-height: 0px; // important for scrolling (for whatever reason, s. above)
 }
 
 .project-properties-container {
 	display: flex;
 	flex-direction: column;
 }
-.project-properties-container > div {
+.project-properties-container div {
 	margin-bottom: $space-base
 }
 
 .map-container {
-	height: 75%;
-	width: 50%;
+	width: 65%;
 	display: flex;
 	flex-direction: column;
 }
