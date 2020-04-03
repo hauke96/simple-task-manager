@@ -11,18 +11,21 @@ func prepare() {
 		Name:    "First project",
 		TaskIDs: []string{"t-3", "t-4"},
 		Users:   []string{"Peter"},
+		Owner:   "Peter",
 	})
 	projects = append(projects, Project{
 		Id:      "p-1",
 		Name:    "Foo",
 		TaskIDs: []string{"t-5"},
 		Users:   []string{"Peter", "Maria"},
+		Owner:   "Peter",
 	})
 	projects = append(projects, Project{
 		Id:      "p-2",
 		Name:    "Bar",
 		TaskIDs: []string{"t-6", "t-7", "t-8", "t-9", "t-10"},
 		Users:   []string{"Maria"},
+		Owner:   "Maria",
 	})
 }
 
@@ -66,7 +69,7 @@ func TestGetProjects(t *testing.T) {
 	}
 }
 
-func TestAddProject(t *testing.T) {
+func TestAddAndGetProject(t *testing.T) {
 	projects = make([]Project, 0)
 	nextId = 100 // the new project should then have the ID "p-100"
 
@@ -75,6 +78,7 @@ func TestAddProject(t *testing.T) {
 		Name:    "Test name",
 		TaskIDs: []string{"t-11"},
 		Users:   []string{"noname-user"},
+		Owner:   "noname-user",
 	}
 	AddProject(p, "Maria")
 
@@ -94,6 +98,10 @@ func TestAddProject(t *testing.T) {
 	}
 	if newProject.Name != p.Name {
 		t.Errorf("Name is not the same")
+		t.Fail()
+	}
+	if newProject.Owner != "Maria" {
+		t.Errorf("Owner does not match")
 		t.Fail()
 	}
 }

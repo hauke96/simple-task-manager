@@ -5,6 +5,7 @@ type Project struct {
 	Name    string   `json:"name"`
 	TaskIDs []string `json:"taskIds"`
 	Users   []string `json:"users"`
+	Owner   string   `json:"owner"`
 }
 
 var (
@@ -18,18 +19,21 @@ func InitProjects() {
 		Name:    "First project",
 		TaskIDs: []string{"t-3", "t-4"},
 		Users:   []string{"hauke-stieler"},
+		Owner:   "hauke-stieler",
 	})
 	projects = append(projects, Project{
 		Id:      "p-" + GetId(),
 		Name:    "Foo",
 		TaskIDs: []string{"t-5"},
 		Users:   []string{"hauke-stieler", "hauke-stieler-dev"},
+		Owner:   "hauke-stieler",
 	})
 	projects = append(projects, Project{
 		Id:      "p-" + GetId(),
 		Name:    "Bar",
 		TaskIDs: []string{"t-6", "t-7", "t-8", "t-9", "t-10"},
 		Users:   []string{"hauke-stieler-dev"},
+		Owner:   "hauke-stieler-dev",
 	})
 }
 
@@ -50,6 +54,7 @@ func GetProjects(user string) []Project {
 func AddProject(project Project, user string) Project {
 	project.Id = "p-" + GetId()
 	project.Users = []string{user}
+	project.Owner = user
 	projects = append(projects, project)
 	return project
 }

@@ -64,9 +64,9 @@ Stage 3 creates the server to handle and distribute everything.
 Stage 4 finally adds support for multiple users.
 This will enable you to invite other to tasks.
 
-* [ ] Define creator of project (aka "admin")
-* [ ] Mark own projects
-* [ ] Invite user (only possible by admin)
+* [x] Define creator of project (aka "owner")
+* [x] Mark own projects
+* [ ] Invite user (only possible by owner)
   * [ ] Enter username and to invite user
   * [ ] Users should also see projects they've invited to
 
