@@ -15,6 +15,16 @@
 	margin-left: $space-large;
 }
 
+.process-point-container {
+	display: flex;
+	align-items: center;
+	height: 40px; // To stay equally high, regardless of what the content is
+}
+
+.points-label {
+	margin-right: 5px;
+}
+
 input {
 	width: 50px;
 }

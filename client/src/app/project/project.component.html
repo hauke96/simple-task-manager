@@ -3,18 +3,18 @@
 	<p class="project-label">Project: {{thisProject?.name}}</p>
 </div>
 <div class="root-container">
-	<div class="root-container-item task-list-container">
-		<h1>Tasks</h1>
-		<app-task-list *ngIf="tasks" [projectId]="thisProject?.id" [tasks]="tasks"></app-task-list>
-	</div>
-	<div class="root-container-item task-details-map-container">
-		<div class="map-container">
-			<h1>Map</h1>
-			<app-task-map *ngIf="tasks" [tasks]="tasks" class="map"></app-task-map>
-		</div>
-		<div class="details-container">
+	<div class="root-container-item task-list-details-container">
+		<div class="task-details-container">
 			<h1>Details</h1>
 			<app-task-details></app-task-details>
 		</div>
+		<div class="task-list-container">
+			<h1>Tasks</h1>
+			<app-task-list class="task-list-style" *ngIf="tasks" [projectId]="thisProject?.id" [tasks]="tasks"></app-task-list>
+		</div>
+	</div>
+	<div class="root-container-item map-container">
+		<h1>Map</h1>
+		<app-task-map *ngIf="tasks" [tasks]="tasks" class="map"></app-task-map>
 	</div>
 </div>
