@@ -120,6 +120,13 @@ func AddUser(user, id, potentialOwner string) (*Project, error) {
 		return nil, errors.New(fmt.Sprintf("User '%s' is not allowed to add another user", potentialOwner))
 	}
 
+	// Check if user is already in project. If so, just do nothing and return
+	for _, u := range project.Users {
+		if u == user {
+			return project, nil
+		}
+	}
+
 	project.Users = append(project.Users, user)
 
 	return project, nil
