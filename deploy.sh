@@ -6,7 +6,6 @@ clear
 date
 echo -e "\n\n\n"
 
-docker-compose down
 docker-compose up -d --build
 
 echo -e "\n\n\n"
