@@ -1,5 +1,10 @@
 package main
 
+import (
+	"errors"
+	"fmt"
+)
+
 type Project struct {
 	Id      string   `json:"id"`
 	Name    string   `json:"name"`
@@ -92,4 +97,30 @@ func VerifyOwnership(user string, taskIds []string) bool {
 	}
 
 	return true
+}
+
+func GetProject(id string) (*Project, error) {
+	for _, p := range projects {
+		if p.Id == id {
+			return p, nil
+		}
+	}
+
+	return nil, errors.New(fmt.Sprintf("Project with ID '%s' not found", id))
+}
+
+func AddUser(user, id, potentialOwner string) (*Project, error) {
+	project, err := GetProject(id)
+	if err != nil {
+		return nil, err
+	}
+
+	// Only the owner is allowed to invite
+	if project.Owner != potentialOwner {
+		return nil, errors.New(fmt.Sprintf("User '%s' is not allowed to add another user", potentialOwner))
+	}
+
+	project.Users = append(project.Users, user)
+
+	return project, nil
 }

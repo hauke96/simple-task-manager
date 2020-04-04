@@ -106,7 +106,46 @@ func TestAddAndGetProject(t *testing.T) {
 	}
 }
 
-func contains(projectIdToFind string, projectsToCheck []Project) bool {
+func TestAddUser(t *testing.T) {
+	prepare()
+
+	newUser := "new user"
+
+	p, err := AddUser(newUser, "p-0", "Peter")
+	if err != nil {
+		t.Error("This should work")
+		t.Error(err.Error())
+		t.Fail()
+	}
+
+	containsUser := false
+	for _, u := range p.Users {
+		if u == newUser {
+			containsUser = true
+			break
+		}
+	}
+	if !containsUser {
+		t.Error("Project should contain new user")
+		t.Fail()
+	}
+
+	p, err = AddUser(newUser, "p-2346", "Peter")
+	if err == nil {
+		t.Error("This should not work: The project does not exist")
+		t.Error(err.Error())
+		t.Fail()
+	}
+
+	p, err = AddUser(newUser, "p-0", "Not-Owner-User")
+	if err == nil {
+		t.Error("This should not work: A non-owner user tries to add a user")
+		t.Error(err.Error())
+		t.Fail()
+	}
+}
+
+func contains(projectIdToFind string, projectsToCheck []*Project) bool {
 	for _, p := range projectsToCheck {
 		if p.Id == projectIdToFind {
 			return true

@@ -152,6 +152,29 @@ func addProject(w http.ResponseWriter, r *http.Request, token *Token) {
 	encoder.Encode(updatedProject)
 }
 
+func addUserToTask(w http.ResponseWriter, r *http.Request, token *Token) {
+	userName, err := getParam("user", r)
+	if err != nil {
+		responseBadRequest(w, err.Error())
+		return
+	}
+
+	projectId, err := getParam("project", r)
+	if err != nil {
+		responseBadRequest(w, err.Error())
+		return
+	}
+
+	updatedProject, err := AddUser(userName, projectId, token.User)
+	if err != nil {
+		responseInternalError(w, err.Error())
+		return
+	}
+
+	encoder := json.NewEncoder(w)
+	encoder.Encode(updatedProject)
+}
+
 func getTasks(w http.ResponseWriter, r *http.Request, token *Token) {
 	// Read task IDs from URL query parameter "task_ids" and split by ","
 	taskIdsString, err := getParam("task_ids", r)
