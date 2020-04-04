@@ -18,6 +18,7 @@ import { TaskMapComponent } from './task/task-map.component';
 import { FooterComponent } from './ui/footer.component';
 import { ProjectCreationComponent } from './project/project-creation.component';
 import { TabsComponent } from './ui/tabs.component';
+import { UserListComponent } from './user/user-list.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { TabsComponent } from './ui/tabs.component';
     TaskMapComponent,
     FooterComponent,
     ProjectCreationComponent,
-    TabsComponent
+    TabsComponent,
+    UserListComponent
   ],
   imports: [
     BrowserModule,
