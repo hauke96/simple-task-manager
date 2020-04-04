@@ -19,6 +19,7 @@ import { FooterComponent } from './ui/footer.component';
 import { ProjectCreationComponent } from './project/project-creation.component';
 import { TabsComponent } from './ui/tabs.component';
 import { UserListComponent } from './user/user-list.component';
+import { UserInvitationComponent } from './user/user-invitation.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { UserListComponent } from './user/user-list.component';
     FooterComponent,
     ProjectCreationComponent,
     TabsComponent,
-    UserListComponent
+    UserListComponent,
+    UserInvitationComponent
   ],
   imports: [
     BrowserModule,
