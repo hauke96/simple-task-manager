@@ -66,9 +66,9 @@ This will enable you to invite other to tasks.
 
 * [x] Define creator of project (aka "owner")
 * [x] Mark own projects
-* [ ] Invite user (only possible by owner)
-  * [ ] Enter username and to invite user
-  * [ ] Users should also see projects they've invited to
+* [x] Invite user (only possible by owner)
+  * [x] Enter username and to invite user
+  * [x] Users should also see projects they've invited to
 
 ## Stage 5
 
