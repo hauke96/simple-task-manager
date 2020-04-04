@@ -1,7 +1,7 @@
 import { NgZone, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
-import { UserService } from './user.service';
+import { UserService } from '../user/user.service';
 
 @Component({
   selector: 'app-auth',

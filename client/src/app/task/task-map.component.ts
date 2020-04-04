@@ -1,6 +1,6 @@
 import { Component, AfterViewInit, Input } from '@angular/core';
 import { TaskService } from './task.service';
-import { UserService } from '../auth/user.service';
+import { UserService } from '../user/user.service';
 import { Task } from './task.material';
 import { Map, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';

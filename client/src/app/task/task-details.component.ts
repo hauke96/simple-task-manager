@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { TaskService } from './task.service';
 import { Task } from './task.material';
-import { UserService } from '../auth/user.service';
+import { UserService } from '../user/user.service';
 
 @Component({
   selector: 'app-task-details',
