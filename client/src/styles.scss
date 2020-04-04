@@ -1,6 +1,7 @@
 @import "colors.scss";
 
 // Global distances etc.
+$space-small: 5px;
 $space-base: 10px;
 $space-large: $space-base * 2;
 $space-huge: $space-base * 4;
@@ -88,4 +89,12 @@ a:hover {
 	height: $space-huge;
 	display: flex;
 	align-items: center;
+}
+
+input {
+	border: 1px solid $color-light;
+	padding: $space-small;
+}
+input:focus {
+	border: 1px solid $color-mid;
 }
