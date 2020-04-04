@@ -12,4 +12,8 @@ export class UserInvitationComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  public onInvitationButtonClicked(userName: string) {
+    console.log(userName + " invited");
+    // TODO make server call
+  }
 }
