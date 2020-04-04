@@ -60,6 +60,7 @@ func main() {
 	router.HandleFunc("/oauth_callback", oauthCallback).Methods(http.MethodGet)
 	router.HandleFunc("/projects", authenticatedHandler(getProjects)).Methods(http.MethodGet)
 	router.HandleFunc("/projects", authenticatedHandler(addProject)).Methods(http.MethodPost)
+	router.HandleFunc("/projects/users", authenticatedHandler(addUserToTask)).Methods(http.MethodPost)
 	router.HandleFunc("/tasks", authenticatedHandler(getTasks)).Methods(http.MethodGet)
 	router.HandleFunc("/tasks", authenticatedHandler(addTask)).Methods(http.MethodPost)
 	router.HandleFunc("/task/assignedUser", authenticatedHandler(assignUser)).Methods(http.MethodPost)

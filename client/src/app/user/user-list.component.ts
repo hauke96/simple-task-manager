@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { ProjectService } from '../project/project.service';
 
 @Component({
   selector: 'app-user-list',
@@ -8,8 +9,11 @@ import { Component, OnInit, Input } from '@angular/core';
 export class UserListComponent implements OnInit {
   @Input() users: string[];
 
-  constructor( ) { }
+  constructor(
+    private projectService: ProjectService
+  ) { }
 
   ngOnInit(): void {
+    this.projectService.projectChanged.subscribe(p => this.users = p.users);
   }
 }
