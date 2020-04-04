@@ -26,6 +26,8 @@
 	width: 35%;
 	display: flex;
 	flex-direction: column;
+	justify-content: space-between;
+	margin-top: $space-large;
 	margin-right: $space-large;
 }
 

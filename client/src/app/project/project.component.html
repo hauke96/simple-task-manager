@@ -4,11 +4,6 @@
 </div>
 <div class="root-container">
 	<div class="task-list-details-container">
-		<div class="task-details-container">
-			<h1>Details</h1>
-			<app-task-details></app-task-details>
-		</div>
-
 		<app-tabs [tabs]="['Tasks', 'Users']" #tabs>
 			<div *ngIf="tabs.tabIndex === 0">
 				<div class="tab-container">
@@ -24,6 +19,10 @@
 			</div>
 		</app-tabs>
 
+		<div class="task-details-container">
+			<h1>Task Details</h1>
+			<app-task-details></app-task-details>
+		</div>
 	</div>
 	<div class="map-container">
 		<h1>Map</h1>
