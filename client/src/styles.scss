@@ -48,6 +48,9 @@ button {
 button:hover {
 	border: 1px solid $color-mid;
 }
+button::-moz-focus-inner { // remove dotted line in Firefoc
+	border: 0
+}
 
 a {
 	color: $color-very-dark;

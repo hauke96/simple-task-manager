@@ -8,10 +8,22 @@
 			<h1>Details</h1>
 			<app-task-details></app-task-details>
 		</div>
-		<div class="task-list-container">
-			<h1>Tasks</h1>
-			<app-task-list class="task-list-style" *ngIf="tasks" [projectId]="thisProject?.id" [tasks]="tasks"></app-task-list>
-		</div>
+
+		<app-tabs [tabs]="['Tasks', 'Users']" #tabs>
+			<div *ngIf="tabs.tabIndex === 0">
+				<div class="tab-container">
+					<h1>Tasks</h1>
+					<app-task-list class="task-list-style" *ngIf="tasks" [projectId]="thisProject?.id" [tasks]="tasks"></app-task-list>
+				</div>
+			</div>
+			<div *ngIf="tabs.tabIndex === 1">
+				<div class="tab-container">
+					<h1>Users</h1>
+					(coming soon)
+				</div>
+			</div>
+		</app-tabs>
+
 	</div>
 	<div class="map-container">
 		<h1>Map</h1>
