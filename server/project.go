@@ -9,26 +9,26 @@ type Project struct {
 }
 
 var (
-	projects []Project
+	projects []*Project
 )
 
 func InitProjects() {
-	projects = make([]Project, 0)
-	projects = append(projects, Project{
+	projects = make([]*Project, 0)
+	projects = append(projects, &Project{
 		Id:      "p-" + GetId(),
 		Name:    "First project",
 		TaskIDs: []string{"t-3", "t-4"},
 		Users:   []string{"hauke-stieler"},
 		Owner:   "hauke-stieler",
 	})
-	projects = append(projects, Project{
+	projects = append(projects, &Project{
 		Id:      "p-" + GetId(),
 		Name:    "Foo",
 		TaskIDs: []string{"t-5"},
 		Users:   []string{"hauke-stieler", "hauke-stieler-dev"},
 		Owner:   "hauke-stieler",
 	})
-	projects = append(projects, Project{
+	projects = append(projects, &Project{
 		Id:      "p-" + GetId(),
 		Name:    "Bar",
 		TaskIDs: []string{"t-6", "t-7", "t-8", "t-9", "t-10"},
@@ -37,8 +37,8 @@ func InitProjects() {
 	})
 }
 
-func GetProjects(user string) []Project {
-	result := make([]Project, 0)
+func GetProjects(user string) []*Project {
+	result := make([]*Project, 0)
 
 	for _, p := range projects {
 		for _, u := range p.Users {
@@ -51,7 +51,7 @@ func GetProjects(user string) []Project {
 	return result
 }
 
-func AddProject(project Project, user string) Project {
+func AddProject(project *Project, user string) *Project {
 	project.Id = "p-" + GetId()
 	project.Users = []string{user}
 	project.Owner = user
