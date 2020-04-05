@@ -14,7 +14,7 @@ import (
 	"github.com/hauke96/sigolo"
 )
 
-const VERSION string = "0.4.0-dev"
+const VERSION string = "0.4.0"
 
 var (
 	app       = kingpin.New("Simple Task Manager", "A tool dividing an area of the map into smaller tasks.")
