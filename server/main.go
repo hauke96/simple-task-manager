@@ -14,7 +14,7 @@ import (
 	"github.com/hauke96/sigolo"
 )
 
-const VERSION string = "0.3.1"
+const VERSION string = "0.4.0"
 
 var (
 	app       = kingpin.New("Simple Task Manager", "A tool dividing an area of the map into smaller tasks.")
@@ -60,6 +60,7 @@ func main() {
 	router.HandleFunc("/oauth_callback", oauthCallback).Methods(http.MethodGet)
 	router.HandleFunc("/projects", authenticatedHandler(getProjects)).Methods(http.MethodGet)
 	router.HandleFunc("/projects", authenticatedHandler(addProject)).Methods(http.MethodPost)
+	router.HandleFunc("/projects/users", authenticatedHandler(addUserToTask)).Methods(http.MethodPost)
 	router.HandleFunc("/tasks", authenticatedHandler(getTasks)).Methods(http.MethodGet)
 	router.HandleFunc("/tasks", authenticatedHandler(addTask)).Methods(http.MethodPost)
 	router.HandleFunc("/task/assignedUser", authenticatedHandler(assignUser)).Methods(http.MethodPost)
@@ -146,10 +147,33 @@ func addProject(w http.ResponseWriter, r *http.Request, token *Token) {
 	json.Unmarshal(bodyBytes, &project)
 	// TODO check wether all neccessary fields are set
 
-	project = AddProject(project, token.User)
+	updatedProject := AddProject(&project, token.User)
 
 	encoder := json.NewEncoder(w)
-	encoder.Encode(project)
+	encoder.Encode(updatedProject)
+}
+
+func addUserToTask(w http.ResponseWriter, r *http.Request, token *Token) {
+	userName, err := getParam("user", r)
+	if err != nil {
+		responseBadRequest(w, err.Error())
+		return
+	}
+
+	projectId, err := getParam("project", r)
+	if err != nil {
+		responseBadRequest(w, err.Error())
+		return
+	}
+
+	updatedProject, err := AddUser(userName, projectId, token.User)
+	if err != nil {
+		responseInternalError(w, err.Error())
+		return
+	}
+
+	encoder := json.NewEncoder(w)
+	encoder.Encode(updatedProject)
 }
 
 func getTasks(w http.ResponseWriter, r *http.Request, token *Token) {

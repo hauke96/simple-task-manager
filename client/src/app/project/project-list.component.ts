@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ProjectService } from './project.service';
+import { UserService } from './../user/user.service';
 import { Project } from './project.material';
 import { Router } from '@angular/router';
 
@@ -13,11 +14,16 @@ export class ProjectListComponent implements OnInit {
 
   constructor(
     private projectService: ProjectService,
-    private router: Router
+    private router: Router,
+    private userService: UserService
   ) { }
 
   ngOnInit(): void {
     this.projectService.getProjects().subscribe(p => this.projects = p);
+  }
+
+  public get currentUser(): string {
+    return this.userService.getUser();
   }
 
   public onProjectListItemClicked(id: string) {

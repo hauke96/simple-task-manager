@@ -5,16 +5,16 @@
 <div class="root-container">
 	<div class="project-properties-container">
 		<div>
-			Name: 
-			<input [(ngModel)]="newProjectName">
+			<h2>Properties:</h2>
+			<div>
+				Name: 
+				<input [(ngModel)]="newProjectName">
+			</div>
+			<div>
+				Max. points per task:
+				<input type="number" [(ngModel)]="newMaxProcessPoints">
+			</div>
 		</div>
-		<div>
-			Max. points per task:
-			<input type="number" [(ngModel)]="newMaxProcessPoints">
-		</div>
-	</div>
-	<div class="map-container">
-		<div id="map"></div>
 		<div>
 			<h2>Divide into squares:</h2>
 			<div>
@@ -24,5 +24,8 @@
 			</div><br>
 			<button (click)="onDivideButtonClicked()">Divide</button>
 		</div>
+	</div>
+	<div class="map-container">
+		<div id="map"></div>
 	</div>
 </div>

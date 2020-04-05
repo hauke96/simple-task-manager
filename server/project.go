@@ -1,40 +1,49 @@
 package main
 
+import (
+	"errors"
+	"fmt"
+)
+
 type Project struct {
 	Id      string   `json:"id"`
 	Name    string   `json:"name"`
 	TaskIDs []string `json:"taskIds"`
 	Users   []string `json:"users"`
+	Owner   string   `json:"owner"`
 }
 
 var (
-	projects []Project
+	projects []*Project
 )
 
 func InitProjects() {
-	projects = make([]Project, 0)
-	projects = append(projects, Project{
+	projects = make([]*Project, 0)
+	projects = append(projects, &Project{
 		Id:      "p-" + GetId(),
 		Name:    "First project",
 		TaskIDs: []string{"t-3", "t-4"},
 		Users:   []string{"hauke-stieler"},
+		Owner:   "hauke-stieler",
 	})
-	projects = append(projects, Project{
+	projects = append(projects, &Project{
 		Id:      "p-" + GetId(),
 		Name:    "Foo",
 		TaskIDs: []string{"t-5"},
 		Users:   []string{"hauke-stieler", "hauke-stieler-dev"},
+		Owner:   "hauke-stieler",
 	})
-	projects = append(projects, Project{
+	projects = append(projects, &Project{
 		Id:      "p-" + GetId(),
 		Name:    "Bar",
 		TaskIDs: []string{"t-6", "t-7", "t-8", "t-9", "t-10"},
 		Users:   []string{"hauke-stieler-dev"},
+		Owner:   "hauke-stieler-dev",
 	})
 }
 
-func GetProjects(user string) []Project {
-	result := make([]Project, 0)
+func GetProjects(user string) []*Project {
+	result := make([]*Project, 0)
 
 	for _, p := range projects {
 		for _, u := range p.Users {
@@ -47,9 +56,10 @@ func GetProjects(user string) []Project {
 	return result
 }
 
-func AddProject(project Project, user string) Project {
+func AddProject(project *Project, user string) *Project {
 	project.Id = "p-" + GetId()
 	project.Users = []string{user}
+	project.Owner = user
 	projects = append(projects, project)
 	return project
 }
@@ -87,4 +97,37 @@ func VerifyOwnership(user string, taskIds []string) bool {
 	}
 
 	return true
+}
+
+func GetProject(id string) (*Project, error) {
+	for _, p := range projects {
+		if p.Id == id {
+			return p, nil
+		}
+	}
+
+	return nil, errors.New(fmt.Sprintf("Project with ID '%s' not found", id))
+}
+
+func AddUser(user, id, potentialOwner string) (*Project, error) {
+	project, err := GetProject(id)
+	if err != nil {
+		return nil, err
+	}
+
+	// Only the owner is allowed to invite
+	if project.Owner != potentialOwner {
+		return nil, errors.New(fmt.Sprintf("User '%s' is not allowed to add another user", potentialOwner))
+	}
+
+	// Check if user is already in project. If so, just do nothing and return
+	for _, u := range project.Users {
+		if u == user {
+			return project, nil
+		}
+	}
+
+	project.Users = append(project.Users, user)
+
+	return project, nil
 }

@@ -1,0 +1,10 @@
+<div class="tab-list">
+	<div *ngFor="let t of tabs">
+		<button (click)="onTabClicked(t)" [ngClass]="{selected: t == tabTitle}">{{t}}</button>
+	</div>
+</div>
+<div class="tab-content">
+	<div class="inner-content">
+		<ng-content></ng-content>
+	</div>
+</div>

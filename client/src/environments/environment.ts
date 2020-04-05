@@ -6,6 +6,7 @@ export const environment = {
 
   url_auth: baseUrl + '/oauth_login',
   url_projects: baseUrl + '/projects',
+  url_projects_users: baseUrl + '/projects/users',
   url_tasks: baseUrl + '/tasks',
   url_task_assignedUser: baseUrl + '/task/assignedUser',
   url_task_processPoints: baseUrl + '/task/processPoints'

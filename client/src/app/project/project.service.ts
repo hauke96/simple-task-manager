@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { map, flatMap } from 'rxjs/operators';
+import { map, flatMap, tap } from 'rxjs/operators';
 import { Project } from './project.material';
 import { Task } from './../task/task.material';
 import { TaskService } from './../task/task.service';
@@ -11,7 +11,7 @@ import { environment } from './../../environments/environment';
   providedIn: 'root'
 })
 export class ProjectService {
-  public projects: Project[] = [];
+  public projectChanged: EventEmitter<Project> = new EventEmitter();
 
   constructor(
     private taskService: TaskService,
@@ -43,5 +43,10 @@ export class ProjectService {
         const p = new Project('', name, tasks.map(t => t.id));
         return this.http.post<Project>(environment.url_projects, JSON.stringify(p));
       }));
+  }
+
+  public inviteUser(user: string, id: string): Observable<Project> {
+    return this.http.post<Project>(environment.url_projects_users + '?user=' + user + '&project=' + id, '')
+      .pipe(tap(p => this.projectChanged.emit(p)));
   }
 }

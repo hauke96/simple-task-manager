@@ -1,9 +1,14 @@
 @import "../../styles.scss";
 
+.list-item {
+	display: flex;
+	justify-content: space-between;
+}
+
 .create-project-button {
 	margin-top: $space-large;
 }
 
-.id-label {
+.light-label {
 	color: $gray-mid;
 }
