@@ -11,6 +11,11 @@ COPY . ./stm-client/
 WORKDIR ./stm-client/
 RUN cp -r /tmp/node_modules ./
 
+# Tests
+RUN apt update && apt install -y --no-install-recommends firefox-esr
+RUN npm run test
+RUN apt remove -y firefox-esr
+
 RUN NODE_OPTIONS="--max_old_space_size=4096" npm run build
 
 ## STAGE 2 : Configure nginx and run client
