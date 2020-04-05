@@ -11,4 +11,4 @@ COPY . ./stm-server/
 WORKDIR ./stm-server/
 RUN go build .
 
-ENTRYPOINT ./stm-server -c ./configs/prod.json
+ENTRYPOINT ./stm-server -c ./config/prod.json

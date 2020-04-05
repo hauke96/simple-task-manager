@@ -1,11 +1,11 @@
-package main
+package task
 
 import (
 	"errors"
 	"fmt"
 	"strings"
 
-	"./util"
+	"../util"
 )
 
 type Task struct {

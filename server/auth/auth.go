@@ -1,4 +1,4 @@
-package main
+package auth
 
 import (
 	"crypto/aes"
@@ -17,7 +17,8 @@ import (
 	"github.com/hauke96/sigolo"
 	"github.com/kurrik/oauth1a"
 
-	"./util"
+	"../config"
+	"../util"
 )
 
 // Struct for authentication
@@ -41,16 +42,16 @@ var (
 )
 
 func InitAuth() {
-	oauthRedirectUrl = fmt.Sprintf("%s:%d/oauth_callback", Conf.ServerUrl, Conf.Port)
-	oauthConsumerKey = Conf.OauthConsumerKey
-	oauthSecret = Conf.OauthSecret
-	oauthBaseUrl = Conf.OsmBaseUrl
-	osmUserDetailsUrl = Conf.OsmBaseUrl + "/api/0.6/user/details"
+	oauthRedirectUrl = fmt.Sprintf("%s:%d/oauth_callback", config.Conf.ServerUrl, config.Conf.Port)
+	oauthConsumerKey = config.Conf.OauthConsumerKey
+	oauthSecret = config.Conf.OauthSecret
+	oauthBaseUrl = config.Conf.OsmBaseUrl
+	osmUserDetailsUrl = config.Conf.OsmBaseUrl + "/api/0.6/user/details"
 
 	service = &oauth1a.Service{
-		RequestURL:   Conf.OsmBaseUrl + "/oauth/request_token",
-		AuthorizeURL: Conf.OsmBaseUrl + "/oauth/authorize",
-		AccessURL:    Conf.OsmBaseUrl + "/oauth/access_token",
+		RequestURL:   config.Conf.OsmBaseUrl + "/oauth/request_token",
+		AuthorizeURL: config.Conf.OsmBaseUrl + "/oauth/authorize",
+		AccessURL:    config.Conf.OsmBaseUrl + "/oauth/access_token",
 		ClientConfig: &oauth1a.ClientConfig{
 			ConsumerKey:    oauthConsumerKey,
 			ConsumerSecret: oauthSecret,
@@ -63,7 +64,7 @@ func InitAuth() {
 	tokenSecretNonce = sha256.Sum256(getRandomBytes(265))
 }
 
-func oauthLogin(w http.ResponseWriter, r *http.Request) {
+func OauthLogin(w http.ResponseWriter, r *http.Request) {
 	userConfig := &oauth1a.UserConfig{}
 	configKey := fmt.Sprintf("%x", sha256.Sum256(getRandomBytes(64)))
 
@@ -87,7 +88,7 @@ func oauthLogin(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
 
-func oauthCallback(w http.ResponseWriter, r *http.Request) {
+func OauthCallback(w http.ResponseWriter, r *http.Request) {
 	sigolo.Info("Callback called")
 
 	configKey, err := util.GetParam("config", r)
@@ -186,7 +187,7 @@ func requestUserInformation(userConfig *oauth1a.UserConfig) (string, error) {
 		return "", err
 	}
 
-	var osm Osm
+	var osm util.Osm
 	xml.Unmarshal(responseBody, &osm)
 
 	return osm.User.DisplayName, nil
@@ -223,7 +224,7 @@ func getRandomBytes(count int) []byte {
 // verifyRequest checks the integrity of the token and the "valiUntil" date. It
 // then returns the token but without the secret part, just the metainformation
 // (e.g. user name) is set.
-func verifyRequest(r *http.Request) (*Token, error) {
+func VerifyRequest(r *http.Request) (*Token, error) {
 	encodedToken := r.Header.Get("Authorization")
 
 	tokenBytes, err := base64.StdEncoding.DecodeString(encodedToken)

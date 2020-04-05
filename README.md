@@ -157,7 +157,7 @@ Just go into the `server` folder and execute `go build .`.
 
 ### Configuration
 
-There are already some configuration files in the folder `./server/configs/`.
+There are already some configuration files in the folder `./server/config/`.
 Until there's further documentation, just take a look, the properties are quite simple and straight forward.
 
 ### HTTPS

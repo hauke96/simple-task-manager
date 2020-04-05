@@ -13,7 +13,10 @@ import (
 	"github.com/hauke96/kingpin"
 	"github.com/hauke96/sigolo"
 
+	"./auth"
+	"./config"
 	"./project"
+	"./task"
 	"./util"
 )
 
@@ -51,16 +54,16 @@ func main() {
 	configureLogging()
 
 	// Load config an override with CLI args
-	loadConfig(*appConfig)
-	Conf.Port = *appPort
-	Conf.DebugLogging = *appDebug
+	config.LoadConfig(*appConfig)
+	config.Conf.Port = *appPort
+	config.Conf.DebugLogging = *appDebug
 
 	// Register routes and print them
 	router := mux.NewRouter()
 
 	router.HandleFunc("/info", getInfo).Methods(http.MethodGet)
-	router.HandleFunc("/oauth_login", oauthLogin).Methods(http.MethodGet)
-	router.HandleFunc("/oauth_callback", oauthCallback).Methods(http.MethodGet)
+	router.HandleFunc("/oauth_login", auth.OauthLogin).Methods(http.MethodGet)
+	router.HandleFunc("/oauth_callback", auth.OauthCallback).Methods(http.MethodGet)
 	router.HandleFunc("/projects", authenticatedHandler(getProjects)).Methods(http.MethodGet)
 	router.HandleFunc("/projects", authenticatedHandler(addProject)).Methods(http.MethodPost)
 	router.HandleFunc("/projects/users", authenticatedHandler(addUserToTask)).Methods(http.MethodPost)
@@ -88,13 +91,13 @@ func main() {
 
 	// Init of Config, Services, Storages, etc.
 	project.InitProjects()
-	InitTasks()
-	InitAuth()
+	task.InitTasks()
+	auth.InitAuth()
 	sigolo.Info("Initializes services, storages, etc.")
 
-	if strings.HasPrefix(Conf.ServerUrl, "https") {
+	if strings.HasPrefix(config.Conf.ServerUrl, "https") {
 		sigolo.Info("Use HTTPS? yes")
-		err = http.ListenAndServeTLS(":"+strconv.Itoa(*appPort), Conf.SslCertFile, Conf.SslKeyFile, router)
+		err = http.ListenAndServeTLS(":"+strconv.Itoa(*appPort), config.Conf.SslCertFile, config.Conf.SslKeyFile, router)
 	} else {
 		sigolo.Info("Use HTTPS? no")
 		err = http.ListenAndServe(":"+strconv.Itoa(*appPort), router)
@@ -106,11 +109,11 @@ func main() {
 	}
 }
 
-func authenticatedHandler(handler func(w http.ResponseWriter, r *http.Request, token *Token)) func(http.ResponseWriter, *http.Request) {
+func authenticatedHandler(handler func(w http.ResponseWriter, r *http.Request, token *auth.Token)) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 
-		token, err := verifyRequest(r)
+		token, err := auth.VerifyRequest(r)
 		if err != nil {
 			sigolo.Error("Request is not authorized: %s", err.Error())
 			// No further information to caller (which is a potential attacker)
@@ -132,14 +135,14 @@ func getInfo(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, fmtStr, fmtColWidth, "Code", "https://github.com/hauke96/simple-task-manager")
 }
 
-func getProjects(w http.ResponseWriter, r *http.Request, token *Token) {
+func getProjects(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	projects := project.GetProjects(token.User)
 
 	encoder := json.NewEncoder(w)
 	encoder.Encode(projects)
 }
 
-func addProject(w http.ResponseWriter, r *http.Request, token *Token) {
+func addProject(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		sigolo.Error("Error reading request body: %s", err.Error())
@@ -156,7 +159,7 @@ func addProject(w http.ResponseWriter, r *http.Request, token *Token) {
 	encoder.Encode(updatedProject)
 }
 
-func addUserToTask(w http.ResponseWriter, r *http.Request, token *Token) {
+func addUserToTask(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	userName, err := util.GetParam("user", r)
 	if err != nil {
 		util.ResponseBadRequest(w, err.Error())
@@ -179,7 +182,7 @@ func addUserToTask(w http.ResponseWriter, r *http.Request, token *Token) {
 	encoder.Encode(updatedProject)
 }
 
-func getTasks(w http.ResponseWriter, r *http.Request, token *Token) {
+func getTasks(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	// Read task IDs from URL query parameter "task_ids" and split by ","
 	taskIdsString, err := util.GetParam("task_ids", r)
 	if err != nil {
@@ -196,13 +199,13 @@ func getTasks(w http.ResponseWriter, r *http.Request, token *Token) {
 		return
 	}
 
-	tasks := GetTasks(taskIds)
+	tasks := task.GetTasks(taskIds)
 
 	encoder := json.NewEncoder(w)
 	encoder.Encode(tasks)
 }
 
-func addTask(w http.ResponseWriter, r *http.Request, token *Token) {
+func addTask(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		sigolo.Error("Error reading request body: %s", err.Error())
@@ -210,16 +213,16 @@ func addTask(w http.ResponseWriter, r *http.Request, token *Token) {
 		return
 	}
 
-	var tasks []*Task
+	var tasks []*task.Task
 	json.Unmarshal(bodyBytes, &tasks)
 
-	updatedTasks := AddTasks(tasks)
+	updatedTasks := task.AddTasks(tasks)
 
 	encoder := json.NewEncoder(w)
 	encoder.Encode(updatedTasks)
 }
 
-func assignUser(w http.ResponseWriter, r *http.Request, token *Token) {
+func assignUser(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	taskId, err := util.GetParam("id", r)
 	if err != nil {
 		sigolo.Error(err.Error())
@@ -230,7 +233,7 @@ func assignUser(w http.ResponseWriter, r *http.Request, token *Token) {
 
 	user := token.User
 
-	task, err := AssignUser(taskId, user)
+	task, err := task.AssignUser(taskId, user)
 	if err != nil {
 		sigolo.Error(err.Error())
 		util.ResponseInternalError(w, err.Error())
@@ -243,7 +246,7 @@ func assignUser(w http.ResponseWriter, r *http.Request, token *Token) {
 	encoder.Encode(*task)
 }
 
-func unassignUser(w http.ResponseWriter, r *http.Request, token *Token) {
+func unassignUser(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	taskId, err := util.GetParam("id", r)
 	if err != nil {
 		sigolo.Error(err.Error())
@@ -254,7 +257,7 @@ func unassignUser(w http.ResponseWriter, r *http.Request, token *Token) {
 
 	user := token.User
 
-	task, err := UnassignUser(taskId, user)
+	task, err := task.UnassignUser(taskId, user)
 	if err != nil {
 		sigolo.Error(err.Error())
 		util.ResponseInternalError(w, err.Error())
@@ -267,7 +270,7 @@ func unassignUser(w http.ResponseWriter, r *http.Request, token *Token) {
 	encoder.Encode(*task)
 }
 
-func setProcessPoints(w http.ResponseWriter, r *http.Request, token *Token) {
+func setProcessPoints(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	taskId, err := util.GetParam("id", r)
 	if err != nil {
 		sigolo.Error(err.Error())
@@ -282,7 +285,7 @@ func setProcessPoints(w http.ResponseWriter, r *http.Request, token *Token) {
 		return
 	}
 
-	task, err := SetProcessPoints(taskId, processPoints)
+	task, err := task.SetProcessPoints(taskId, processPoints)
 	if err != nil {
 		sigolo.Error(err.Error())
 		util.ResponseInternalError(w, err.Error())

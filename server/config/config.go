@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"encoding/json"
@@ -24,7 +24,7 @@ type Config struct {
 	SslKeyFile       string `json:"ssl-key-file"`
 }
 
-func loadConfig(file string) {
+func LoadConfig(file string) {
 	fileContent, err := ioutil.ReadFile(file)
 	if err != nil {
 		sigolo.FatalCheck(err)
