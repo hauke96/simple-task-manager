@@ -1,12 +1,5 @@
 package project
 
-import (
-	"errors"
-	"fmt"
-
-	"../util"
-)
-
 type Project struct {
 	Id      string   `json:"id"`
 	Name    string   `json:"name"`
@@ -15,55 +8,38 @@ type Project struct {
 	Owner   string   `json:"owner"`
 }
 
+type ProjectStore interface {
+	Init()
+	GetProjects(user string) []*Project
+	GetProject(id string) (*Project, error)
+	AddProject(draft *Project, user string) *Project
+	AddUser(userToAdd string, id string, owner string) (*Project, error)
+}
+
 var (
-	projects []*Project
+	store ProjectStore
 )
 
 func InitProjects() {
-	projects = make([]*Project, 0)
-	projects = append(projects, &Project{
-		Id:      "p-" + util.GetId(),
-		Name:    "First project",
-		TaskIDs: []string{"t-3", "t-4"},
-		Users:   []string{"hauke-stieler"},
-		Owner:   "hauke-stieler",
-	})
-	projects = append(projects, &Project{
-		Id:      "p-" + util.GetId(),
-		Name:    "Foo",
-		TaskIDs: []string{"t-5"},
-		Users:   []string{"hauke-stieler", "hauke-stieler-dev"},
-		Owner:   "hauke-stieler",
-	})
-	projects = append(projects, &Project{
-		Id:      "p-" + util.GetId(),
-		Name:    "Bar",
-		TaskIDs: []string{"t-6", "t-7", "t-8", "t-9", "t-10"},
-		Users:   []string{"hauke-stieler-dev"},
-		Owner:   "hauke-stieler-dev",
-	})
+	// TODO Use database store depending on configuration
+	store = &ProjectStoreLocal{}
+	store.Init()
 }
 
 func GetProjects(user string) []*Project {
-	result := make([]*Project, 0)
-
-	for _, p := range projects {
-		for _, u := range p.Users {
-			if u == user {
-				result = append(result, p)
-			}
-		}
-	}
-
-	return result
+	return store.GetProjects(user)
 }
 
 func AddProject(project *Project, user string) *Project {
-	project.Id = "p-" + util.GetId()
-	project.Users = []string{user}
-	project.Owner = user
-	projects = append(projects, project)
-	return project
+	return store.AddProject(project, user)
+}
+
+func GetProject(id string) (*Project, error) {
+	return store.GetProject(id)
+}
+
+func AddUser(user, id, potentialOwner string) (*Project, error) {
+	return store.AddUser(user, id, potentialOwner)
 }
 
 // VerifyOwnership checks wether all given tasks are part of projects where the
@@ -99,37 +75,4 @@ func VerifyOwnership(user string, taskIds []string) bool {
 	}
 
 	return true
-}
-
-func GetProject(id string) (*Project, error) {
-	for _, p := range projects {
-		if p.Id == id {
-			return p, nil
-		}
-	}
-
-	return nil, errors.New(fmt.Sprintf("Project with ID '%s' not found", id))
-}
-
-func AddUser(user, id, potentialOwner string) (*Project, error) {
-	project, err := GetProject(id)
-	if err != nil {
-		return nil, err
-	}
-
-	// Only the owner is allowed to invite
-	if project.Owner != potentialOwner {
-		return nil, errors.New(fmt.Sprintf("User '%s' is not allowed to add another user", potentialOwner))
-	}
-
-	// Check if user is already in project. If so, just do nothing and return
-	for _, u := range project.Users {
-		if u == user {
-			return project, nil
-		}
-	}
-
-	project.Users = append(project.Users, user)
-
-	return project, nil
 }
