@@ -14,9 +14,10 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/hauke96/sigolo"
 	"github.com/kurrik/oauth1a"
 
-	"github.com/hauke96/sigolo"
+	"./util"
 )
 
 // Struct for authentication
@@ -89,9 +90,9 @@ func oauthLogin(w http.ResponseWriter, r *http.Request) {
 func oauthCallback(w http.ResponseWriter, r *http.Request) {
 	sigolo.Info("Callback called")
 
-	configKey, err := getParam("config", r)
+	configKey, err := util.GetParam("config", r)
 	if err != nil {
-		responseBadRequest(w, err.Error())
+		util.ResponseBadRequest(w, err.Error())
 		return
 	}
 
@@ -102,9 +103,9 @@ func oauthCallback(w http.ResponseWriter, r *http.Request) {
 	}
 	configs[configKey] = nil
 
-	clientRedirectUrl, err := getParam("redirect", r)
+	clientRedirectUrl, err := util.GetParam("redirect", r)
 	if err != nil {
-		responseBadRequest(w, err.Error())
+		util.ResponseBadRequest(w, err.Error())
 		return
 	}
 

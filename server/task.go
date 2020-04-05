@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+
+	"./util"
 )
 
 type Task struct {
@@ -34,7 +36,7 @@ func InitTasks() {
 		startX += 0.01
 
 		tasks = append(tasks, &Task{
-			Id:               "t-" + GetId(),
+			Id:               "t-" + util.GetId(),
 			ProcessPoints:    0,
 			MaxProcessPoints: 100,
 			Geometry:         geom,
@@ -73,7 +75,7 @@ func AddTasks(newTasks []*Task) []*Task {
 	result := make([]*Task, 0)
 
 	for _, t := range newTasks {
-		t.Id = "t-" + GetId()
+		t.Id = "t-" + util.GetId()
 		result = append(result, t)
 	}
 

@@ -12,6 +12,9 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/hauke96/kingpin"
 	"github.com/hauke96/sigolo"
+
+	"./project"
+	"./util"
 )
 
 const VERSION string = "0.5.0-dev"
@@ -84,7 +87,7 @@ func main() {
 	})
 
 	// Init of Config, Services, Storages, etc.
-	InitProjects()
+	project.InitProjects()
 	InitTasks()
 	InitAuth()
 	sigolo.Info("Initializes services, storages, etc.")
@@ -111,7 +114,7 @@ func authenticatedHandler(handler func(w http.ResponseWriter, r *http.Request, t
 		if err != nil {
 			sigolo.Error("Request is not authorized: %s", err.Error())
 			// No further information to caller (which is a potential attacker)
-			response(w, "Not authorized", http.StatusUnauthorized)
+			util.Response(w, "Not authorized", http.StatusUnauthorized)
 			return
 		}
 
@@ -130,7 +133,7 @@ func getInfo(w http.ResponseWriter, r *http.Request) {
 }
 
 func getProjects(w http.ResponseWriter, r *http.Request, token *Token) {
-	projects := GetProjects(token.User)
+	projects := project.GetProjects(token.User)
 
 	encoder := json.NewEncoder(w)
 	encoder.Encode(projects)
@@ -143,32 +146,32 @@ func addProject(w http.ResponseWriter, r *http.Request, token *Token) {
 		return
 	}
 
-	var project Project
-	json.Unmarshal(bodyBytes, &project)
+	var draftProject project.Project
+	json.Unmarshal(bodyBytes, &draftProject)
 	// TODO check wether all neccessary fields are set
 
-	updatedProject := AddProject(&project, token.User)
+	updatedProject := project.AddProject(&draftProject, token.User)
 
 	encoder := json.NewEncoder(w)
 	encoder.Encode(updatedProject)
 }
 
 func addUserToTask(w http.ResponseWriter, r *http.Request, token *Token) {
-	userName, err := getParam("user", r)
+	userName, err := util.GetParam("user", r)
 	if err != nil {
-		responseBadRequest(w, err.Error())
+		util.ResponseBadRequest(w, err.Error())
 		return
 	}
 
-	projectId, err := getParam("project", r)
+	projectId, err := util.GetParam("project", r)
 	if err != nil {
-		responseBadRequest(w, err.Error())
+		util.ResponseBadRequest(w, err.Error())
 		return
 	}
 
-	updatedProject, err := AddUser(userName, projectId, token.User)
+	updatedProject, err := project.AddUser(userName, projectId, token.User)
 	if err != nil {
-		responseInternalError(w, err.Error())
+		util.ResponseInternalError(w, err.Error())
 		return
 	}
 
@@ -178,18 +181,18 @@ func addUserToTask(w http.ResponseWriter, r *http.Request, token *Token) {
 
 func getTasks(w http.ResponseWriter, r *http.Request, token *Token) {
 	// Read task IDs from URL query parameter "task_ids" and split by ","
-	taskIdsString, err := getParam("task_ids", r)
+	taskIdsString, err := util.GetParam("task_ids", r)
 	if err != nil {
-		responseBadRequest(w, err.Error())
+		util.ResponseBadRequest(w, err.Error())
 		return
 	}
 
 	taskIds := strings.Split(taskIdsString, ",")
 
-	userOwnsTasks := VerifyOwnership(token.User, taskIds)
+	userOwnsTasks := project.VerifyOwnership(token.User, taskIds)
 	if !userOwnsTasks {
 		sigolo.Error("At least one task belongs to a project where the user '%s' is not part of", token.User)
-		response(w, "Not all tasks belong to user", http.StatusForbidden)
+		util.Response(w, "Not all tasks belong to user", http.StatusForbidden)
 		return
 	}
 
@@ -203,7 +206,7 @@ func addTask(w http.ResponseWriter, r *http.Request, token *Token) {
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		sigolo.Error("Error reading request body: %s", err.Error())
-		responseBadRequest(w, err.Error())
+		util.ResponseBadRequest(w, err.Error())
 		return
 	}
 
@@ -217,10 +220,10 @@ func addTask(w http.ResponseWriter, r *http.Request, token *Token) {
 }
 
 func assignUser(w http.ResponseWriter, r *http.Request, token *Token) {
-	taskId, err := getParam("id", r)
+	taskId, err := util.GetParam("id", r)
 	if err != nil {
 		sigolo.Error(err.Error())
-		responseBadRequest(w, err.Error())
+		util.ResponseBadRequest(w, err.Error())
 		return
 	}
 	// TODO check wether task exists
@@ -230,7 +233,7 @@ func assignUser(w http.ResponseWriter, r *http.Request, token *Token) {
 	task, err := AssignUser(taskId, user)
 	if err != nil {
 		sigolo.Error(err.Error())
-		responseInternalError(w, err.Error())
+		util.ResponseInternalError(w, err.Error())
 		return
 	}
 
@@ -241,10 +244,10 @@ func assignUser(w http.ResponseWriter, r *http.Request, token *Token) {
 }
 
 func unassignUser(w http.ResponseWriter, r *http.Request, token *Token) {
-	taskId, err := getParam("id", r)
+	taskId, err := util.GetParam("id", r)
 	if err != nil {
 		sigolo.Error(err.Error())
-		responseBadRequest(w, err.Error())
+		util.ResponseBadRequest(w, err.Error())
 		return
 	}
 	// TODO check wether task exists
@@ -254,7 +257,7 @@ func unassignUser(w http.ResponseWriter, r *http.Request, token *Token) {
 	task, err := UnassignUser(taskId, user)
 	if err != nil {
 		sigolo.Error(err.Error())
-		responseInternalError(w, err.Error())
+		util.ResponseInternalError(w, err.Error())
 		return
 	}
 
@@ -265,24 +268,24 @@ func unassignUser(w http.ResponseWriter, r *http.Request, token *Token) {
 }
 
 func setProcessPoints(w http.ResponseWriter, r *http.Request, token *Token) {
-	taskId, err := getParam("id", r)
+	taskId, err := util.GetParam("id", r)
 	if err != nil {
 		sigolo.Error(err.Error())
-		responseBadRequest(w, err.Error())
+		util.ResponseBadRequest(w, err.Error())
 		return
 	}
 
-	processPoints, err := getIntParam("process_points", w, r)
+	processPoints, err := util.GetIntParam("process_points", w, r)
 	if err != nil {
 		sigolo.Error(err.Error())
-		responseBadRequest(w, err.Error())
+		util.ResponseBadRequest(w, err.Error())
 		return
 	}
 
 	task, err := SetProcessPoints(taskId, processPoints)
 	if err != nil {
 		sigolo.Error(err.Error())
-		responseInternalError(w, err.Error())
+		util.ResponseInternalError(w, err.Error())
 		return
 	}
 
