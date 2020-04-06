@@ -74,9 +74,9 @@ This will enable you to invite other to tasks.
 
 Stage 5 finalizes things and adds the needed details to finish the prototype.
 
-* [ ] Abstract storage
-* [ ] Use real database (probably `postgresql`) and keep current in-memory storage (maybe useful for development)
-* [ ] Put Database into own docker container
+* [x] Abstract storage
+* [x] Use real database (probably `postgresql`) and keep current in-memory storage (maybe useful for development)
+* [x] Put Database into own docker container
 
 ### Post Stage 5
 Things to do after finishing this stage (which will probably be version 1.0.0)

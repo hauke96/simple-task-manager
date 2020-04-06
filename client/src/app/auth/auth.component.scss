@@ -34,8 +34,12 @@
 	padding-top: 10px; // compensate the -5px from below and get 5px actual space
 }
 
-.notice-text {
+.notice-text b {
 	font-weight: 500;
+}
+
+.notice-title {
+	text-align: right;
 }
 
 .notice-bar {
@@ -45,8 +49,4 @@
 	margin-right: 15px;
 	margin-top: -5px;
 	margin-bottom: -5px;
-}
-
-.notice-description {
-	width: 380px;
 }
