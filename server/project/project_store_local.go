@@ -70,21 +70,9 @@ func (s *storeLocal) getProject(id string) (*Project, error) {
 }
 
 func (s *storeLocal) addUser(user, id, potentialOwner string) (*Project, error) {
-	project, err := GetProject(id)
+	project, err := s.getProject(id)
 	if err != nil {
 		return nil, err
-	}
-
-	// Only the owner is allowed to invite
-	if project.Owner != potentialOwner {
-		return nil, errors.New(fmt.Sprintf("User '%s' is not allowed to add another user", potentialOwner))
-	}
-
-	// Check if user is already in project. If so, just do nothing and return
-	for _, u := range project.Users {
-		if u == user {
-			return project, nil
-		}
 	}
 
 	project.Users = append(project.Users, user)

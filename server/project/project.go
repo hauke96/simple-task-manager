@@ -2,6 +2,8 @@ package project
 
 import (
 	"database/sql"
+	"errors"
+	"fmt"
 	"github.com/hauke96/sigolo"
 
 	"../config"
@@ -53,6 +55,23 @@ func GetProject(id string) (*Project, error) {
 }
 
 func AddUser(user, id, potentialOwner string) (*Project, error) {
+	p, err := projectStore.getProject(id)
+	if err != nil {
+		return nil, err
+	}
+
+	// Only the owner is allowed to invite
+	if p.Owner != potentialOwner {
+		return nil, errors.New(fmt.Sprintf("User '%s' is not allowed to add another user", potentialOwner))
+	}
+
+	// Check if user is already in project. If so, just do nothing and return
+	for _, u := range p.Users {
+		if u == user {
+			return p, nil
+		}
+	}
+
 	return projectStore.addUser(user, id, potentialOwner)
 }
 
