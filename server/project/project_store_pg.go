@@ -16,17 +16,17 @@ type projectRow struct {
 	owner   string
 }
 
-type ProjectStorePg struct {
+type storePg struct {
 	db    *sql.DB
 	table string
 }
 
-func (p *ProjectStorePg) init(db *sql.DB) {
+func (p *storePg) init(db *sql.DB) {
 	p.db = db
 	p.table = "projects"
 }
 
-func (p *ProjectStorePg) getProjects(user string) []*Project {
+func (p *storePg) getProjects(user string) []*Project {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE users='%s'", p.table, user)
 	sigolo.Debug(query)
 
@@ -50,7 +50,7 @@ func (p *ProjectStorePg) getProjects(user string) []*Project {
 	return projects
 }
 
-func (p *ProjectStorePg) getProject(id string) (*Project, error) {
+func (p *storePg) getProject(id string) (*Project, error) {
 	rows := p.db.QueryRow(fmt.Sprintf("SELECT * FROM %s WHERE id='%s'", p.table, id))
 
 	var proj projectRow
@@ -64,7 +64,7 @@ func (p *ProjectStorePg) getProject(id string) (*Project, error) {
 	return &result, nil
 }
 
-func (p *ProjectStorePg) addProject(draft *Project, user string) *Project { //} (*Project, error) {
+func (p *storePg) addProject(draft *Project, user string) *Project { //} (*Project, error) {
 	taskIds := strings.Join(draft.TaskIDs, ",")
 	var projectId int
 
@@ -80,7 +80,7 @@ func (p *ProjectStorePg) addProject(draft *Project, user string) *Project { //} 
 	return project
 }
 
-func (p *ProjectStorePg) addUser(userToAdd string, id string, owner string) (*Project, error) {
+func (p *storePg) addUser(userToAdd string, id string, owner string) (*Project, error) {
 	panic("implement me")
 }
 

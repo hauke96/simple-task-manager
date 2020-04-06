@@ -4,8 +4,12 @@ import (
 	"testing"
 )
 
+var (
+	testStore *storeLocal
+)
+
 func prepare() {
-	projects = make([]*Project, 0)
+	projects := make([]*Project, 0)
 	projects = append(projects, &Project{
 		Id:      "p-0",
 		Name:    "First project",
@@ -27,6 +31,12 @@ func prepare() {
 		Users:   []string{"Maria"},
 		Owner:   "Maria",
 	})
+
+	// Set global project store but also store it locally here to access the internal fields of the local store.
+	testStore = &storeLocal{
+		projects: projects,
+	}
+	projectStore = testStore
 }
 
 func TestVerifyOwnership(t *testing.T) {
@@ -70,8 +80,7 @@ func TestGetProjects(t *testing.T) {
 }
 
 func TestAddAndGetProject(t *testing.T) {
-	projects = make([]*Project, 0)
-	nextId = 100 // the new project should then have the ID "p-100"
+	testStore.projects = make([]*Project, 0)
 
 	p := Project{
 		Id:      "this should be overwritten",
@@ -84,7 +93,7 @@ func TestAddAndGetProject(t *testing.T) {
 
 	// Check parameter of the just added Project
 	newProject := GetProjects("Maria")[0]
-	if newProject.Id != "p-100" {
+	if newProject.Id != "p-0" {
 		t.Errorf("Project should have ID 'p-100'")
 		t.Fail()
 	}

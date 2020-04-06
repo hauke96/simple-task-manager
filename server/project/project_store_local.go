@@ -8,11 +8,11 @@ import (
 	"../util"
 )
 
-type ProjectStoreLocal struct {
+type storeLocal struct {
 	projects []*Project
 }
 
-func (s *ProjectStoreLocal) init(db *sql.DB) {
+func (s *storeLocal) init(db *sql.DB) {
 	s.projects = make([]*Project, 0)
 	s.projects = append(s.projects, &Project{
 		Id:      "p-" + util.GetId(),
@@ -37,7 +37,7 @@ func (s *ProjectStoreLocal) init(db *sql.DB) {
 	})
 }
 
-func (s *ProjectStoreLocal) getProjects(user string) []*Project {
+func (s *storeLocal) getProjects(user string) []*Project {
 	result := make([]*Project, 0)
 
 	for _, p := range s.projects {
@@ -51,7 +51,7 @@ func (s *ProjectStoreLocal) getProjects(user string) []*Project {
 	return result
 }
 
-func (s *ProjectStoreLocal) addProject(project *Project, user string) *Project {
+func (s *storeLocal) addProject(project *Project, user string) *Project {
 	project.Id = "p-" + util.GetId()
 	project.Users = []string{user}
 	project.Owner = user
@@ -59,7 +59,7 @@ func (s *ProjectStoreLocal) addProject(project *Project, user string) *Project {
 	return project
 }
 
-func (s *ProjectStoreLocal) getProject(id string) (*Project, error) {
+func (s *storeLocal) getProject(id string) (*Project, error) {
 	for _, p := range s.projects {
 		if p.Id == id {
 			return p, nil
@@ -69,7 +69,7 @@ func (s *ProjectStoreLocal) getProject(id string) (*Project, error) {
 	return nil, errors.New(fmt.Sprintf("Project with ID '%s' not found", id))
 }
 
-func (s *ProjectStoreLocal) addUser(user, id, potentialOwner string) (*Project, error) {
+func (s *storeLocal) addUser(user, id, potentialOwner string) (*Project, error) {
 	project, err := GetProject(id)
 	if err != nil {
 		return nil, err

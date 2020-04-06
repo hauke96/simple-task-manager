@@ -15,7 +15,7 @@ type Project struct {
 	Owner   string   `json:"owner"`
 }
 
-type ProjectStore interface {
+type store interface {
 	init(db *sql.DB)
 	getProjects(user string) []*Project
 	getProject(id string) (*Project, error)
@@ -24,7 +24,7 @@ type ProjectStore interface {
 }
 
 var (
-	store ProjectStore
+	projectStore store
 )
 
 func Init() {
@@ -32,28 +32,28 @@ func Init() {
 		db, err := sql.Open("postgres", "user=postgres password=geheim dbname=stm sslmode=disable")
 		sigolo.FatalCheck(err)
 
-		store = &ProjectStorePg{}
-		store.init(db)
+		projectStore = &storePg{}
+		projectStore.init(db)
 	} else if config.Conf.Store == "cache" {
-		store = &ProjectStoreLocal{}
-		store.init(nil)
+		projectStore = &storeLocal{}
+		projectStore.init(nil)
 	}
 }
 
 func GetProjects(user string) []*Project {
-	return store.getProjects(user)
+	return projectStore.getProjects(user)
 }
 
 func AddProject(project *Project, user string) *Project {
-	return store.addProject(project, user)
+	return projectStore.addProject(project, user)
 }
 
 func GetProject(id string) (*Project, error) {
-	return store.getProject(id)
+	return projectStore.getProject(id)
 }
 
 func AddUser(user, id, potentialOwner string) (*Project, error) {
-	return store.addUser(user, id, potentialOwner)
+	return projectStore.addUser(user, id, potentialOwner)
 }
 
 // VerifyOwnership checks wether all given tasks are part of projects where the
