@@ -25,8 +25,6 @@ const VERSION string = "0.5.0-dev"
 
 var (
 	app       = kingpin.New("Simple Task Manager", "A tool dividing an area of the map into smaller tasks.")
-	appDebug  = app.Flag("debug", "Verbose mode, showing additional debug information").Short('d').Bool()
-	appPort   = app.Flag("port", "The port to listen on. Default is 8080").Short('p').Default("8080").Int()
 	appConfig = app.Flag("config", "The config file. CLI argument override the settings from that file.").Short('c').Default("./config/default.json").String()
 )
 
@@ -39,7 +37,7 @@ func configureCliArgs() {
 }
 
 func configureLogging() {
-	if *appDebug {
+	if config.Conf.DebugLogging {
 		sigolo.LogLevel = sigolo.LOG_DEBUG
 	} else {
 		sigolo.LogLevel = sigolo.LOG_INFO
@@ -52,12 +50,11 @@ func main() {
 	configureCliArgs()
 	_, err := app.Parse(os.Args[1:])
 	sigolo.FatalCheck(err)
-	configureLogging()
 
 	// Load config an override with CLI args
 	config.LoadConfig(*appConfig)
-	config.Conf.Port = *appPort
-	config.Conf.DebugLogging = *appDebug
+
+	configureLogging()
 
 	// Register routes and print them
 	router := mux.NewRouter()
@@ -98,10 +95,10 @@ func main() {
 
 	if strings.HasPrefix(config.Conf.ServerUrl, "https") {
 		sigolo.Info("Use HTTPS? yes")
-		err = http.ListenAndServeTLS(":"+strconv.Itoa(*appPort), config.Conf.SslCertFile, config.Conf.SslKeyFile, router)
+		err = http.ListenAndServeTLS(":"+strconv.Itoa(config.Conf.Port), config.Conf.SslCertFile, config.Conf.SslKeyFile, router)
 	} else {
 		sigolo.Info("Use HTTPS? no")
-		err = http.ListenAndServe(":"+strconv.Itoa(*appPort), router)
+		err = http.ListenAndServe(":"+strconv.Itoa(config.Conf.Port), router)
 	}
 	sigolo.Info("Start serving ...")
 

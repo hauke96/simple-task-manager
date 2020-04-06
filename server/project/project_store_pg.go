@@ -3,6 +3,7 @@ package project
 import (
 	"database/sql"
 	"fmt"
+	"github.com/hauke96/sigolo"
 	"strconv"
 	"strings"
 )
@@ -26,7 +27,10 @@ func (p *ProjectStorePg) init(db *sql.DB) {
 }
 
 func (p *ProjectStorePg) getProjects(user string) []*Project {
-	rows, err := p.db.Query(fmt.Sprintf("SELECT * FROM %s WHERE users=%s", p.table, user))
+	query := fmt.Sprintf("SELECT * FROM %s WHERE users='%s'", p.table, user)
+	sigolo.Debug(query)
+
+	rows, err := p.db.Query(query)
 	if err != nil {
 		return nil
 	}
@@ -47,7 +51,7 @@ func (p *ProjectStorePg) getProjects(user string) []*Project {
 }
 
 func (p *ProjectStorePg) getProject(id string) (*Project, error) {
-	rows := p.db.QueryRow(fmt.Sprintf("SELECT * FROM %s WHERE id=%s", p.table, id))
+	rows := p.db.QueryRow(fmt.Sprintf("SELECT * FROM %s WHERE id='%s'", p.table, id))
 
 	var proj projectRow
 	err := rows.Scan(&proj.id, &proj.name, &proj.taskIds, &proj.users, &proj.owner)
@@ -64,7 +68,7 @@ func (p *ProjectStorePg) addProject(draft *Project, user string) *Project { //} 
 	taskIds := strings.Join(draft.TaskIDs, ",")
 	var projectId int
 
-	row := p.db.QueryRow(fmt.Sprintf("INSERT INTO %s(%s, %s, %s, %s, %s) RETURNING id", p.table, draft.Id, draft.Name, taskIds, user, user))
+	row := p.db.QueryRow(fmt.Sprintf("INSERT INTO %s(name, taskIds, users, owner) VALUES('%s', '%s', '%s', '%s') RETURNING id", p.table, draft.Name, taskIds, user, user))
 
 	err := row.Scan(&projectId)
 	if err != nil {
