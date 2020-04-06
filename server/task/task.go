@@ -8,7 +8,7 @@ type Task struct {
 	AssignedUser     string      `json:"assignedUser"`
 }
 
-type TaskStore interface {
+type taskStore interface {
 	init()
 	getTasks(taskIds []string) []*Task
 	getTask(id string) (*Task, error)
@@ -19,11 +19,11 @@ type TaskStore interface {
 }
 
 var (
-	store TaskStore
+	store taskStore
 )
 
 func Init() {
-	store = &TaskStoreLocal{}
+	store = &taskStoreLocal{}
 	store.init()
 }
 
