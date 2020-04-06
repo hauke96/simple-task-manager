@@ -17,9 +17,9 @@ type Project struct {
 
 type store interface {
 	init(db *sql.DB)
-	getProjects(user string) []*Project
+	getProjects(user string) ([]*Project, error)
 	getProject(id string) (*Project, error)
-	addProject(draft *Project, user string) *Project
+	addProject(draft *Project, user string) (*Project, error)
 	addUser(userToAdd string, id string, owner string) (*Project, error)
 }
 

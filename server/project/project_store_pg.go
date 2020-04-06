@@ -26,13 +26,13 @@ func (s *storePg) init(db *sql.DB) {
 	s.table = "projects"
 }
 
-func (s *storePg) getProjects(user string) []*Project {
+func (s *storePg) getProjects(user string) ([]*Project, error) {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE users LIKE '%%%s%%'", s.table, user)
 	sigolo.Debug("%s", query)
 
 	rows, err := s.db.Query(query)
 	if err != nil {
-		return nil // TODO return error
+		return nil, err
 	}
 
 	projects := make([]*Project, 0)
@@ -40,14 +40,14 @@ func (s *storePg) getProjects(user string) []*Project {
 		var proj projectRow
 		err = rows.Scan(&proj.id, &proj.name, &proj.taskIds, &proj.users, &proj.owner)
 		if err != nil {
-			return nil // TODO return error
+			return nil, err
 		}
 
 		project := rowToProject(proj)
 		projects = append(projects, &project)
 	}
 
-	return projects // TODO return error
+	return projects, nil
 }
 
 func (s *storePg) getProject(id string) (*Project, error) {
@@ -62,11 +62,10 @@ func (s *storePg) getProject(id string) (*Project, error) {
 	}
 
 	result := rowToProject(proj)
-
 	return &result, nil
 }
 
-func (s *storePg) addProject(draft *Project, user string) *Project { //} (*Project, error) {
+func (s *storePg) addProject(draft *Project, user string) (*Project, error) {
 	taskIds := strings.Join(draft.TaskIDs, ",")
 
 	query := fmt.Sprintf("INSERT INTO %s(name, task_ids, users, owner) VALUES('%s', '%s', '%s', '%s') RETURNING id", s.table, draft.Name, taskIds, user, user)
@@ -76,12 +75,10 @@ func (s *storePg) addProject(draft *Project, user string) *Project { //} (*Proje
 	var projectId int
 	err := row.Scan(&projectId)
 	if err != nil {
-		return nil // TODO return error
+		return nil, err
 	}
 
-	project, _ := GetProject(strconv.Itoa(projectId))
-
-	return project // TODO return error
+	return GetProject(strconv.Itoa(projectId))
 }
 
 func (s *storePg) addUser(userToAdd string, id string, owner string) (*Project, error) {

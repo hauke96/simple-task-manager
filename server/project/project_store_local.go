@@ -37,7 +37,7 @@ func (s *storeLocal) init(db *sql.DB) {
 	})
 }
 
-func (s *storeLocal) getProjects(user string) []*Project {
+func (s *storeLocal) getProjects(user string) ([]*Project, error) {
 	result := make([]*Project, 0)
 
 	for _, p := range s.projects {
@@ -48,15 +48,15 @@ func (s *storeLocal) getProjects(user string) []*Project {
 		}
 	}
 
-	return result
+	return result, nil
 }
 
-func (s *storeLocal) addProject(project *Project, user string) *Project {
+func (s *storeLocal) addProject(project *Project, user string) (*Project, error) {
 	project.Id = "p-" + util.GetId()
 	project.Users = []string{user}
 	project.Owner = user
 	s.projects = append(s.projects, project)
-	return project
+	return project, nil
 }
 
 func (s *storeLocal) getProject(id string) (*Project, error) {
