@@ -29,8 +29,11 @@ var (
 
 func Init() {
 	if config.Conf.Store == "postgres" {
-		_, err := sql.Open("postgres", "user=postgres password=geheim dbname=stm sslmode=disable")
+		db, err := sql.Open("postgres", "user=postgres password=geheim dbname=stm sslmode=disable")
 		sigolo.FatalCheck(err)
+
+		store = &ProjectStorePg{}
+		store.init(db)
 	} else if config.Conf.Store == "cache" {
 		store = &ProjectStoreLocal{}
 		store.init(nil)
