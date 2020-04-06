@@ -1,6 +1,7 @@
 package project
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 
@@ -11,7 +12,7 @@ type ProjectStoreLocal struct {
 	projects []*Project
 }
 
-func (s *ProjectStoreLocal) init() {
+func (s *ProjectStoreLocal) init(db *sql.DB) {
 	s.projects = make([]*Project, 0)
 	s.projects = append(s.projects, &Project{
 		Id:      "p-" + util.GetId(),

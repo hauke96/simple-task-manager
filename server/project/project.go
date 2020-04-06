@@ -1,5 +1,12 @@
 package project
 
+import (
+	"database/sql"
+	"github.com/hauke96/sigolo"
+
+	"../config"
+)
+
 type Project struct {
 	Id      string   `json:"id"`
 	Name    string   `json:"name"`
@@ -9,7 +16,7 @@ type Project struct {
 }
 
 type ProjectStore interface {
-	init()
+	init(db *sql.DB)
 	getProjects(user string) []*Project
 	getProject(id string) (*Project, error)
 	addProject(draft *Project, user string) *Project
@@ -21,9 +28,13 @@ var (
 )
 
 func Init() {
-	// TODO Use database store depending on configuration
-	store = &ProjectStoreLocal{}
-	store.init()
+	if config.Conf.Store == "postgres" {
+		_, err := sql.Open("postgres", "user=postgres password=geheim dbname=stm sslmode=disable")
+		sigolo.FatalCheck(err)
+	} else if config.Conf.Store == "cache" {
+		store = &ProjectStoreLocal{}
+		store.init(nil)
+	}
 }
 
 func GetProjects(user string) []*Project {

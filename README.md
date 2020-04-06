@@ -138,6 +138,7 @@ This project uses some frameworks/libraries to make the development easier:
 
 * [https://github.com/gorilla/mux](gorilla/mux) to easily create REST endpoints
 * [https://github.com/kurrik/oauth1a](kurrik/oauth1a) for the OAuth1a authentication
+* [https://github.com/lib/pq](lib/pq) for a Postgres database driver
 * [https://github.com/hauke96/sigolo](hauke96/sigolo) for logging
 * [https://github.com/hauke96/kingpin](hauke96/kingpin) for CLI parameter and flag parsing
 

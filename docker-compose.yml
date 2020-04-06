@@ -23,3 +23,13 @@ services:
       - "80:80"
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
+  stm-db:
+    image: postgres
+    container_name: stm-db
+    restart: unless-stopped
+    network_mode: host
+    environment:
+     - POSTGRES_PASSWORD=geheim
+     - POSTGRES_USER=postgres
+    ports:
+      - "5432:5432"

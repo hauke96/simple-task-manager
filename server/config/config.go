@@ -22,6 +22,7 @@ type Config struct {
 	DebugLogging     bool   `json:"debug-logging"`
 	SslCertFile      string `json:"ssl-cert-file"`
 	SslKeyFile       string `json:"ssl-key-file"`
+	Store            string `json:"store"`
 }
 
 func LoadConfig(file string) {

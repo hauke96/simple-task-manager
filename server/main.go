@@ -12,6 +12,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/hauke96/kingpin"
 	"github.com/hauke96/sigolo"
+	_ "github.com/lib/pq" // Make driver "postgres" usable
 
 	"./auth"
 	"./config"

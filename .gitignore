@@ -1,3 +1,5 @@
 # Server side
 server/server
 server/server.debug
+
+**.idea
