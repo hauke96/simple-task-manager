@@ -9,11 +9,11 @@ import (
 	"../util"
 )
 
-type taskStoreLocal struct {
+type storeLocal struct {
 	tasks []*Task
 }
 
-func (s *taskStoreLocal) init(db *sql.DB) {
+func (s *storeLocal) init(db *sql.DB) {
 	startY := 53.5484
 	startX := 9.9714
 
@@ -40,7 +40,7 @@ func (s *taskStoreLocal) init(db *sql.DB) {
 	s.tasks[4].AssignedUser = "Maria"
 }
 
-func (s *taskStoreLocal) getTasks(taskIds []string) []*Task {
+func (s *storeLocal) getTasks(taskIds []string) []*Task {
 	result := make([]*Task, 0)
 	for _, t := range s.tasks {
 		for _, i := range taskIds {
@@ -53,7 +53,7 @@ func (s *taskStoreLocal) getTasks(taskIds []string) []*Task {
 	return result
 }
 
-func (s *taskStoreLocal) getTask(id string) (*Task, error) {
+func (s *storeLocal) getTask(id string) (*Task, error) {
 	for _, t := range s.tasks {
 		if t.Id == id {
 			return t, nil
@@ -63,7 +63,7 @@ func (s *taskStoreLocal) getTask(id string) (*Task, error) {
 	return nil, errors.New(fmt.Sprintf("Task with id '%s' not found", id))
 }
 
-func (s *taskStoreLocal) addTasks(newTasks []*Task) []*Task {
+func (s *storeLocal) addTasks(newTasks []*Task) []*Task {
 	result := make([]*Task, 0)
 
 	for _, t := range newTasks {
@@ -76,7 +76,7 @@ func (s *taskStoreLocal) addTasks(newTasks []*Task) []*Task {
 	return result
 }
 
-func (s *taskStoreLocal) assignUser(id, user string) (*Task, error) {
+func (s *storeLocal) assignUser(id, user string) (*Task, error) {
 	task, err := s.getTask(id)
 	if err == nil {
 		if strings.TrimSpace(task.AssignedUser) == "" {
@@ -90,7 +90,7 @@ func (s *taskStoreLocal) assignUser(id, user string) (*Task, error) {
 	return task, err
 }
 
-func (s *taskStoreLocal) unassignUser(id, user string) (*Task, error) {
+func (s *storeLocal) unassignUser(id, user string) (*Task, error) {
 	task, err := s.getTask(id)
 	if err == nil {
 		assignedUser := strings.TrimSpace(task.AssignedUser)
@@ -110,7 +110,7 @@ func (s *taskStoreLocal) unassignUser(id, user string) (*Task, error) {
 	return task, err
 }
 
-func (s *taskStoreLocal) setProcessPoints(id string, newPoints int) (*Task, error) {
+func (s *storeLocal) setProcessPoints(id string, newPoints int) (*Task, error) {
 	task, err := s.getTask(id)
 	if err == nil {
 		if 0 <= newPoints && newPoints <= task.MaxProcessPoints {

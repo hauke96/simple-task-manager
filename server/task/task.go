@@ -37,7 +37,7 @@ func Init() {
 		store = &storePg{}
 		store.init(db)
 	} else if config.Conf.Store == "cache" {
-		store = &taskStoreLocal{}
+		store = &storeLocal{}
 		store.init(nil)
 	}
 }
