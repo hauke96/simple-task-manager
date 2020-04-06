@@ -17,9 +17,9 @@ type Task struct {
 
 type taskStore interface {
 	init(db *sql.DB)
-	getTasks(taskIds []string) []*Task
+	getTasks(taskIds []string) ([]*Task, error)
 	getTask(id string) (*Task, error)
-	addTasks(newTasks []*Task) []*Task
+	addTasks(newTasks []*Task) ([]*Task, error)
 	assignUser(id, user string) (*Task, error)
 	unassignUser(id, user string) (*Task, error)
 	setProcessPoints(id string, newPoints int) (*Task, error)
@@ -42,7 +42,7 @@ func Init() {
 	}
 }
 
-func GetTasks(taskIds []string) []*Task {
+func GetTasks(taskIds []string) ([]*Task, error) {
 	return store.getTasks(taskIds)
 }
 
@@ -51,7 +51,7 @@ func GetTask(id string) (*Task, error) {
 }
 
 // AddTasks sets the ID of the tasks and adds them to the storage.
-func AddTasks(newTasks []*Task) []*Task {
+func AddTasks(newTasks []*Task) ([]*Task, error) {
 	return store.addTasks(newTasks)
 }
 

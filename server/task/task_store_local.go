@@ -40,7 +40,7 @@ func (s *storeLocal) init(db *sql.DB) {
 	s.tasks[4].AssignedUser = "Maria"
 }
 
-func (s *storeLocal) getTasks(taskIds []string) []*Task {
+func (s *storeLocal) getTasks(taskIds []string) ([]*Task, error) {
 	result := make([]*Task, 0)
 	for _, t := range s.tasks {
 		for _, i := range taskIds {
@@ -50,7 +50,7 @@ func (s *storeLocal) getTasks(taskIds []string) []*Task {
 		}
 	}
 
-	return result
+	return result, nil
 }
 
 func (s *storeLocal) getTask(id string) (*Task, error) {
@@ -63,7 +63,7 @@ func (s *storeLocal) getTask(id string) (*Task, error) {
 	return nil, errors.New(fmt.Sprintf("Task with id '%s' not found", id))
 }
 
-func (s *storeLocal) addTasks(newTasks []*Task) []*Task {
+func (s *storeLocal) addTasks(newTasks []*Task) ([]*Task, error) {
 	result := make([]*Task, 0)
 
 	for _, t := range newTasks {
@@ -73,7 +73,7 @@ func (s *storeLocal) addTasks(newTasks []*Task) []*Task {
 
 	s.tasks = append(s.tasks, result...)
 
-	return result
+	return result, nil
 }
 
 func (s *storeLocal) assignUser(id, user string) (*Task, error) {

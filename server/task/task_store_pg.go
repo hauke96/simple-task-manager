@@ -27,14 +27,14 @@ func (s *storePg) init(db *sql.DB) {
 	s.table = "tasks"
 }
 
-func (s *storePg) getTasks(taskIds []string) []*Task {
+func (s *storePg) getTasks(taskIds []string) ([]*Task, error) {
 	ids := strings.Join(taskIds, ",")
 	query := fmt.Sprintf("SELECT * FROM %s WHERE id IN (%s)", s.table, ids)
 	sigolo.Debug(query)
 
 	rows, err := s.db.Query(query)
 	if err != nil {
-		return nil // TODO return error
+		return nil, err
 	}
 
 	tasks := make([]*Task, 0)
@@ -42,39 +42,42 @@ func (s *storePg) getTasks(taskIds []string) []*Task {
 		var t taskRow
 		err = rows.Scan(&t.id, &t.processPoints, &t.maxProcessPoints, &t.geometry, &t.assignedUser)
 		if err != nil {
-			return nil // TODO return error
+			return nil, err
 		}
 
 		task, err := rowToTask(t)
 		if err != nil {
-			return nil // TODO return error
+			return nil, err
 		}
 
 		tasks = append(tasks, task)
 	}
 
-	return tasks // TODO return error
+	return tasks, nil
 }
 
 func (s *storePg) getTask(id string) (*Task, error) {
-	tasks := s.getTasks([]string{id})
+	tasks, err := s.getTasks([]string{id})
+	if err != nil {
+		return nil, err
+	}
 
 	return tasks[0], nil
 }
 
-func (s *storePg) addTasks(newTasks []*Task) []*Task {
+func (s *storePg) addTasks(newTasks []*Task) ([]*Task, error) {
 	taskIds := make([]string, 0)
 
 	for _, t := range newTasks {
 		id, err := s.addTask(t)
 		if err != nil {
-			return nil // TODO return error
+			return nil, err
 		}
 
 		taskIds = append(taskIds, id)
 	}
 
-	return s.getTasks(taskIds) // TODO return error
+	return s.getTasks(taskIds)
 }
 
 func (s *storePg) addTask(task *Task) (string, error) {

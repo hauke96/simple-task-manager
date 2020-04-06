@@ -68,7 +68,7 @@ func (s *storePg) getProject(id string) (*Project, error) {
 func (s *storePg) addProject(draft *Project, user string) (*Project, error) {
 	taskIds := strings.Join(draft.TaskIDs, ",")
 
-	query := fmt.Sprintf("INSERT INTO %s(name, task_ids, users, owner) VALUES('%s', '%s', '%s', '%s') RETURNING id", s.table, draft.Name, taskIds, user, user)
+	query := fmt.Sprintf("INSERT INTO %s(name, task_fids, users, owner) VALUES('%s', '%s', '%s', '%s') RETURNING id", s.table, draft.Name, taskIds, user, user)
 	sigolo.Debug(query)
 	row := s.db.QueryRow(query)
 

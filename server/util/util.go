@@ -3,6 +3,7 @@ package util
 import (
 	"errors"
 	"fmt"
+	"github.com/hauke96/sigolo"
 	"net/http"
 	"strconv"
 	"strings"
@@ -38,16 +39,19 @@ func GetIntParam(param string, w http.ResponseWriter, r *http.Request) (int, err
 }
 
 func ResponseBadRequest(w http.ResponseWriter, err string) {
+	sigolo.Error("Response with status %d: %s", http.StatusBadRequest, err)
 	w.WriteHeader(http.StatusBadRequest)
 	w.Write([]byte(err))
 }
 
 func ResponseInternalError(w http.ResponseWriter, err string) {
+	sigolo.Error("Response with status %d: %s", http.StatusInternalServerError, err)
 	w.WriteHeader(http.StatusInternalServerError)
 	w.Write([]byte(err))
 }
 
 func Response(w http.ResponseWriter, data string, status int) {
+	sigolo.Error("Response with status %d: %s", status, data)
 	w.WriteHeader(status)
 	w.Write([]byte(data))
 }

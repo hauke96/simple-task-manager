@@ -134,7 +134,11 @@ func getInfo(w http.ResponseWriter, r *http.Request) {
 }
 
 func getProjects(w http.ResponseWriter, r *http.Request, token *auth.Token) {
-	projects := project.GetProjects(token.User)
+	projects, err := project.GetProjects(token.User)
+	if err != nil {
+		util.ResponseInternalError(w, err.Error())
+		return
+	}
 
 	encoder := json.NewEncoder(w)
 	encoder.Encode(projects)
@@ -143,7 +147,9 @@ func getProjects(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 func addProject(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		sigolo.Error("Error reading request body: %s", err.Error())
+		errMsg := fmt.Sprintf("Error reading request body: %s", err.Error())
+		sigolo.Error(errMsg)
+		util.ResponseBadRequest(w, errMsg)
 		return
 	}
 
@@ -151,7 +157,11 @@ func addProject(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	json.Unmarshal(bodyBytes, &draftProject)
 	// TODO check wether all neccessary fields are set
 
-	updatedProject := project.AddProject(&draftProject, token.User)
+	updatedProject, err := project.AddProject(&draftProject, token.User)
+	if err != nil {
+		util.ResponseInternalError(w, err.Error())
+		return
+	}
 
 	encoder := json.NewEncoder(w)
 	encoder.Encode(updatedProject)
@@ -190,14 +200,22 @@ func getTasks(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 
 	taskIds := strings.Split(taskIdsString, ",")
 
-	userOwnsTasks := project.VerifyOwnership(token.User, taskIds)
+	userOwnsTasks, err := project.VerifyOwnership(token.User, taskIds)
+	if err != nil {
+		util.ResponseInternalError(w, err.Error())
+		return
+	}
 	if !userOwnsTasks {
 		sigolo.Error("At least one task belongs to a project where the user '%s' is not part of", token.User)
 		util.Response(w, "Not all tasks belong to user", http.StatusForbidden)
 		return
 	}
 
-	tasks := task.GetTasks(taskIds)
+	tasks, err := task.GetTasks(taskIds)
+	if err != nil {
+		util.ResponseInternalError(w, err.Error())
+		return
+	}
 
 	encoder := json.NewEncoder(w)
 	encoder.Encode(tasks)
@@ -214,7 +232,11 @@ func addTask(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	var tasks []*task.Task
 	json.Unmarshal(bodyBytes, &tasks)
 
-	updatedTasks := task.AddTasks(tasks)
+	updatedTasks, err := task.AddTasks(tasks)
+	if err != nil {
+		util.ResponseInternalError(w, err.Error())
+		return
+	}
 
 	encoder := json.NewEncoder(w)
 	encoder.Encode(updatedTasks)

@@ -40,11 +40,11 @@ func Init() {
 	}
 }
 
-func GetProjects(user string) []*Project {
+func GetProjects(user string) ([]*Project, error) {
 	return projectStore.getProjects(user)
 }
 
-func AddProject(project *Project, user string) *Project {
+func AddProject(project *Project, user string) (*Project, error) {
 	return projectStore.addProject(project, user)
 }
 
@@ -56,12 +56,15 @@ func AddUser(user, id, potentialOwner string) (*Project, error) {
 	return projectStore.addUser(user, id, potentialOwner)
 }
 
-// VerifyOwnership checks wether all given tasks are part of projects where the
-// given user is a member of. In otherwords: This function checks if the user
+// VerifyOwnership checks whether all given tasks are part of projects where the
+// given user is a member of. In other words: This function checks if the user
 // has the permission to change each task.
-func VerifyOwnership(user string, taskIds []string) bool {
+func VerifyOwnership(user string, taskIds []string) (bool, error) {
 	// Only look at projects the user is part of. We then need less checks below
-	userProjects := GetProjects(user)
+	userProjects, err := GetProjects(user)
+	if err != nil {
+		return false, err
+	}
 
 	for _, taskId := range taskIds {
 		found := false
@@ -84,9 +87,9 @@ func VerifyOwnership(user string, taskIds []string) bool {
 		// find a match. The user is therefore not allowed to view the current
 		// task and we can abort here.
 		if !found {
-			return false
+			return false, nil
 		}
 	}
 
-	return true
+	return true, nil
 }
