@@ -21,17 +21,18 @@ type storePg struct {
 	table string
 }
 
-func (p *storePg) init(db *sql.DB) {
-	p.db = db
-	p.table = "projects"
+func (s *storePg) init(db *sql.DB) {
+	s.db = db
+	s.table = "projects"
 }
 
-func (p *storePg) getProjects(user string) []*Project {
-	query := fmt.Sprintf("SELECT * FROM %s WHERE users='%s'", p.table, user)
-	sigolo.Debug(query)
-	rows, err := p.db.Query(query)
+func (s *storePg) getProjects(user string) []*Project {
+	query := fmt.Sprintf("SELECT * FROM %s WHERE users LIKE '%%%s%%'", s.table, user)
+	sigolo.Debug("%s", query)
+
+	rows, err := s.db.Query(query)
 	if err != nil {
-		return nil
+		return nil // TODO return error
 	}
 
 	projects := make([]*Project, 0)
@@ -39,21 +40,21 @@ func (p *storePg) getProjects(user string) []*Project {
 		var proj projectRow
 		err = rows.Scan(&proj.id, &proj.name, &proj.taskIds, &proj.users, &proj.owner)
 		if err != nil {
-			return nil
+			return nil // TODO return error
 		}
 
 		project := rowToProject(proj)
 		projects = append(projects, &project)
 	}
 
-	return projects
+	return projects // TODO return error
 }
 
-func (p *storePg) getProject(id string) (*Project, error) {
-	query := fmt.Sprintf("SELECT * FROM %s WHERE id='%s'", p.table, id)
+func (s *storePg) getProject(id string) (*Project, error) {
+	query := fmt.Sprintf("SELECT * FROM %s WHERE id='%s'", s.table, id)
 	sigolo.Debug(query)
-	rows := p.db.QueryRow(query)
 
+	rows := s.db.QueryRow(query)
 	var proj projectRow
 	err := rows.Scan(&proj.id, &proj.name, &proj.taskIds, &proj.users, &proj.owner)
 	if err != nil {
@@ -65,26 +66,43 @@ func (p *storePg) getProject(id string) (*Project, error) {
 	return &result, nil
 }
 
-func (p *storePg) addProject(draft *Project, user string) *Project { //} (*Project, error) {
+func (s *storePg) addProject(draft *Project, user string) *Project { //} (*Project, error) {
 	taskIds := strings.Join(draft.TaskIDs, ",")
-	var projectId int
 
-	query := fmt.Sprintf("INSERT INTO %s(name, taskIds, users, owner) VALUES('%s', '%s', '%s', '%s') RETURNING id", p.table, draft.Name, taskIds, user, user)
+	query := fmt.Sprintf("INSERT INTO %s(name, task_ids, users, owner) VALUES('%s', '%s', '%s', '%s') RETURNING id", s.table, draft.Name, taskIds, user, user)
 	sigolo.Debug(query)
-	row := p.db.QueryRow(query)
+	row := s.db.QueryRow(query)
 
+	var projectId int
 	err := row.Scan(&projectId)
 	if err != nil {
-		return nil
+		return nil // TODO return error
 	}
 
 	project, _ := GetProject(strconv.Itoa(projectId))
 
-	return project
+	return project // TODO return error
 }
 
-func (p *storePg) addUser(userToAdd string, id string, owner string) (*Project, error) {
-	panic("implement me")
+func (s *storePg) addUser(userToAdd string, id string, owner string) (*Project, error) {
+	originalProject, err := GetProject(id)
+	if err != nil {
+		return nil, err
+	}
+
+	users := originalProject.Users
+	query := fmt.Sprintf("UPDATE %s SET user='%s,%s' WHERE id=%s", s.table, users, userToAdd, id)
+	sigolo.Debug(query)
+	rows := s.db.QueryRow(query)
+
+	var proj projectRow
+	err = rows.Scan(&proj.id, &proj.name, &proj.taskIds, &proj.users, &proj.owner)
+	if err != nil {
+		return nil, err
+	}
+
+	result := rowToProject(proj)
+	return &result, nil
 }
 
 func rowToProject(p projectRow) Project {

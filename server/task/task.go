@@ -1,5 +1,12 @@
 package task
 
+import (
+	"database/sql"
+	"github.com/hauke96/sigolo"
+
+	"../config"
+)
+
 type Task struct {
 	Id               string      `json:"id"`
 	ProcessPoints    int         `json:"processPoints"`
@@ -9,7 +16,7 @@ type Task struct {
 }
 
 type taskStore interface {
-	init()
+	init(db *sql.DB)
 	getTasks(taskIds []string) []*Task
 	getTask(id string) (*Task, error)
 	addTasks(newTasks []*Task) []*Task
@@ -23,8 +30,16 @@ var (
 )
 
 func Init() {
-	store = &taskStoreLocal{}
-	store.init()
+	if config.Conf.Store == "postgres" {
+		db, err := sql.Open("postgres", "user=postgres password=geheim dbname=stm sslmode=disable")
+		sigolo.FatalCheck(err)
+
+		store = &storePg{}
+		store.init(db)
+	} else if config.Conf.Store == "cache" {
+		store = &taskStoreLocal{}
+		store.init(nil)
+	}
 }
 
 func GetTasks(taskIds []string) []*Task {

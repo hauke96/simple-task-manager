@@ -1,6 +1,7 @@
 package task
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 	"strings"
@@ -12,7 +13,7 @@ type taskStoreLocal struct {
 	tasks []*Task
 }
 
-func (s *taskStoreLocal) init() {
+func (s *taskStoreLocal) init(db *sql.DB) {
 	startY := 53.5484
 	startX := 9.9714
 
