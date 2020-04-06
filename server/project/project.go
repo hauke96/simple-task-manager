@@ -9,37 +9,37 @@ type Project struct {
 }
 
 type ProjectStore interface {
-	Init()
-	GetProjects(user string) []*Project
-	GetProject(id string) (*Project, error)
-	AddProject(draft *Project, user string) *Project
-	AddUser(userToAdd string, id string, owner string) (*Project, error)
+	init()
+	getProjects(user string) []*Project
+	getProject(id string) (*Project, error)
+	addProject(draft *Project, user string) *Project
+	addUser(userToAdd string, id string, owner string) (*Project, error)
 }
 
 var (
 	store ProjectStore
 )
 
-func InitProjects() {
+func Init() {
 	// TODO Use database store depending on configuration
 	store = &ProjectStoreLocal{}
-	store.Init()
+	store.init()
 }
 
 func GetProjects(user string) []*Project {
-	return store.GetProjects(user)
+	return store.getProjects(user)
 }
 
 func AddProject(project *Project, user string) *Project {
-	return store.AddProject(project, user)
+	return store.addProject(project, user)
 }
 
 func GetProject(id string) (*Project, error) {
-	return store.GetProject(id)
+	return store.getProject(id)
 }
 
 func AddUser(user, id, potentialOwner string) (*Project, error) {
-	return store.AddUser(user, id, potentialOwner)
+	return store.addUser(user, id, potentialOwner)
 }
 
 // VerifyOwnership checks wether all given tasks are part of projects where the

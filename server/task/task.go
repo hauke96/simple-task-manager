@@ -1,13 +1,5 @@
 package task
 
-import (
-	"errors"
-	"fmt"
-	"strings"
-
-	"../util"
-)
-
 type Task struct {
 	Id               string      `json:"id"`
 	ProcessPoints    int         `json:"processPoints"`
@@ -16,122 +8,46 @@ type Task struct {
 	AssignedUser     string      `json:"assignedUser"`
 }
 
+type TaskStore interface {
+	init()
+	getTasks(taskIds []string) []*Task
+	getTask(id string) (*Task, error)
+	addTasks(newTasks []*Task) []*Task
+	assignUser(id, user string) (*Task, error)
+	unassignUser(id, user string) (*Task, error)
+	setProcessPoints(id string, newPoints int) (*Task, error)
+}
+
 var (
-	tasks []*Task
+	store TaskStore
 )
 
-func InitTasks() {
-	startY := 53.5484
-	startX := 9.9714
-
-	tasks = make([]*Task, 0)
-	for i := 0; i < 8; i++ {
-		geom := make([][]float64, 0)
-		geom = append(geom, []float64{startX, startY})
-		geom = append(geom, []float64{startX + 0.01, startY})
-		geom = append(geom, []float64{startX + 0.01, startY + 0.01})
-		geom = append(geom, []float64{startX, startY + 0.01})
-		geom = append(geom, []float64{startX, startY})
-
-		startX += 0.01
-
-		tasks = append(tasks, &Task{
-			Id:               "t-" + util.GetId(),
-			ProcessPoints:    0,
-			MaxProcessPoints: 100,
-			Geometry:         geom,
-		})
-	}
-
-	tasks[0].AssignedUser = "Peter"
-	tasks[4].AssignedUser = "Maria"
+func Init() {
+	store = &TaskStoreLocal{}
+	store.init()
 }
 
 func GetTasks(taskIds []string) []*Task {
-	result := make([]*Task, 0)
-	for _, t := range tasks {
-		for _, i := range taskIds {
-			if t.Id == i {
-				result = append(result, t)
-			}
-		}
-	}
-
-	return result
+	return store.getTasks(taskIds)
 }
 
 func GetTask(id string) (*Task, error) {
-	for _, t := range tasks {
-		if t.Id == id {
-			return t, nil
-		}
-	}
-
-	return nil, errors.New(fmt.Sprintf("Task with id '%s' not found", id))
+	return store.getTask(id)
 }
 
 // AddTasks sets the ID of the tasks and adds them to the storage.
 func AddTasks(newTasks []*Task) []*Task {
-	result := make([]*Task, 0)
-
-	for _, t := range newTasks {
-		t.Id = "t-" + util.GetId()
-		result = append(result, t)
-	}
-
-	tasks = append(tasks, result...)
-
-	return result
+	return store.addTasks(newTasks)
 }
 
 func AssignUser(id, user string) (*Task, error) {
-	task, err := GetTask(id)
-	if err == nil {
-		if strings.TrimSpace(task.AssignedUser) == "" {
-			task.AssignedUser = user
-		} else {
-			err = errors.New(fmt.Sprintf("User '%s' already assigned, cannot overwrite", task.AssignedUser))
-			task = nil
-		}
-	}
-
-	return task, err
+	return store.assignUser(id, user)
 }
 
 func UnassignUser(id, user string) (*Task, error) {
-	task, err := GetTask(id)
-	if err == nil {
-		assignedUser := strings.TrimSpace(task.AssignedUser)
-		if assignedUser != "" {
-			if assignedUser == user {
-				task.AssignedUser = ""
-			} else {
-				err = errors.New(fmt.Sprintf("The assigned user (%s) and the user to unassign (%s) differ", task.AssignedUser, user))
-				task = nil
-			}
-		} else {
-			err = errors.New(fmt.Sprintf("User '%s' already assigned, cannot overwrite", task.AssignedUser))
-			task = nil
-		}
-	}
-
-	return task, err
+	return store.unassignUser(id, user)
 }
 
 func SetProcessPoints(id string, newPoints int) (*Task, error) {
-	task, err := GetTask(id)
-	if err == nil {
-		if 0 <= newPoints && newPoints <= task.MaxProcessPoints {
-			task.ProcessPoints = newPoints
-		} else {
-			msg := fmt.Sprintf("Cannot set process points on task '%s'. The given amount of process points (%d) is lower than 0 or larger than the maximum number of points (%d)",
-				task.Id,
-				newPoints,
-				task.MaxProcessPoints)
-
-			return nil, errors.New(msg)
-		}
-	}
-
-	return task, nil
+	return store.setProcessPoints(id, newPoints)
 }

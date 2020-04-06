@@ -26,7 +26,7 @@ var (
 	app       = kingpin.New("Simple Task Manager", "A tool dividing an area of the map into smaller tasks.")
 	appDebug  = app.Flag("debug", "Verbose mode, showing additional debug information").Short('d').Bool()
 	appPort   = app.Flag("port", "The port to listen on. Default is 8080").Short('p').Default("8080").Int()
-	appConfig = app.Flag("config", "The config file. CLI argument override the settings from that file.").Short('c').Default("./configs/default.json").String()
+	appConfig = app.Flag("config", "The config file. CLI argument override the settings from that file.").Short('c').Default("./config/default.json").String()
 )
 
 func configureCliArgs() {
@@ -90,9 +90,9 @@ func main() {
 	})
 
 	// Init of Config, Services, Storages, etc.
-	project.InitProjects()
-	task.InitTasks()
-	auth.InitAuth()
+	project.Init()
+	task.Init()
+	auth.Init()
 	sigolo.Info("Initializes services, storages, etc.")
 
 	if strings.HasPrefix(config.Conf.ServerUrl, "https") {

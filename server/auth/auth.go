@@ -41,7 +41,7 @@ var (
 	tokenSecretNonce [32]byte
 )
 
-func InitAuth() {
+func Init() {
 	oauthRedirectUrl = fmt.Sprintf("%s:%d/oauth_callback", config.Conf.ServerUrl, config.Conf.Port)
 	oauthConsumerKey = config.Conf.OauthConsumerKey
 	oauthSecret = config.Conf.OauthSecret
