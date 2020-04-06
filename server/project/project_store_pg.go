@@ -29,7 +29,6 @@ func (p *storePg) init(db *sql.DB) {
 func (p *storePg) getProjects(user string) []*Project {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE users='%s'", p.table, user)
 	sigolo.Debug(query)
-
 	rows, err := p.db.Query(query)
 	if err != nil {
 		return nil
@@ -51,7 +50,9 @@ func (p *storePg) getProjects(user string) []*Project {
 }
 
 func (p *storePg) getProject(id string) (*Project, error) {
-	rows := p.db.QueryRow(fmt.Sprintf("SELECT * FROM %s WHERE id='%s'", p.table, id))
+	query := fmt.Sprintf("SELECT * FROM %s WHERE id='%s'", p.table, id)
+	sigolo.Debug(query)
+	rows := p.db.QueryRow(query)
 
 	var proj projectRow
 	err := rows.Scan(&proj.id, &proj.name, &proj.taskIds, &proj.users, &proj.owner)
@@ -68,7 +69,9 @@ func (p *storePg) addProject(draft *Project, user string) *Project { //} (*Proje
 	taskIds := strings.Join(draft.TaskIDs, ",")
 	var projectId int
 
-	row := p.db.QueryRow(fmt.Sprintf("INSERT INTO %s(name, taskIds, users, owner) VALUES('%s', '%s', '%s', '%s') RETURNING id", p.table, draft.Name, taskIds, user, user))
+	query := fmt.Sprintf("INSERT INTO %s(name, taskIds, users, owner) VALUES('%s', '%s', '%s', '%s') RETURNING id", p.table, draft.Name, taskIds, user, user)
+	sigolo.Debug(query)
+	row := p.db.QueryRow(query)
 
 	err := row.Scan(&projectId)
 	if err != nil {
