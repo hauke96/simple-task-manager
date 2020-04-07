@@ -10,12 +10,12 @@ import (
 )
 
 var (
-	nextId = 0
+	NextId = 0 // public for tests
 )
 
 func GetId() string {
-	id := nextId
-	nextId += 1
+	id := NextId
+	NextId += 1
 	return strconv.Itoa(id)
 }
 

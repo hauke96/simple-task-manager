@@ -1,14 +1,18 @@
 package project
 
 import (
+	"github.com/hauke96/sigolo"
 	"testing"
-)
 
-var (
-	testStore *storeLocal
+	"../config"
+	"../util"
 )
 
 func prepare() {
+	config.LoadConfig("../config/test.json")
+
+	Init()
+
 	projects := make([]*Project, 0)
 	projects = append(projects, &Project{
 		Id:      "p-0",
@@ -33,29 +37,27 @@ func prepare() {
 	})
 
 	// Set global project store but also store it locally here to access the internal fields of the local store.
-	testStore = &storeLocal{
-		projects: projects,
-	}
-	projectStore = testStore
+	s := projectStore.(*storeLocal)
+	s.projects = projects
 }
 
 func TestVerifyOwnership(t *testing.T) {
 	prepare()
 
-	b := VerifyOwnership("Peter", []string{"t-3", "t-4"})
-	if !b { // expect t=true
+	b, err := VerifyOwnership("Peter", []string{"t-3", "t-4"})
+	if !b || err != nil { // expect t=true
 		t.Errorf("Sould be true")
 		t.Fail()
 	}
 
-	b = VerifyOwnership("Peter", []string{"t-5", "t-5", "t-5"})
-	if !b { // expect true
+	b, err = VerifyOwnership("Peter", []string{"t-5", "t-5", "t-5"})
+	if !b || err != nil { // expect true
 		t.Errorf("Sould be true")
 		t.Fail()
 	}
 
-	b = VerifyOwnership("Peter", []string{"t-4", "t-5", "t-6"})
-	if b { // expect false
+	b, err = VerifyOwnership("Peter", []string{"t-4", "t-5", "t-6"})
+	if b || err != nil { // expect false
 		t.Errorf("Sould be false")
 		t.Fail()
 	}
@@ -64,7 +66,11 @@ func TestVerifyOwnership(t *testing.T) {
 func TestGetProjects(t *testing.T) {
 	prepare()
 
-	userProjects := GetProjects("Maria")
+	userProjects, err := GetProjects("Maria")
+	if err != nil {
+		t.Error(err.Error())
+		t.Fail()
+	}
 	if contains("p-0", userProjects) {
 		t.Errorf("Maria doesn't own p-0")
 		t.Fail()
@@ -80,7 +86,9 @@ func TestGetProjects(t *testing.T) {
 }
 
 func TestAddAndGetProject(t *testing.T) {
-	testStore.projects = make([]*Project, 0)
+	s := projectStore.(*storeLocal)
+	s.projects = make([]*Project, 0)
+	util.NextId = 0
 
 	p := Project{
 		Id:      "this should be overwritten",
@@ -92,7 +100,13 @@ func TestAddAndGetProject(t *testing.T) {
 	AddProject(&p, "Maria")
 
 	// Check parameter of the just added Project
-	newProject := GetProjects("Maria")[0]
+	newProjects, err := GetProjects("Maria")
+	if err != nil {
+		t.Error(err.Error())
+		t.Fail()
+	}
+	newProject := newProjects[0]
+	sigolo.Info(newProject.Id)
 	if newProject.Id != "p-0" {
 		t.Errorf("Project should have ID 'p-100'")
 		t.Fail()
