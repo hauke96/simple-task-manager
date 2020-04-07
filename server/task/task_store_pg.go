@@ -45,7 +45,7 @@ func (s *storePg) getTasks(taskIds []string) ([]*Task, error) {
 			return nil, err
 		}
 
-		task, err := rowToTask(t)
+		task, err := rowToTask(rows)
 		if err != nil {
 			return nil, err
 		}
@@ -103,51 +103,56 @@ func (s *storePg) addTask(task *Task) (string, error) {
 func (s *storePg) assignUser(id, user string) (*Task, error) {
 	query := fmt.Sprintf("UPDATE %s SET assigned_user='%s' WHERE id=%s", s.table, user, id)
 	sigolo.Debug(query)
-	rows := s.db.QueryRow(query)
-
-	var task taskRow
-	err := rows.Scan(&task.id, &task.processPoints, &task.maxProcessPoints, &task.geometry, &task.assignedUser)
+	_, err := s.db.Query(query)
 	if err != nil {
 		return nil, err
 	}
 
-	result, err := rowToTask(task)
-	return result, err
+	return s.getTask(id)
 }
 
-func (s *storePg) unassignUser(id, user string) (*Task, error) {
+func (s *storePg) unassignUser(id string) (*Task, error) {
 	query := fmt.Sprintf("UPDATE %s SET assigned_user=NULL WHERE id=%s", s.table, id)
 	sigolo.Debug(query)
-	rows := s.db.QueryRow(query)
-
-	var task taskRow
-	err := rows.Scan(&task.id, &task.processPoints, &task.maxProcessPoints, &task.geometry, &task.assignedUser)
+	_, err := s.db.Query(query)
 	if err != nil {
 		return nil, err
 	}
 
-	result, err := rowToTask(task)
-	return result, err
+	return s.getTask(id)
 }
 
 func (s *storePg) setProcessPoints(id string, newPoints int) (*Task, error) {
-	panic("implement me")
+	query := fmt.Sprintf("UPDATE %s SET process_points=%d WHERE id=%s", s.table, newPoints, id)
+	sigolo.Debug(query)
+	_, err := s.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.getTask(id)
 }
 
-func rowToTask(p taskRow) (*Task, error) {
+func rowToTask(rows *sql.Rows) (*Task, error) {
+	var task taskRow
+	err := rows.Scan(&task.id, &task.processPoints, &task.maxProcessPoints, &task.geometry, &task.assignedUser)
+	if err != nil {
+		return nil, err
+	}
+
 	result := Task{}
 
-	result.Id = strconv.Itoa(p.id)
-	result.ProcessPoints = p.processPoints
-	result.MaxProcessPoints = p.maxProcessPoints
-	result.AssignedUser = p.assignedUser
+	result.Id = strconv.Itoa(task.id)
+	result.ProcessPoints = task.processPoints
+	result.MaxProcessPoints = task.maxProcessPoints
+	result.AssignedUser = task.assignedUser
 
 	var g [][]float64
-	err := json.Unmarshal([]byte(p.geometry), &g)
+	err = json.Unmarshal([]byte(task.geometry), &g)
 	if err != nil {
 		return nil, err
 	}
 	result.Geometry = g
 
-	return &result, nil
+	return &result, err
 }

@@ -2,7 +2,10 @@ package task
 
 import (
 	"database/sql"
+	"errors"
+	"fmt"
 	"github.com/hauke96/sigolo"
+	"strings"
 
 	"../config"
 )
@@ -21,7 +24,7 @@ type taskStore interface {
 	getTask(id string) (*Task, error)
 	addTasks(newTasks []*Task) ([]*Task, error)
 	assignUser(id, user string) (*Task, error)
-	unassignUser(id, user string) (*Task, error)
+	unassignUser(id string) (*Task, error)
 	setProcessPoints(id string, newPoints int) (*Task, error)
 }
 
@@ -56,13 +59,44 @@ func AddTasks(newTasks []*Task) ([]*Task, error) {
 }
 
 func AssignUser(id, user string) (*Task, error) {
+	task, err := store.getTask(id)
+	if err != nil {
+		return nil, err
+	}
+
+	// Task has already an assigned user
+	if strings.TrimSpace(task.AssignedUser) != "" {
+		return nil, errors.New(fmt.Sprintf("User '%s' already assigned, cannot overwrite", task.AssignedUser))
+	}
+
 	return store.assignUser(id, user)
 }
 
 func UnassignUser(id, user string) (*Task, error) {
-	return store.unassignUser(id, user)
+	task, err := store.getTask(id)
+	if err != nil {
+		return nil, err
+	}
+
+	assignedUser := strings.TrimSpace(task.AssignedUser)
+	if assignedUser != user {
+		err = errors.New("The assigned user and the user to unassign differ")
+		task = nil
+	}
+
+	return store.unassignUser(id)
 }
 
 func SetProcessPoints(id string, newPoints int) (*Task, error) {
+	task, err := store.getTask(id)
+	if err != nil {
+		return nil, err
+	}
+
+	// New process points should be in the range "[0, MaxProcessPoints]" (so including 0 and MaxProcessPoints)
+	if newPoints < 0 || task.MaxProcessPoints < newPoints{
+		return nil, errors.New("Process points out of range")
+	}
+
 	return store.setProcessPoints(id, newPoints)
 }

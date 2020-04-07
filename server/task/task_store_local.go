@@ -1,12 +1,10 @@
 package task
 
 import (
+	"../util"
 	"database/sql"
 	"errors"
 	"fmt"
-	"strings"
-
-	"../util"
 )
 
 type storeLocal struct {
@@ -78,52 +76,24 @@ func (s *storeLocal) addTasks(newTasks []*Task) ([]*Task, error) {
 
 func (s *storeLocal) assignUser(id, user string) (*Task, error) {
 	task, err := s.getTask(id)
-	if err == nil {
-		if strings.TrimSpace(task.AssignedUser) == "" {
-			task.AssignedUser = user
-		} else {
-			err = errors.New(fmt.Sprintf("User '%s' already assigned, cannot overwrite", task.AssignedUser))
-			task = nil
-		}
+	if err != nil {
+		return nil, err
 	}
 
-	return task, err
+	task.AssignedUser = user
+	return task, nil
 }
 
-func (s *storeLocal) unassignUser(id, user string) (*Task, error) {
-	task, err := s.getTask(id)
-	if err == nil {
-		assignedUser := strings.TrimSpace(task.AssignedUser)
-		if assignedUser != "" {
-			if assignedUser == user {
-				task.AssignedUser = ""
-			} else {
-				err = errors.New(fmt.Sprintf("The assigned user (%s) and the user to unassign (%s) differ", task.AssignedUser, user))
-				task = nil
-			}
-		} else {
-			err = errors.New(fmt.Sprintf("User '%s' already assigned, cannot overwrite", task.AssignedUser))
-			task = nil
-		}
-	}
-
-	return task, err
+func (s *storeLocal) unassignUser(id string) (*Task, error) {
+	return s.assignUser(id, "")
 }
 
 func (s *storeLocal) setProcessPoints(id string, newPoints int) (*Task, error) {
 	task, err := s.getTask(id)
-	if err == nil {
-		if 0 <= newPoints && newPoints <= task.MaxProcessPoints {
-			task.ProcessPoints = newPoints
-		} else {
-			msg := fmt.Sprintf("Cannot set process points on task '%s'. The given amount of process points (%d) is lower than 0 or larger than the maximum number of points (%d)",
-				task.Id,
-				newPoints,
-				task.MaxProcessPoints)
-
-			return nil, errors.New(msg)
-		}
+	if err != nil {
+		return nil, err
 	}
 
+	task.ProcessPoints = newPoints
 	return task, nil
 }
