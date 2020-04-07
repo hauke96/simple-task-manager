@@ -108,7 +108,7 @@ func (s *storePg) assignUser(id, user string) (*Task, error) {
 		return nil, err
 	}
 
-	return s.getTask(id)
+	return s.getTask(id) // TODO Try get updated object as return from query using "RETURNING ..."?
 }
 
 func (s *storePg) unassignUser(id string) (*Task, error) {
@@ -119,7 +119,7 @@ func (s *storePg) unassignUser(id string) (*Task, error) {
 		return nil, err
 	}
 
-	return s.getTask(id)
+	return s.getTask(id) // TODO Try get updated object as return from query using "RETURNING ..."?
 }
 
 func (s *storePg) setProcessPoints(id string, newPoints int) (*Task, error) {
@@ -130,7 +130,7 @@ func (s *storePg) setProcessPoints(id string, newPoints int) (*Task, error) {
 		return nil, err
 	}
 
-	return s.getTask(id)
+	return s.getTask(id) // TODO Try get updated object as return from query using "RETURNING ..."?
 }
 
 func rowToTask(rows *sql.Rows) (*Task, error) {

@@ -82,6 +82,7 @@ func (s *storePg) addUser(userToAdd string, id string, owner string) (*Project, 
 		return nil, err
 	}
 
+	// TODO SQL error when setting user
 	users := originalProject.Users
 	query := fmt.Sprintf("UPDATE %s SET user='%s,%s' WHERE id=%s", s.table, users, userToAdd, id)
 	sigolo.Debug(query)
@@ -91,7 +92,7 @@ func (s *storePg) addUser(userToAdd string, id string, owner string) (*Project, 
 	}
 
 	rows.Next()
-	return rowToProject(rows)
+	return rowToProject(rows) // TODO Does this work? Try get updated object as return from query using "RETURNING ..."?
 }
 
 func rowToProject(rows *sql.Rows) (*Project, error) {
