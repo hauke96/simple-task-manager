@@ -68,6 +68,7 @@ func (s *storePg) getTask(id string) (*Task, error) {
 func (s *storePg) addTasks(newTasks []*Task) ([]*Task, error) {
 	taskIds := make([]string, 0)
 
+	// TODO Do not add one by one but instead build one large query (otherwise it's really slow)
 	for _, t := range newTasks {
 		id, err := s.addTask(t)
 		if err != nil {
@@ -112,7 +113,7 @@ func (s *storePg) assignUser(id, user string) (*Task, error) {
 }
 
 func (s *storePg) unassignUser(id string) (*Task, error) {
-	query := fmt.Sprintf("UPDATE %s SET assigned_user=NULL WHERE id=%s", s.table, id)
+	query := fmt.Sprintf("UPDATE %s SET assigned_user='' WHERE id=%s", s.table, id)
 	sigolo.Debug(query)
 	_, err := s.db.Query(query)
 	if err != nil {

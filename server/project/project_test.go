@@ -1,95 +1,118 @@
 package project
 
 import (
-	"github.com/hauke96/sigolo"
 	"testing"
 
 	"../config"
 	"../util"
+
+	_ "github.com/lib/pq" // Make driver "postgres" usable
 )
 
 func prepare() {
-	config.LoadConfig("../config/test.json")
+	config.LoadConfig("../test/test.json")
 
 	Init()
 
-	projects := make([]*Project, 0)
-	projects = append(projects, &Project{
-		Id:      "p-0",
-		Name:    "First project",
-		TaskIDs: []string{"t-3", "t-4"},
-		Users:   []string{"Peter"},
-		Owner:   "Peter",
-	})
-	projects = append(projects, &Project{
-		Id:      "p-1",
-		Name:    "Foo",
-		TaskIDs: []string{"t-5"},
-		Users:   []string{"Peter", "Maria"},
-		Owner:   "Peter",
-	})
-	projects = append(projects, &Project{
-		Id:      "p-2",
-		Name:    "Bar",
-		TaskIDs: []string{"t-6", "t-7", "t-8", "t-9", "t-10"},
-		Users:   []string{"Maria"},
-		Owner:   "Maria",
-	})
+	if config.Conf.Store == "cache" {
+		projects := make([]*Project, 0)
+		projects = append(projects, &Project{
+			Id:      "1",
+			Name:    "Project 1",
+			TaskIDs: []string{"3"},
+			Users:   []string{"Peter", "Maria"},
+			Owner:   "Peter",
+		})
+		projects = append(projects, &Project{
+			Id:      "2",
+			Name:    "Project 2",
+			TaskIDs: []string{"4,5,6"},
+			Users:   []string{"Maria"},
+			Owner:   "Maria",
+		})
 
-	// Set global project store but also store it locally here to access the internal fields of the local store.
-	s := projectStore.(*storeLocal)
-	s.projects = projects
+		// Set global project store but also store it locally here to access the internal fields of the local store.
+		s := projectStore.(*storeLocal)
+		s.projects = projects
+	}
 }
 
 func TestVerifyOwnership(t *testing.T) {
 	prepare()
 
-	b, err := VerifyOwnership("Peter", []string{"t-3", "t-4"})
-	if !b || err != nil { // expect t=true
-		t.Errorf("Sould be true")
+	// Test ownership of tasks of project 1
+	b, err := VerifyOwnership("Peter", []string{"3"})
+	if err != nil {
+		t.Error(err.Error())
 		t.Fail()
+		return
+	}
+	if !b { // expect t=true
+		t.Errorf("Petern in deed owns task 3")
+		t.Fail()
+		return
 	}
 
-	b, err = VerifyOwnership("Peter", []string{"t-5", "t-5", "t-5"})
-	if !b || err != nil { // expect true
-		t.Errorf("Sould be true")
+	// Test ownership of tasks of project 2
+	b, err = VerifyOwnership("Peter", []string{"4", "5", "6", "6"})
+	if err != nil {
+		t.Error(err.Error())
 		t.Fail()
+		return
 	}
-
-	b, err = VerifyOwnership("Peter", []string{"t-4", "t-5", "t-6"})
-	if b || err != nil { // expect false
-		t.Errorf("Sould be false")
+	if b { // expect false
+		t.Errorf("Petern in deed owns tasks 4, 5 and 6")
 		t.Fail()
+		return
 	}
 }
 
 func TestGetProjects(t *testing.T) {
 	prepare()
 
+	// For Maria (being part of project 1 and 2)
 	userProjects, err := GetProjects("Maria")
 	if err != nil {
 		t.Error(err.Error())
 		t.Fail()
+		return
 	}
-	if contains("p-0", userProjects) {
-		t.Errorf("Maria doesn't own p-0")
+	if !contains("1", userProjects) {
+		t.Errorf("Maria is in deed project 1")
 		t.Fail()
+		return
 	}
-	if !contains("p-1", userProjects) {
-		t.Errorf("Maria does own p-1")
+	if !contains("2", userProjects) {
+		t.Errorf("Maria is in deed project 2")
 		t.Fail()
+		return
 	}
-	if !contains("p-2", userProjects) {
-		t.Errorf("Maria does own p-2")
+
+	// For Peter (being part of only project 1)
+	userProjects, err = GetProjects("Peter")
+	if err != nil {
+		t.Error(err.Error())
 		t.Fail()
+		return
+	}
+	if !contains("1", userProjects) {
+		t.Errorf("Peter is in deed project 1")
+		t.Fail()
+		return
+	}
+	if contains("2", userProjects) {
+		t.Errorf("Peter is not in project 2")
+		t.Fail()
+		return
 	}
 }
 
 func TestAddAndGetProject(t *testing.T) {
-	s := projectStore.(*storeLocal)
-	s.projects = make([]*Project, 0)
-	util.NextId = 0
+	if config.Conf.Store == "cache" {
+		util.NextId = 6
+	}
 
+	user := "Jack"
 	p := Project{
 		Id:      "this should be overwritten",
 		Name:    "Test name",
@@ -97,35 +120,38 @@ func TestAddAndGetProject(t *testing.T) {
 		Users:   []string{"noname-user"},
 		Owner:   "noname-user",
 	}
-	AddProject(&p, "Maria")
 
-	// Check parameter of the just added Project
-	newProjects, err := GetProjects("Maria")
+	newProject, err := AddProject(&p, user)
 	if err != nil {
 		t.Error(err.Error())
 		t.Fail()
+		return
 	}
-	newProject := newProjects[0]
-	sigolo.Info(newProject.Id)
-	if newProject.Id != "p-0" {
-		t.Errorf("Project should have ID 'p-100'")
+
+	if len(newProject.Users) != 1 {
+		t.Errorf("User amount should be 1 but was %d", len(newProject.Users))
 		t.Fail()
+		return
 	}
-	if len(newProject.Users) != 1 || newProject.Users[0] != "Maria" {
-		t.Errorf("User should be 'Maria'")
+	if newProject.Users[0] != user {
+		t.Errorf("User should be '%s' but was '%s'", user, newProject.Users[0])
 		t.Fail()
+		return
 	}
 	if len(newProject.TaskIDs) != len(p.TaskIDs) || newProject.TaskIDs[0] != p.TaskIDs[0] {
-		t.Errorf("Task IDs is not the same")
+		t.Errorf("Task ID should be '%s' but was '%s'", newProject.TaskIDs[0], p.TaskIDs[0])
 		t.Fail()
+		return
 	}
 	if newProject.Name != p.Name {
-		t.Errorf("Name is not the same")
+		t.Errorf("Name should be '%s' but was '%s'", newProject.Name, p.Name)
 		t.Fail()
+		return
 	}
-	if newProject.Owner != "Maria" {
-		t.Errorf("Owner does not match")
+	if newProject.Owner != user {
+		t.Errorf("Owner should be '%s' but was '%s'", user, newProject.Owner)
 		t.Fail()
+		return
 	}
 }
 
@@ -134,11 +160,12 @@ func TestAddUser(t *testing.T) {
 
 	newUser := "new user"
 
-	p, err := AddUser(newUser, "p-0", "Peter")
+	p, err := AddUser(newUser, "1", "Peter")
 	if err != nil {
 		t.Error("This should work")
 		t.Error(err.Error())
 		t.Fail()
+		return
 	}
 
 	containsUser := false
@@ -151,20 +178,23 @@ func TestAddUser(t *testing.T) {
 	if !containsUser {
 		t.Error("Project should contain new user")
 		t.Fail()
+		return
 	}
 
-	p, err = AddUser(newUser, "p-2346", "Peter")
+	p, err = AddUser(newUser, "2284527", "Peter")
 	if err == nil {
 		t.Error("This should not work: The project does not exist")
 		t.Error(err.Error())
 		t.Fail()
+		return
 	}
 
-	p, err = AddUser(newUser, "p-0", "Not-Owner-User")
+	p, err = AddUser(newUser, "1", "Not-Owning-User")
 	if err == nil {
 		t.Error("This should not work: A non-owner user tries to add a user")
 		t.Error(err.Error())
 		t.Fail()
+		return
 	}
 }
 

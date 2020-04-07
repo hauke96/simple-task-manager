@@ -2,4 +2,8 @@
 server/server
 server/server.debug
 
+# IDE stuff
 **.idea
+
+# Docker stuff
+postgres-data

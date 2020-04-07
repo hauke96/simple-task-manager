@@ -27,7 +27,7 @@ func (s *storeLocal) init(db *sql.DB) {
 		startX += 0.01
 
 		s.tasks = append(s.tasks, &Task{
-			Id:               "t-" + util.GetId(),
+			Id:               util.GetId(),
 			ProcessPoints:    0,
 			MaxProcessPoints: 100,
 			Geometry:         geom,

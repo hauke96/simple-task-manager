@@ -1,4 +1,4 @@
 {
   "debug-logging": true,
-  "store": "cache"
+  "store": "postgres"
 }

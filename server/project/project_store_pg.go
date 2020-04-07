@@ -84,7 +84,7 @@ func (s *storePg) addUser(userToAdd string, id string, owner string) (*Project, 
 
 	// TODO SQL error when setting user
 	users := originalProject.Users
-	query := fmt.Sprintf("UPDATE %s SET user='%s,%s' WHERE id=%s", s.table, users, userToAdd, id)
+	query := fmt.Sprintf("UPDATE %s SET users='%s,%s' WHERE id=%s", s.table, users, userToAdd, id)
 	sigolo.Debug(query)
 	rows, err := s.db.Query(query)
 	if err != nil {
