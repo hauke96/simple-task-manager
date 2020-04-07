@@ -150,6 +150,16 @@ You need to install these using `go get github.com/gorilla/mux` and so on.
 
 Just go into the `server` folder and execute `go run .`.
 
+### Test
+
+There are unit tests (files ending with `_test.go`).
+The test configuration in `server/test/test.json` specified what store is used (`cache`, which is an in memory store, or `postgres`).
+
+#### Using a real database
+
+Set the `store` property of the `test.json` file to `postgres` and run the `run.sh` script.
+This script will setup the database in a docker container, fill the database with dummy data and executes the tests.
+
 ### Build
 
 *You need to go throuth the "Setup" section first ;)*
