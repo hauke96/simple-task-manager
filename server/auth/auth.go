@@ -68,6 +68,9 @@ func OauthLogin(w http.ResponseWriter, r *http.Request) {
 	userConfig := &oauth1a.UserConfig{}
 	configKey := fmt.Sprintf("%x", sha256.Sum256(getRandomBytes(64)))
 
+	// We add the config-param to the redirect URL in order to transfer the config key to the callback function. There
+	// we use this key to retrieve the config back and be able to make proper requests to the OSM server..
+	// The redirect param is the URL of the web application we want to redirect back to, after everything is done.
 	service.ClientConfig.CallbackURL = oauthRedirectUrl + "?redirect=" + r.FormValue("redirect") + "&config=" + configKey
 	sigolo.Info("%s", service.ClientConfig.CallbackURL)
 
