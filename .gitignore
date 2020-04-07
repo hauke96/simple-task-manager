@@ -1,6 +1,7 @@
 # Server side
 server/server
 server/server.debug
+server/coverage.out
 
 # IDE stuff
 **.idea
