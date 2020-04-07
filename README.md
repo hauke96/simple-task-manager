@@ -118,6 +118,13 @@ The readme in this folder gives you further instruction on the setup, running, b
 2. Go into the `client` folder
 3. Execute `npm run dev` which uses the `environment.ts` file as config
 
+### Initialize database
+
+The folder `server/database/` contains the script `init-db.sh`.
+Start your database and call this script (from within that folder).
+
+You need the tools `createdb` and `psql`. Both are -- for ubuntu users -- available in the package `postgresql-client`.
+
 ### Build
 
 Same as above but with `npm run build`.
