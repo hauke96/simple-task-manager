@@ -198,6 +198,28 @@ func TestAddUser(t *testing.T) {
 	}
 }
 
+func TestAddUserTwice(t *testing.T) {
+	prepare()
+
+	newUser := "new user"
+
+	_, err := AddUser(newUser, "1", "Peter")
+	if err != nil {
+		t.Error("This should work")
+		t.Error(err.Error())
+		t.Fail()
+		return
+	}
+
+	// Add second time, this should now work
+	_, err = AddUser(newUser, "1", "Peter")
+	if err == nil {
+		t.Error("Adding a user twice should not work")
+		t.Fail()
+		return
+	}
+}
+
 func contains(projectIdToFind string, projectsToCheck []*Project) bool {
 	for _, p := range projectsToCheck {
 		if p.Id == projectIdToFind {
