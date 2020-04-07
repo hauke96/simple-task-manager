@@ -1,6 +1,6 @@
 # SimpleTaskManager
 
-Prototype of a simple mapping tasking manager for e.g. [https://openstreetmap.org](OpenStreetMap (OSM)).
+Prototype of a simple mapping tasking manager for e.g. [OpenStreetMap (OSM)](https://openstreetmap.org).
 
 Take a look at the latest version at [https://stm.hauke-stieler.de/](https://stm.hauke-stieler.de/).
 
@@ -136,11 +136,11 @@ The server is written in go (aka *golang*) so you need to install go and setup y
 ### Setup
 This project uses some frameworks/libraries to make the development easier:
 
-* [https://github.com/gorilla/mux](gorilla/mux) to easily create REST endpoints
-* [https://github.com/kurrik/oauth1a](kurrik/oauth1a) for the OAuth1a authentication
-* [https://github.com/lib/pq](lib/pq) for a Postgres database driver
-* [https://github.com/hauke96/sigolo](hauke96/sigolo) for logging
-* [https://github.com/hauke96/kingpin](hauke96/kingpin) for CLI parameter and flag parsing
+* [gorilla/mux](https://github.com/gorilla/mux) to easily create REST endpoints
+* [kurrik/oauth1a](https://github.com/kurrik/oauth1a) for the OAuth1a authentication
+* [lib/pq](https://github.com/lib/pq) for a Postgres database driver
+* [hauke96/sigolo](https://github.com/hauke96/sigolo) for logging
+* [hauke96/kingpin](https://github.com/hauke96/kingpin) for CLI parameter and flag parsing
 
 You need to install these using `go get github.com/gorilla/mux` and so on.
 
