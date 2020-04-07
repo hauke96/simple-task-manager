@@ -90,10 +90,14 @@ func (s *storePg) addTask(task *Task) (string, error) {
 	query := fmt.Sprintf("INSERT INTO %s(process_points, max_process_points, geometry, assigned_user) VALUES('%d', '%d', '%s', '%s') RETURNING id",
 		s.table, task.ProcessPoints, task.MaxProcessPoints, string(geometryBytes), task.AssignedUser)
 	sigolo.Debug(query)
-	row := s.db.QueryRow(query)
+	rows, err := s.db.Query(query)
+	if err != nil {
+		return "", err
+	}
 
 	var taskId int
-	err = row.Scan(&taskId)
+	rows.Next()
+	err = rows.Scan(&taskId)
 	if err != nil {
 		return "", err
 	}
@@ -102,36 +106,39 @@ func (s *storePg) addTask(task *Task) (string, error) {
 }
 
 func (s *storePg) assignUser(id, user string) (*Task, error) {
-	query := fmt.Sprintf("UPDATE %s SET assigned_user='%s' WHERE id=%s", s.table, user, id)
+	query := fmt.Sprintf("UPDATE %s SET assigned_user='%s' WHERE id=%s RETURNING *", s.table, user, id)
 	sigolo.Debug(query)
-	_, err := s.db.Query(query)
+	rows, err := s.db.Query(query)
 	if err != nil {
 		return nil, err
 	}
 
-	return s.getTask(id) // TODO Try get updated object as return from query using "RETURNING ..."?
+	rows.Next()
+	return rowToTask(rows)
 }
 
 func (s *storePg) unassignUser(id string) (*Task, error) {
-	query := fmt.Sprintf("UPDATE %s SET assigned_user='' WHERE id=%s", s.table, id)
+	query := fmt.Sprintf("UPDATE %s SET assigned_user='' WHERE id=%s RETURNING *", s.table, id)
 	sigolo.Debug(query)
-	_, err := s.db.Query(query)
+	rows, err := s.db.Query(query)
 	if err != nil {
 		return nil, err
 	}
 
-	return s.getTask(id) // TODO Try get updated object as return from query using "RETURNING ..."?
+	rows.Next()
+	return rowToTask(rows)
 }
 
 func (s *storePg) setProcessPoints(id string, newPoints int) (*Task, error) {
-	query := fmt.Sprintf("UPDATE %s SET process_points=%d WHERE id=%s", s.table, newPoints, id)
+	query := fmt.Sprintf("UPDATE %s SET process_points=%d WHERE id=%s RETURNING *", s.table, newPoints, id)
 	sigolo.Debug(query)
-	_, err := s.db.Query(query)
+	rows, err := s.db.Query(query)
 	if err != nil {
 		return nil, err
 	}
 
-	return s.getTask(id) // TODO Try get updated object as return from query using "RETURNING ..."?
+	rows.Next()
+	return rowToTask(rows)
 }
 
 func rowToTask(rows *sql.Rows) (*Task, error) {

@@ -312,7 +312,7 @@ func setProcessPoints(w http.ResponseWriter, r *http.Request, token *auth.Token)
 		return
 	}
 
-	sigolo.Info("Successfully set process points on task '%s'", taskId)
+	sigolo.Info("Successfully set process points on task '%s' to %d", taskId, processPoints)
 
 	encoder := json.NewEncoder(w)
 	encoder.Encode(*task)
