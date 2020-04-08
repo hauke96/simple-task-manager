@@ -2,8 +2,6 @@ package api
 
 import (
 	"fmt"
-	"github.com/gorilla/mux"
-	"github.com/hauke96/sigolo"
 	"net/http"
 	"strconv"
 	"strings"
@@ -11,6 +9,13 @@ import (
 	"../auth"
 	"../config"
 	"../util"
+
+	"github.com/gorilla/mux"
+	"github.com/hauke96/sigolo"
+)
+
+var(
+	supportedApiVersions = make([]string, 0)
 )
 
 func Init() error {
@@ -22,7 +27,8 @@ func Init() error {
 	sigolo.Info("Registered general routes:")
 	printRoutes(router)
 
-	routerV1 := Init_V1(router)
+	routerV1, version := Init_V1(router)
+	supportedApiVersions = append(supportedApiVersions, version)
 	sigolo.Info("Registered routes for API v1:")
 	printRoutes(routerV1)
 
@@ -53,12 +59,12 @@ func Init() error {
 }
 
 func getInfo(w http.ResponseWriter, r *http.Request) {
-	fmtStr := "%-*s : %s\n"
-	fmtColWidth := 15
+	fmtStr := "%*s : %s\n"
+	fmtColWidth := 22
 
 	fmt.Fprintf(w, "SimpleTaskManager Server:\n")
 	fmt.Fprintf(w, "=========================\n\n")
 	fmt.Fprintf(w, fmtStr, fmtColWidth, "Version", util.VERSION)
 	fmt.Fprintf(w, fmtStr, fmtColWidth, "Code", "https://github.com/hauke96/simple-task-manager")
-	fmt.Fprintf(w, fmtStr, fmtColWidth, "API versions", "v1")
+	fmt.Fprintf(w, fmtStr, fmtColWidth, "Supported API versions", strings.Join(supportedApiVersions, ", "))
 }
