@@ -1,13 +1,17 @@
 @import "colors.scss";
 
 // Global distances etc.
-$space-small: 5px;
 $space-base: 10px;
+$space-small: $space-base / 2;
 $space-large: $space-base * 2;
 $space-huge: $space-base * 4;
 
 // Fonts
-$font-small: 8pt;
+$font-small: 9pt;
+
+small {
+	font-size: $font-small;
+}
 
 // General things
 body {
@@ -60,6 +64,7 @@ a:hover {
 	color: $color-dark;
 }
 
+// For lists created by e.g. *ngFor
 .list-item {
 	height: $space-huge;
 	line-height: $space-huge;
@@ -77,6 +82,22 @@ a:hover {
 }
 .list-item:hover + .list-item { // hide border for next list item
 	border-top: none;
+}
+
+ul {
+    list-style: none;
+    padding-left: $space-huge;
+    text-indent: -$space-large;
+}
+li:before {
+	content: "–";
+	display: block;
+	float: left;
+	width: $space-large;
+	color: $gray-mid;
+}
+li {
+	margin-bottom: $space-small;
 }
 
 .toolbar {

@@ -1,0 +1,86 @@
+@startuml
+
+title SimpleTaskManager (STM) authentication
+
+actor "User" as user
+control "Web client" as client
+control "Popup window" as popup
+database "STM-Server" as stm
+database "OSM-Auth Server" as osm
+
+user -> client : Opens SimpleTaskManager\n(without being logged in)
+client --> user : ""<login page>""
+
+== Authentication ==
+user -> client : Clicks "login" button
+client --> popup : Opens popup with login-URL \n""(auth.service.ts:requestLogin())""
+activate popup
+
+rnote over client : The client now constantly checks if oauth\ntoken is present in the local storage
+
+popup -> stm : Calls "/oauth_login"
+activate stm
+
+stm -> osm : Calls "/oauth/request_token" \n""(auth.go:OauthLogin())""
+osm --> stm : ""<request token>""
+
+rnote over stm : STM server stores request token \n""(auth.go:OauthLogin())""
+
+stm --> popup : Redirect to "/oauth/authorize" \n""(auth.go:OauthLogin())""
+deactivate stm
+
+popup -> osm : Requests login page
+osm --> popup : ""<login page>""
+
+user -> popup : Clicks "Access granted" button
+popup -> stm : Calls "/oauth_callback"
+activate stm
+
+stm -> stm : Reads previously saved \nconfig for this login request \n""(auth.go:OauthCallback())""
+
+stm -> osm : Calls "/oauth/access_token" \n""(auth.go:requestAccessToken())""
+osm --> stm : ""<access token>""
+
+stm -> osm : Calls "/api/0.6/user/details" \n""(auth.go:requestUserInformation())""
+osm --> stm : ""<user information>""
+
+rnote over stm : STM server creates token \n(see according documentation)
+
+stm --> popup : Redirect to "/oauth-landing" \n""(auth.go:OauthCallback())""
+deactivate stm
+popup -> popup : Store token into local storage \n""(oauth-landing.component.ts:constructor)""
+
+popup -> popup ! : Close
+deactivate popup
+
+client -> client : Finds token and redirects to "/manager" \n""(auth.service.ts""\n"" :waitForLocalStorageToken)""
+
+== Authorization of requests ==
+
+rnote over client : The STM loads the "/manager" \npage which contains a list of \nprojects. Therefore the projects \nare requested from the server.
+
+client -> client : Calls "/projects?user=..." \n""(project-list.component.ts:ngOnInit())""
+client -> client : Append token \n""(logged-in.interceptor.ts)""
+client -> stm : ""Header:""\n""  Authorization: "eyJ2YWxp..."""
+
+stm -> stm : Verifies token using a "canonical \nverification" as cryptoanalysts would say \n\n""(auth.go:VerifyToken())""
+stm -> stm : Read projects from database/store
+stm --> client : ""<projects>""
+
+== Token expired ==
+
+client -> client : Calls some URL
+client -> client : Append token \n""(logged-in.interceptor.ts)""
+client -> stm : ""Header:""\n""  Authorization: "eyJ2YWxp..."""
+
+stm -> stm : Verification failed (token expired)
+stm --> client : ""ERROR: 401""
+
+client -> client : Logout \n""(logged-in.interceptor.ts)""
+client -> client : Redirect to login page \n""(auth.service.ts:logout())""
+
+rnote over client : Token has been removed \nfrom the local storage
+
+client --> user : ""<login page>""
+
+@enduml

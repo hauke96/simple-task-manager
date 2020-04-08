@@ -9,11 +9,21 @@
 		<button (click)="onLoginButtonClick()">Login</button>
 	</div>
 	<div class="notice">
-		<b>Warning</b>
+		<div class="notice-container">
 		<div class="notice-bar"></div>
-		<div class="notice-description">
-			Currently there is <b>no database</b>. When the server is restarted, everything will be reset. A database will be added in one of the following releases.<br><br>
-			So: Stay tuned ;)
+		<div class="notice-text">
+			<b>New in 0.5.0:</b>
+			<ul>
+				<li>Adding a database<br>(Changes are now saved permanently)</li>
+			</ul>
+			For developers:
+			<ul>
+				<li>Better error handling</li>
+				<li>Refactoring of the storage architecture</li>
+				<li>Updated tests and added new ones</li>
+				<li>Smaller bug fixes</li>
+			</ul>
+		</div>
 		</div>
 	</div>
 </div>

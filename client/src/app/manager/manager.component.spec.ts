@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ManagerComponent } from './manager.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ManagerComponent', () => {
   let component: ManagerComponent;
@@ -8,7 +9,10 @@ describe('ManagerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ManagerComponent ]
+      declarations: [ ManagerComponent ],
+      imports: [
+        RouterTestingModule.withRoutes([])
+      ]
     })
     .compileComponents();
   }));

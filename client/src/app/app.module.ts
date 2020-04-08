@@ -42,7 +42,7 @@ import { UserInvitationComponent } from './user/user-invitation.component';
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-  HttpClientModule
+    HttpClientModule
   ],
   providers: [
     AuthGuard,

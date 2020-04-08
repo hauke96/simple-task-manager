@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { OauthLandingComponent } from './oauth-landing.component';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('OauthLandingComponent', () => {
   let component: OauthLandingComponent;
@@ -8,7 +10,17 @@ describe('OauthLandingComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ OauthLandingComponent ]
+      declarations: [ OauthLandingComponent ],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            queryParams: of([{
+              auth_token: 'abc123'
+            }])
+          }
+        }
+      ]
     })
     .compileComponents();
   }));
