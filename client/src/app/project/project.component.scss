@@ -12,7 +12,8 @@
 }
 
 .task-details-container {
-	margin-bottom: $space-large;
+	 // Moves details up if there's space (otherwise this container would stick to the bottom of the page
+	margin-bottom: auto;
 }
 
 .root-container {
