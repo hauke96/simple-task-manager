@@ -20,7 +20,7 @@ func Init_V1(router *mux.Router) *mux.Router {
 
 	routerV1.HandleFunc("/projects", authenticatedHandler(getProjects)).Methods(http.MethodGet)
 	routerV1.HandleFunc("/projects", authenticatedHandler(addProject)).Methods(http.MethodPost)
-	routerV1.HandleFunc("/projects/users", authenticatedHandler(addUserToTask)).Methods(http.MethodPost)
+	routerV1.HandleFunc("/projects/users", authenticatedHandler(addUserToProject)).Methods(http.MethodPost)
 	routerV1.HandleFunc("/tasks", authenticatedHandler(getTasks)).Methods(http.MethodGet)
 	routerV1.HandleFunc("/tasks", authenticatedHandler(addTask)).Methods(http.MethodPost)
 	routerV1.HandleFunc("/task/assignedUser", authenticatedHandler(assignUser)).Methods(http.MethodPost)
@@ -64,7 +64,7 @@ func addProject(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	encoder.Encode(updatedProject)
 }
 
-func addUserToTask(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+func addUserToProject(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	userName, err := util.GetParam("user", r)
 	if err != nil {
 		util.ResponseBadRequest(w, err.Error())
