@@ -10,41 +10,60 @@ import (
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 )
 
-var storeType = flag.String("store", "cache", "The type of store to use")
+var useDatabase = flag.Bool("with-db", false, "Whether to use the database as well (next to the cache) or not")
 
-func prepare() {
+func preparePg() {
 	config.Conf = &config.Config{
-		Store: *storeType,
+		Store: "postgres",
+	}
+
+	Init()
+}
+
+func prepareCache() {
+	config.Conf = &config.Config{
+		Store: "cache",
 	}
 
 	Init()
 
-	if *storeType == "cache" {
-		projects := make([]*Project, 0)
-		projects = append(projects, &Project{
-			Id:      "1",
-			Name:    "Project 1",
-			TaskIDs: []string{"3"},
-			Users:   []string{"Peter", "Maria"},
-			Owner:   "Peter",
-		})
-		projects = append(projects, &Project{
-			Id:      "2",
-			Name:    "Project 2",
-			TaskIDs: []string{"4,5,6"},
-			Users:   []string{"Maria"},
-			Owner:   "Maria",
-		})
+	projects := make([]*Project, 0)
+	projects = append(projects, &Project{
+		Id:      "1",
+		Name:    "Project 1",
+		TaskIDs: []string{"3"},
+		Users:   []string{"Peter", "Maria"},
+		Owner:   "Peter",
+	})
+	projects = append(projects, &Project{
+		Id:      "2",
+		Name:    "Project 2",
+		TaskIDs: []string{"4,5,6"},
+		Users:   []string{"Maria"},
+		Owner:   "Maria",
+	})
 
-		// Set global project store but also store it locally here to access the internal fields of the local store.
-		s := projectStore.(*storeLocal)
-		s.projects = projects
-	}
+	// Set global project store but also store it locally here to access the internal fields of the local store.
+	s := projectStore.(*storeLocal)
+	s.projects = projects
 }
 
-func TestVerifyOwnership(t *testing.T) {
-	prepare()
+func TestVerifyOwnership_pg(t *testing.T) {
+	if !*useDatabase {
+		t.SkipNow()
+		return
+	}
 
+	preparePg()
+	testVerifyOwnership(t)
+}
+
+func TestVerifyOwnership_cache(t *testing.T) {
+	prepareCache()
+	testVerifyOwnership(t)
+}
+
+func testVerifyOwnership(t *testing.T) {
 	// Test ownership of tasks of project 1
 	b, err := VerifyOwnership("Peter", []string{"3"})
 	if err != nil {
@@ -72,9 +91,22 @@ func TestVerifyOwnership(t *testing.T) {
 	}
 }
 
-func TestGetProjects(t *testing.T) {
-	prepare()
+func TestGetProjects_pg(t *testing.T) {
+	if !*useDatabase {
+		t.SkipNow()
+		return
+	}
 
+	preparePg()
+	testGetProjects(t)
+}
+
+func TestGetProjects_cache(t *testing.T) {
+	prepareCache()
+	testGetProjects(t)
+}
+
+func testGetProjects(t *testing.T) {
 	// For Maria (being part of project 1 and 2)
 	userProjects, err := GetProjects("Maria")
 	if err != nil {
@@ -112,7 +144,22 @@ func TestGetProjects(t *testing.T) {
 	}
 }
 
-func TestAddAndGetProject(t *testing.T) {
+func TestAddAndGetProject_pg(t *testing.T) {
+	if !*useDatabase {
+		t.SkipNow()
+		return
+	}
+
+	preparePg()
+	testAddAndGetProject(t)
+}
+
+func TestAddAndGetProject_cache(t *testing.T) {
+	prepareCache()
+	testAddAndGetProject(t)
+}
+
+func testAddAndGetProject(t *testing.T) {
 	if config.Conf.Store == "cache" {
 		util.NextId = 6
 	}
@@ -160,9 +207,22 @@ func TestAddAndGetProject(t *testing.T) {
 	}
 }
 
-func TestAddUser(t *testing.T) {
-	prepare()
+func TestAddUser_pg(t *testing.T) {
+	if !*useDatabase {
+		t.SkipNow()
+		return
+	}
 
+	preparePg()
+	testAddUser(t)
+}
+
+func TestAddUser_cache(t *testing.T) {
+	prepareCache()
+	testAddUser(t)
+}
+
+func testAddUser(t *testing.T) {
 	newUser := "new user"
 
 	p, err := AddUser(newUser, "1", "Peter")
@@ -203,10 +263,23 @@ func TestAddUser(t *testing.T) {
 	}
 }
 
-func TestAddUserTwice(t *testing.T) {
-	prepare()
+func TestAddUserTwice_pg(t *testing.T) {
+	if !*useDatabase {
+		t.SkipNow()
+		return
+	}
 
-	newUser := "new user"
+	preparePg()
+	testAddUserTwice(t)
+}
+
+func TestAddUserTwice_cache(t *testing.T) {
+	prepareCache()
+	testAddUserTwice(t)
+}
+
+func testAddUserTwice(t *testing.T) {
+	newUser := "another-new-user"
 
 	_, err := AddUser(newUser, "1", "Peter")
 	if err != nil {

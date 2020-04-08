@@ -33,5 +33,5 @@ psql -h localhost -U postgres -f dump.sql stm
 
 cd ..
 pwd
-go test -coverprofile=coverage.out -v ./...
+go test -coverprofile=coverage.out -v ./... -args -with-db true
 go tool cover -html=coverage.out

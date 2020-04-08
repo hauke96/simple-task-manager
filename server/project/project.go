@@ -68,7 +68,7 @@ func AddUser(user, id, potentialOwner string) (*Project, error) {
 	// Check if user is already in project. If so, just do nothing and return
 	for _, u := range p.Users {
 		if u == user {
-			return p, nil
+			return p, errors.New("User already added")
 		}
 	}
 
