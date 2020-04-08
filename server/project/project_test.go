@@ -1,6 +1,7 @@
 package project
 
 import (
+	"flag"
 	"testing"
 
 	"../config"
@@ -9,12 +10,16 @@ import (
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 )
 
+var storeType = flag.String("store", "cache", "The type of store to use")
+
 func prepare() {
-	config.LoadConfig("../test/test.json")
+	config.Conf = &config.Config{
+		Store: *storeType,
+	}
 
 	Init()
 
-	if config.Conf.Store == "cache" {
+	if *storeType == "cache" {
 		projects := make([]*Project, 0)
 		projects = append(projects, &Project{
 			Id:      "1",
