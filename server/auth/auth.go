@@ -81,7 +81,7 @@ func OauthLogin(w http.ResponseWriter, r *http.Request) {
 	sigolo.Info("%s", service.ClientConfig.CallbackURL)
 
 	httpClient := new(http.Client)
-	err := userConfig.GetRequestToken(service, httpClient)
+	err = userConfig.GetRequestToken(service, httpClient)
 	if err != nil {
 		sigolo.Error(err.Error())
 		return
