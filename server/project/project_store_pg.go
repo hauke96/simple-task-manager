@@ -82,7 +82,7 @@ func (s *storePg) addUser(userToAdd string, id string, owner string) (*Project, 
 		return nil, err
 	}
 
-	users := originalProject.Users
+	users := strings.Join(originalProject.Users, ",")
 	query := fmt.Sprintf("UPDATE %s SET users='%s,%s' WHERE id=%s RETURNING *", s.table, users, userToAdd, id)
 	sigolo.Debug(query)
 	rows, err := s.db.Query(query)

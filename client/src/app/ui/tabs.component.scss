@@ -22,7 +22,7 @@ button.selected:hover,
 }
 
 .tab-content {
-	z-index: -1; // So that the button border is above this border
+//	z-index: -1; // So that the button border is above this border
 	margin-top: -1px;
 	border: 1px solid $color-light;
 	padding: $space-base;
