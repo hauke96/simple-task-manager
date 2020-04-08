@@ -10,8 +10,8 @@ Usually such region is divided into squares and only one mapper at a time works 
 
 # Usage workflow
 
-A user can create a *project* with constists of a large region on the map (e.g. a city district).
-This region is devided into smaller areas (e.g. 1x1km large squares) the so called *tasks*.
+A user can create a *project* with consists of a large region on the map (e.g. a city district).
+This region is divided into smaller areas (e.g. 1x1km large squares) the so called *tasks*.
 One user at a time can now work on such task and this user is able to update the process of the task by setting the *process points*.
 Once the region is fully mapped, the user finishes it by setting all process points and maybe starts working on the next task.
 
@@ -97,7 +97,7 @@ Things that would be nice but are not necessary for a prototype.
 * [ ] WebSocket connections for live updates
 * [ ] Chat in the project
 * [ ] Validation of tasks
-  * [ ] Choose between optional validations (uses can mark a task as valid but that doesn't change anything) and mandatory validations (at leaxt *x* validations are needed to finish a task)
+  * [ ] Choose between optional validations (uses can mark a task as valid but that doesn't change anything) and mandatory validations (at least *x* validations are needed to finish a task)
 * [ ] Load regions
   * [ ] From `.osm` and/or `.gpx` file
   * [ ] From overpass-query / -result
@@ -109,120 +109,17 @@ Things that would be nice but are not necessary for a prototype.
 
 ## Client
 
-The client is an angular based web application and can be found in the `client` folder.
-The readme in this folder gives you further instruction on the setup, running, building, etc.
-
-### Run
-
-1. Go into the package.json and change the settings as you need them (URLs, OAuth keys, etc.)
-2. Go into the `client` folder
-3. Execute `npm run dev` which uses the `environment.ts` file as config
-
-### Initialize database
-
-The folder `server/database/` contains the script `init-db.sh`.
-Start your database and call this script (from within that folder).
-
-You need the tools `createdb` and `psql`. Both are -- for ubuntu users -- available in the package `postgresql-client`.
-
-### Build
-
-Same as above but with `npm run build`.
-
-### Configuration
-
-Currently the client is not very mich configurable.
-This has a reason: Currently the code is very simple and the authentication with the OSM servers is done by the server (s. below).
-
-Encryption (HTTPS) and HTTP-Server configs depend on the used Server (Apache-HTTP, nginx, ...), so take a look at their documentation or at the `./client/nginx.conf` for my nginx config.
+The client is an Angular based web application and can be found in the `client/` folder.
+The `README.md` in this folder gives you further instruction on the setup, running, building, etc.
 
 ## Server
 
-The server is written in go (aka *golang*) so you need to install go and setup your development environment (paths, IDE, etc.)
+The server is written in go (aka golang) and can be found in the `server/` folder.
+The `README.md` there also gives you instructions on setup, running, building, etc.
 
-### Setup
-This project uses some frameworks/libraries to make the development easier:
+# Deployment
 
-* [gorilla/mux](https://github.com/gorilla/mux) to easily create REST endpoints
-* [kurrik/oauth1a](https://github.com/kurrik/oauth1a) for the OAuth1a authentication
-* [lib/pq](https://github.com/lib/pq) for a Postgres database driver
-* [hauke96/sigolo](https://github.com/hauke96/sigolo) for logging
-* [hauke96/kingpin](https://github.com/hauke96/kingpin) for CLI parameter and flag parsing
+The `docker-compose.yml` creates three docker container for the client, server and the database.
+Because the container build and test themselves, starting everything probably takes a few minutes.
 
-You need to install these using `go get github.com/gorilla/mux` and so on.
-
-### Run
-
-*You need to go throuth the "Setup" section first ;)*
-
-Just go into the `server` folder and execute `go run .`.
-
-### Test
-
-There are unit tests (files ending with `_test.go`).
-The test configuration in `server/test/test.json` specified what store is used (`cache`, which is an in memory store, or `postgres`).
-
-#### Using a real database
-
-Set the `store` property of the `test.json` file to `postgres` and run the `run.sh` script.
-This script will setup the database in a docker container, fill the database with dummy data and executes the tests.
-
-### Build
-
-*You need to go throuth the "Setup" section first ;)*
-
-Just go into the `server` folder and execute `go build .`.
-
-### Configuration
-
-There are already some configuration files in the folder `./server/config/`.
-Until there's further documentation, just take a look, the properties are quite simple and straight forward.
-
-### HTTPS
-
-I only tried it with letsencrypt certificates.
-At least for them, you only need to set the following properties in your configuration (next to the others of course):
-
-```json
-{
-	"server-url": "https://your.domain.com",
-	"ssl-cert-file": "/etc/letsencrypt/live/your.domain.com/fullchain.pem",
-	"ssl-key-file": "/etc/letsencrypt/live/your.domain.com/privkey.pem",
-	...
-}
-```
-
-**Important:** The `server-url` property has to begin with `https` in order to activate HTTPS.
-
-## Docker
-
-Client and Server can easily be started/deployed as docker containers.
-Both cotainers do not clone any repo but copy the source files into the container.
-
-The according configuration and definition of the build process are in the `./server/Dockerfile` and `./client/Dockerfile` files.
-To make things easier there's also the `./docker-compose.yml` file combining the two docker files and adding port forwarding, mounts etc..
-
-The default docker configuration uses the production configurations for the `stm.hauke-stieler.de` server, you probably want to change that.
-
-The `stm.hauke-stieler.de` uses Ubuntu so here's a workflow for Ubuntu:
-
-```bash
-# 1. install docker, docker-compose and git
-apt install docker docker-compose git
-
-# 2. Setup letsencrypt
-#    It's best to look at their guidelines and tutorials
-
-# 3. clone repo
-git clone https://github.com/hauke96/simple-task-manager.git
-
-# 4. Go into the repo
-cd simple-task-manager
-
-# 5. Change configs to your needs
-
-# 6. Start the whole thing
-docker-compose up --build
-```
-
-There are several more CLI options, just take a look at `docker` and `docker-compose` guides/tutorials/documentation.
+During development I recommend to manually start the client and server (see according `README.md` files) and just use the docker container for the database.
