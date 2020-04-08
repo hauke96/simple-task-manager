@@ -12,9 +12,12 @@ WORKDIR ./stm-client/
 RUN cp -r /tmp/node_modules ./
 
 # Tests
-RUN apt update && apt install -y --no-install-recommends firefox-esr
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+RUN echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | tee /etc/apt/sources.list.d/google-chrome.list
+RUN apt update
+RUN apt install -y google-chrome-stable
 RUN npm run test
-RUN apt remove -y firefox-esr
+RUN apt remove -y google-chrome-stable
 
 RUN NODE_OPTIONS="--max_old_space_size=4096" npm run build
 
