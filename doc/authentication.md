@@ -18,6 +18,11 @@ STM does not use the OSM request- and access-tokens from the oauth process for t
 We can build a custom solution where the server does not has any state to store.
 All the information is securely stored on the client (specifically the local storage of the browser).
 
+## Encryption key
+
+When the server starts, it initializes the authentication service (`auth.go:Init()`) and chooses an encryption key at random (precisely: The SHA-256 hash of 256 random bytes).
+This key is later used when creating the secret of a token.
+
 ## Token structure
 
 A token consists of three fields:
@@ -30,17 +35,13 @@ A token consists of three fields:
 
 ## Token Creation
 
-The essential part is the secret. Here's how the secret is generated.
-
-Before anything starts, the server chooses a "token nonce" at random (precisely: The SHA-256 hash of 256 random bytes) after startup when initializing the authentication service (`auth.go:Init()`).
-
-When the authentication process is done (see above), a new token will be created:
+When the authentication process with the OSM-server is done (see above), a new token will be created.
 
 ### Creation of the secret
 
-1. Get the encryption key (currently using the SHA-256 hash of a string to get some randomness)
-2. Build the *base string* of the secret:`<tokenNonce><userName><axpirationTime>`<br>
-The `<tokenNonce>` is a hexadecimal string, the `<userName>` is just the user name as string and the `<expirationTime>` is the expiration time as UTC millis encoded as string
+1. Get the encryption key (see above)
+2. Build the *base string* of the secret:`<userName><axpirationTime>`<br>
+The `<userName>` is just the user name as string and the `<expirationTime>` is the expiration time as UTC millis encoded as string. Example string: `john-doe12345678`
 3. Get the 32 bytes large SHA-256 hash of this *base string* (lets just call this "hash")
 4. Prepare a new AES encryption (in go you need to create a new cipher object)
 5. Encrypt the "hash" and receive the 32 encrypted bytes back (luckily one SHA-256 hash value is exactly one AES block, so we exactly receive 32 bytes back from the AES cipher)
@@ -128,7 +129,7 @@ The verification process:
 
 1. Decode the Base64 encoded Token and unmarshal to get the secret
 2. Get the secret
-3. Create a second secret based on the data from the token and the servers token nonce
+3. Create a second secret based on the data from the token
 4. Check is the two tokens are equal
 5. Check if the token is not expired yet
 

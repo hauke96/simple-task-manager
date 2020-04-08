@@ -37,8 +37,8 @@ var (
 
 	service *oauth1a.Service
 
-	configs          map[string]*oauth1a.UserConfig
-	tokenSecretNonce [32]byte
+	configs map[string]*oauth1a.UserConfig
+	key     [32]byte
 )
 
 func Init() {
@@ -61,7 +61,7 @@ func Init() {
 	}
 
 	configs = make(map[string]*oauth1a.UserConfig)
-	tokenSecretNonce = sha256.Sum256(getRandomBytes(265))
+	key = sha256.Sum256(getRandomBytes(265))
 }
 
 func OauthLogin(w http.ResponseWriter, r *http.Request) {
@@ -100,19 +100,22 @@ func OauthCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Get the config where the request tokens are stored in. They are needed later to get some basic user information.
 	userConfig, ok := configs[configKey]
 	if !ok || userConfig == nil {
 		sigolo.Error("User config not found")
 		return
 	}
-	configs[configKey] = nil
+	configs[configKey] = nil // Remove the config, we don't need it  anymore
 
+	// This gets the redirect URL of the web-client. So e.g. "https://stm-hauke-stieler.de/oauth-landing"
 	clientRedirectUrl, err := util.GetParam("redirect", r)
 	if err != nil {
 		util.ResponseBadRequest(w, err.Error())
 		return
 	}
 
+	// Request access token from the OSM server in order to then get some user information.
 	err = requestAccessToken(r, userConfig)
 	if err != nil {
 		sigolo.Error(err.Error())
@@ -124,6 +127,9 @@ func OauthCallback(w http.ResponseWriter, r *http.Request) {
 		sigolo.Error(err.Error())
 		return
 	}
+
+	// Until here, the user is considered to be successfully logged in. Now we can create the token used to authenticate
+	// against this server.
 
 	sigolo.Info("Create token for user '%s'", userName)
 
@@ -151,6 +157,8 @@ func OauthCallback(w http.ResponseWriter, r *http.Request) {
 
 	encodedTokenString := base64.StdEncoding.EncodeToString(jsonBytes)
 
+	// This redirects to the landing page of the web-client. The client then stores the token and uses it for later
+	// requests.
 	http.Redirect(w, r, clientRedirectUrl+"?token="+encodedTokenString, http.StatusTemporaryRedirect)
 }
 
@@ -170,6 +178,7 @@ func requestUserInformation(userConfig *oauth1a.UserConfig) (string, error) {
 		return "", err
 	}
 
+	// The OSM server expects a signed request
 	err = service.Sign(req, userConfig)
 	if err != nil {
 		sigolo.Error("Signing request failed: %s", err.Error())
@@ -200,8 +209,7 @@ func requestUserInformation(userConfig *oauth1a.UserConfig) (string, error) {
 // secret string, hash it (so disguise the length of this secret) and encrypt it.
 // To have equal length secrets, hash it again.
 func createSecret(user string, validTime int64) (string, error) {
-	key := sha256.Sum256([]byte("some very secret key"))
-	secretBaseString := fmt.Sprintf("%x%s%d", tokenSecretNonce, user, validTime)
+	secretBaseString := fmt.Sprintf("%s%d", user, validTime)
 	secretHashedBytes := sha256.Sum256([]byte(secretBaseString))
 
 	cipher, err := aes.NewCipher(key[:])
@@ -220,12 +228,13 @@ func createSecret(user string, validTime int64) (string, error) {
 
 func getRandomBytes(count int) []byte {
 	bytes := make([]byte, count)
+	// TODO error handling
 	rand.Read(bytes)
 	return bytes
 }
 
-// verifyRequest checks the integrity of the token and the "valiUntil" date. It
-// then returns the token but without the secret part, just the metainformation
+// verifyRequest checks the integrity of the token and the "validUntil" date. It
+// then returns the token but without the secret part, just the meta information
 // (e.g. user name) is set.
 func VerifyRequest(r *http.Request) (*Token, error) {
 	encodedToken := r.Header.Get("Authorization")
