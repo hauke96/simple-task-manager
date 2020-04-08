@@ -13,6 +13,10 @@ var (
 	NextId = 0 // public for tests
 )
 
+const (
+	VERSION = "0.6.0-dev"
+)
+
 func GetId() string {
 	id := NextId
 	NextId += 1
