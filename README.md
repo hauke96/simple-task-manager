@@ -1,5 +1,7 @@
 # SimpleTaskManager
 
+<img align="right" width="100px" src="https://raw.githubusercontent.com/hauke96/simple-task-manager/master/client/src/assets/icon.png">
+
 Prototype of a simple mapping tasking manager for e.g. [OpenStreetMap (OSM)](https://openstreetmap.org).
 
 Take a look at the latest version at [https://stm.hauke-stieler.de/](https://stm.hauke-stieler.de/).
@@ -7,6 +9,8 @@ Take a look at the latest version at [https://stm.hauke-stieler.de/](https://stm
 The idea behind this project is to create a simple and general purpose tasking manager for mapping in OSM.
 A tasking manager is an application which helps multiple mappers to work in the same region without interfering with each other.
 Usually such region is divided into squares and only one mapper at a time works on one square.
+
+<img align="center" style="width: 100%; max-width: 1128px;" src="https://raw.githubusercontent.com/hauke96/simple-task-manager/dev/screenshot.png">
 
 # Usage workflow
 
