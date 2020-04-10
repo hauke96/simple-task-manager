@@ -92,7 +92,7 @@ func (s *storePg) addTask(task *Task) (string, error) {
 		s.table, task.ProcessPoints, task.MaxProcessPoints, string(geometryBytes), task.AssignedUser)
 	t, err := execQuery(s.db, query)
 
-	if err != nil && t != nil {
+	if err == nil && t != nil {
 		return t.Id, nil
 	}
 
