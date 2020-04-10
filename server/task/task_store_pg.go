@@ -29,13 +29,14 @@ func (s *storePg) init(db *sql.DB) {
 
 func (s *storePg) getTasks(taskIds []string) ([]*Task, error) {
 	ids := strings.Join(taskIds, ",")
-	query := fmt.Sprintf("SELECT * FROM %s WHERE id IN (%s)", s.table, ids)
+	query := fmt.Sprintf("SELECT * FROM %s WHERE id IN (%s);", s.table, ids)
 	sigolo.Debug(query)
 
 	rows, err := s.db.Query(query)
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	tasks := make([]*Task, 0)
 	for rows.Next() {
@@ -87,60 +88,46 @@ func (s *storePg) addTask(task *Task) (string, error) {
 		return "", err
 	}
 
-	query := fmt.Sprintf("INSERT INTO %s(process_points, max_process_points, geometry, assigned_user) VALUES('%d', '%d', '%s', '%s') RETURNING id",
+	query := fmt.Sprintf("INSERT INTO %s(process_points, max_process_points, geometry, assigned_user) VALUES('%d', '%d', '%s', '%s') RETURNING *;",
 		s.table, task.ProcessPoints, task.MaxProcessPoints, string(geometryBytes), task.AssignedUser)
-	sigolo.Debug(query)
-	rows, err := s.db.Query(query)
-	if err != nil {
-		return "", err
+	t, err := execQuery(s.db, query)
+
+	if err != nil && t != nil {
+		return t.Id, nil
 	}
 
-	var taskId int
-	rows.Next()
-	err = rows.Scan(&taskId)
-	if err != nil {
-		return "", err
-	}
-
-	return strconv.Itoa(taskId), nil
+	return "", err
 }
 
 func (s *storePg) assignUser(id, user string) (*Task, error) {
-	query := fmt.Sprintf("UPDATE %s SET assigned_user='%s' WHERE id=%s RETURNING *", s.table, user, id)
-	sigolo.Debug(query)
-	rows, err := s.db.Query(query)
-	if err != nil {
-		return nil, err
-	}
-
-	rows.Next()
-	return rowToTask(rows)
+	query := fmt.Sprintf("UPDATE %s SET assigned_user='%s' WHERE id=%s RETURNING *;", s.table, user, id)
+	return execQuery(s.db, query)
 }
 
 func (s *storePg) unassignUser(id string) (*Task, error) {
-	query := fmt.Sprintf("UPDATE %s SET assigned_user='' WHERE id=%s RETURNING *", s.table, id)
-	sigolo.Debug(query)
-	rows, err := s.db.Query(query)
-	if err != nil {
-		return nil, err
-	}
-
-	rows.Next()
-	return rowToTask(rows)
+	query := fmt.Sprintf("UPDATE %s SET assigned_user='' WHERE id=%s RETURNING *;", s.table, id)
+	return execQuery(s.db, query)
 }
 
 func (s *storePg) setProcessPoints(id string, newPoints int) (*Task, error) {
-	query := fmt.Sprintf("UPDATE %s SET process_points=%d WHERE id=%s RETURNING *", s.table, newPoints, id)
+	query := fmt.Sprintf("UPDATE %s SET process_points=%d WHERE id=%s RETURNING *;", s.table, newPoints, id)
+	return execQuery(s.db, query)
+}
+
+// execQuery executed the given query, turns the result into a Task object and closes the query.
+func execQuery(db *sql.DB, query string) (*Task, error) {
 	sigolo.Debug(query)
-	rows, err := s.db.Query(query)
+	rows, err := db.Query(query)
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	rows.Next()
 	return rowToTask(rows)
 }
 
+// rowToTask turns the current row into a Task object. This does not close the row.
 func rowToTask(rows *sql.Rows) (*Task, error) {
 	var task taskRow
 	err := rows.Scan(&task.id, &task.processPoints, &task.maxProcessPoints, &task.geometry, &task.assignedUser)
