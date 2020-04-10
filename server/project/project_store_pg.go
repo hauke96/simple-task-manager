@@ -50,30 +50,14 @@ func (s *storePg) getProjects(user string) ([]*Project, error) {
 
 func (s *storePg) getProject(id string) (*Project, error) {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE id='%s'", s.table, id)
-	sigolo.Debug(query)
-	rows, err := s.db.Query(query)
-	if err != nil {
-		return nil, err
-	}
-
-	rows.Next()
-	return rowToProject(rows)
+	return execQuery(s.db, query)
 }
 
 func (s *storePg) addProject(draft *Project, user string) (*Project, error) {
 	taskIds := strings.Join(draft.TaskIDs, ",")
 
-	query := fmt.Sprintf("INSERT INTO %s(name, task_ids, users, owner) VALUES('%s', '%s', '%s', '%s') RETURNING id", s.table, draft.Name, taskIds, user, user)
-	sigolo.Debug(query)
-	row := s.db.QueryRow(query)
-
-	var projectId int
-	err := row.Scan(&projectId)
-	if err != nil {
-		return nil, err
-	}
-
-	return GetProject(strconv.Itoa(projectId))
+	query := fmt.Sprintf("INSERT INTO %s(name, task_ids, users, owner) VALUES('%s', '%s', '%s', '%s') RETURNING *", s.table, draft.Name, taskIds, user, user)
+	return execQuery(s.db, query)
 }
 
 func (s *storePg) addUser(userToAdd string, id string, owner string) (*Project, error) {
@@ -84,16 +68,23 @@ func (s *storePg) addUser(userToAdd string, id string, owner string) (*Project, 
 
 	users := strings.Join(originalProject.Users, ",")
 	query := fmt.Sprintf("UPDATE %s SET users='%s,%s' WHERE id=%s RETURNING *", s.table, users, userToAdd, id)
+	return execQuery(s.db, query)
+}
+
+// execQuery executed the given query, turns the result into a Project object and closes the query.
+func execQuery(db *sql.DB, query string) (*Project, error){
 	sigolo.Debug(query)
-	rows, err := s.db.Query(query)
+	rows, err := db.Query(query)
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	rows.Next()
 	return rowToProject(rows)
 }
 
+// rowToProject turns the current row into a Project object. This does not close the row.
 func rowToProject(rows *sql.Rows) (*Project, error) {
 	var p projectRow
 	err := rows.Scan(&p.id, &p.name, &p.taskIds, &p.users, &p.owner)
