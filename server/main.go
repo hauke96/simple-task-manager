@@ -21,7 +21,7 @@ import (
 	"./util"
 )
 
-const VERSION string = "0.5.0"
+const VERSION string = "0.5.1"
 
 var (
 	app       = kingpin.New("Simple Task Manager", "A tool dividing an area of the map into smaller tasks.")
