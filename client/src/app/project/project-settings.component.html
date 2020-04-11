@@ -1,1 +1,8 @@
-<button (click)="onDeleteButtonClicked()">Delete Project</button>
+<div *ngIf="!requestDeleteConfirmation">
+	<button (click)="onDeleteButtonClicked()">Delete Project</button>
+</div>
+<div *ngIf="requestDeleteConfirmation">
+	<span class="space-right">Really delete Project?</span>
+	<button (click)="onDeleteCancelButtonClicked()" class="space-right">No</button>
+	<button (click)="onDeleteConfirmButtonClicked()">Yes</button>
+</div>
