@@ -79,3 +79,17 @@ func (s *storeLocal) addUser(user, id, potentialOwner string) (*Project, error) 
 
 	return project, nil
 }
+
+func (s *storeLocal) delete(id string) error {
+	newProjects := make([]*Project, len(s.projects)-1)
+
+	for _, p := range s.projects {
+		if p.Id != id {
+			newProjects = append(newProjects, p)
+		}
+	}
+
+	s.projects = newProjects
+
+	return nil
+}

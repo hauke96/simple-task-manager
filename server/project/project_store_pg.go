@@ -71,8 +71,15 @@ func (s *storePg) addUser(userToAdd string, id string, owner string) (*Project, 
 	return execQuery(s.db, query)
 }
 
+func (s *storePg) delete(id string) error {
+	query := fmt.Sprintf("DELETE FROM %s WHERE id=%s", s.table, id)
+
+	_, err := s.db.Exec(query)
+	return err
+}
+
 // execQuery executed the given query, turns the result into a Project object and closes the query.
-func execQuery(db *sql.DB, query string) (*Project, error){
+func execQuery(db *sql.DB, query string) (*Project, error) {
 	sigolo.Debug(query)
 	rows, err := db.Query(query)
 	if err != nil {

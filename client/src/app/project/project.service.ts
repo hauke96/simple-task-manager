@@ -49,4 +49,8 @@ export class ProjectService {
     return this.http.post<Project>(environment.url_projects_users + '?user=' + user + '&project=' + id, '')
       .pipe(tap(p => this.projectChanged.emit(p)));
   }
+
+  public deleteProject(id: string): Observable<any> {
+    return this.http.delete(environment.url_projects + '/' + id);
+  }
 }

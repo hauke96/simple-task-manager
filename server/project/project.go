@@ -23,6 +23,7 @@ type store interface {
 	getProject(id string) (*Project, error)
 	addProject(draft *Project, user string) (*Project, error)
 	addUser(userToAdd string, id string, owner string) (*Project, error)
+	delete(id string) error
 }
 
 var (
@@ -111,4 +112,8 @@ func VerifyOwnership(user string, taskIds []string) (bool, error) {
 	}
 
 	return true, nil
+}
+
+func DeleteProject(id string) error {
+	return projectStore.delete(id)
 }

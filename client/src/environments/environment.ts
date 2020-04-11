@@ -1,5 +1,5 @@
 const baseUrl = document.location.protocol + '//' + document.location.hostname + ':8080';
-const usedApi = 'v1';
+const usedApi = 'v1.1';
 
 export const environment = {
   production: false,
