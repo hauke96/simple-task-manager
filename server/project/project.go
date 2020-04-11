@@ -7,6 +7,7 @@ import (
 	"github.com/hauke96/sigolo"
 
 	"../config"
+	"../task"
 )
 
 type Project struct {
@@ -24,6 +25,7 @@ type store interface {
 	addProject(draft *Project, user string) (*Project, error)
 	addUser(userToAdd string, id string, owner string) (*Project, error)
 	delete(id string) error
+	getTasks(projectId string) ([]*task.Task, error)
 }
 
 var (
@@ -118,4 +120,8 @@ func DeleteProject(id string) error {
 	// TODO only owner should be able to do that
 	// TODO write tests
 	return projectStore.delete(id)
+}
+
+func GetTasks(projectId string) ([]*task.Task, error) {
+	return projectStore.getTasks(projectId)
 }

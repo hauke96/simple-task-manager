@@ -53,4 +53,9 @@ export class ProjectService {
   public deleteProject(id: string): Observable<any> {
     return this.http.delete(environment.url_projects + '/' + id);
   }
+
+  // Gets the tasks of the given project
+  public getTasks(id: string): Observable<Task[]> {
+    return this.http.get<Task[]>(environment.url_projects + '/' + id + '/tasks');
+  }
 }

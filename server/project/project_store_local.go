@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"../task"
 	"../util"
 )
 
@@ -92,4 +93,13 @@ func (s *storeLocal) delete(id string) error {
 	s.projects = newProjects
 
 	return nil
+}
+
+func (s *storeLocal) getTasks(projectId string) ([]*task.Task, error) {
+	p, err := s.getProject(projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	return task.GetTasks(p.TaskIDs)
 }

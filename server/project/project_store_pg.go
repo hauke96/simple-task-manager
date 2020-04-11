@@ -6,6 +6,8 @@ import (
 	"github.com/hauke96/sigolo"
 	"strconv"
 	"strings"
+
+	"../task"
 )
 
 type projectRow struct {
@@ -108,4 +110,13 @@ func rowToProject(rows *sql.Rows) (*Project, error) {
 	result.Owner = p.owner
 
 	return &result, nil
+}
+
+func (s *storePg) getTasks(projectId string) ([]*task.Task, error) {
+	p, err := s.getProject(projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	return task.GetTasks(p.TaskIDs)
 }
