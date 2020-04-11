@@ -11,6 +11,11 @@
 	justify-content: stretch;
 }
 
+.back-button-container {
+	display: flex;
+	align-items: center;
+}
+
 .task-details-container {
 	 // Moves details up if there's space (otherwise this container would stick to the bottom of the page
 	margin-bottom: auto;
@@ -49,7 +54,7 @@
 }
 
 .project-label {
-	color: $very-light-gray;
+	color: $light-gray;
 	margin-left: $space-base;
 }
 

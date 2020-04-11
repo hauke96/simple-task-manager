@@ -1,6 +1,8 @@
 <div class="toolbar">
-	<button [routerLink]="['/manager']">&#60; Back</button>
-	<p class="project-label">Project: {{thisProject?.name}}</p>
+	<div class="back-button-container">
+		<button [routerLink]="['/manager']">&#60; Back</button>
+		<p class="project-label">Project: {{thisProject?.name}}</p>
+	</div>
 </div>
 <div class="root-container">
 	<div class="task-list-details-container">

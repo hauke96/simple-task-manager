@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ProjectService } from './project.service';
 import { Router } from '@angular/router';
+import { UserService } from '../user/user.service';
 
 @Component({
   selector: 'app-project-settings',
@@ -9,12 +10,13 @@ import { Router } from '@angular/router';
 })
 export class ProjectSettingsComponent implements OnInit {
   @Input() projectId: string;
+  @Input() projectOwner: string;
 
   public requestDeleteConfirmation: boolean;
 
-  // TODO only enable delete button when user is owner of project
   constructor(
     private projectService: ProjectService,
+    private userService: UserService,
     private router: Router
   ) {
   }
@@ -22,16 +24,19 @@ export class ProjectSettingsComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  public get canDelete(): boolean {
+    return this.userService.getUser() === this.projectOwner;
+  }
+
   public onDeleteButtonClicked() {
     this.requestDeleteConfirmation = true;
   }
 
-  public onDeleteCancelButtonClicked() {
+  public onNoButtonClicked() {
     this.requestDeleteConfirmation = false;
   }
 
-  public onDeleteConfirmButtonClicked(){
-    // TODO show a yes/no confirmation dialog or something
+  public onYesButtonClicked(){
     this.projectService.deleteProject(this.projectId)
       .subscribe(() => {
         this.requestDeleteConfirmation = false;

@@ -67,7 +67,7 @@ describe('ProjectSettingsComponent', () => {
     component.projectId = '1';
     component.requestDeleteConfirmation = true;
 
-    component.onDeleteConfirmButtonClicked();
+    component.onYesButtonClicked();
 
     expect(routerMock.navigate).toHaveBeenCalledWith(['/manager']);
     expect(component.requestDeleteConfirmation).toEqual(false);
@@ -82,7 +82,7 @@ describe('ProjectSettingsComponent', () => {
     component.projectId = '1';
     component.requestDeleteConfirmation = true;
 
-    component.onDeleteConfirmButtonClicked();
+    component.onYesButtonClicked();
 
     expect(routerMock.navigate).not.toHaveBeenCalled();
     expect(component.requestDeleteConfirmation).toEqual(false);

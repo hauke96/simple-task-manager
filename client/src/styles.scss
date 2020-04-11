@@ -53,8 +53,12 @@ button {
 button:hover {
 	border: 1px solid $color-mid;
 }
-button::-moz-focus-inner { // remove dotted line in Firefoc
+button::-moz-focus-inner { // remove dotted line in Firefox
 	border: 0
+}
+button:disabled {
+	background-color: $very-light-gray;
+	border-color: $light-gray;
 }
 
 a {
@@ -117,7 +121,7 @@ li {
 }
 
 .toolbar > p {
-	color: $very-light-gray;
+	color: $light-gray;
 }
 
 input {
