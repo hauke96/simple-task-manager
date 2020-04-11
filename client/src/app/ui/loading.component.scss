@@ -2,11 +2,20 @@
 
 .loading-container {
 	display: flex;
+	justify-content: center;
 	align-items: center;
+	position: absolute;
+	top: $space-huge + 2 * $space-base;
+	right: 0;
+	left: 0;
+	height: 50px;
+	background-color: #ffffffc0;
+	z-index: 10;
+	border-bottom: $color-light 1px solid;
 }
 
 .loading-text {
-	margin-right: $space-base;
+	margin-right: $space-large;
 }
 
 @keyframes circle-loader {
@@ -20,10 +29,10 @@
 
 .loader.simple-circle {
 	transform-origin: center center;
-	border: 1px solid $color-very-light;
-	border-right-color: $color-mid;
+	border: 1px solid transparent;
+	border-right-color: $color-dark;
 	width: 24px;
 	height: 24px;
-	border-radius: 10px;
-	animation: circle-loader 1s infinite;
+	border-radius: 12px;
+	animation: circle-loader 0.85s infinite;
 }

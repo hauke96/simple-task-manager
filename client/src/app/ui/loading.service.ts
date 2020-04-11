@@ -9,12 +9,13 @@ export class LoadingService {
 
   constructor(private router: Router) {
     router.events.subscribe(event => {
-      this.loading = event instanceof NavigationStart &&
-        !(
-          event instanceof NavigationEnd ||
-          event instanceof NavigationCancel ||
-          event instanceof NavigationError
-        );
+      if (event instanceof NavigationStart) {
+        this.loading = true;
+      } else if (event instanceof NavigationEnd ||
+        event instanceof NavigationCancel ||
+        event instanceof NavigationError) {
+        this.loading = false;
+      }
     });
   }
 }
