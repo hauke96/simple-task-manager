@@ -5,6 +5,7 @@ import { UserService } from '../user/user.service';
 import { TaskService } from './task.service';
 import { Task } from './task.material';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ActivatedRoute } from '@angular/router';
 
 describe('TaskDetailsComponent', () => {
   let component: TaskDetailsComponent;
@@ -20,7 +21,7 @@ describe('TaskDetailsComponent', () => {
       imports: [HttpClientTestingModule],
       providers: [
         UserService,
-        TaskService
+        TaskService,
       ]
     })
       .compileComponents();
