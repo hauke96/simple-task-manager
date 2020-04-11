@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ProjectService } from '../project/project.service';
 
 @Component({
@@ -11,7 +11,8 @@ export class UserListComponent implements OnInit {
 
   constructor(
     private projectService: ProjectService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.projectService.projectChanged.subscribe(p => this.users = p.users);

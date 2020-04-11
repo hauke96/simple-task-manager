@@ -10,7 +10,7 @@ describe('OauthLandingComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ OauthLandingComponent ],
+      declarations: [OauthLandingComponent],
       providers: [
         {
           provide: ActivatedRoute,
@@ -22,7 +22,7 @@ describe('OauthLandingComponent', () => {
         }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

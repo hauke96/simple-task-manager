@@ -4,5 +4,6 @@ export class Project {
               public taskIds: string[],
               public users?: string[],
               public owner?: string
-  ) { }
+  ) {
+  }
 }

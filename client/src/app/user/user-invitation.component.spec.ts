@@ -9,10 +9,10 @@ describe('UserInvitationComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UserInvitationComponent ],
-      imports: [ HttpClientTestingModule ]
+      declarations: [UserInvitationComponent],
+      imports: [HttpClientTestingModule]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

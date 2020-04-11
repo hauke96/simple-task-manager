@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectService } from './project.service';
 import { TaskService } from '../task/task.service';
@@ -20,7 +19,8 @@ export class ProjectComponent implements OnInit {
     private route: ActivatedRoute,
     private projectService: ProjectService,
     private taskService: TaskService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.thisProject = this.route.snapshot.data.project;

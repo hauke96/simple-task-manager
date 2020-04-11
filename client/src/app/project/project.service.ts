@@ -1,6 +1,6 @@
-import { Injectable, EventEmitter } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
-import { map, flatMap, tap } from 'rxjs/operators';
+import { EventEmitter, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { flatMap, map, tap } from 'rxjs/operators';
 import { Project } from './project.material';
 import { Task } from './../task/task.material';
 import { TaskService } from './../task/task.service';
@@ -16,7 +16,8 @@ export class ProjectService {
   constructor(
     private taskService: TaskService,
     private http: HttpClient
-  ) { }
+  ) {
+  }
 
   public getProjects(): Observable<Project[]> {
     return this.http.get<Project[]>(environment.url_projects);
@@ -26,15 +27,15 @@ export class ProjectService {
   public getProject(id: string): Observable<Project> {
     return this.getProjects()
       .pipe(map(projects => {
-        const project = projects.find(p => p.id === id);
+          const project = projects.find(p => p.id === id);
 
-        if (!project) {
-          throw new Error('Project not found');
-        }
+          if (!project) {
+            throw new Error('Project not found');
+          }
 
-        return project;
-      })
-    );
+          return project;
+        })
+      );
   }
 
   public createNewProject(name: string, maxProcessPoints: number, geometries: [[number, number]][]): Observable<Project> {

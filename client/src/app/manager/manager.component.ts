@@ -13,7 +13,8 @@ export class ManagerComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private userService: UserService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
   }

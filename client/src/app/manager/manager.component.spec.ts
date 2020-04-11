@@ -9,12 +9,12 @@ describe('ManagerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ManagerComponent ],
+      declarations: [ManagerComponent],
       imports: [
         RouterTestingModule.withRoutes([])
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

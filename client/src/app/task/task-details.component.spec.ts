@@ -12,22 +12,22 @@ describe('TaskDetailsComponent', () => {
   let taskService: TaskService;
   let userService: UserService;
   let task: Task;
-  let testUserName = 'test-user';
+  const testUserName = 'test-user';
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TaskDetailsComponent ],
-      imports: [ HttpClientTestingModule ],
+      declarations: [TaskDetailsComponent],
+      imports: [HttpClientTestingModule],
       providers: [
         UserService,
         TaskService
       ]
     })
-    .compileComponents();
+      .compileComponents();
 
-    task = new Task('t-42', 10, 100, [[0,0],[1,1],[1,0],[0,0]]);
+    task = new Task('t-42', 10, 100, [[0, 0], [1, 1], [1, 0], [0, 0]]);
 
-    taskService = TestBed.get(TaskService);
+    taskService = TestBed.inject(TaskService);
     spyOn(taskService, 'assign').and.callFake((id: string, user: string) => {
       task.assignedUser = user;
       taskService.selectedTaskChanged.emit(task);
@@ -41,7 +41,7 @@ describe('TaskDetailsComponent', () => {
       taskService.selectedTaskChanged.emit(task);
     });
 
-    userService = TestBed.get(UserService);
+    userService = TestBed.inject(UserService);
     spyOn(userService, 'getUser').and.returnValue(testUserName);
   }));
 

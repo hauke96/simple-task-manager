@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ProjectService } from './project.service';
 import { Router } from '@angular/router';
 
@@ -14,7 +14,8 @@ export class ProjectSettingsComponent implements OnInit {
   constructor(
     private projectService: ProjectService,
     private router: Router
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
   }

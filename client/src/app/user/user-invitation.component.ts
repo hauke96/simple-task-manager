@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ProjectService } from '../project/project.service';
 import { Project } from '../project/project.material';
 
@@ -12,7 +12,8 @@ export class UserInvitationComponent implements OnInit {
 
   constructor(
     private projectService: ProjectService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
   }

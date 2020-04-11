@@ -9,7 +9,8 @@ import { version } from '../../../package.json';
 export class FooterComponent implements OnInit {
   public version: string = version;
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit(): void {
   }

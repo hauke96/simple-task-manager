@@ -1,17 +1,16 @@
-import { Component, AfterViewInit, Input } from '@angular/core';
+import { AfterViewInit, Component, Input } from '@angular/core';
 import { TaskService } from './task.service';
 import { UserService } from '../user/user.service';
 import { Task } from './task.material';
-import { Map, View } from 'ol';
+import { Feature, Map, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import { OSM } from 'ol/source';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
-import { defaults as defaultControls, ScaleLine, Attribution } from 'ol/control';
+import { Attribution, defaults as defaultControls, ScaleLine } from 'ol/control';
 import { Polygon } from 'ol/geom';
-import { Projection } from 'ol/proj';
-import { Style, Stroke, Fill, Text } from 'ol/style';
-import { Feature } from 'ol';
+import { Fill, Stroke, Style, Text } from 'ol/style';
+
 // import { Draw } from 'ol/interaction';
 
 @Component({
@@ -29,7 +28,8 @@ export class TaskMapComponent implements AfterViewInit {
   constructor(
     private taskService: TaskService,
     private userService: UserService
-  ) { }
+  ) {
+  }
 
   ngAfterViewInit(): void {
     // this style function will choose between default colors and colors for

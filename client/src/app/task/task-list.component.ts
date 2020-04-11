@@ -1,6 +1,4 @@
-import { Component, AfterViewInit, Input } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { AfterViewInit, Component, Input } from '@angular/core';
 import { Task } from './task.material';
 import { TaskService } from './task.service';
 
@@ -13,7 +11,8 @@ export class TaskListComponent implements AfterViewInit {
   @Input() projectId: string;
   @Input() tasks: Task[];
 
-  constructor(private taskService: TaskService) { }
+  constructor(private taskService: TaskService) {
+  }
 
   ngAfterViewInit(): void {
     this.taskService.selectedTaskChanged.subscribe((task) => {

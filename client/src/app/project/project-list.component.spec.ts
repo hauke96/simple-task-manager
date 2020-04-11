@@ -10,13 +10,13 @@ describe('ProjectListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProjectListComponent ],
+      declarations: [ProjectListComponent],
       imports: [
         HttpClientTestingModule,
         RouterTestingModule.withRoutes([])
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

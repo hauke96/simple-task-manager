@@ -1,6 +1,5 @@
-import { Injectable, EventEmitter } from '@angular/core';
-import { Observable, throwError, of } from 'rxjs';
-import { map, filter, catchError } from 'rxjs/operators';
+import { EventEmitter, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { Task } from './task.material';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
@@ -13,7 +12,8 @@ export class TaskService {
 
   private selectedTask: Task;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   public createNewTasks(geometries: [[number, number]][], maxProcessPoints: number): Observable<Task[]> {
     const tasks = geometries.map(g => new Task('', 0, maxProcessPoints, g));

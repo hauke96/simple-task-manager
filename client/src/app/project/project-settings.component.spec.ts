@@ -2,13 +2,14 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProjectSettingsComponent } from './project-settings.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { ProjectService } from './project.service';
 import { of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 
 class MockRouter {
-  navigate(commands: any[]) { return of(true).toPromise(); }
+  navigate(commands: any[]) {
+    return of(true).toPromise();
+  }
 }
 
 describe('ProjectSettingsComponent', () => {
@@ -19,7 +20,7 @@ describe('ProjectSettingsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProjectSettingsComponent ],
+      declarations: [ProjectSettingsComponent],
       imports: [
         HttpClientTestingModule
       ],
@@ -31,10 +32,10 @@ describe('ProjectSettingsComponent', () => {
         }
       ]
     })
-    .compileComponents();
+      .compileComponents();
 
-    projectService = TestBed.get(ProjectService);
-    routerMock = TestBed.get(Router);
+    projectService = TestBed.inject(ProjectService);
+    routerMock = TestBed.inject(Router);
   }));
 
   beforeEach(() => {

@@ -27,8 +27,7 @@ export class AuthService {
       const decodedToken = atob(encodedToken);
       const token = JSON.parse(decodedToken);
       this.userService.setUser(token.user);
-    }
-    catch (e) {
+    } catch (e) {
       console.error(e);
       this.logout();
     }

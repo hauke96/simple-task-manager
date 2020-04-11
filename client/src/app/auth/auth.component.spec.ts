@@ -9,7 +9,9 @@ import { of } from 'rxjs';
 import { NgZone } from '@angular/core';
 
 class MockRouter {
-  navigate(commands: any[]) { return of(true).toPromise(); }
+  navigate(commands: any[]) {
+    return of(true).toPromise();
+  }
 }
 
 describe('AuthComponent', () => {
@@ -23,7 +25,7 @@ describe('AuthComponent', () => {
     mockNgZone.run.and.callFake(fn => fn());
 
     TestBed.configureTestingModule({
-      declarations: [ AuthComponent ],
+      declarations: [AuthComponent],
       imports: [
         HttpClientTestingModule
       ],
@@ -40,13 +42,13 @@ describe('AuthComponent', () => {
         }
       ]
     })
-    .compileComponents();
-    
-    authService = TestBed.get(AuthService);
-    routerMock = TestBed.get(Router);
-    
-    const ngZone = TestBed.get(NgZone);
-    spyOn(ngZone, 'run').and.callFake((fn: Function) => fn());
+      .compileComponents();
+
+    authService = TestBed.inject(AuthService);
+    routerMock = TestBed.inject(Router);
+
+    const ngZone = TestBed.inject(NgZone);
+    spyOn(ngZone, 'run').and.callFake((fn: () => any) => fn());
   }));
 
   beforeEach(() => {
@@ -82,7 +84,7 @@ describe('AuthComponent', () => {
 
     expect(routerMock.navigate).not.toHaveBeenCalledWith(['/manager']);
   });
-  
+
   it('should redirect user to manager after login', () => {
     spyOn(authService, 'requestLogin').and.callFake((f: () => void) => {
       f();

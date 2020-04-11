@@ -10,10 +10,10 @@ describe('TaskMapComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TaskMapComponent ],
-      imports: [ HttpClientTestingModule ],
+      declarations: [TaskMapComponent],
+      imports: [HttpClientTestingModule],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -21,9 +21,9 @@ describe('TaskMapComponent', () => {
     component = fixture.componentInstance;
 
     component.tasks = [
-     new Task('t-0', 0, 100, [[0,0],[1,1],[1,0],[0,0]]),
-     new Task('t-1', 0, 100, [[0,0],[1,1],[1,0],[0,0]])
-    ]
+      new Task('t-0', 0, 100, [[0, 0], [1, 1], [1, 0], [0, 0]]),
+      new Task('t-1', 0, 100, [[0, 0], [1, 1], [1, 0], [0, 0]])
+    ];
 
     fixture.detectChanges();
   });
