@@ -7,28 +7,34 @@ import { ProjectService } from './project.service';
 import { of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 
+class MockRouter {
+  navigate(commands: any[]) { return of(true).toPromise(); }
+}
+
 describe('ProjectSettingsComponent', () => {
   let component: ProjectSettingsComponent;
   let fixture: ComponentFixture<ProjectSettingsComponent>;
   let projectService: ProjectService;
-  let router: Router;
+  let routerMock: MockRouter;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ProjectSettingsComponent ],
       imports: [
-        HttpClientTestingModule,
-        RouterTestingModule.withRoutes([])
+        HttpClientTestingModule
       ],
       providers: [
-        ProjectService
+        ProjectService,
+        {
+          provide: Router,
+          useClass: MockRouter
+        }
       ]
     })
     .compileComponents();
 
     projectService = TestBed.get(ProjectService);
-
-    router = TestBed.get(Router);
+    routerMock = TestBed.get(Router);
   }));
 
   beforeEach(() => {
@@ -46,13 +52,12 @@ describe('ProjectSettingsComponent', () => {
       expect(id).toEqual('1');
       return of({});
     });
-    spyOn(router, 'navigate').and.callFake((commands: any[]) => {
-      expect(commands[0]).toEqual('/manager');
-      return of(true).toPromise();
-    });
+    spyOn(routerMock, 'navigate').and.callThrough();
     component.projectId = '1';
 
     component.onDeleteButtonClicked();
+
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/manager']);
   });
 
   it('should not navigate on error', () => {
@@ -60,10 +65,11 @@ describe('ProjectSettingsComponent', () => {
       expect(id).toEqual('1');
       return throwError('Test-error');
     });
+    spyOn(routerMock, 'navigate').and.callThrough();
     component.projectId = '1';
 
     component.onDeleteButtonClicked();
 
-    expect(spyOn(router, 'navigate')).not.toHaveBeenCalled();
+    expect(routerMock.navigate).not.toHaveBeenCalled();
   });
 });

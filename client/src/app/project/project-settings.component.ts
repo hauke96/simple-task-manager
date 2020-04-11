@@ -22,7 +22,8 @@ export class ProjectSettingsComponent implements OnInit {
   public onDeleteButtonClicked() {
     // TODO show a yes/no confirmation dialog or something
     this.projectService.deleteProject(this.projectId)
-      .subscribe(() => {}, err => console.error(err));
-    this.router.navigate(['/manager']);
+      .subscribe(() => {
+        this.router.navigate(['/manager']);
+      }, err => console.error(err));
   }
 }
