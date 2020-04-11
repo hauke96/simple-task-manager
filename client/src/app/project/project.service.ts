@@ -22,6 +22,7 @@ export class ProjectService {
     return this.http.get<Project[]>(environment.url_projects);
   }
 
+  // TODO add separate server API for this
   public getProject(id: string): Observable<Project> {
     return this.getProjects()
       .pipe(map(projects => {

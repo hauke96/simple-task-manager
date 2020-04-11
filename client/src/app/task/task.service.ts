@@ -29,16 +29,6 @@ export class TaskService {
     return this.selectedTask;
   }
 
-  public getTask(id: string): Observable<Task> {
-    return this.getTasks([id])
-      .pipe(map(tasks => tasks.find(t => t.id === id)));
-  }
-
-  public getTasks(ids: string[]): Observable<Task[]> {
-    const idsString = ids.join(',');
-    return this.http.get<Task[]>(environment.url_tasks + '?task_ids=' + idsString);
-  }
-
   public setProcessPoints(id: string, newProcessPoints: number) {
     if (id !== this.selectedTask.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
       throw new Error('Task with id \'' + id + '\' not selected');
