@@ -21,6 +21,7 @@ import { TabsComponent } from './ui/tabs.component';
 import { UserListComponent } from './user/user-list.component';
 import { UserInvitationComponent } from './user/user-invitation.component';
 import { ProjectSettingsComponent } from './project/project-settings.component';
+import { LoadingComponent } from './ui/loading.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { ProjectSettingsComponent } from './project/project-settings.component';
     TabsComponent,
     UserListComponent,
     UserInvitationComponent,
-    ProjectSettingsComponent
+    ProjectSettingsComponent,
+    LoadingComponent
   ],
   imports: [
     BrowserModule,

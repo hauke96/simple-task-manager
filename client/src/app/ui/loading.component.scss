@@ -1,0 +1,29 @@
+@import "../../styles";
+
+.loading-container {
+	display: flex;
+	align-items: center;
+}
+
+.loading-text {
+	margin-right: $space-base;
+}
+
+@keyframes circle-loader {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+.loader.simple-circle {
+	transform-origin: center center;
+	border: 1px solid $color-very-light;
+	border-right-color: $color-mid;
+	width: 24px;
+	height: 24px;
+	border-radius: 10px;
+	animation: circle-loader 1s infinite;
+}
