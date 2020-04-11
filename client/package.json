@@ -5,7 +5,7 @@
     "ng": "ng",
     "dev": "ng serve --watch",
     "build": "ng build --prod",
-    "test": "ng test --watch=false --browsers=FirefoxHeadless",
+    "test": "ng test --browsers=FirefoxHeadless --code-coverage",
     "docker-test": "ng test --watch=false --browsers=ChromeHeadlessNoSandbox",
     "lint": "ng lint",
     "e2e": "ng e2e"
