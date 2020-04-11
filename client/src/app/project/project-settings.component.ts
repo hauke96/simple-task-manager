@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 export class ProjectSettingsComponent implements OnInit {
   @Input() projectId: string;
 
+  // TODO only enable delete button when user is owner of project
   constructor(
     private projectService: ProjectService,
     private router: Router

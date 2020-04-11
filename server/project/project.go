@@ -115,5 +115,7 @@ func VerifyOwnership(user string, taskIds []string) (bool, error) {
 }
 
 func DeleteProject(id string) error {
+	// TODO only owner should be able to do that
+	// TODO write tests
 	return projectStore.delete(id)
 }
