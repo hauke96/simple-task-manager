@@ -298,6 +298,35 @@ func testAddUserTwice(t *testing.T) {
 	}
 }
 
+func TestDeleteProject_pg(t *testing.T) {
+	if !*useDatabase {
+		t.SkipNow()
+		return
+	}
+
+	preparePg()
+	testDeleteProject(t)
+}
+
+func TestDeleteProject_cache(t *testing.T) {
+	prepareCache()
+	testDeleteProject(t)
+}
+
+func testDeleteProject(t *testing.T) {
+	id := "1" // owned by "Peter"
+
+	// TODO test when Maria deletes this project -> should not work
+	err := DeleteProject(id)
+	if err != nil {
+		t.Error("Deleting project '1' should work")
+		t.Fail()
+		return
+	}
+
+	// TODO check that project does not exist anymore
+}
+
 func contains(projectIdToFind string, projectsToCheck []*Project) bool {
 	for _, p := range projectsToCheck {
 		if p.Id == projectIdToFind {

@@ -123,5 +123,6 @@ func DeleteProject(id string) error {
 }
 
 func GetTasks(projectId string) ([]*task.Task, error) {
+	// TODO write tests
 	return projectStore.getTasks(projectId)
 }
