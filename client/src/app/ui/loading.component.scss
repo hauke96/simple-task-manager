@@ -1,5 +1,7 @@
 @import "../../styles";
 
+// We can't use flex layout and put it below the toolbar, because 1.) it lays above everything and 2.) this component is
+// directly embedded into the app-component and a toolbar does not exist there
 .loading-container {
 	display: flex;
 	justify-content: center;
