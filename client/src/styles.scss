@@ -9,17 +9,6 @@ $space-huge: $space-base * 4;
 // Fonts
 $font-small: 9pt;
 
-small {
-	font-size: $font-small;
-}
-
-// General things
-body {
-	color: $very-dark-gray;
-	margin: 0px;
-	height: 100vh;
-}
-
 * {
 	font-family: Dejavu Sans, sans-serif;
 	font-weight: 300;
@@ -27,6 +16,21 @@ body {
 
 b {
 	font-weight: 500;
+}
+
+small {
+	font-size: $font-small;
+}
+
+code {
+	font-family: monospace;
+}
+
+// General things
+body {
+	color: $very-dark-gray;
+	margin: 0px;
+	height: 100vh;
 }
 
 // Container aroung a screen filling component for better spacing to the screen edges
