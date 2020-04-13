@@ -5,7 +5,7 @@ We also take a look on technical aspects (what are the functions exactly doing) 
 
 The easiest way to describe the process and the communication between all the servers is by showing you an diagram:
 
-![df](authentication.png)
+![](authentication.png)
 
 # Token generation and handling
 
