@@ -30,6 +30,7 @@ func authenticatedHandler(handler func(w http.ResponseWriter, r *http.Request, t
 			return
 		}
 
+		sigolo.Info("User '%s' called %s on %s", token.User, r.Method, r.URL.Path)
 		handler(w, r, token)
 	}
 }
