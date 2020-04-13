@@ -87,6 +87,12 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       source: this.vectorSource,
       type: 'Polygon'
     });
+    draw.on('drawend', evt => {
+      console.log(evt.feature);
+      this.vectorSource.clear();
+      this.vectorSource.refresh();
+      this.vectorSource.addFeature(new Feature(evt.feature.getGeometry()));
+    });
     this.map.addInteraction(draw);
   }
 
