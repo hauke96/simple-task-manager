@@ -23,7 +23,15 @@
 				Sqaure size:
 				<input type="number" [(ngModel)]="gridCellSize">
 				meters
-			</div><br>
+			</div>
+			<div>
+				Shape:
+				<select [(ngModel)]="gridCellShape">
+					<option value="squareGrid" selected>square</option>
+					<option value="hexGrid">hexagon</option>
+					<option value="triangleGrid">triangle</option>
+				</select>
+			</div>
 			<button (click)="onDivideButtonClicked()">Divide</button>
 		</div>
 	</div>

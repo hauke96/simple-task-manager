@@ -10,8 +10,10 @@ import { Attribution, defaults as defaultControls, ScaleLine } from 'ol/control'
 import { Polygon } from 'ol/geom';
 import { Fill, Stroke, Style } from 'ol/style';
 import { Draw } from 'ol/interaction';
-import squareGrid from '@turf/square-grid';
 import { polygon as turfPolygon, Units } from '@turf/helpers';
+import squareGrid from '@turf/square-grid';
+import hexGrid from '@turf/hex-grid';
+import triangleGrid from '@turf/triangle-grid';
 
 @Component({
   selector: 'app-project-creation',
@@ -22,6 +24,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   public newProjectName: string;
   public newMaxProcessPoints: number;
   public gridCellSize: number;
+  public gridCellShape;
 
   private map: Map;
   private vectorSource: VectorSource;
@@ -97,7 +100,18 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       mask: turfPolygon(polygon.getCoordinates())
     };
 
-    const grid = squareGrid(extent, this.gridCellSize, options);
+    let grid;
+    switch (this.gridCellShape) {
+      case 'squareGrid':
+        grid = squareGrid(extent, this.gridCellSize, options);
+        break;
+      case 'hexGrid':
+        grid = hexGrid(extent, this.gridCellSize, options);
+        break;
+      case 'triangleGrid':
+        grid = triangleGrid(extent, this.gridCellSize, options);
+        break;
+    }
 
     this.vectorSource.refresh(); // clears the source
 
