@@ -20,7 +20,9 @@ func Init_V1_1(router *mux.Router) (*mux.Router, string) {
 	routerV1.HandleFunc("/projects", authenticatedHandler(getProjects)).Methods(http.MethodGet)
 	routerV1.HandleFunc("/projects", authenticatedHandler(addProject)).Methods(http.MethodPost)
 	routerV1.HandleFunc("/projects/users", authenticatedHandler(addUserToProject)).Methods(http.MethodPost)
+	// TODO change the following mapping to "/projects/{id}/tasks" and add to the given project. Also don't include TaskIDs when adding a project.
 	routerV1.HandleFunc("/tasks", authenticatedHandler(addTask)).Methods(http.MethodPost)
+	// TODO change the following mappings to "/projects/{projectId}/task/{taskId}"
 	routerV1.HandleFunc("/task/assignedUser", authenticatedHandler(assignUser)).Methods(http.MethodPost)
 	routerV1.HandleFunc("/task/assignedUser", authenticatedHandler(unassignUser)).Methods(http.MethodDelete)
 	routerV1.HandleFunc("/task/processPoints", authenticatedHandler(setProcessPoints)).Methods(http.MethodPost)
