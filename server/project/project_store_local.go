@@ -81,6 +81,31 @@ func (s *storeLocal) addUser(user, id, potentialOwner string) (*Project, error) 
 	return project, nil
 }
 
+func (s *storeLocal) removeUser(id string, userToRemove string) (*Project, error) {
+	project, err := s.getProject(id)
+	if err != nil {
+		return nil, err
+	}
+
+	remainingUsers := make([]string, 0)
+	containsUserToRemove := false
+	for _, u := range project.Users {
+		if u != userToRemove {
+			remainingUsers = append(remainingUsers, u)
+		} else {
+			containsUserToRemove = true
+		}
+	}
+
+	if !containsUserToRemove {
+		return nil, errors.New("project does not contain user to remove")
+	}
+
+	project.Users = remainingUsers
+
+	return project, nil
+}
+
 func (s *storeLocal) delete(id string) error {
 	newProjects := make([]*Project, len(s.projects)-1)
 

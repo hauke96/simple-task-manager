@@ -2,6 +2,7 @@ package project
 
 import (
 	"flag"
+	"github.com/hauke96/sigolo"
 	"testing"
 
 	"../config"
@@ -18,6 +19,7 @@ func preparePg() {
 	}
 
 	Init()
+	sigolo.LogLevel = sigolo.LOG_DEBUG
 }
 
 func prepareCache() {
@@ -26,6 +28,7 @@ func prepareCache() {
 	}
 
 	Init()
+	sigolo.LogLevel = sigolo.LOG_DEBUG
 
 	projects := make([]*Project, 0)
 	projects = append(projects, &Project{
@@ -39,7 +42,7 @@ func prepareCache() {
 		Id:      "2",
 		Name:    "Project 2",
 		TaskIDs: []string{"4,5,6"},
-		Users:   []string{"Maria"},
+		Users:   []string{"Maria", "John"},
 		Owner:   "Maria",
 	})
 
@@ -67,7 +70,7 @@ func testVerifyOwnership(t *testing.T) {
 	// Test ownership of tasks of project 1
 	b, err := VerifyOwnership("Peter", []string{"3"})
 	if err != nil {
-		t.Error(err.Error())
+		t.Error("Verification of ownership should work: %w", err)
 		t.Fail()
 		return
 	}
@@ -80,7 +83,7 @@ func testVerifyOwnership(t *testing.T) {
 	// Test ownership of tasks of project 2
 	b, err = VerifyOwnership("Peter", []string{"4", "5", "6", "6"})
 	if err != nil {
-		t.Error(err.Error())
+		t.Error("Verification of ownership should work: %w", err)
 		t.Fail()
 		return
 	}
@@ -128,7 +131,7 @@ func testGetProjects(t *testing.T) {
 	// For Peter (being part of only project 1)
 	userProjects, err = GetProjects("Peter")
 	if err != nil {
-		t.Error(err.Error())
+		t.Error("Getting should work: %w", err)
 		t.Fail()
 		return
 	}
@@ -175,7 +178,7 @@ func testAddAndGetProject(t *testing.T) {
 
 	newProject, err := AddProject(&p, user)
 	if err != nil {
-		t.Error(err.Error())
+		t.Error("Adding should work: %w", err)
 		t.Fail()
 		return
 	}
@@ -227,8 +230,7 @@ func testAddUser(t *testing.T) {
 
 	p, err := AddUser(newUser, "1", "Peter")
 	if err != nil {
-		t.Error("This should work")
-		t.Error(err.Error())
+		t.Error("This should work: %w", err)
 		t.Fail()
 		return
 	}
@@ -249,7 +251,6 @@ func testAddUser(t *testing.T) {
 	p, err = AddUser(newUser, "2284527", "Peter")
 	if err == nil {
 		t.Error("This should not work: The project does not exist")
-		t.Error(err.Error())
 		t.Fail()
 		return
 	}
@@ -257,7 +258,6 @@ func testAddUser(t *testing.T) {
 	p, err = AddUser(newUser, "1", "Not-Owning-User")
 	if err == nil {
 		t.Error("This should not work: A non-owner user tries to add a user")
-		t.Error(err.Error())
 		t.Fail()
 		return
 	}
@@ -283,8 +283,7 @@ func testAddUserTwice(t *testing.T) {
 
 	_, err := AddUser(newUser, "1", "Peter")
 	if err != nil {
-		t.Error("This should work")
-		t.Error(err.Error())
+		t.Error("This should work: %w", err)
 		t.Fail()
 		return
 	}
@@ -293,6 +292,91 @@ func testAddUserTwice(t *testing.T) {
 	_, err = AddUser(newUser, "1", "Peter")
 	if err == nil {
 		t.Error("Adding a user twice should not work")
+		t.Fail()
+		return
+	}
+}
+
+func TestRemoveUser_pg(t *testing.T) {
+	if !*useDatabase {
+		t.SkipNow()
+		return
+	}
+
+	preparePg()
+	testRemoveUser(t)
+}
+
+func TestRemoveUser_cache(t *testing.T) {
+	prepareCache()
+	testRemoveUser(t)
+}
+
+func testRemoveUser(t *testing.T) {
+	userToRemove := "Maria"
+
+	p, err := RemoveUser("1", "Peter", userToRemove)
+	if err != nil {
+		t.Error("This should work: %w", err)
+		t.Fail()
+		return
+	}
+
+	containsUser := false
+	for _, u := range p.Users {
+		if u == userToRemove {
+			containsUser = true
+			break
+		}
+	}
+	if containsUser {
+		t.Error("Project should not contain user anymore")
+		t.Fail()
+		return
+	}
+
+	p, err = RemoveUser("2284527", "Peter", userToRemove)
+	if err == nil {
+		t.Error("This should not work: The project does not exist")
+		t.Fail()
+		return
+	}
+
+	p, err = RemoveUser("1", "Not-Owning-User", userToRemove)
+	if err == nil {
+		t.Error("This should not work: A non-owner user should be removed")
+		t.Fail()
+		return
+	}
+}
+
+func TestRemoveUserTwice_pg(t *testing.T) {
+	if !*useDatabase {
+		t.SkipNow()
+		return
+	}
+
+	preparePg()
+	testRemoveUserTwice(t)
+}
+
+func TestRemoveUserTwice_cache(t *testing.T) {
+	prepareCache()
+	testRemoveUserTwice(t)
+}
+
+func testRemoveUserTwice(t *testing.T) {
+	_, err := RemoveUser("2", "Maria", "John")
+	if err != nil {
+		t.Error("This should work: %w", err)
+		t.Fail()
+		return
+	}
+
+	// "Maria" was removed above to we remove her here the second time
+	_, err = RemoveUser("2", "Maria", "John")
+	if err == nil {
+		t.Error("Removing a user twice should not work")
 		t.Fail()
 		return
 	}

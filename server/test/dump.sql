@@ -7,7 +7,7 @@ INSERT INTO db_versions VALUES ('test');
 -- Data for Name: projects; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 INSERT INTO projects(name, task_ids, users, owner) VALUES ('Project 1', '3', 'Peter,Maria', 'Peter');
-INSERT INTO projects(name, task_ids, users, owner) VALUES ('Project 2', '4,5,6', 'Maria', 'Maria');
+INSERT INTO projects(name, task_ids, users, owner) VALUES ('Project 2', '4,5,6', 'Maria,John', 'Maria');
 
 
 --

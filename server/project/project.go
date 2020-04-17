@@ -24,6 +24,7 @@ type store interface {
 	getProject(id string) (*Project, error)
 	addProject(draft *Project, user string) (*Project, error)
 	addUser(userToAdd string, id string, owner string) (*Project, error)
+	removeUser(id string, userToRemove string) (*Project, error)
 	delete(id string) error
 	getTasks(projectId string) ([]*task.Task, error)
 }
@@ -78,6 +79,33 @@ func AddUser(user, id, potentialOwner string) (*Project, error) {
 	return projectStore.addUser(user, id, potentialOwner)
 }
 
+func RemoveUser(projectId, potentialOwner, userToRemove string) (*Project, error) {
+	p, err := projectStore.getProject(projectId)
+	if err != nil {
+		return nil, fmt.Errorf("could not get project: %w", err)
+	}
+
+	// Only the owner is allowed to invite
+	if p.Owner != potentialOwner {
+		return nil, errors.New(fmt.Sprintf("User '%s' is not allowed to add another user", potentialOwner))
+	}
+
+	// Check if user is already in project. If so, just do nothing and return
+	projectContainsUser := false
+	for _, u := range p.Users {
+		if u == userToRemove {
+			projectContainsUser = true
+			break
+		}
+	}
+
+	if !projectContainsUser {
+		return nil, errors.New(fmt.Sprintf("Cannot remove user, project does not contain user '%s'", userToRemove))
+	}
+
+	return projectStore.removeUser(projectId, userToRemove)
+}
+
 // VerifyOwnership checks whether all given tasks are part of projects where the
 // given user is a member of. In other words: This function checks if the user
 // has the permission to change each task.
@@ -125,4 +153,8 @@ func DeleteProject(id string) error {
 func GetTasks(projectId string) ([]*task.Task, error) {
 	// TODO write tests
 	return projectStore.getTasks(projectId)
+}
+
+func LeaveProject(projectId string, user string) (*Project, error) {
+	return projectStore.removeUser(projectId, user)
 }

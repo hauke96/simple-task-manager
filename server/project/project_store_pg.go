@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/hauke96/sigolo"
+	"github.com/pkg/errors"
 	"strconv"
 	"strings"
 
@@ -73,6 +74,24 @@ func (s *storePg) addUser(userToAdd string, id string, owner string) (*Project, 
 	return execQuery(s.db, query)
 }
 
+func (s *storePg) removeUser(id string, userToRemove string) (*Project, error) {
+	originalProject, err := GetProject(id)
+	if err != nil {
+		return nil, err
+	}
+
+	remainingUsers := make([]string, 0)
+	for _, u := range originalProject.Users {
+		if u != userToRemove {
+			remainingUsers = append(remainingUsers, u)
+		}
+	}
+
+	users := strings.Join(remainingUsers, ",")
+	query := fmt.Sprintf("UPDATE %s SET users='%s' WHERE id=%s RETURNING *", s.table, users, id)
+	return execQuery(s.db, query)
+}
+
 func (s *storePg) delete(id string) error {
 	query := fmt.Sprintf("DELETE FROM %s WHERE id=%s", s.table, id)
 
@@ -85,11 +104,15 @@ func execQuery(db *sql.DB, query string) (*Project, error) {
 	sigolo.Debug(query)
 	rows, err := db.Query(query)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("could not run query: %w", err)
 	}
 	defer rows.Close()
 
-	rows.Next()
+	ok := rows.Next()
+	if !ok {
+		return nil, errors.New("there is no next row or an error happened")
+	}
+
 	return rowToProject(rows)
 }
 
@@ -98,7 +121,7 @@ func rowToProject(rows *sql.Rows) (*Project, error) {
 	var p projectRow
 	err := rows.Scan(&p.id, &p.name, &p.taskIds, &p.users, &p.owner)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("could not scan rows: %w", err)
 	}
 
 	result := Project{}
