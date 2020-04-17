@@ -32,26 +32,6 @@ func prepareCache() {
 	sigolo.LogLevel = sigolo.LOG_DEBUG
 	Init()
 	task.Init()
-
-	projects := make([]*Project, 0)
-	projects = append(projects, &Project{
-		Id:      "1",
-		Name:    "Project 1",
-		TaskIDs: []string{"3"},
-		Users:   []string{"Peter", "Maria"},
-		Owner:   "Peter",
-	})
-	projects = append(projects, &Project{
-		Id:      "2",
-		Name:    "Project 2",
-		TaskIDs: []string{"4,5,6"},
-		Users:   []string{"Maria", "John", "Anna"},
-		Owner:   "Maria",
-	})
-
-	// Set global project store but also store it locally here to access the internal fields of the local store.
-	s := projectStore.(*storeLocal)
-	s.projects = projects
 }
 
 func TestVerifyOwnership_pg(t *testing.T) {
@@ -71,27 +51,27 @@ func TestVerifyOwnership_cache(t *testing.T) {
 
 func testVerifyOwnership(t *testing.T) {
 	// Test ownership of tasks of project 1
-	b, err := VerifyOwnership("Peter", []string{"3"})
+	b, err := VerifyOwnership("Peter", []string{"1"})
 	if err != nil {
 		t.Error("Verification of ownership should work: %w", err)
 		t.Fail()
 		return
 	}
-	if !b { // expect t=true
-		t.Errorf("Petern in deed owns task 3")
+	if !b {
+		t.Errorf("Peter in deed owns task 1")
 		t.Fail()
 		return
 	}
 
 	// Test ownership of tasks of project 2
-	b, err = VerifyOwnership("Peter", []string{"4", "5", "6", "6"})
+	b, err = VerifyOwnership("Peter", []string{"2", "3", "4"})
 	if err != nil {
 		t.Error("Verification of ownership should work: %w", err)
 		t.Fail()
 		return
 	}
 	if b { // expect false
-		t.Errorf("Petern in deed owns tasks 4, 5 and 6")
+		t.Errorf("Petern does not own tasks 2, 3 and 4")
 		t.Fail()
 		return
 	}
@@ -166,22 +146,25 @@ func TestGetTasks_cache(t *testing.T) {
 }
 
 func testGetTasks(t *testing.T) {
-	tasks, err := GetTasks("1")
+	tasks, err := GetTasks("1", "Peter")
 	if err != nil {
 		t.Error("Get should work: %w", err)
 		t.Fail()
 		return
 	}
 
+	sigolo.Debug("Tasks: %#v", tasks)
+
 	if len(tasks) != 1 {
-		t.Error("There should only be one task")
+		t.Error("There should be exactly one task")
 		t.Fail()
 		return
 	}
 
 	task := tasks[0]
+	sigolo.Debug("Task: %#v", task)
 
-	if task.Id != "3" {
+	if task.Id != "1" {
 		t.Error("id not matching")
 		t.Fail()
 		return
@@ -205,8 +188,16 @@ func testGetTasks(t *testing.T) {
 		return
 	}
 
+	// Not owning project
+	_, err = GetTasks("1", "Unknown user")
+	if err == nil {
+		t.Error("Get tasks of not owned project should not work")
+		t.Fail()
+		return
+	}
+
 	// Not existing project
-	_, err = GetTasks("28745276")
+	_, err = GetTasks("28745276", "Peter")
 	if err == nil {
 		t.Error("Get should not work")
 		t.Fail()

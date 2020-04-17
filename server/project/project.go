@@ -190,7 +190,16 @@ func DeleteProject(id, potentialOwner string) error {
 	return nil
 }
 
-func GetTasks(projectId string) ([]*task.Task, error) {
-	// TODO write tests
-	return projectStore.getTasks(projectId)
+func GetTasks(id string, potentialOwner string) ([]*task.Task, error) {
+	p, err := projectStore.getProject(id)
+	if err != nil {
+		return nil, fmt.Errorf("could not get project: %w", err)
+	}
+
+	// Only the owner can delete a project
+	if p.Owner != potentialOwner {
+		return nil, fmt.Errorf("the user '%s' is not the owner of project '%s'", potentialOwner, p.Id)
+	}
+
+	return projectStore.getTasks(id)
 }

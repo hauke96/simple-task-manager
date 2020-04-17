@@ -17,25 +17,18 @@ type storeLocal struct {
 func (s *storeLocal) init(db *sql.DB) {
 	s.projects = make([]*Project, 0)
 	s.projects = append(s.projects, &Project{
-		Id:      util.GetId(),
-		Name:    "First project",
-		TaskIDs: []string{"t-3", "t-4"},
-		Users:   []string{"hauke-stieler"},
-		Owner:   "hauke-stieler",
+		Id:      "1",
+		Name:    "Project 1",
+		TaskIDs: []string{"1"},
+		Users:   []string{"Peter", "Maria"},
+		Owner:   "Peter",
 	})
 	s.projects = append(s.projects, &Project{
-		Id:      util.GetId(),
-		Name:    "Foo",
-		TaskIDs: []string{"t-5"},
-		Users:   []string{"hauke-stieler", "hauke-stieler-dev"},
-		Owner:   "hauke-stieler",
-	})
-	s.projects = append(s.projects, &Project{
-		Id:      util.GetId(),
-		Name:    "Bar",
-		TaskIDs: []string{"t-6", "t-7", "t-8", "t-9", "t-10"},
-		Users:   []string{"hauke-stieler-dev"},
-		Owner:   "hauke-stieler-dev",
+		Id:      "2",
+		Name:    "Project 2",
+		TaskIDs: []string{"2,3,4"},
+		Users:   []string{"Maria", "John", "Anna"},
+		Owner:   "Maria",
 	})
 }
 

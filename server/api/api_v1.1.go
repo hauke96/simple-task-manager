@@ -41,7 +41,7 @@ func deleteProjects(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 func getProjectTasks(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	vars := mux.Vars(r)
 
-	tasks, err := project.GetTasks(vars["id"])
+	tasks, err := project.GetTasks(vars["id"], token.User)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
