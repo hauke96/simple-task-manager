@@ -19,14 +19,21 @@
 .project-properties-container {
 	display: flex;
 	flex-direction: column;
+	margin-right: $space-large;
+	max-width: 450px;
 }
 .project-properties-container div {
 	margin-bottom: $space-base
 }
 
+.input-field-label {
+	display: inline-block;
+	min-width: 180px;
+}
+
 .map-container {
 	margin-top: $space-large;
-	width: 65%;
+	width: 100%;
 	display: flex;
 	flex-direction: column;
 }
