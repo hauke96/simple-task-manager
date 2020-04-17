@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"../config"
+	"../task"
 	"../util"
 
 	_ "github.com/lib/pq" // Make driver "postgres" usable
@@ -18,8 +19,9 @@ func preparePg() {
 		Store: "postgres",
 	}
 
-	Init()
 	sigolo.LogLevel = sigolo.LOG_DEBUG
+	Init()
+	task.Init()
 }
 
 func prepareCache() {
@@ -27,8 +29,9 @@ func prepareCache() {
 		Store: "cache",
 	}
 
-	Init()
 	sigolo.LogLevel = sigolo.LOG_DEBUG
+	Init()
+	task.Init()
 
 	projects := make([]*Project, 0)
 	projects = append(projects, &Project{
@@ -142,6 +145,70 @@ func testGetProjects(t *testing.T) {
 	}
 	if contains("2", userProjects) {
 		t.Errorf("Peter is not in project 2")
+		t.Fail()
+		return
+	}
+}
+
+func TestGetTasks_pg(t *testing.T) {
+	if !*useDatabase {
+		t.SkipNow()
+		return
+	}
+
+	preparePg()
+	testGetTasks(t)
+}
+
+func TestGetTasks_cache(t *testing.T) {
+	prepareCache()
+	testGetTasks(t)
+}
+
+func testGetTasks(t *testing.T) {
+	tasks, err := GetTasks("1")
+	if err != nil {
+		t.Error("Get should work: %w", err)
+		t.Fail()
+		return
+	}
+
+	if len(tasks) != 1 {
+		t.Error("There should only be one task")
+		t.Fail()
+		return
+	}
+
+	task := tasks[0]
+
+	if task.Id != "3" {
+		t.Error("id not matching")
+		t.Fail()
+		return
+	}
+
+	if task.ProcessPoints != 0 {
+		t.Error("process points not matching")
+		t.Fail()
+		return
+	}
+
+	if task.MaxProcessPoints != 10 {
+		t.Error("max process points not matching")
+		t.Fail()
+		return
+	}
+
+	if task.AssignedUser != "Peter" {
+		t.Error("assigned user not matching")
+		t.Fail()
+		return
+	}
+
+	// Not existing project
+	_, err = GetTasks("28745276")
+	if err == nil {
+		t.Error("Get should not work")
 		t.Fail()
 		return
 	}
@@ -468,15 +535,33 @@ func TestDeleteProject_cache(t *testing.T) {
 func testDeleteProject(t *testing.T) {
 	id := "1" // owned by "Peter"
 
-	// TODO test when Maria deletes this project -> should not work
-	err := DeleteProject(id)
-	if err != nil {
-		t.Error("Deleting project '1' should work")
+	err := DeleteProject(id, "Maria") // Maria does not own this project
+	if err == nil {
+		t.Error("Maria does not own this project, this should not work")
 		t.Fail()
 		return
 	}
 
-	// TODO check that project does not exist anymore
+	err = DeleteProject(id, "Peter") // Maria does not own this project
+	if err != nil {
+		t.Error("Peter owns this project, this should work")
+		t.Fail()
+		return
+	}
+
+	_, err = GetProject(id)
+	if err == nil {
+		t.Error("The project should not exist anymore")
+		t.Fail()
+		return
+	}
+
+	err = DeleteProject("45356475", "Peter")
+	if err == nil {
+		t.Error("This project does not exist, this should not work")
+		t.Fail()
+		return
+	}
 }
 
 func contains(projectIdToFind string, projectsToCheck []*Project) bool {

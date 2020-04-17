@@ -66,7 +66,7 @@ func AddUser(user, id, potentialOwner string) (*Project, error) {
 
 	// Only the owner is allowed to invite
 	if p.Owner != potentialOwner {
-		return nil, errors.New(fmt.Sprintf("User '%s' is not allowed to add another user", potentialOwner))
+		return nil, fmt.Errorf("User '%s' is not allowed to add another user", potentialOwner)
 	}
 
 	// Check if user is already in project. If so, just do nothing and return
@@ -87,7 +87,7 @@ func LeaveProject(projectId string, user string) (*Project, error) {
 
 	// The owner can only delete a project but not leave it
 	if p.Owner == user {
-		return nil, errors.New(fmt.Sprintf("The owner '%s' is not allowed to leave the project '%s'", user, p.Id))
+		return nil, fmt.Errorf("The owner '%s' is not allowed to leave the project '%s'", user, p.Id)
 	}
 
 	// Check if user is exists in project. If not, throw error
@@ -114,7 +114,7 @@ func RemoveUser(projectId, potentialOwner, userToRemove string) (*Project, error
 
 	// Only the owner is allowed to invite
 	if p.Owner != potentialOwner {
-		return nil, errors.New(fmt.Sprintf("User '%s' is not allowed to add another user", potentialOwner))
+		return nil, fmt.Errorf("User '%s' is not allowed to add another user", potentialOwner)
 	}
 
 	// Check if user is already in project. If so, just do nothing and return
@@ -127,7 +127,7 @@ func RemoveUser(projectId, potentialOwner, userToRemove string) (*Project, error
 	}
 
 	if !projectContainsUser {
-		return nil, errors.New(fmt.Sprintf("Cannot remove user, project does not contain user '%s'", userToRemove))
+		return nil, fmt.Errorf("Cannot remove user, project does not contain user '%s'", userToRemove)
 	}
 
 	return projectStore.removeUser(projectId, userToRemove)
@@ -171,10 +171,23 @@ func VerifyOwnership(user string, taskIds []string) (bool, error) {
 	return true, nil
 }
 
-func DeleteProject(id string) error {
-	// TODO only owner should be able to do that
-	// TODO write tests
-	return projectStore.delete(id)
+func DeleteProject(id, potentialOwner string) error {
+	p, err := projectStore.getProject(id)
+	if err != nil {
+		return fmt.Errorf("could not get project: %w", err)
+	}
+
+	// Only the owner can delete a project
+	if p.Owner != potentialOwner {
+		return fmt.Errorf("the user '%s' is not the owner of project '%s'", potentialOwner, p.Id)
+	}
+
+	err = projectStore.delete(id)
+	if err != nil{
+		return fmt.Errorf("could not remove project: %w", err)
+	}
+
+	return nil
 }
 
 func GetTasks(projectId string) ([]*task.Task, error) {

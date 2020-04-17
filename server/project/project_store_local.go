@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/hauke96/sigolo"
 
 	"../task"
 	"../util"
@@ -62,6 +63,7 @@ func (s *storeLocal) addProject(project *Project, user string) (*Project, error)
 
 func (s *storeLocal) getProject(id string) (*Project, error) {
 	for _, p := range s.projects {
+		sigolo.Debug("Project: %#v", p)
 		if p.Id == id {
 			return p, nil
 		}
@@ -107,7 +109,7 @@ func (s *storeLocal) removeUser(id string, userToRemove string) (*Project, error
 }
 
 func (s *storeLocal) delete(id string) error {
-	newProjects := make([]*Project, len(s.projects)-1)
+	newProjects := make([]*Project, 0)
 
 	for _, p := range s.projects {
 		if p.Id != id {

@@ -31,7 +31,7 @@ func Init_V1_1(router *mux.Router) (*mux.Router, string) {
 func deleteProjects(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	vars := mux.Vars(r)
 
-	err := project.DeleteProject(vars["id"])
+	err := project.DeleteProject(vars["id"], token.User)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
