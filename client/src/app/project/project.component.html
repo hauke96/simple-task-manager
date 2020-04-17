@@ -23,7 +23,7 @@
 			<div *ngIf="tabs.tabIndex === 2">
 				<div class="tab-container">
 					<h1>Settings</h1>
-					<app-project-settings [projectId]="thisProject?.id"></app-project-settings>
+					<app-project-settings [projectId]="thisProject?.id" [projectOwner]="thisProject.owner"></app-project-settings>
 				</div>
 			</div>
 		</app-tabs>

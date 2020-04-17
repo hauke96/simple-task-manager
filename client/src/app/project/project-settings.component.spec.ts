@@ -55,7 +55,7 @@ describe('ProjectSettingsComponent', () => {
     component.onDeleteButtonClicked();
 
     expect(routerMock.navigate).not.toHaveBeenCalled();
-    expect(component.requestDeleteConfirmation).toEqual(true);
+    expect(component.requestConfirmation).toEqual(true);
   });
 
   it('should make service call on confirmation', () => {
@@ -65,12 +65,12 @@ describe('ProjectSettingsComponent', () => {
     });
     spyOn(routerMock, 'navigate').and.callThrough();
     component.projectId = '1';
-    component.requestDeleteConfirmation = true;
+    component.requestConfirmation = true;
 
     component.onYesButtonClicked();
 
     expect(routerMock.navigate).toHaveBeenCalledWith(['/manager']);
-    expect(component.requestDeleteConfirmation).toEqual(false);
+    expect(component.requestConfirmation).toEqual(false);
   });
 
   it('should not navigate on error', () => {
@@ -80,11 +80,11 @@ describe('ProjectSettingsComponent', () => {
     });
     spyOn(routerMock, 'navigate').and.callThrough();
     component.projectId = '1';
-    component.requestDeleteConfirmation = true;
+    component.requestConfirmation = true;
 
     component.onYesButtonClicked();
 
     expect(routerMock.navigate).not.toHaveBeenCalled();
-    expect(component.requestDeleteConfirmation).toEqual(false);
+    expect(component.requestConfirmation).toEqual(false);
   });
 });

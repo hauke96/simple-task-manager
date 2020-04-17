@@ -12,8 +12,9 @@ export class ProjectSettingsComponent implements OnInit {
   @Input() projectId: string;
   @Input() projectOwner: string;
 
-  public requestDeleteConfirmation: boolean;
-  public isOwner: boolean;
+  public requestConfirmation: boolean;
+
+  private action = '';
 
   constructor(
     private projectService: ProjectService,
@@ -23,35 +24,54 @@ export class ProjectSettingsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // The owner cannot leave but only delete a project.
+    // A normal member cannot delete a project but leave it.
+    this.action = this.isOwner ? 'delete' : 'leave';
   }
 
-  public get canDelete(): boolean {
+  public get isOwner(): boolean {
     return this.userService.getUser() === this.projectOwner;
   }
 
   public onDeleteButtonClicked() {
-    this.requestDeleteConfirmation = true;
+    this.requestConfirmation = true;
+  }
+
+  public onLeaveProjectClicked() {
+    this.requestConfirmation = true;
   }
 
   public onNoButtonClicked() {
-    this.requestDeleteConfirmation = false;
+    this.requestConfirmation = false;
   }
 
-  public onYesButtonClicked(){
+  public onYesButtonClicked() {
+    if (this.action === 'delete') {
+      this.deleteProject();
+    } else if (this.action === 'leave') {
+      this.leaveProject();
+    }
+  }
+
+  private deleteProject() {
     this.projectService.deleteProject(this.projectId)
       .subscribe(() => {
-        this.requestDeleteConfirmation = false;
+        this.requestConfirmation = false;
         this.router.navigate(['/manager']);
       }, err => {
         console.error(err);
-        this.requestDeleteConfirmation = false;
+        this.requestConfirmation = false;
       });
   }
 
-  onLeaveProjectClicked() {
+  private leaveProject() {
     this.projectService.leaveProject(this.projectId)
       .subscribe(() => {
+        this.requestConfirmation = false;
         this.router.navigate(['/manager']);
+      }, err => {
+        console.error(err);
+        this.requestConfirmation = false;
       });
   }
 }
