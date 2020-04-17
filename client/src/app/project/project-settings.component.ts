@@ -13,6 +13,7 @@ export class ProjectSettingsComponent implements OnInit {
   @Input() projectOwner: string;
 
   public requestDeleteConfirmation: boolean;
+  public isOwner: boolean;
 
   constructor(
     private projectService: ProjectService,
@@ -44,6 +45,13 @@ export class ProjectSettingsComponent implements OnInit {
       }, err => {
         console.error(err);
         this.requestDeleteConfirmation = false;
+      });
+  }
+
+  onLeaveProjectClicked() {
+    this.projectService.leaveProject(this.projectId)
+      .subscribe(() => {
+        this.router.navigate(['/manager']);
       });
   }
 }

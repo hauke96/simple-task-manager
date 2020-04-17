@@ -60,4 +60,8 @@ export class ProjectService {
   public getTasks(id: string): Observable<Task[]> {
     return this.http.get<Task[]>(environment.url_projects + '/' + id + '/tasks');
   }
+
+  public leaveProject(id: string): Observable<void>{
+    return this.http.delete<void>(environment.url_projects + '/' + id + '/users');
+  }
 }
