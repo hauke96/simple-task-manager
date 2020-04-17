@@ -34,7 +34,7 @@ export class TaskService {
       throw new Error('Task with id \'' + id + '\' not selected');
     }
 
-    this.http.post<Task>(environment.url_task_processPoints + '?id=' + id + '&process_points=' + newProcessPoints, '')
+    this.http.post<Task>(environment.url_task_processPoints.replace('{id}', id) + '?process_points=' + newProcessPoints, '')
       .subscribe(t => this.selectedTaskChanged.emit(t));
   }
 
@@ -43,7 +43,7 @@ export class TaskService {
       throw new Error('Task with id \'' + id + '\' not selected');
     }
 
-    this.http.post<Task>(environment.url_task_assignedUser + '?id=' + id, '')
+    this.http.post<Task>(environment.url_task_assignedUser.replace('{id}', id), '')
       .subscribe(t => this.selectedTaskChanged.emit(t));
   }
 
@@ -52,7 +52,7 @@ export class TaskService {
       throw new Error('Task with id \'' + id + '\' not selected');
     }
 
-    this.http.delete<Task>(environment.url_task_assignedUser + '?id=' + id)
+    this.http.delete<Task>(environment.url_task_assignedUser.replace('{id}', id))
       .subscribe(t => this.selectedTaskChanged.emit(t));
   }
 }

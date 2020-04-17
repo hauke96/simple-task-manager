@@ -48,7 +48,7 @@ export class ProjectService {
   }
 
   public inviteUser(user: string, id: string): Observable<Project> {
-    return this.http.post<Project>(environment.url_projects_users + '?user=' + user + '&project=' + id, '')
+    return this.http.post<Project>(environment.url_projects_users.replace('{id}', id) + '?user=' + user, '')
       .pipe(tap(p => this.projectChanged.emit(p)));
   }
 
