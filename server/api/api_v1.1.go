@@ -27,7 +27,7 @@ func Init_V1_1(router *mux.Router) (*mux.Router, string) {
 	routerV1.HandleFunc("/task/assignedUser", authenticatedHandler(unassignUser)).Methods(http.MethodDelete)
 	routerV1.HandleFunc("/task/processPoints", authenticatedHandler(setProcessPoints)).Methods(http.MethodPost)
 
-	return routerV1, "v1"
+	return routerV1, "v1.1"
 }
 
 func deleteProjects(w http.ResponseWriter, r *http.Request, token *auth.Token) {
