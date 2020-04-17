@@ -28,6 +28,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
 
   private map: Map;
   private vectorSource: VectorSource;
+  private lastDrawnPolygon: Feature;
 
   constructor(
     private projectService: ProjectService,
@@ -88,16 +89,13 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       type: 'Polygon'
     });
     draw.on('drawend', evt => {
-      console.log(evt.feature);
-      this.vectorSource.clear();
-      this.vectorSource.refresh();
-      this.vectorSource.addFeature(new Feature(evt.feature.getGeometry()));
+      this.lastDrawnPolygon = evt.feature;
     });
     this.map.addInteraction(draw);
   }
 
   public onDivideButtonClicked() {
-    const polygon = this.vectorSource.getFeatures()[0].getGeometry() as Polygon;
+    const polygon = this.lastDrawnPolygon.getGeometry() as Polygon;
     const extent = polygon.transform('EPSG:3857', 'EPSG:4326').getExtent();
 
     // Use meters and only show grid cells within the original polygon (-> mask)
