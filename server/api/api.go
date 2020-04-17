@@ -28,13 +28,13 @@ func Init() error {
 	printRoutes(router)
 
 	// API v1
-	routerV1, version := Init_V1(router)
+	routerV1, version := Init_v1(router)
 	supportedApiVersions = append(supportedApiVersions, version)
 	sigolo.Info("Registered routes for API v1:")
 	printRoutes(routerV1)
 
 	// API v1.1
-	routerV1_1, version := Init_V1_1(router)
+	routerV1_1, version := Init_v1_1(router)
 	supportedApiVersions = append(supportedApiVersions, version)
 	sigolo.Info("Registered routes for API v1.1:")
 	printRoutes(routerV1_1)

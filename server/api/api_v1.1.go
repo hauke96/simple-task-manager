@@ -12,24 +12,24 @@ import (
 	"../util"
 )
 
-func Init_V1_1(router *mux.Router) (*mux.Router, string) {
-	routerV1 := router.PathPrefix("/v1.1").Subrouter()
+func Init_v1_1(router *mux.Router) (*mux.Router, string) {
+	router_v1_1 := router.PathPrefix("/v1.1").Subrouter()
 
-	routerV1.HandleFunc("/projects/{id}", authenticatedHandler(deleteProjects_v1_1)).Methods(http.MethodDelete)
-	routerV1.HandleFunc("/projects/{id}/tasks", authenticatedHandler(getProjectTasks_v1_1)).Methods(http.MethodGet)
-	routerV1.HandleFunc("/projects/{id}/users", authenticatedHandler(leaveProject_v1_1)).Methods(http.MethodDelete)
-	routerV1.HandleFunc("/projects/{id}/users", authenticatedHandler(addUserToProject_v1_1)).Methods(http.MethodPost)
+	router_v1_1.HandleFunc("/projects/{id}", authenticatedHandler(deleteProjects_v1_1)).Methods(http.MethodDelete)
+	router_v1_1.HandleFunc("/projects/{id}/tasks", authenticatedHandler(getProjectTasks_v1_1)).Methods(http.MethodGet)
+	router_v1_1.HandleFunc("/projects/{id}/users", authenticatedHandler(leaveProject_v1_1)).Methods(http.MethodDelete)
+	router_v1_1.HandleFunc("/projects/{id}/users", authenticatedHandler(addUserToProject_v1_1)).Methods(http.MethodPost)
 
-	routerV1.HandleFunc("/tasks/{id}/assignedUser", authenticatedHandler(assignUser_v1_1)).Methods(http.MethodPost)
-	routerV1.HandleFunc("/tasks/{id}/assignedUser", authenticatedHandler(unassignUser_v1_1)).Methods(http.MethodDelete)
-	routerV1.HandleFunc("/tasks/{id}/processPoints", authenticatedHandler(setProcessPoints_v1_1)).Methods(http.MethodPost)
+	router_v1_1.HandleFunc("/tasks/{id}/assignedUser", authenticatedHandler(assignUser_v1_1)).Methods(http.MethodPost)
+	router_v1_1.HandleFunc("/tasks/{id}/assignedUser", authenticatedHandler(unassignUser_v1_1)).Methods(http.MethodDelete)
+	router_v1_1.HandleFunc("/tasks/{id}/processPoints", authenticatedHandler(setProcessPoints_v1_1)).Methods(http.MethodPost)
 
 	// Same as in v1:
-	routerV1.HandleFunc("/projects", authenticatedHandler(getProjects)).Methods(http.MethodGet)
-	routerV1.HandleFunc("/projects", authenticatedHandler(addProject)).Methods(http.MethodPost)
-	routerV1.HandleFunc("/tasks", authenticatedHandler(addTask)).Methods(http.MethodPost)
+	router_v1_1.HandleFunc("/projects", authenticatedHandler(getProjects)).Methods(http.MethodGet)
+	router_v1_1.HandleFunc("/projects", authenticatedHandler(addProject)).Methods(http.MethodPost)
+	router_v1_1.HandleFunc("/tasks", authenticatedHandler(addTask)).Methods(http.MethodPost)
 
-	return routerV1, "v1.1"
+	return router_v1_1, "v1.1"
 }
 
 func deleteProjects_v1_1(w http.ResponseWriter, r *http.Request, token *auth.Token) {
