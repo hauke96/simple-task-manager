@@ -92,15 +92,7 @@ func LeaveProject(id string, user string) (*Project, error) {
 	}
 
 	// Check if user is exists in project. If not, throw error
-	userIsInProject := false
-	for _, u := range p.Users {
-		if u == user {
-			userIsInProject = true
-			break
-		}
-	}
-
-	if !userIsInProject {
+	if !isUserInProject(p, user) {
 		return nil, fmt.Errorf("the user '%s' is not part of the project '%s'", user, p.Id)
 	}
 
@@ -191,16 +183,28 @@ func DeleteProject(id, potentialOwner string) error {
 	return nil
 }
 
-func GetTasks(id string, potentialOwner string) ([]*task.Task, error) {
+func GetTasks(id string, user string) ([]*task.Task, error) {
 	p, err := projectStore.getProject(id)
 	if err != nil {
 		return nil, fmt.Errorf("could not get project: %w", err)
 	}
 
 	// Only the owner can delete a project
-	if p.Owner != potentialOwner {
-		return nil, fmt.Errorf("the user '%s' is not the owner of project '%s'", potentialOwner, p.Id)
+	if !isUserInProject(p, user) {
+		return nil, fmt.Errorf("the user '%s' is not the owner of project '%s'", user, p.Id)
 	}
 
 	return projectStore.getTasks(id)
+}
+
+
+func isUserInProject(p *Project, user string) bool {
+	userIsInProject := false
+	for _, u := range p.Users {
+		if u == user {
+			userIsInProject = true
+			break
+		}
+	}
+	return userIsInProject
 }

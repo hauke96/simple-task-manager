@@ -188,7 +188,15 @@ func testGetTasks(t *testing.T) {
 		return
 	}
 
-	// Not owning project
+	// Part of project but not owning
+	_, err = GetTasks("1", "Maria")
+	if err != nil {
+		t.Error("This should work, Maria is part of the project")
+		t.Fail()
+		return
+	}
+
+	// Not part of project
 	_, err = GetTasks("1", "Unknown user")
 	if err == nil {
 		t.Error("Get tasks of not owned project should not work")
