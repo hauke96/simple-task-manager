@@ -42,7 +42,7 @@ func prepareCache() {
 		Id:      "2",
 		Name:    "Project 2",
 		TaskIDs: []string{"4,5,6"},
-		Users:   []string{"Maria", "John"},
+		Users:   []string{"Maria", "John", "Anna"},
 		Owner:   "Maria",
 	})
 
@@ -377,6 +377,74 @@ func testRemoveUserTwice(t *testing.T) {
 	_, err = RemoveUser("2", "Maria", "John")
 	if err == nil {
 		t.Error("Removing a user twice should not work")
+		t.Fail()
+		return
+	}
+}
+
+func TestLeaveProject_pg(t *testing.T) {
+	if !*useDatabase {
+		t.SkipNow()
+		return
+	}
+
+	preparePg()
+	testLeaveProject(t)
+}
+
+func TestLeaveProject_cache(t *testing.T) {
+	prepareCache()
+	testLeaveProject(t)
+}
+
+func testLeaveProject(t *testing.T) {
+	userToRemove := "Anna"
+
+	p, err := LeaveProject("2", userToRemove)
+	if err != nil {
+		t.Error("This should work: %w", err)
+		t.Fail()
+		return
+	}
+
+	containsUser := false
+	for _, u := range p.Users {
+		if u == userToRemove {
+			containsUser = true
+			break
+		}
+	}
+	if containsUser {
+		t.Error("Project should not contain user anymore")
+		t.Fail()
+		return
+	}
+
+	p, err = LeaveProject("2", "Maria")
+	if err == nil {
+		t.Error("This should not work: The owner is not allowed to leave")
+		t.Fail()
+		return
+	}
+
+	p, err = LeaveProject("2284527", "Peter")
+	if err == nil {
+		t.Error("This should not work: The project does not exist")
+		t.Fail()
+		return
+	}
+
+	p, err = LeaveProject("1", "Not-Existing-User")
+	if err == nil {
+		t.Error("This should not work: A non-existing user should be removed")
+		t.Fail()
+		return
+	}
+
+	// "Maria" was removed above to we remove her here the second time
+	_, err = LeaveProject("2", userToRemove)
+	if err == nil {
+		t.Error("Leaving a project twice should not work")
 		t.Fail()
 		return
 	}
