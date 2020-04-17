@@ -26,7 +26,7 @@ type store interface {
 	addUser(userToAdd string, id string, owner string) (*Project, error)
 	removeUser(id string, userToRemove string) (*Project, error)
 	delete(id string) error
-	getTasks(projectId string) ([]*task.Task, error)
+	getTasks(id string) ([]*task.Task, error)
 }
 
 var (
@@ -51,6 +51,7 @@ func GetProjects(user string) ([]*Project, error) {
 }
 
 func AddProject(project *Project, user string) (*Project, error) {
+	// TODO check whether all necessary fields are set
 	return projectStore.addProject(project, user)
 }
 
@@ -79,8 +80,8 @@ func AddUser(user, id, potentialOwner string) (*Project, error) {
 	return projectStore.addUser(user, id, potentialOwner)
 }
 
-func LeaveProject(projectId string, user string) (*Project, error) {
-	p, err := projectStore.getProject(projectId)
+func LeaveProject(id string, user string) (*Project, error) {
+	p, err := projectStore.getProject(id)
 	if err != nil {
 		return nil, fmt.Errorf("could not get project: %w", err)
 	}
@@ -103,11 +104,11 @@ func LeaveProject(projectId string, user string) (*Project, error) {
 		return nil, fmt.Errorf("the user '%s' is not part of the project '%s'", user, p.Id)
 	}
 
-	return projectStore.removeUser(projectId, user)
+	return projectStore.removeUser(id, user)
 }
 
-func RemoveUser(projectId, potentialOwner, userToRemove string) (*Project, error) {
-	p, err := projectStore.getProject(projectId)
+func RemoveUser(id, potentialOwner, userToRemove string) (*Project, error) {
+	p, err := projectStore.getProject(id)
 	if err != nil {
 		return nil, fmt.Errorf("could not get project: %w", err)
 	}
@@ -130,7 +131,7 @@ func RemoveUser(projectId, potentialOwner, userToRemove string) (*Project, error
 		return nil, fmt.Errorf("Cannot remove user, project does not contain user '%s'", userToRemove)
 	}
 
-	return projectStore.removeUser(projectId, userToRemove)
+	return projectStore.removeUser(id, userToRemove)
 }
 
 // VerifyOwnership checks whether all given tasks are part of projects where the

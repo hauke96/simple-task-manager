@@ -135,8 +135,8 @@ func rowToProject(rows *sql.Rows) (*Project, error) {
 	return &result, nil
 }
 
-func (s *storePg) getTasks(projectId string) ([]*task.Task, error) {
-	p, err := s.getProject(projectId)
+func (s *storePg) getTasks(id string) ([]*task.Task, error) {
+	p, err := s.getProject(id)
 	if err != nil {
 		return nil, err
 	}

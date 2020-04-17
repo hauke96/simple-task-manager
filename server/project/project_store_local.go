@@ -115,8 +115,8 @@ func (s *storeLocal) delete(id string) error {
 	return nil
 }
 
-func (s *storeLocal) getTasks(projectId string) ([]*task.Task, error) {
-	p, err := s.getProject(projectId)
+func (s *storeLocal) getTasks(id string) ([]*task.Task, error) {
+	p, err := s.getProject(id)
 	if err != nil {
 		return nil, err
 	}

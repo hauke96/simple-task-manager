@@ -52,7 +52,6 @@ func addProject(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 
 	var draftProject project.Project
 	json.Unmarshal(bodyBytes, &draftProject)
-	// TODO check wether all neccessary fields are set
 
 	updatedProject, err := project.AddProject(&draftProject, token.User)
 	if err != nil {
@@ -146,7 +145,6 @@ func assignUser(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 		util.ResponseBadRequest(w, err.Error())
 		return
 	}
-	// TODO check wether task exists
 
 	user := token.User
 
@@ -170,7 +168,6 @@ func unassignUser(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 		util.ResponseBadRequest(w, err.Error())
 		return
 	}
-	// TODO check wether task exists
 
 	user := token.User
 
