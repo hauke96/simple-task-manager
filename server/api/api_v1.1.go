@@ -134,7 +134,7 @@ func setProcessPoints_v1_1(w http.ResponseWriter, r *http.Request, token *auth.T
 		return
 	}
 
-	task, err := task.SetProcessPoints(taskId, processPoints)
+	task, err := task.SetProcessPoints(taskId, processPoints, token.User)
 	if err != nil {
 		sigolo.Error(err.Error())
 		util.ResponseInternalError(w, err.Error())
