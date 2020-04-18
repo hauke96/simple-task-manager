@@ -1,9 +1,9 @@
-<div class="toolbar">
+<app-toolbar>
 	<div class="back-button-container">
 		<button [routerLink]="['/manager']">&#60; Back</button>
 		<p class="project-label">Project: {{thisProject?.name}}</p>
 	</div>
-</div>
+</app-toolbar>
 <div class="root-container">
 	<div class="task-list-details-container">
 		<app-tabs [tabs]="['Tasks', 'Users', 'Settings']" #tabs>

@@ -22,6 +22,7 @@ import { UserListComponent } from './user/user-list.component';
 import { UserInvitationComponent } from './user/user-invitation.component';
 import { ProjectSettingsComponent } from './project/project-settings.component';
 import { NotificationComponent } from './ui/notification.component';
+import { ToolbarComponent } from './ui/toolbar.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { NotificationComponent } from './ui/notification.component';
     UserListComponent,
     UserInvitationComponent,
     ProjectSettingsComponent,
-    NotificationComponent
+    NotificationComponent,
+    ToolbarComponent
   ],
   imports: [
     BrowserModule,

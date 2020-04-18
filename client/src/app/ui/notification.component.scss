@@ -3,11 +3,9 @@
 // We can't use flex layout and put it below the toolbar, because 1.) it lays above everything and 2.) this component is
 // directly embedded into the app-component and a toolbar does not exist there
 .notification-container {
-	top: $space-huge + 2 * $space-base;
 	z-index: 10;
+	width: 100%;
 	position: absolute;
-	right: 0;
-	left: 0;
 }
 
 .loading-container,

@@ -1,9 +1,9 @@
-<div class="toolbar">
+<app-toolbar>
 	<div>
 		<button [routerLink]="['/manager']">&#60; Cancel</button>
 		<button class="save-button" (click)="onSaveButtonClicked()" [disabled]="!creationForm.form.valid || !hasTasks">Save</button>
 	</div>
-</div>
+</app-toolbar>
 <div class="root-container">
 	<div class="project-properties-container">
 		<form #creationForm="ngForm">

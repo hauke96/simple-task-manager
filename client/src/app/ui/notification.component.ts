@@ -3,7 +3,7 @@ import { LoadingService } from '../common/loading.service';
 import { ErrorService } from '../common/error.service';
 
 @Component({
-  selector: 'app-loading',
+  selector: 'app-notification',
   templateUrl: './notification.component.html',
   styleUrls: ['./notification.component.scss']
 })
