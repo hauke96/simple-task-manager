@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { LoadingService } from './loading.service';
+import { LoadingService } from '../common/loading.service';
 import { RouterTestingModule } from '@angular/router/testing';
 
 describe('LoadingService', () => {

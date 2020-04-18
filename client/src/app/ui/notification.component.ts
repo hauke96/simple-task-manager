@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { LoadingService } from './loading.service';
+import { LoadingService } from '../common/loading.service';
+import { ErrorService } from '../common/error.service';
 
 @Component({
   selector: 'app-loading',
@@ -7,10 +8,9 @@ import { LoadingService } from './loading.service';
   styleUrls: ['./notification.component.scss']
 })
 export class NotificationComponent implements OnInit {
-  private testError = 'Some error occured';
-
   constructor(
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private errorService: ErrorService
   ) {
   }
 
@@ -22,15 +22,14 @@ export class NotificationComponent implements OnInit {
   }
 
   public get hasError(): boolean {
-    // TODO extract into service
-    return true;
+    return this.errorService.hasError();
   }
 
   public get currentErrorText(): string {
-    return this.testError;
+    return this.errorService.getError();
   }
 
   public onCloseErrorButtonClicked() {
-    this.testError += '#';
+    this.errorService.dropError();
   }
 }
