@@ -3,10 +3,13 @@ import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthService } from './auth.service';
+import { ErrorService } from '../common/error.service';
 
 @Injectable()
 export class LoggedInInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthService) {
+  constructor(
+    private authService: AuthService,
+    private errorService: ErrorService) {
   }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
@@ -20,6 +23,7 @@ export class LoggedInInterceptor implements HttpInterceptor {
       .pipe(catchError((e: HttpErrorResponse) => {
         console.error(e);
         if (e.status === 401) {
+          this.errorService.addError('Authorization failed: ' + (e as HttpErrorResponse).message);
           this.authService.logout();
         }
         throw e;

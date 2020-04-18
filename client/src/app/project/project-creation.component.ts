@@ -14,6 +14,7 @@ import { polygon as turfPolygon, Units } from '@turf/helpers';
 import squareGrid from '@turf/square-grid';
 import hexGrid from '@turf/hex-grid';
 import triangleGrid from '@turf/triangle-grid';
+import { ErrorService } from '../common/error.service';
 
 @Component({
   selector: 'app-project-creation',
@@ -32,6 +33,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
 
   constructor(
     private projectService: ProjectService,
+    private errorService: ErrorService,
     private router: Router
   ) {
   }
@@ -154,6 +156,8 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     this.projectService.createNewProject(this.newProjectName, this.newMaxProcessPoints, coordinates)
       .subscribe(project => {
         this.router.navigate(['/manager']);
+      }, e => {
+        this.errorService.addError('Could not create project');
       });
   }
 }

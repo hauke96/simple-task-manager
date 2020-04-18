@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ProjectService } from './project.service';
 import { Router } from '@angular/router';
 import { UserService } from '../user/user.service';
+import { ErrorService } from '../common/error.service';
 
 @Component({
   selector: 'app-project-settings',
@@ -19,6 +20,7 @@ export class ProjectSettingsComponent implements OnInit {
   constructor(
     private projectService: ProjectService,
     private userService: UserService,
+    private errorService: ErrorService,
     private router: Router
   ) {
   }
@@ -60,6 +62,7 @@ export class ProjectSettingsComponent implements OnInit {
         this.router.navigate(['/manager']);
       }, err => {
         console.error(err);
+        this.errorService.addError('Could not delete project');
         this.requestConfirmation = false;
       });
   }
@@ -71,6 +74,7 @@ export class ProjectSettingsComponent implements OnInit {
         this.router.navigate(['/manager']);
       }, err => {
         console.error(err);
+        this.errorService.addError('Could not leave project');
         this.requestConfirmation = false;
       });
   }

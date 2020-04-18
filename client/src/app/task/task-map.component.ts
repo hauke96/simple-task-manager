@@ -11,8 +11,6 @@ import { Attribution, defaults as defaultControls, ScaleLine } from 'ol/control'
 import { Polygon } from 'ol/geom';
 import { Fill, Stroke, Style, Text } from 'ol/style';
 
-// import { Draw } from 'ol/interaction';
-
 @Component({
   selector: 'app-task-map',
   templateUrl: './task-map.component.html',
