@@ -29,7 +29,7 @@ This file describes the REST-like API provided by the Server.
 * Description: Performs the OAuth authentication
 * Response: Redirect to OSM Login page.
 
-# v1.1
+# v2
 
 Used by application releases:
 
@@ -40,43 +40,43 @@ For all the following API routes, the `Authentication` header must contain a val
 
 ### Projects
 
-##### DELETE `/v1.1/projects/{id}`
+##### DELETE `/v2/projects/{id}`
 
 Deletes a specific project with id `{id}`. The requesting user (specified by the token) must be the owner of the project.
 
-##### GET `/v1.1/projects/{id}/tasks`
+##### GET `/v2/projects/{id}/tasks`
 
 Gets all tasks of a specific project with id `{id}`. The requesting user (specified by the token) must be part of the project.
 
-##### DELETE `/v1.1/projects/{id}/users`
+##### DELETE `/v2/projects/{id}/users`
 
 The requesting user (specified by the token) leaves the project with the id `{id}`. 
 
-##### POST `/v1.1/projects/{id}/users?user={user}`
+##### POST `/v2/projects/{id}/users?user={user}`
 
 The user `{user}` will be added to the project with the id `{id}`. Only the owner of the project can make this request.
 
-##### GET `/v1.1/projects`
+##### GET `/v2/projects`
 (as in v1)
 
-##### POST `/v1.1/projects`
+##### POST `/v2/projects`
 (as in v1)
 
 ### Tasks
 
-##### POST `/v1.1/tasks/{id}/assignedUser`
+##### POST `/v2/tasks/{id}/assignedUser`
 
 Assigns the requesting user (specified by the token) to the task with id `{id}`. The requesting user has to be part of the project this task belongs to.
 
-##### DELETE `/v1.1/tasks/{id}/assignedUser`
+##### DELETE `/v2/tasks/{id}/assignedUser`
 
 Unassigns the requesting user (specified by the token) from the task with id `{id}`. Only the assigned user can unassign itself, you cannot unassign another user.
 
-##### POST `/v1.1/tasks/{id}/processPoints?process_points={points}`
+##### POST `/v2/tasks/{id}/processPoints?process_points={points}`
 
 Sets the amount of process points of the task with id `{id}` to `{points}`. Only the currently assigned user can do this request.
 
-##### POST `/v1.1/tasks`
+##### POST `/v2/tasks`
 (as in v1)
 
 # v1
@@ -210,7 +210,7 @@ The version has the format `vX.Y`.
 
 A **major version** is increased when the compatibility to the previous API breaks.
 
-A **minor version** is increased when the functionality is basically the same but some minor changes took place (e.g. adding an optional parameter, etc.) which to not break the compatibility.
+A **minor version** is increased when the functionality is basically the same but some minor changes took place (e.g. adding an optional parameter, etc.) which do not break the compatibility.
 
 ## Compatibility
 
