@@ -5,7 +5,7 @@ import { UserService } from '../user/user.service';
 import { TaskService } from './task.service';
 import { Task } from './task.material';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ActivatedRoute } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 describe('TaskDetailsComponent', () => {
   let component: TaskDetailsComponent;
@@ -18,7 +18,10 @@ describe('TaskDetailsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [TaskDetailsComponent],
-      imports: [HttpClientTestingModule],
+      imports: [
+        HttpClientTestingModule,
+        FormsModule
+      ],
       providers: [
         UserService,
         TaskService,

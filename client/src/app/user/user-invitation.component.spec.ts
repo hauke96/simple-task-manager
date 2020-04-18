@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserInvitationComponent } from './user-invitation.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { FormsModule } from '@angular/forms';
 
 describe('UserInvitationComponent', () => {
   let component: UserInvitationComponent;
@@ -10,7 +11,10 @@ describe('UserInvitationComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [UserInvitationComponent],
-      imports: [HttpClientTestingModule]
+      imports: [
+        HttpClientTestingModule,
+        FormsModule
+      ]
     })
       .compileComponents();
   }));

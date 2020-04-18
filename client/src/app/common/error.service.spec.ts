@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { ErrorService } from './error.service';
 
-fdescribe('ErrorService', () => {
+describe('ErrorService', () => {
   let service: ErrorService;
 
   beforeEach(() => {
