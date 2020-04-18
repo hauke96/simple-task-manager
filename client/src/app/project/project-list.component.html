@@ -1,5 +1,5 @@
 <h1>Projekte</h1>
-<div *ngIf="projects.length !== 0">
+<div *ngIf="projects?.length !== 0">
 	<div *ngFor="let p of projects" class="list-item" (click)="onProjectListItemClicked(p.id)">
 		<div>
 			{{p.name}} <span class="light-label">({{p.id}})</span>
@@ -9,7 +9,7 @@
 		</div>
 	</div>
 </div>
-<div *ngIf="projects.length === 0">
+<div *ngIf="projects?.length === 0">
 	<p class="light-label">You currently don't have any projects.</p>
 </div>
 <button class="create-project-button" [routerLink]="['/new-project']">Create project</button>
