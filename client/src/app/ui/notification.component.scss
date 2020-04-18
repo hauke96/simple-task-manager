@@ -2,22 +2,43 @@
 
 // We can't use flex layout and put it below the toolbar, because 1.) it lays above everything and 2.) this component is
 // directly embedded into the app-component and a toolbar does not exist there
-.loading-container {
+.notification-container {
+	top: $space-huge + 2 * $space-base;
+	z-index: 10;
+	position: absolute;
+	right: 0;
+	left: 0;
+}
+
+.loading-container,
+.error-container {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	position: absolute;
-	top: $space-huge + 2 * $space-base;
-	right: 0;
-	left: 0;
 	height: 50px;
 	background-color: #ffffffc0;
-	z-index: 10;
+}
+
+.loading-container{
 	border-bottom: $color-light 1px solid;
 }
 
 .loading-text {
 	margin-right: $space-large;
+}
+
+.error-container{
+	border-bottom: $color-light 1px solid;
+	background-color: $color-warn-very-light-transparent;
+}
+
+.error-text {
+	color: $color-warn-dark;
+}
+
+.error-close-button {
+	position: absolute;
+	right: $space-large;
 }
 
 @keyframes circle-loader {

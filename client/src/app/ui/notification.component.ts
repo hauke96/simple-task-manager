@@ -7,6 +7,7 @@ import { LoadingService } from './loading.service';
   styleUrls: ['./notification.component.scss']
 })
 export class NotificationComponent implements OnInit {
+  private testError = 'Some error occured';
 
   constructor(
     private loadingService: LoadingService
@@ -18,5 +19,18 @@ export class NotificationComponent implements OnInit {
 
   public get isLoading(): boolean {
     return this.loadingService.loading;
+  }
+
+  public get hasError(): boolean {
+    // TODO extract into service
+    return true;
+  }
+
+  public get currentErrorText(): string {
+    return this.testError;
+  }
+
+  public onCloseErrorButtonClicked() {
+    this.testError += '#';
   }
 }

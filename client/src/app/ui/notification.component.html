@@ -1,4 +1,11 @@
-<div *ngIf="isLoading" class="loading-container">
-	<span class="loading-text">Loading ...</span>
-	<div class="loader simple-circle"></div>
+<div class="notification-container">
+	<div *ngIf="isLoading" class="loading-container">
+		<span class="loading-text">Loading ...</span>
+		<div class="loader simple-circle"></div>
+	</div>
+	<div *ngIf="hasError" class="error-container">
+		<span class="error-text">ERROR: </span>
+		<span>{{currentErrorText}}</span>
+		<button class="error-close-button" (click)="onCloseErrorButtonClicked()">OK</button>
+	</div>
 </div>
