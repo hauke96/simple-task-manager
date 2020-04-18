@@ -23,4 +23,8 @@ export class ErrorService {
   public dropError() {
     this.errors.shift();
   }
+
+  public addError(error: string) {
+    this.errors.push(error);
+  }
 }
