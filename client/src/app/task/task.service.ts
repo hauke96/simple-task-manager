@@ -1,6 +1,5 @@
-import { Injectable, EventEmitter } from '@angular/core';
-import { Observable, throwError, of } from 'rxjs';
-import { map, filter, catchError } from 'rxjs/operators';
+import { EventEmitter, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { Task } from './task.material';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
@@ -13,7 +12,8 @@ export class TaskService {
 
   private selectedTask: Task;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   public createNewTasks(geometries: [[number, number]][], maxProcessPoints: number): Observable<Task[]> {
     const tasks = geometries.map(g => new Task('', 0, maxProcessPoints, g));
@@ -29,22 +29,12 @@ export class TaskService {
     return this.selectedTask;
   }
 
-  public getTask(id: string): Observable<Task> {
-    return this.getTasks([id])
-      .pipe(map(tasks => tasks.find(t => t.id === id)));
-  }
-
-  public getTasks(ids: string[]): Observable<Task[]> {
-    const idsString = ids.join(',');
-    return this.http.get<Task[]>(environment.url_tasks + '?task_ids=' + idsString);
-  }
-
   public setProcessPoints(id: string, newProcessPoints: number) {
     if (id !== this.selectedTask.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
       throw new Error('Task with id \'' + id + '\' not selected');
     }
 
-    this.http.post<Task>(environment.url_task_processPoints + '?id=' + id + '&process_points=' + newProcessPoints, '')
+    this.http.post<Task>(environment.url_task_processPoints.replace('{id}', id) + '?process_points=' + newProcessPoints, '')
       .subscribe(t => this.selectedTaskChanged.emit(t));
   }
 
@@ -53,7 +43,7 @@ export class TaskService {
       throw new Error('Task with id \'' + id + '\' not selected');
     }
 
-    this.http.post<Task>(environment.url_task_assignedUser + '?id=' + id, '')
+    this.http.post<Task>(environment.url_task_assignedUser.replace('{id}', id), '')
       .subscribe(t => this.selectedTaskChanged.emit(t));
   }
 
@@ -62,7 +52,7 @@ export class TaskService {
       throw new Error('Task with id \'' + id + '\' not selected');
     }
 
-    this.http.delete<Task>(environment.url_task_assignedUser + '?id=' + id)
+    this.http.delete<Task>(environment.url_task_assignedUser.replace('{id}', id))
       .subscribe(t => this.selectedTaskChanged.emit(t));
   }
 }

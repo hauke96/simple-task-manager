@@ -1,11 +1,11 @@
 {
   "name": "simple-task-manager",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "scripts": {
     "ng": "ng",
     "dev": "ng serve --watch",
     "build": "ng build --prod",
-    "test": "ng test --watch=false --browsers=FirefoxHeadless",
+    "test": "ng test --browsers=FirefoxHeadless --code-coverage",
     "docker-test": "ng test --watch=false --browsers=ChromeHeadlessNoSandbox",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -20,7 +20,9 @@
     "@angular/platform-browser": "~9.1.0",
     "@angular/platform-browser-dynamic": "~9.1.0",
     "@angular/router": "~9.1.0",
+    "@turf/hex-grid": "^6.0.2",
     "@turf/square-grid": "^6.0.2",
+    "@turf/triangle-grid": "^6.0.1",
     "@types/openlayers": "^4.6.17",
     "ol": "^6.2.1",
     "rxjs": "~6.5.4",

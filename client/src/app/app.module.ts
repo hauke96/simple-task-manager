@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -20,6 +20,8 @@ import { ProjectCreationComponent } from './project/project-creation.component';
 import { TabsComponent } from './ui/tabs.component';
 import { UserListComponent } from './user/user-list.component';
 import { UserInvitationComponent } from './user/user-invitation.component';
+import { ProjectSettingsComponent } from './project/project-settings.component';
+import { LoadingComponent } from './ui/loading.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,9 @@ import { UserInvitationComponent } from './user/user-invitation.component';
     ProjectCreationComponent,
     TabsComponent,
     UserListComponent,
-    UserInvitationComponent
+    UserInvitationComponent,
+    ProjectSettingsComponent,
+    LoadingComponent
   ],
   imports: [
     BrowserModule,
@@ -54,4 +58,5 @@ import { UserInvitationComponent } from './user/user-invitation.component';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

@@ -1,10 +1,12 @@
 <div class="toolbar">
-	<button [routerLink]="['/manager']">&#60; Back</button>
-	<p class="project-label">Project: {{thisProject?.name}}</p>
+	<div class="back-button-container">
+		<button [routerLink]="['/manager']">&#60; Back</button>
+		<p class="project-label">Project: {{thisProject?.name}}</p>
+	</div>
 </div>
 <div class="root-container">
 	<div class="task-list-details-container">
-		<app-tabs [tabs]="['Tasks', 'Users']" #tabs>
+		<app-tabs [tabs]="['Tasks', 'Users', 'Settings']" #tabs>
 			<div *ngIf="tabs.tabIndex === 0">
 				<div class="tab-container">
 					<h1>Tasks</h1>
@@ -16,6 +18,12 @@
 					<h1>Users</h1>
 					<app-user-invitation class="tab-container-item" [project]="thisProject"></app-user-invitation>
 					<app-user-list [users]="thisProject?.users"></app-user-list>
+				</div>
+			</div>
+			<div *ngIf="tabs.tabIndex === 2">
+				<div class="tab-container">
+					<h1>Settings</h1>
+					<app-project-settings [projectId]="thisProject?.id" [projectOwner]="thisProject.owner"></app-project-settings>
 				</div>
 			</div>
 		</app-tabs>

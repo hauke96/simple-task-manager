@@ -1,20 +1,19 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProjectService } from './project.service';
-import { Map, View } from 'ol';
+import { Feature, Map, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import { OSM } from 'ol/source';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
-import { defaults as defaultControls, ScaleLine, Attribution } from 'ol/control';
+import { Attribution, defaults as defaultControls, ScaleLine } from 'ol/control';
 import { Polygon } from 'ol/geom';
-import { Projection } from 'ol/proj';
-import { Style, Stroke, Fill } from 'ol/style';
-import { Feature } from 'ol';
+import { Fill, Stroke, Style } from 'ol/style';
 import { Draw } from 'ol/interaction';
+import { polygon as turfPolygon, Units } from '@turf/helpers';
 import squareGrid from '@turf/square-grid';
-import { Units, polygon as turfPolygon } from '@turf/helpers';
+import hexGrid from '@turf/hex-grid';
+import triangleGrid from '@turf/triangle-grid';
 
 @Component({
   selector: 'app-project-creation',
@@ -25,14 +24,17 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   public newProjectName: string;
   public newMaxProcessPoints: number;
   public gridCellSize: number;
+  public gridCellShape;
 
   private map: Map;
   private vectorSource: VectorSource;
+  private lastDrawnPolygon: Feature;
 
   constructor(
     private projectService: ProjectService,
     private router: Router
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
   }
@@ -86,11 +88,14 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       source: this.vectorSource,
       type: 'Polygon'
     });
+    draw.on('drawend', evt => {
+      this.lastDrawnPolygon = evt.feature;
+    });
     this.map.addInteraction(draw);
   }
 
   public onDivideButtonClicked() {
-    const polygon = this.vectorSource.getFeatures()[0].getGeometry() as Polygon;
+    const polygon = this.lastDrawnPolygon.getGeometry() as Polygon;
     const extent = polygon.transform('EPSG:3857', 'EPSG:4326').getExtent();
 
     // Use meters and only show grid cells within the original polygon (-> mask)
@@ -99,7 +104,18 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       mask: turfPolygon(polygon.getCoordinates())
     };
 
-    const grid = squareGrid(extent, this.gridCellSize, options);
+    let grid;
+    switch (this.gridCellShape) {
+      case 'squareGrid':
+        grid = squareGrid(extent, this.gridCellSize, options);
+        break;
+      case 'hexGrid':
+        grid = hexGrid(extent, this.gridCellSize, options);
+        break;
+      case 'triangleGrid':
+        grid = triangleGrid(extent, this.gridCellSize, options);
+        break;
+    }
 
     this.vectorSource.refresh(); // clears the source
 
@@ -109,8 +125,8 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       let geometry = new Polygon(g.geometry.coordinates);
       geometry = geometry.transform('EPSG:4326', 'EPSG:3857');
 
-     // create the map feature and set the task-id to select the task when the
-     // polygon has been clicked
+      // create the map feature and set the task-id to select the task when the
+      // polygon has been clicked
       const feature = new Feature(geometry);
       this.vectorSource.addFeature(feature);
     });

@@ -8,7 +8,8 @@ export class UserService {
 
   // TODO changed event?
 
-  constructor() { }
+  constructor() {
+  }
 
   public setUser(user: string) {
     this.currentUser = user;

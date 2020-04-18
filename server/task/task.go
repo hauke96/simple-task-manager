@@ -66,7 +66,7 @@ func AssignUser(id, user string) (*Task, error) {
 
 	// Task has already an assigned user
 	if strings.TrimSpace(task.AssignedUser) != "" {
-		return nil, errors.New(fmt.Sprintf("User '%s' already assigned, cannot overwrite", task.AssignedUser))
+		return nil, fmt.Errorf("user '%s' already assigned, cannot overwrite", task.AssignedUser)
 	}
 
 	return store.assignUser(id, user)
@@ -80,22 +80,26 @@ func UnassignUser(id, user string) (*Task, error) {
 
 	assignedUser := strings.TrimSpace(task.AssignedUser)
 	if assignedUser != user {
-		err = errors.New("The assigned user and the user to unassign differ")
+		err = errors.New("the assigned user and the user to unassign differ")
 		task = nil
 	}
 
 	return store.unassignUser(id)
 }
 
-func SetProcessPoints(id string, newPoints int) (*Task, error) {
+func SetProcessPoints(id string, newPoints int, user string) (*Task, error) {
 	task, err := store.getTask(id)
 	if err != nil {
 		return nil, err
 	}
 
+	if user != task.AssignedUser {
+		return nil, fmt.Errorf("user '%s' not assigned to this task", user)
+	}
+
 	// New process points should be in the range "[0, MaxProcessPoints]" (so including 0 and MaxProcessPoints)
-	if newPoints < 0 || task.MaxProcessPoints < newPoints{
-		return nil, errors.New("Process points out of range")
+	if newPoints < 0 || task.MaxProcessPoints < newPoints {
+		return nil, errors.New("process points out of range")
 	}
 
 	return store.setProcessPoints(id, newPoints)

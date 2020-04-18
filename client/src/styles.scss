@@ -9,17 +9,6 @@ $space-huge: $space-base * 4;
 // Fonts
 $font-small: 9pt;
 
-small {
-	font-size: $font-small;
-}
-
-// General things
-body {
-	color: $very-dark-gray;
-	margin: 0px;
-	height: 100vh;
-}
-
 * {
 	font-family: Dejavu Sans, sans-serif;
 	font-weight: 300;
@@ -27,6 +16,21 @@ body {
 
 b {
 	font-weight: 500;
+}
+
+small {
+	font-size: $font-small;
+}
+
+code {
+	font-family: monospace;
+}
+
+// General things
+body {
+	color: $very-dark-gray;
+	margin: 0px;
+	height: 100vh;
 }
 
 // Container aroung a screen filling component for better spacing to the screen edges
@@ -50,19 +54,43 @@ button {
 	border: none;
 	border: 1px solid $color-light;
 }
+
 button:hover {
 	border: 1px solid $color-mid;
 }
-button::-moz-focus-inner { // remove dotted line in Firefoc
+
+button::-moz-focus-inner { // remove dotted line in Firefox
 	border: 0
+}
+
+button:disabled {
+	background-color: $very-light-gray;
+	border-color: $light-gray;
 }
 
 a {
 	color: $color-very-dark;
 }
+
 a:hover {
 	color: $color-dark;
 }
+
+// Use the SVG as down-arrow instead of the default
+select {
+	min-width: 100px;
+	padding: 5px;
+	background-color: white;
+	border: 1px solid $color-light;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	background-image: url('/assets/arrow-down.svg');
+	background-size: $space-base * 1.5;
+	background-position: calc(100% - 8px) 10px;
+	background-repeat: no-repeat;
+}
+
 
 // For lists created by e.g. *ngFor
 .list-item {
@@ -74,21 +102,25 @@ a:hover {
 	padding-left: $space-base;
 	padding-right: $space-base;
 }
+
 .list-item:last-child {
 	border: 1px solid $color-light;
 }
+
 .list-item:hover {
 	border: 1px solid $color-mid;
 }
+
 .list-item:hover + .list-item { // hide border for next list item
 	border-top: none;
 }
 
 ul {
-    list-style: none;
-    padding-left: $space-huge;
-    text-indent: -$space-large;
+	list-style: none;
+	padding-left: $space-huge;
+	text-indent: -$space-large;
 }
+
 li:before {
 	content: "–";
 	display: block;
@@ -96,6 +128,7 @@ li:before {
 	width: $space-large;
 	color: $gray-mid;
 }
+
 li {
 	margin-bottom: $space-small;
 }
@@ -112,10 +145,19 @@ li {
 	align-items: center;
 }
 
+.toolbar {
+	justify-content: space-between;
+}
+
+.toolbar > p {
+	color: $light-gray;
+}
+
 input {
 	border: 1px solid $color-light;
 	padding: $space-small;
 }
+
 input:focus {
 	border: 1px solid $color-mid;
 }

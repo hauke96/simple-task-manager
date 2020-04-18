@@ -1,0 +1,85 @@
+@startuml
+
+package main <<Frame>> {
+    class main.main
+}
+
+package util <<Frame>> {
+    class util.util
+}
+
+package config <<Frame>> {
+    class config.config
+}
+
+package api <<Frame>> {
+    class api.api {
+    }
+    class api.api_v1 {
+    }
+    class api.api_v1.1 {
+    }
+
+    api.api --> api.api_v1
+    api.api --> api.api_v1.1
+
+    api.api_v1 --> project.project
+    api.api_v1.1 --> project.project
+
+    api.api_v1 --> task.task
+    api.api_v1.1 --> task.task
+}
+
+package auth <<Frame>> {
+    class auth.auth {
+    }
+
+    class auth.token {
+    }
+
+    auth.auth --> auth.token
+}
+
+package project <<Frame>> {
+    class project.project {
+    }
+
+    class project.project_store_local {
+    }
+
+    class project.project_store_pg {
+    }
+
+    project.project --> project_store_local
+    project.project --> project_store_pg
+}
+
+package task <<Frame>> {
+    class task.task {
+    }
+
+    class task.task_store_local {
+    }
+
+    class task.task_store_pg {
+    }
+
+    task.task --> task_store_local
+    task.task --> task_store_pg
+}
+
+main.main --> api.api : Init()
+main.main --> auth.auth : Init()
+main.main --> project : Init()
+main.main --> task : Init()
+
+api.api --> auth.auth
+api.api_v1 --> auth.auth
+api.api_v1.1 --> auth.auth
+
+project.project --> task.task
+project.project_store_local --> task.task
+project.project_store_pg --> task.task
+
+
+@enduml

@@ -1,13 +1,9 @@
 package auth
 
 import (
-	"crypto/aes"
 	"crypto/rand"
 	"crypto/sha256"
-	"encoding/base64"
-	"encoding/json"
 	"encoding/xml"
-	"errors"
 	"time"
 
 	"fmt"
@@ -21,13 +17,6 @@ import (
 	"../util"
 )
 
-// Struct for authentication
-type Token struct {
-	ValidUntil int64  `json:"valid_until"`
-	User       string `json:"user"`
-	Secret     string `json:"secret"`
-}
-
 var (
 	oauthRedirectUrl  string
 	oauthConsumerKey  string
@@ -38,10 +27,11 @@ var (
 	service *oauth1a.Service
 
 	configs map[string]*oauth1a.UserConfig
-	key     [32]byte
 )
 
 func Init() {
+	tokenInit()
+
 	oauthRedirectUrl = fmt.Sprintf("%s:%d/oauth_callback", config.Conf.ServerUrl, config.Conf.Port)
 	oauthConsumerKey = config.Conf.OauthConsumerKey
 	oauthSecret = config.Conf.OauthSecret
@@ -61,21 +51,26 @@ func Init() {
 	}
 
 	configs = make(map[string]*oauth1a.UserConfig)
-	key = sha256.Sum256(getRandomBytes(265))
 }
 
 func OauthLogin(w http.ResponseWriter, r *http.Request) {
 	userConfig := &oauth1a.UserConfig{}
 	configKey := fmt.Sprintf("%x", sha256.Sum256(getRandomBytes(64)))
 
+	clientRedirectUrl, err := util.GetParam("redirect", r)
+	if err != nil {
+		util.ResponseBadRequest(w, err.Error())
+		return
+	}
+
 	// We add the config-param to the redirect URL in order to transfer the config key to the callback function. There
 	// we use this key to retrieve the config back and be able to make proper requests to the OSM server..
 	// The redirect param is the URL of the web application we want to redirect back to, after everything is done.
-	service.ClientConfig.CallbackURL = oauthRedirectUrl + "?redirect=" + r.FormValue("redirect") + "&config=" + configKey
+	service.ClientConfig.CallbackURL = oauthRedirectUrl + "?redirect=" + clientRedirectUrl + "&config=" + configKey
 	sigolo.Info("%s", service.ClientConfig.CallbackURL)
 
 	httpClient := new(http.Client)
-	err := userConfig.GetRequestToken(service, httpClient)
+	err = userConfig.GetRequestToken(service, httpClient)
 	if err != nil {
 		sigolo.Error(err.Error())
 		return
@@ -136,26 +131,10 @@ func OauthCallback(w http.ResponseWriter, r *http.Request) {
 	tokenValidDuration, _ := time.ParseDuration("24h")
 	validUntil := time.Now().Add(tokenValidDuration).Unix()
 
-	secret, err := createSecret(userName, validUntil)
-	if err != nil {
-		sigolo.Error(err.Error())
+	encodedTokenString, done := createTokenString(err, userName, validUntil)
+	if done {
 		return
 	}
-
-	// Create actual token
-	token := &Token{
-		ValidUntil: validUntil,
-		User:       userName,
-		Secret:     secret,
-	}
-
-	jsonBytes, err := json.Marshal(token)
-	if err != nil {
-		sigolo.Error(err.Error())
-		return
-	}
-
-	encodedTokenString := base64.StdEncoding.EncodeToString(jsonBytes)
 
 	// This redirects to the landing page of the web-client. The client then stores the token and uses it for later
 	// requests.
@@ -205,27 +184,6 @@ func requestUserInformation(userConfig *oauth1a.UserConfig) (string, error) {
 	return osm.User.DisplayName, nil
 }
 
-// createSecret builds a new secret string encoded as base64. The idea: Take a
-// secret string, hash it (so disguise the length of this secret) and encrypt it.
-// To have equal length secrets, hash it again.
-func createSecret(user string, validTime int64) (string, error) {
-	secretBaseString := fmt.Sprintf("%s%d", user, validTime)
-	secretHashedBytes := sha256.Sum256([]byte(secretBaseString))
-
-	cipher, err := aes.NewCipher(key[:])
-	if err != nil {
-		sigolo.Error(err.Error())
-		return "", err
-	}
-
-	secretEncryptedBytes := make([]byte, 32)
-	cipher.Encrypt(secretEncryptedBytes, secretHashedBytes[:])
-
-	secretEncryptedHashedBytes := sha256.Sum256([]byte(secretEncryptedBytes))
-
-	return base64.StdEncoding.EncodeToString(secretEncryptedHashedBytes[:]), nil
-}
-
 func getRandomBytes(count int) []byte {
 	bytes := make([]byte, count)
 	// TODO error handling
@@ -239,36 +197,13 @@ func getRandomBytes(count int) []byte {
 func VerifyRequest(r *http.Request) (*Token, error) {
 	encodedToken := r.Header.Get("Authorization")
 
-	tokenBytes, err := base64.StdEncoding.DecodeString(encodedToken)
+	token, err := verifyToken(encodedToken)
 	if err != nil {
-		sigolo.Error(err.Error())
 		return nil, err
-	}
-
-	var token Token
-	err = json.Unmarshal(tokenBytes, &token)
-	if err != nil {
-		sigolo.Error(err.Error())
-		return nil, err
-	}
-
-	targetSecret, err := createSecret(token.User, token.ValidUntil)
-	if err != nil {
-		sigolo.Error(err.Error())
-		return nil, err
-	}
-
-	if token.Secret != targetSecret {
-		return nil, errors.New("Secret not valid")
-	}
-
-	if token.ValidUntil < time.Now().Unix() {
-		return nil, errors.New("Token expired")
 	}
 
 	sigolo.Debug("User '%s' has valid token", token.User)
-	sigolo.Info("User '%s' called %s on %s", token.User, r.Method, r.URL.Path)
 
 	token.Secret = ""
-	return &token, nil
+	return token, nil
 }

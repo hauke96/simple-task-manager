@@ -7,6 +7,7 @@ import (
 	"github.com/hauke96/sigolo"
 
 	"../config"
+	"../task"
 )
 
 type Project struct {
@@ -23,6 +24,9 @@ type store interface {
 	getProject(id string) (*Project, error)
 	addProject(draft *Project, user string) (*Project, error)
 	addUser(userToAdd string, id string, owner string) (*Project, error)
+	removeUser(id string, userToRemove string) (*Project, error)
+	delete(id string) error
+	getTasks(id string) ([]*task.Task, error)
 }
 
 var (
@@ -47,6 +51,7 @@ func GetProjects(user string) ([]*Project, error) {
 }
 
 func AddProject(project *Project, user string) (*Project, error) {
+	// TODO check whether all necessary fields are set
 	return projectStore.addProject(project, user)
 }
 
@@ -62,7 +67,7 @@ func AddUser(user, id, potentialOwner string) (*Project, error) {
 
 	// Only the owner is allowed to invite
 	if p.Owner != potentialOwner {
-		return nil, errors.New(fmt.Sprintf("User '%s' is not allowed to add another user", potentialOwner))
+		return nil, fmt.Errorf("User '%s' is not allowed to add another user", potentialOwner)
 	}
 
 	// Check if user is already in project. If so, just do nothing and return
@@ -73,6 +78,52 @@ func AddUser(user, id, potentialOwner string) (*Project, error) {
 	}
 
 	return projectStore.addUser(user, id, potentialOwner)
+}
+
+func LeaveProject(id string, user string) (*Project, error) {
+	p, err := projectStore.getProject(id)
+	if err != nil {
+		return nil, fmt.Errorf("could not get project: %w", err)
+	}
+
+	// The owner can only delete a project but not leave it
+	if p.Owner == user {
+		return nil, fmt.Errorf("The owner '%s' is not allowed to leave the project '%s'", user, p.Id)
+	}
+
+	// Check if user is exists in project. If not, throw error
+	if !isUserInProject(p, user) {
+		return nil, fmt.Errorf("the user '%s' is not part of the project '%s'", user, p.Id)
+	}
+
+	return projectStore.removeUser(id, user)
+}
+
+func RemoveUser(id, potentialOwner, userToRemove string) (*Project, error) {
+	p, err := projectStore.getProject(id)
+	if err != nil {
+		return nil, fmt.Errorf("could not get project: %w", err)
+	}
+
+	// Only the owner is allowed to invite
+	if p.Owner != potentialOwner {
+		return nil, fmt.Errorf("User '%s' is not allowed to add another user", potentialOwner)
+	}
+
+	// Check if user is already in project. If so, just do nothing and return
+	projectContainsUser := false
+	for _, u := range p.Users {
+		if u == userToRemove {
+			projectContainsUser = true
+			break
+		}
+	}
+
+	if !projectContainsUser {
+		return nil, fmt.Errorf("Cannot remove user, project does not contain user '%s'", userToRemove)
+	}
+
+	return projectStore.removeUser(id, userToRemove)
 }
 
 // VerifyOwnership checks whether all given tasks are part of projects where the
@@ -111,4 +162,49 @@ func VerifyOwnership(user string, taskIds []string) (bool, error) {
 	}
 
 	return true, nil
+}
+
+func DeleteProject(id, potentialOwner string) error {
+	p, err := projectStore.getProject(id)
+	if err != nil {
+		return fmt.Errorf("could not get project: %w", err)
+	}
+
+	// Only the owner can delete a project
+	if p.Owner != potentialOwner {
+		return fmt.Errorf("the user '%s' is not the owner of project '%s'", potentialOwner, p.Id)
+	}
+
+	err = projectStore.delete(id)
+	if err != nil{
+		return fmt.Errorf("could not remove project: %w", err)
+	}
+
+	return nil
+}
+
+func GetTasks(id string, user string) ([]*task.Task, error) {
+	p, err := projectStore.getProject(id)
+	if err != nil {
+		return nil, fmt.Errorf("could not get project: %w", err)
+	}
+
+	// Only the owner can delete a project
+	if !isUserInProject(p, user) {
+		return nil, fmt.Errorf("the user '%s' is not the owner of project '%s'", user, p.Id)
+	}
+
+	return projectStore.getTasks(id)
+}
+
+
+func isUserInProject(p *Project, user string) bool {
+	userIsInProject := false
+	for _, u := range p.Users {
+		if u == user {
+			userIsInProject = true
+			break
+		}
+	}
+	return userIsInProject
 }

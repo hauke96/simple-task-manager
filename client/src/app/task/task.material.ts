@@ -5,5 +5,6 @@ export class Task {
     public maxProcessPoints: number,
     public geometry: [number, number][],
     public assignedUser?: string
-  ) { }
+  ) {
+  }
 }

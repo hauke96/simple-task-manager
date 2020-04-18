@@ -1,7 +1,6 @@
-import { NgZone, Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
-import { UserService } from '../user/user.service';
 
 @Component({
   selector: 'app-auth',
@@ -12,9 +11,9 @@ export class AuthComponent implements OnInit {
   constructor(
     private router: Router,
     private ngZone: NgZone,
-    private authService: AuthService,
-    private userService: UserService
-  ) { }
+    private authService: AuthService
+  ) {
+  }
 
   ngOnInit(): void {
     if (this.authService.isAuthenticated()) {
