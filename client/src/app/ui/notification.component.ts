@@ -3,10 +3,10 @@ import { LoadingService } from './loading.service';
 
 @Component({
   selector: 'app-loading',
-  templateUrl: './loading.component.html',
-  styleUrls: ['./loading.component.scss']
+  templateUrl: './notification.component.html',
+  styleUrls: ['./notification.component.scss']
 })
-export class LoadingComponent implements OnInit {
+export class NotificationComponent implements OnInit {
 
   constructor(
     private loadingService: LoadingService
