@@ -78,7 +78,8 @@ a:hover {
 
 // Use the SVG as down-arrow instead of the default
 select {
-	min-width: 100px;
+	height: 29px; // Actually want  17px but have to add 12px because of custom background (probably)
+	width: 162px; // Actually want 150px but have to add 12px because of custom background (probably)
 	padding: 5px;
 	background-color: white;
 	border: 1px solid $color-light;
@@ -156,6 +157,7 @@ li {
 input {
 	border: 1px solid $color-light;
 	padding: $space-small;
+	width: 150px;
 }
 
 input:focus {

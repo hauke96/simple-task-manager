@@ -8,7 +8,8 @@ import { Project } from '../project/project.material';
   styleUrls: ['./user-invitation.component.scss']
 })
 export class UserInvitationComponent implements OnInit {
-  @Input() project: Project;
+  @Input() public project: Project;
+  public userName: string;
 
   constructor(
     private projectService: ProjectService
@@ -18,8 +19,8 @@ export class UserInvitationComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  public onInvitationButtonClicked(userName: string) {
-    this.projectService.inviteUser(userName, this.project.id)
+  public onInvitationButtonClicked() {
+    this.projectService.inviteUser(this.userName, this.project.id)
       .subscribe(p => {
         this.project = p;
       });
