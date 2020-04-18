@@ -161,3 +161,7 @@ input {
 input:focus {
 	border: 1px solid $color-mid;
 }
+
+input.ng-invalid:not(form)  {
+	border: 1px solid $color-warn;
+}

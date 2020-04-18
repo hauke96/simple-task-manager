@@ -24,7 +24,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   public newProjectName: string;
   public newMaxProcessPoints: number;
   public gridCellSize: number;
-  public gridCellShape;
+  public gridCellShape: string;
 
   private map: Map;
   private vectorSource: VectorSource;
@@ -37,6 +37,10 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    // Choose some default values
+    this.newMaxProcessPoints = 100;
+    this.gridCellShape = 'squareGrid';
+    this.gridCellSize = 1000;
   }
 
   ngAfterViewInit(): void {
@@ -92,6 +96,10 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       this.lastDrawnPolygon = evt.feature;
     });
     this.map.addInteraction(draw);
+  }
+
+  public get hasTasks(): boolean {
+    return !!this.lastDrawnPolygon;
   }
 
   public onDivideButtonClicked() {
