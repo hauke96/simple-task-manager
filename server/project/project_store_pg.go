@@ -2,9 +2,9 @@ package project
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"github.com/hauke96/sigolo"
-	"github.com/pkg/errors"
 	"strconv"
 	"strings"
 
