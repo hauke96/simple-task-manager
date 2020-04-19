@@ -68,7 +68,7 @@ export class ProjectSettingsComponent implements OnInit {
   }
 
   private leaveProject() {
-    this.projectService.leaveProject(this.projectId)
+    this.projectService.removeUser(this.projectId, this.userService.getUser())
       .subscribe(() => {
         this.requestConfirmation = false;
         this.router.navigate(['/manager']);

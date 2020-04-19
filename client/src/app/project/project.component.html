@@ -17,7 +17,7 @@
 				<div class="tab-container">
 					<h1>Users</h1>
 					<app-user-invitation class="tab-container-item" [project]="thisProject"></app-user-invitation>
-					<app-user-list [users]="thisProject?.users"></app-user-list>
+					<app-user-list [project]="thisProject"></app-user-list>
 				</div>
 			</div>
 			<div *ngIf="tabs.tabIndex === 2">

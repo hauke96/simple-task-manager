@@ -1,0 +1,25 @@
+@import "../../styles";
+
+.list-item {
+	padding-right: 0px;
+}
+
+.item-content {
+	display: flex;
+	justify-content: space-between;
+}
+
+.remove-button {
+	border: none;
+	border-left: 1px solid $color-light;
+	width: 70px;
+	background: none;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.remove-button:hover {
+	border: none;
+	border-left: 1px solid $color-mid;
+	background-color: $color-very-light;
+}

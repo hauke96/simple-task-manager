@@ -50,7 +50,8 @@ export class ProjectService {
     return this.http.get<Task[]>(environment.url_projects + '/' + id + '/tasks');
   }
 
-  public leaveProject(id: string): Observable<void> {
-    return this.http.delete<void>(environment.url_projects + '/' + id + '/users');
+  public removeUser(id: string, user: string): Observable<any> {
+    return this.http.delete(environment.url_projects_users.replace('{id}', id) + '/' + user)
+      .pipe(tap(p => this.projectChanged.emit(p)));
   }
 }
