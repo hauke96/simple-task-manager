@@ -1,6 +1,6 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { flatMap, map, tap } from 'rxjs/operators';
+import { flatMap, tap } from 'rxjs/operators';
 import { Project } from './project.material';
 import { Task } from './../task/task.material';
 import { TaskService } from './../task/task.service';
@@ -23,19 +23,8 @@ export class ProjectService {
     return this.http.get<Project[]>(environment.url_projects);
   }
 
-  // TODO add separate server API for this
   public getProject(id: string): Observable<Project> {
-    return this.getProjects()
-      .pipe(map(projects => {
-          const project = projects.find(p => p.id === id);
-
-          if (!project) {
-            throw new Error('Project not found');
-          }
-
-          return project;
-        })
-      );
+    return this.http.get<Project>(environment.url_projects_by_id.replace('{id}', id));
   }
 
   public createNewProject(name: string, maxProcessPoints: number, geometries: [[number, number]][]): Observable<Project> {
@@ -61,7 +50,7 @@ export class ProjectService {
     return this.http.get<Task[]>(environment.url_projects + '/' + id + '/tasks');
   }
 
-  public leaveProject(id: string): Observable<void>{
+  public leaveProject(id: string): Observable<void> {
     return this.http.delete<void>(environment.url_projects + '/' + id + '/users');
   }
 }

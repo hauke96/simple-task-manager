@@ -11,7 +11,7 @@ import (
 )
 
 func Init_v2_1(router *mux.Router) (*mux.Router, string) {
-	r := router.PathPrefix("/v2").Subrouter()
+	r := router.PathPrefix("/v2.1").Subrouter()
 
 	r.HandleFunc("/projects/{id}", authenticatedHandler(getProject_v2_1)).Methods(http.MethodGet)
 
