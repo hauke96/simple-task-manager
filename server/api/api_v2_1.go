@@ -5,9 +5,9 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 
-	"../auth"
-	"../project"
-	"../util"
+	"github.com/hauke96/simple-task-manager/server/auth"
+	"github.com/hauke96/simple-task-manager/server/project"
+	"github.com/hauke96/simple-task-manager/server/util"
 )
 
 func Init_v2_1(router *mux.Router) (*mux.Router, string) {

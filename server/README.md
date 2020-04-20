@@ -11,7 +11,7 @@ This project uses some frameworks/libraries to make the development easier:
 * [hauke96/sigolo](https://github.com/hauke96/sigolo) for logging
 * [hauke96/kingpin](https://github.com/hauke96/kingpin) for CLI parameter and flag parsing
 
-You need to install these using `go get github.com/gorilla/mux` and so on.
+This project uses the go module infrastructure, so e.g. `go build` installs all dependencies for you.
 
 ## Database
 

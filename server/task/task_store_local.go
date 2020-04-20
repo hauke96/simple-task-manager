@@ -1,7 +1,7 @@
 package task
 
 import (
-	"../util"
+	"github.com/hauke96/simple-task-manager/server/util"
 	"database/sql"
 	"errors"
 	"fmt"
