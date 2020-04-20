@@ -14,7 +14,7 @@ var (
 )
 
 const (
-	VERSION = "0.7.0"
+	VERSION = "0.8.0-dev"
 )
 
 func GetId() string {
