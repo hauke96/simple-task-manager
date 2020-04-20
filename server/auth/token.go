@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/hauke96/sigolo"
-	"hash"
 	"time"
 )
 
@@ -19,11 +18,11 @@ type Token struct {
 	Secret     string `json:"secret"`
 }
 var(
-	hashFunction hash.Hash // This has to be a keyed function
+	key []byte
 )
 
 func tokenInit() {
-	hashFunction = hmac.New(sha256.New, getRandomBytes(265))
+	key = getRandomBytes(265)
 }
 
 func createTokenString(err error, userName string, validUntil int64) (string, bool) {
@@ -56,7 +55,9 @@ func createTokenString(err error, userName string, validUntil int64) (string, bo
 func createSecret(user string, validTime int64) (string, error) {
 	secretBaseString := fmt.Sprintf("%s\n%d\n", user, validTime)
 
-	secretEncryptedHashedBytes := hashFunction.Sum([]byte(secretBaseString))
+	hash := hmac.New(sha256.New, key)
+	hash.Write([]byte(secretBaseString))
+	secretEncryptedHashedBytes := hash.Sum(nil)
 
 	return base64.StdEncoding.EncodeToString(secretEncryptedHashedBytes[:]), nil
 }
