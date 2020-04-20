@@ -6,9 +6,9 @@ import (
 	"strconv"
 	"strings"
 
-	"../auth"
-	"../config"
-	"../util"
+	"github.com/hauke96/simple-task-manager/server/auth"
+	"github.com/hauke96/simple-task-manager/server/config"
+	"github.com/hauke96/simple-task-manager/server/util"
 
 	"github.com/gorilla/mux"
 	"github.com/hauke96/sigolo"

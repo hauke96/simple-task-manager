@@ -5,9 +5,9 @@ import (
 	"github.com/hauke96/sigolo"
 	"testing"
 
-	"../config"
-	"../task"
-	"../util"
+	"github.com/hauke96/simple-task-manager/server/config"
+	"github.com/hauke96/simple-task-manager/server/task"
+	"github.com/hauke96/simple-task-manager/server/util"
 
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 )

@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"../task"
+	"github.com/hauke96/simple-task-manager/server/task"
 )
 
 type projectRow struct {

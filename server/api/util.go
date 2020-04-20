@@ -5,8 +5,8 @@ import (
 	"github.com/hauke96/sigolo"
 	"net/http"
 
-	"../auth"
-	"../util"
+	"github.com/hauke96/simple-task-manager/server/auth"
+	"github.com/hauke96/simple-task-manager/server/util"
 )
 
 func printRoutes(router *mux.Router) {

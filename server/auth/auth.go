@@ -13,8 +13,8 @@ import (
 	"github.com/hauke96/sigolo"
 	"github.com/kurrik/oauth1a"
 
-	"../config"
-	"../util"
+	"github.com/hauke96/simple-task-manager/server/config"
+	"github.com/hauke96/simple-task-manager/server/util"
 )
 
 var (

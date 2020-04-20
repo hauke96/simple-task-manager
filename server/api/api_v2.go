@@ -6,10 +6,10 @@ import (
 	"github.com/hauke96/sigolo"
 	"net/http"
 
-	"../auth"
-	"../project"
-	"../task"
-	"../util"
+	"github.com/hauke96/simple-task-manager/server/auth"
+	"github.com/hauke96/simple-task-manager/server/project"
+	"github.com/hauke96/simple-task-manager/server/task"
+	"github.com/hauke96/simple-task-manager/server/util"
 )
 
 func Init_v2(router *mux.Router) (*mux.Router, string) {

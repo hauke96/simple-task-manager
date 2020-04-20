@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"github.com/hauke96/sigolo"
 
-	"../config"
-	"../task"
+	"github.com/hauke96/simple-task-manager/server/config"
+	"github.com/hauke96/simple-task-manager/server/task"
 )
 
 type Project struct {

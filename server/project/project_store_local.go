@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"github.com/hauke96/sigolo"
 
-	"../task"
-	"../util"
+	"github.com/hauke96/simple-task-manager/server/task"
+	"github.com/hauke96/simple-task-manager/server/util"
 )
 
 type storeLocal struct {

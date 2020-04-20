@@ -7,12 +7,12 @@ import (
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 	"os"
 
-	"./api"
-	"./auth"
-	"./config"
-	"./project"
-	"./task"
-	"./util"
+	"github.com/hauke96/simple-task-manager/server/api"
+	"github.com/hauke96/simple-task-manager/server/auth"
+	"github.com/hauke96/simple-task-manager/server/config"
+	"github.com/hauke96/simple-task-manager/server/project"
+	"github.com/hauke96/simple-task-manager/server/task"
+	"github.com/hauke96/simple-task-manager/server/util"
 )
 
 var (
