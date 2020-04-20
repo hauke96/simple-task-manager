@@ -4,7 +4,6 @@ import { UserInvitationComponent } from './user-invitation.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
 import { ProjectService } from '../project/project.service';
-import { Project } from '../project/project.material';
 import { ErrorService } from '../common/error.service';
 import { throwError } from 'rxjs';
 
@@ -38,7 +37,7 @@ describe('UserInvitationComponent', () => {
     const inviteUserSpy = spyOn(projectService, 'inviteUser').and.callThrough();
 
     component.userName = 'test-user';
-    component.project = new Project('1', 'test project', ['2', '3'], ['test-user', 'user-a', 'user-b'], 'test-user');
+    component.projectId = '1';
 
     component.onInvitationButtonClicked();
 
@@ -51,7 +50,7 @@ describe('UserInvitationComponent', () => {
     const errorServiceSpy = spyOn(errorService, 'addError').and.callThrough();
 
     component.userName = 'test-user';
-    component.project = new Project('1', 'test project', ['2', '3'], ['test-user', 'user-a', 'user-b'], 'test-user');
+    component.projectId = '1';
 
     component.onInvitationButtonClicked();
 

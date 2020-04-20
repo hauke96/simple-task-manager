@@ -9,8 +9,7 @@ import { ErrorService } from '../common/error.service';
   styleUrls: ['./user-invitation.component.scss']
 })
 export class UserInvitationComponent implements OnInit {
-  // TODO only use project ID
-  @Input() public project: Project;
+  @Input() public projectId: string;
   public userName: string;
 
   constructor(
@@ -23,9 +22,8 @@ export class UserInvitationComponent implements OnInit {
   }
 
   public onInvitationButtonClicked() {
-    this.projectService.inviteUser(this.userName, this.project.id)
+    this.projectService.inviteUser(this.userName, this.projectId)
       .subscribe(p => {
-        this.project = p;
       }, err => {
         console.log(err);
         this.errorService.addError('Could not invite user \'' + this.userName + '\'');
