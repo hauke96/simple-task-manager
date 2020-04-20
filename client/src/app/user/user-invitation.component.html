@@ -1,2 +1,4 @@
-<input #userInput id="userInput" placeholder="user name">
-<button (click)="onInvitationButtonClicked(userInput.value)">Invite</button>
+<form #userForm="ngForm">
+	<input id="userInput" [(ngModel)]="userName" placeholder="user name" required name="userInput">
+	<button (click)="onInvitationButtonClicked()" [disabled]="!userForm.form.valid">Invite</button>
+</form>

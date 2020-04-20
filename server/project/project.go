@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"github.com/hauke96/sigolo"
 
-	"../config"
-	"../task"
+	"github.com/hauke96/simple-task-manager/server/config"
+	"github.com/hauke96/simple-task-manager/server/task"
 )
 
 type Project struct {
@@ -99,15 +99,15 @@ func LeaveProject(id string, user string) (*Project, error) {
 	return projectStore.removeUser(id, user)
 }
 
-func RemoveUser(id, potentialOwner, userToRemove string) (*Project, error) {
+func RemoveUser(id, requestingUser, userToRemove string) (*Project, error) {
 	p, err := projectStore.getProject(id)
 	if err != nil {
 		return nil, fmt.Errorf("could not get project: %w", err)
 	}
 
-	// Only the owner is allowed to invite
-	if p.Owner != potentialOwner {
-		return nil, fmt.Errorf("User '%s' is not allowed to add another user", potentialOwner)
+	// When a user tries to remove a different user, only the owner is allowed to do that
+	if requestingUser != userToRemove && p.Owner != requestingUser {
+		return nil, fmt.Errorf("user '%s' is not allowed to remove another user", requestingUser)
 	}
 
 	// Check if user is already in project. If so, just do nothing and return
@@ -120,7 +120,7 @@ func RemoveUser(id, potentialOwner, userToRemove string) (*Project, error) {
 	}
 
 	if !projectContainsUser {
-		return nil, fmt.Errorf("Cannot remove user, project does not contain user '%s'", userToRemove)
+		return nil, fmt.Errorf("cannot remove user, project does not contain user '%s'", userToRemove)
 	}
 
 	return projectStore.removeUser(id, userToRemove)

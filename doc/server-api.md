@@ -29,6 +29,62 @@ This file describes the REST-like API provided by the Server.
 * Description: Performs the OAuth authentication
 * Response: Redirect to OSM Login page.
 
+# v2.1
+
+Used by application releases:
+
+* 0.7.0
+
+##### Authentication
+For all the following API routes, the `Authentication` header must contain a valid base64 encoded token (without leading "Bearer" or something).
+
+### Projects
+
+##### GET  `/v2.1/projects/{id}`
+
+Returns the project with the given ID. The requesting user (specified by the token) must be member of the project.
+
+##### DELETE `/v2.1/projects/{id}/users/{user}`
+
+Removes the given user from the project. The requesting user (specified by the token) must be the owner of the project.
+
+##### DELETE `/v2.1/projects/{id}`
+
+(as in `v2`)
+
+##### GET `/v2.1/projects/{id}/tasks`
+
+(as in `v2`)
+
+##### POST `/v2.1/projects/{id}/users?user={user}`
+
+(as in `v2`)
+
+##### GET `/v2.1/projects`
+
+(as in `v1` and `v2`)
+
+##### POST `/v2.1/projects`
+
+(as in `v1` and `v2`)
+
+### Tasks
+
+##### POST `/v2.1/tasks/{id}/assignedUser`
+
+(as in `v2`)
+
+##### DELETE `/v2.1/tasks/{id}/assignedUser`
+
+(as in `v2`)
+
+##### POST `/v2.1/tasks/{id}/processPoints?process_points={points}`
+
+(as in `v2`)
+
+##### POST `/v2.1/tasks`
+(as in `v1` and `v2`)
+
 # v2
 
 Used by application releases:

@@ -23,7 +23,6 @@ export class ProjectComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(JSON.stringify(this.route.snapshot.data));
     this.thisProject = this.route.snapshot.data.project;
     this.tasks = this.route.snapshot.data.tasks;
     this.taskService.selectTask(this.tasks[0]);

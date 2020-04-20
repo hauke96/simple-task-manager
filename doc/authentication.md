@@ -42,11 +42,8 @@ When the authentication process with the OSM-server is done (see above), a new t
 1. Get the encryption key (see above)
 2. Build the *base string* of the secret:`<userName><axpirationTime>`<br>
 The `<userName>` is just the user name as string and the `<expirationTime>` is the expiration time as UTC millis encoded as string. Example string: `john-doe12345678`
-3. Get the 32 bytes large SHA-256 hash of this *base string* (lets just call this "hash")
-4. Prepare a new AES encryption (in go you need to create a new cipher object)
-5. Encrypt the "hash" and receive the 32 encrypted bytes back (luckily one SHA-256 hash value is exactly one AES block, so we exactly receive 32 bytes back from the AES cipher)
-6. To get some independence from the chosen key used for the encryption, we create the SHA-256 hash of the cipher text as well (lets call is "raw token")
-7. The "raw token" is then encoded as Base64 to store it easily. This final string is then the string we all above called "secret".
+3. Create the `HMAC-SHA256` value of this base string. This is a keyed hash value, so it always has a certain length but uses a secret key to be calculated.
+4. The "raw token" is then encoded as Base64 to store it easily. This final string is then the string we all above called "secret".
 
 The according function to this is `auth.go:createSecret()`.
 
@@ -80,48 +77,6 @@ The function `main.go:authenticatedHandler()` ensures that every request has to 
 
 This also means:
 The handler for the OAuth login and callback are no authenticated handler, they do -- of course -- not need a token.
-
-### Cryptography lesson 1: Canonical verification
-
-The actual verification takes place in the `auth.go:VerifyRequest()` function.
-There the server performs a *canonical verification*:
-
-**Definition:**<br>
-To verify a given secret `S`, we reconstruct this secret and call is `S'`.
-Then we simply check whether `S == S'` is true.
-If so, then we know that the token hasn't changes (neither the secret, nor the payload data) and the verification succeeded, otherwise the given secret `S` is not valid.<br>
-
-#### Why is this secure?
-**Basically:**<br>
-Only the STM Server knows the key for the AES cipher. So only the server is able to create valid tokens, noby else is able to do this.<br>
-
-**Bit more details:**<br>
-The security is heavily based on the assumption that the cryptographic primitives (in this case the hash function SHA-256 and the AES cipher) are hard to break.
-This means: Nobody should (easily<sup>(*)</sup>) be able to change e.g. the expiration date of the token and get the same secret as before.
-
-If an attacker would easily be able to do this, then the SHA-256 hash and AES cipher are broken.
-The attacker was then able to analyse the SHA-256 and AES algorithms in order to find a collision in the tokens (two different input values but same token secret).
-The AES encryption (one of the best encryptions we have) and the SHA-256 algorithm (also one of the best we have) could be decrypted/deciphered.
-
-So again: When an attacker succeeds, then the SHA-256 and AES algorithms are broken and the world has a severe problem.
-
-<sup>(*)</sup> in polynomial many calculation steps
-
-#### Are there security vulnerabilities?
-
-At the time of this writing I don't know of any vulnerabilities.
-Neither in my code nor in the code of the golang crypto package (used to SHA-256 and AES).
-
-As always: There are probably vulnerabilities not found yet.
-However this applies to every piece of code that exists.
-
-#### Why do we use a cipher and not just a hash value?
-A simple hash value just prevents the change of a token: If i change the token, then the hash value will be different.
-However, an attacker could easily create an own token, because the SHA-256 hash (as nearly all used hash function) is an un-keyed hash function.
-There's no key/secret passed to that function.
-
-Because we don't want an attacker to be able to create valid tokens (this would be the worst-case scenario), we additionally use the AES cipher with a secret key.
-This prevents evil people from creating own valid tokens (because they don't have the secret).
  
 ### Verification process
 
@@ -134,3 +89,47 @@ The verification process:
 5. Check if the token is not expired yet
 
 Only if everything above worked and resulted in no errors, the token is valid and the request is processed.
+
+## Token security
+
+### Cryptography lesson 1: Canonical verification
+
+The actual verification takes place in the `auth.go:VerifyRequest()` function.
+There the server performs a *canonical verification*:
+
+**Definition:**<br>
+To verify a given secret `S`, we reconstruct this secret and call is `S'`.
+Then we simply check whether `S == S'` is true.
+If so, then we know that the token hasn't changes (neither the secret, nor the payload data) and the verification succeeded, otherwise the given secret `S` is not valid.<br>
+
+#### What is HMAC-SHA256?
+
+SHA256 is a very good hashing algorithm (part of the often recommended SHA-2 algorithm family) and is used in the HMAC algorithm.
+
+The HMAC algorithm creates a MAC (message authentication code) using a hashing algorithm (SHA-256 in this case) and a secret key.
+It creates a bit-string to check a) the integrity of a message and b) the authenticity.
+If such check succeeds, we know that the message (in our case the token), hasn't changed (e.g. by an attacker) and was issued by this server (and not by anybody else).
+
+#### Why is this secure?
+**Basically:**<br>
+Only the STM Server knows the key for the HMAC-SHA256 cipher. So only the server is able to create valid tokens, noby else is able to do this.<br>
+
+**Bit more details:**<br>
+The security is heavily based on the assumption that the cryptographic primitives (in this case the hash function SHA-256 used in the HMAC algorithm and the HMAC algorithm itself) are hard to break.
+This means: Nobody should (easily<sup>(*)</sup>) be able to change e.g. the expiration date of the token and get the same secret as before.
+
+If an attacker would easily be able to do this, then SHA-256 and HMAC are broken.
+The attacker was then able to analyse the SHA-256 and HMAC algorithms in order to find a collision in the tokens (two different input values but same token secret).
+The HMAC algorithm (one of the best MAC algorithms we have) and the SHA-256 algorithm (also one of the best we have) could be deciphered.
+
+So again: When an attacker succeeds, then the SHA-256 and AES algorithms are broken and the world has a severe problem.
+
+<sup>(*)</sup> in polynomial many calculation steps
+
+#### Are there security vulnerabilities?
+
+At the time of this writing I don't know of any strong vulnerabilities or even exploits.
+Neither in my code nor in the code of the golang crypto package (used to SHA-256 and HMAC).
+
+**But as always:** There are probably vulnerabilities not found yet.
+However this applies to every piece of code that exists.

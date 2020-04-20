@@ -5,9 +5,9 @@ import (
 	"github.com/hauke96/sigolo"
 	"testing"
 
-	"../config"
-	"../task"
-	"../util"
+	"github.com/hauke96/simple-task-manager/server/config"
+	"github.com/hauke96/simple-task-manager/server/task"
+	"github.com/hauke96/simple-task-manager/server/util"
 
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 )
@@ -416,6 +416,97 @@ func testRemoveUser(t *testing.T) {
 	}
 }
 
+func TestRemoveNonOwnerUser_pg(t *testing.T) {
+	if !*useDatabase {
+		t.SkipNow()
+		return
+	}
+
+	preparePg()
+	testRemoveNonOwnerUser(t)
+}
+
+func TestRemoveNonOwnerUser_cache(t *testing.T) {
+	prepareCache()
+	testRemoveNonOwnerUser(t)
+}
+
+func testRemoveNonOwnerUser(t *testing.T) {
+	userToRemove := "Carl"
+
+	// Carl is not owner and removes himself, which is ok
+	p, err := RemoveUser("2", "Carl", userToRemove)
+	if err != nil {
+		t.Error("This should work: %w", err)
+		t.Fail()
+		return
+	}
+
+	containsUser := false
+	for _, u := range p.Users {
+		if u == userToRemove {
+			containsUser = true
+			break
+		}
+	}
+	if containsUser {
+		t.Error("Project should not contain user anymore")
+		t.Fail()
+		return
+	}
+}
+
+func TestRemoveArbitraryUserNotAllowed_pg(t *testing.T) {
+	if !*useDatabase {
+		t.SkipNow()
+		return
+	}
+
+	preparePg()
+	testRemoveArbitraryUserNotAllowed(t)
+}
+
+func TestRemoveArbitraryUserNotAllowed_cache(t *testing.T) {
+	prepareCache()
+	testRemoveArbitraryUserNotAllowed(t)
+}
+
+func testRemoveArbitraryUserNotAllowed(t *testing.T) {
+	userToRemove := "Anna"
+
+	// Michael is not member of the project and should not be allowed to remove anyone
+	p, err := RemoveUser("2", "Michael", userToRemove)
+	if err == nil {
+		t.Error("This should not work: %w", err)
+		t.Fail()
+		return
+	}
+
+	p, _ = GetProject("2")
+	containsUser := false
+	for _, u := range p.Users {
+		if u == userToRemove {
+			containsUser = true
+			break
+		}
+	}
+	if !containsUser {
+		t.Error("Project should still contain user")
+		t.Fail()
+		return
+	}
+
+	// Remove not-member user:
+
+	userToRemove = "Nina" // Not a member of the project
+	p, err = RemoveUser("2", "Peter", userToRemove)
+	if err == nil {
+		t.Error("This should not work: %w", err)
+		t.Fail()
+		return
+	}
+}
+
 func TestRemoveUserTwice_pg(t *testing.T) {
 	if !*useDatabase {
 		t.SkipNow()
@@ -434,7 +525,7 @@ func TestRemoveUserTwice_cache(t *testing.T) {
 func testRemoveUserTwice(t *testing.T) {
 	_, err := RemoveUser("2", "Maria", "John")
 	if err != nil {
-		t.Error("This should work: %w", err)
+		t.Error("This should work: ", err)
 		t.Fail()
 		return
 	}

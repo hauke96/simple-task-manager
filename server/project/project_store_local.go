@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"github.com/hauke96/sigolo"
 
-	"../task"
-	"../util"
+	"github.com/hauke96/simple-task-manager/server/task"
+	"github.com/hauke96/simple-task-manager/server/util"
 )
 
 type storeLocal struct {
@@ -27,7 +27,7 @@ func (s *storeLocal) init(db *sql.DB) {
 		Id:      "2",
 		Name:    "Project 2",
 		TaskIDs: []string{"2,3,4"},
-		Users:   []string{"Maria", "John", "Anna"},
+		Users:   []string{"Maria", "John", "Anna", "Carl"},
 		Owner:   "Maria",
 	})
 }

@@ -10,7 +10,20 @@ describe('UserService', () => {
     service = TestBed.inject(UserService);
   });
 
-  it('should be created', () => {
+  it('should set and get correctly', () => {
     expect(service).toBeTruthy();
+
+    service.setUser('test-user');
+
+    expect(service.getUser()).toEqual('test-user');
+  });
+
+  it('should reset correctly', () => {
+    expect(service).toBeTruthy();
+    service.setUser('test-user');
+
+    service.resetUser();
+
+    expect(service.getUser()).toEqual(undefined);
   });
 });

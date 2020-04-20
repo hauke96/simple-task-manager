@@ -6,9 +6,9 @@ import (
 	"strconv"
 	"strings"
 
-	"../auth"
-	"../config"
-	"../util"
+	"github.com/hauke96/simple-task-manager/server/auth"
+	"github.com/hauke96/simple-task-manager/server/config"
+	"github.com/hauke96/simple-task-manager/server/util"
 
 	"github.com/gorilla/mux"
 	"github.com/hauke96/sigolo"
@@ -28,16 +28,22 @@ func Init() error {
 	printRoutes(router)
 
 	// API v1
-	routerV1, version := Init_v1(router)
+	router_v1, version := Init_v1(router)
 	supportedApiVersions = append(supportedApiVersions, version)
 	sigolo.Info("Registered routes for API %s:", supportedApiVersions)
-	printRoutes(routerV1)
+	printRoutes(router_v1)
 
 	// API v2
-	routerV2, version := Init_v2(router)
+	router_v2, version := Init_v2(router)
 	supportedApiVersions = append(supportedApiVersions, version)
 	sigolo.Info("Registered routes for API %s:", supportedApiVersions)
-	printRoutes(routerV2)
+	printRoutes(router_v2)
+
+	// API v2.1
+	router_v2_1, version := Init_v2_1(router)
+	supportedApiVersions = append(supportedApiVersions, version)
+	sigolo.Info("Registered routes for API %s:", supportedApiVersions)
+	printRoutes(router_v2_1)
 
 	router.Methods(http.MethodOptions).HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")

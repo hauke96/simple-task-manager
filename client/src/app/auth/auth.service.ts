@@ -2,16 +2,16 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { UserService } from '../user/user.service';
 import { Router } from '@angular/router';
+import { ErrorService } from '../common/error.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private localStorageTimer;
-
   constructor(
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private errorService: ErrorService
   ) {
     // if already logged in, then get the user name and store it locally in the user service
     if (this.isAuthenticated()) {
@@ -29,6 +29,7 @@ export class AuthService {
       this.userService.setUser(token.user);
     } catch (e) {
       console.error(e);
+      this.errorService.addError('Unable to get user name from token');
       this.logout();
     }
   }
@@ -53,7 +54,7 @@ export class AuthService {
 
     const landingUrl = document.location.protocol + '//' + document.location.hostname + ':' + document.location.port + '/oauth-landing';
     console.log(environment.url_auth + '?+?t=' + new Date().getTime() + '&redirect=' + landingUrl);
-    const popup = window.open(environment.url_auth + '?+?t=' + new Date().getTime() + '&redirect=' + landingUrl, 'oauth_window', settings);
+    window.open(environment.url_auth + '?+?t=' + new Date().getTime() + '&redirect=' + landingUrl, 'oauth_window', settings);
 
     const localStorageTimer = setInterval(() => this.waitForLocalStorageToken(localStorageTimer, callback), 250);
   }

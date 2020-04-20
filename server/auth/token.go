@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"crypto/aes"
+	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
@@ -18,11 +18,11 @@ type Token struct {
 	Secret     string `json:"secret"`
 }
 var(
-	key     [32]byte
+	key []byte
 )
 
 func tokenInit() {
-	key = sha256.Sum256(getRandomBytes(265))
+	key = getRandomBytes(265)
 }
 
 func createTokenString(err error, userName string, validUntil int64) (string, bool) {
@@ -53,19 +53,11 @@ func createTokenString(err error, userName string, validUntil int64) (string, bo
 // secret string, hash it (so disguise the length of this secret) and encrypt it.
 // To have equal length secrets, hash it again.
 func createSecret(user string, validTime int64) (string, error) {
-	secretBaseString := fmt.Sprintf("%s%d", user, validTime)
-	secretHashedBytes := sha256.Sum256([]byte(secretBaseString))
+	secretBaseString := fmt.Sprintf("%s\n%d\n", user, validTime)
 
-	cipher, err := aes.NewCipher(key[:])
-	if err != nil {
-		sigolo.Error(err.Error())
-		return "", err
-	}
-
-	secretEncryptedBytes := make([]byte, 32)
-	cipher.Encrypt(secretEncryptedBytes, secretHashedBytes[:])
-
-	secretEncryptedHashedBytes := sha256.Sum256(secretEncryptedBytes)
+	hash := hmac.New(sha256.New, key)
+	hash.Write([]byte(secretBaseString))
+	secretEncryptedHashedBytes := hash.Sum(nil)
 
 	return base64.StdEncoding.EncodeToString(secretEncryptedHashedBytes[:]), nil
 }

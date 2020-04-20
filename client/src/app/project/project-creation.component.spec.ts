@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProjectCreationComponent } from './project-creation.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { FormsModule } from '@angular/forms';
 
 describe('ProjectCreationComponent', () => {
   let component: ProjectCreationComponent;
@@ -13,7 +14,8 @@ describe('ProjectCreationComponent', () => {
       declarations: [ProjectCreationComponent],
       imports: [
         HttpClientTestingModule,
-        RouterTestingModule.withRoutes([])
+        RouterTestingModule.withRoutes([]),
+        FormsModule
       ]
     })
       .compileComponents();

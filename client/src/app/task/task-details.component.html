@@ -7,13 +7,13 @@
 	</div>
 </div>
 <div class="process-point-container">
-	<div *ngIf="task?.assignedUser === currentUser; else currentUserElse">
+	<form *ngIf="task?.assignedUser === currentUser; else currentUserElse" #processPointsForm="ngForm">
 		<span class="points-label">Points:</span>
-		<input [(ngModel)]="newProcessPoints">
+		<input [(ngModel)]="newProcessPoints" type="number" required name="processPointsField">
 		/
 		{{task?.maxProcessPoints}}
-		<button class="save-button" (click)="onSaveButtonClick()">Save</button>
-	</div>
+		<button class="save-button" (click)="onSaveButtonClick()" [disabled]="!processPointsForm.form.valid">Save</button>
+	</form>
 	<ng-template #currentUserElse>
 		<span class="points-label">Points:</span>
 		{{task?.processPoints}}

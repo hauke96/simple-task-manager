@@ -78,7 +78,8 @@ a:hover {
 
 // Use the SVG as down-arrow instead of the default
 select {
-	min-width: 100px;
+	height: 29px; // Actually want  17px but have to add 12px because of custom background (probably)
+	width: 162px; // Actually want 150px but have to add 12px because of custom background (probably)
 	padding: 5px;
 	background-color: white;
 	border: 1px solid $color-light;
@@ -133,31 +134,16 @@ li {
 	margin-bottom: $space-small;
 }
 
-.toolbar {
-	left: 0px;
-	padding-left: $space-large;
-	padding-right: $space-large;
-	padding-top: $space-base;
-	padding-bottom: $space-base;
-	background-color: $color-mid;
-	height: $space-huge;
-	display: flex;
-	align-items: center;
-}
-
-.toolbar {
-	justify-content: space-between;
-}
-
-.toolbar > p {
-	color: $light-gray;
-}
-
 input {
 	border: 1px solid $color-light;
 	padding: $space-small;
+	width: 150px;
 }
 
 input:focus {
 	border: 1px solid $color-mid;
+}
+
+input.ng-invalid:not(form)  {
+	border: 1px solid $color-warn;
 }

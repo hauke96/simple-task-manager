@@ -7,7 +7,7 @@ import (
 	"github.com/hauke96/sigolo"
 	"strings"
 
-	"../config"
+	"github.com/hauke96/simple-task-manager/server/config"
 )
 
 type Task struct {

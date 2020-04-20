@@ -14,6 +14,7 @@ import { polygon as turfPolygon, Units } from '@turf/helpers';
 import squareGrid from '@turf/square-grid';
 import hexGrid from '@turf/hex-grid';
 import triangleGrid from '@turf/triangle-grid';
+import { ErrorService } from '../common/error.service';
 
 @Component({
   selector: 'app-project-creation',
@@ -24,7 +25,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   public newProjectName: string;
   public newMaxProcessPoints: number;
   public gridCellSize: number;
-  public gridCellShape;
+  public gridCellShape: string;
 
   private map: Map;
   private vectorSource: VectorSource;
@@ -32,11 +33,16 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
 
   constructor(
     private projectService: ProjectService,
+    private errorService: ErrorService,
     private router: Router
   ) {
   }
 
   ngOnInit(): void {
+    // Choose some default values
+    this.newMaxProcessPoints = 100;
+    this.gridCellShape = 'squareGrid';
+    this.gridCellSize = 1000;
   }
 
   ngAfterViewInit(): void {
@@ -94,6 +100,10 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     this.map.addInteraction(draw);
   }
 
+  public get hasTasks(): boolean {
+    return !!this.lastDrawnPolygon;
+  }
+
   public onDivideButtonClicked() {
     const polygon = this.lastDrawnPolygon.getGeometry() as Polygon;
     const extent = polygon.transform('EPSG:3857', 'EPSG:4326').getExtent();
@@ -146,6 +156,8 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     this.projectService.createNewProject(this.newProjectName, this.newMaxProcessPoints, coordinates)
       .subscribe(project => {
         this.router.navigate(['/manager']);
+      }, e => {
+        this.errorService.addError('Could not create project');
       });
   }
 }
