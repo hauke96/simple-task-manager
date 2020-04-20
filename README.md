@@ -57,7 +57,7 @@ Currently there are no guidelines. Feel free to create issues or a pull request.
 
 * [ ] Better shape handling when creating a project (e.g. delete or move drawn shapes)
 * [ ] Confirm invitation
-* [ ] Remove user from project
+* [x] Remove user from project
 * [ ] Add tasks to running project
 * [ ] Leave comments on a task
 * [ ] WebSocket connections for live updates
@@ -67,6 +67,6 @@ Currently there are no guidelines. Feel free to create issues or a pull request.
 * [ ] Load regions
   * [ ] From `.osm` and/or `.gpx` file
   * [ ] From overpass-query / -result
-* [ ] Internal development
-  * [ ] Use go modules? (may or may not be useful)
+* [x] Internal development
+  * [x] Use go modules? (may or may not be useful)
   * [x] Create Docker container for client and server
