@@ -32,8 +32,8 @@ export class UserListComponent implements OnInit {
     this.projectService.removeUser(this.project.id, user)
       .subscribe(() => {
       }, err => {
+        console.error(err);
         this.errorService.addError('Could not remove user');
-        throw err;
       });
   }
 }
