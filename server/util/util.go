@@ -1,7 +1,6 @@
 package util
 
 import (
-	"errors"
 	"fmt"
 	"github.com/hauke96/sigolo"
 	"net/http"
@@ -26,8 +25,7 @@ func GetId() string {
 func GetParam(param string, r *http.Request) (string, error) {
 	value := r.FormValue(param)
 	if strings.TrimSpace(value) == "" {
-		errMsg := fmt.Sprintf("Parameter '%s' not specified", param)
-		return "", errors.New(errMsg)
+		return "", fmt.Errorf("parameter '%s' not specified", param)
 	}
 
 	return value, nil

@@ -35,8 +35,13 @@ func Init_v2_1(router *mux.Router) (*mux.Router, string) {
 
 func getProject_v2_1(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	vars := mux.Vars(r)
+	projectId, ok := vars["id"]
+	if !ok {
+		util.ResponseBadRequest(w, "query parameter 'id' not set")
+		return
+	}
 
-	tasks, err := project.GetProject(vars["id"])
+	tasks, err := project.GetProject(projectId)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -48,8 +53,19 @@ func getProject_v2_1(w http.ResponseWriter, r *http.Request, token *auth.Token) 
 
 func removeUser_v2_1(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	vars := mux.Vars(r)
+	projectId, ok := vars["id"]
+	if !ok {
+		util.ResponseBadRequest(w, "query parameter 'id' not set")
+		return
+	}
 
-	p, err := project.RemoveUser(vars["id"], token.User, vars["user"])
+	user, ok := vars["user"]
+	if !ok {
+		util.ResponseBadRequest(w, "query parameter 'user' not set")
+		return
+	}
+
+	p, err := project.RemoveUser(projectId, token.User, user)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return

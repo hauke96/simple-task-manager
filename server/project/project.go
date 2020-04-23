@@ -2,9 +2,9 @@ package project
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 	"github.com/hauke96/sigolo"
+	"github.com/pkg/errors"
 
 	"github.com/hauke96/simple-task-manager/server/config"
 	"github.com/hauke96/simple-task-manager/server/task"
@@ -67,7 +67,7 @@ func AddUser(user, id, potentialOwner string) (*Project, error) {
 
 	// Only the owner is allowed to invite
 	if p.Owner != potentialOwner {
-		return nil, fmt.Errorf("User '%s' is not allowed to add another user", potentialOwner)
+		return nil, fmt.Errorf("user '%s' is not allowed to add another user", potentialOwner)
 	}
 
 	// Check if user is already in project. If so, just do nothing and return
@@ -83,12 +83,12 @@ func AddUser(user, id, potentialOwner string) (*Project, error) {
 func LeaveProject(id string, user string) (*Project, error) {
 	p, err := projectStore.getProject(id)
 	if err != nil {
-		return nil, fmt.Errorf("could not get project: %w", err)
+		return nil, errors.Wrap(err, "could not get project")
 	}
 
 	// The owner can only delete a project but not leave it
 	if p.Owner == user {
-		return nil, fmt.Errorf("The owner '%s' is not allowed to leave the project '%s'", user, p.Id)
+		return nil, fmt.Errorf("the owner '%s' is not allowed to leave the project '%s'", user, p.Id)
 	}
 
 	// Check if user is exists in project. If not, throw error
@@ -102,7 +102,7 @@ func LeaveProject(id string, user string) (*Project, error) {
 func RemoveUser(id, requestingUser, userToRemove string) (*Project, error) {
 	p, err := projectStore.getProject(id)
 	if err != nil {
-		return nil, fmt.Errorf("could not get project: %w", err)
+		return nil, errors.Wrap(err, "could not get project")
 	}
 
 	// When a user tries to remove a different user, only the owner is allowed to do that
@@ -133,7 +133,7 @@ func VerifyOwnership(user string, taskIds []string) (bool, error) {
 	// Only look at projects the user is part of. We then need less checks below
 	userProjects, err := GetProjects(user)
 	if err != nil {
-		return false, err
+		return false, errors.Wrap(err, "could not get projects to verify ownership")
 	}
 
 	for _, taskId := range taskIds {
@@ -167,7 +167,7 @@ func VerifyOwnership(user string, taskIds []string) (bool, error) {
 func DeleteProject(id, potentialOwner string) error {
 	p, err := projectStore.getProject(id)
 	if err != nil {
-		return fmt.Errorf("could not get project: %w", err)
+		return errors.Wrap(err, "could not get project")
 	}
 
 	// Only the owner can delete a project
@@ -176,8 +176,8 @@ func DeleteProject(id, potentialOwner string) error {
 	}
 
 	err = projectStore.delete(id)
-	if err != nil{
-		return fmt.Errorf("could not remove project: %w", err)
+	if err != nil {
+		return errors.Wrap(err, "could not remove project")
 	}
 
 	return nil
@@ -186,7 +186,7 @@ func DeleteProject(id, potentialOwner string) error {
 func GetTasks(id string, user string) ([]*task.Task, error) {
 	p, err := projectStore.getProject(id)
 	if err != nil {
-		return nil, fmt.Errorf("could not get project: %w", err)
+		return nil, errors.Wrap(err, "could not get project")
 	}
 
 	// Only the owner can delete a project
@@ -196,7 +196,6 @@ func GetTasks(id string, user string) ([]*task.Task, error) {
 
 	return projectStore.getTasks(id)
 }
-
 
 func isUserInProject(p *Project, user string) bool {
 	userIsInProject := false

@@ -34,8 +34,13 @@ func Init_v2(router *mux.Router) (*mux.Router, string) {
 
 func deleteProjects_v2(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	vars := mux.Vars(r)
+	projectId, ok := vars["id"]
+	if !ok {
+		util.ResponseBadRequest(w, "query parameter 'id' not set")
+		return
+	}
 
-	err := project.DeleteProject(vars["id"], token.User)
+	err := project.DeleteProject(projectId, token.User)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -44,8 +49,13 @@ func deleteProjects_v2(w http.ResponseWriter, r *http.Request, token *auth.Token
 
 func getProjectTasks_v2(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	vars := mux.Vars(r)
+	projectId, ok := vars["id"]
+	if !ok {
+		util.ResponseBadRequest(w, "query parameter 'id' not set")
+		return
+	}
 
-	tasks, err := project.GetTasks(vars["id"], token.User)
+	tasks, err := project.GetTasks(projectId, token.User)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -57,8 +67,13 @@ func getProjectTasks_v2(w http.ResponseWriter, r *http.Request, token *auth.Toke
 
 func leaveProject_v2(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	vars := mux.Vars(r)
+	projectId, ok := vars["id"]
+	if !ok {
+		util.ResponseBadRequest(w, "query parameter 'id' not set")
+		return
+	}
 
-	_, err := project.LeaveProject(vars["id"], token.User)
+	_, err := project.LeaveProject(projectId, token.User)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -73,7 +88,11 @@ func addUserToProject_v2(w http.ResponseWriter, r *http.Request, token *auth.Tok
 	}
 
 	vars := mux.Vars(r)
-	projectId := vars["id"]
+	projectId, ok := vars["id"]
+	if !ok {
+		util.ResponseBadRequest(w, "query parameter 'id' not set")
+		return
+	}
 
 	updatedProject, err := project.AddUser(userName, projectId, token.User)
 	if err != nil {
@@ -87,13 +106,16 @@ func addUserToProject_v2(w http.ResponseWriter, r *http.Request, token *auth.Tok
 
 func assignUser_v2(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	vars := mux.Vars(r)
-	taskId := vars["id"]
+	taskId, ok := vars["id"]
+	if !ok {
+		util.ResponseBadRequest(w, "query parameter 'id' not set")
+		return
+	}
 
 	user := token.User
 
 	task, err := task.AssignUser(taskId, user)
 	if err != nil {
-		sigolo.Error(err.Error())
 		util.ResponseInternalError(w, err.Error())
 		return
 	}
@@ -106,13 +128,16 @@ func assignUser_v2(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 
 func unassignUser_v2(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	vars := mux.Vars(r)
-	taskId := vars["id"]
+	taskId, ok := vars["id"]
+	if !ok {
+		util.ResponseBadRequest(w, "query parameter 'id' not set")
+		return
+	}
 
 	user := token.User
 
 	task, err := task.UnassignUser(taskId, user)
 	if err != nil {
-		sigolo.Error(err.Error())
 		util.ResponseInternalError(w, err.Error())
 		return
 	}
@@ -125,18 +150,20 @@ func unassignUser_v2(w http.ResponseWriter, r *http.Request, token *auth.Token) 
 
 func setProcessPoints_v2(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	vars := mux.Vars(r)
-	taskId := vars["id"]
+	taskId, ok := vars["id"]
+	if !ok {
+		util.ResponseBadRequest(w, "query parameter 'id' not set")
+		return
+	}
 
 	processPoints, err := util.GetIntParam("process_points", w, r)
 	if err != nil {
-		sigolo.Error(err.Error())
 		util.ResponseBadRequest(w, err.Error())
 		return
 	}
 
 	task, err := task.SetProcessPoints(taskId, processPoints, token.User)
 	if err != nil {
-		sigolo.Error(err.Error())
 		util.ResponseInternalError(w, err.Error())
 		return
 	}

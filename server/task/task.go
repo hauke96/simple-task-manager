@@ -2,9 +2,9 @@ package task
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 	"github.com/hauke96/sigolo"
+	"github.com/pkg/errors"
 	"strings"
 
 	"github.com/hauke96/simple-task-manager/server/config"
@@ -61,7 +61,7 @@ func AddTasks(newTasks []*Task) ([]*Task, error) {
 func AssignUser(id, user string) (*Task, error) {
 	task, err := store.getTask(id)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "could not get task to assign user")
 	}
 
 	// Task has already an assigned user
@@ -75,13 +75,14 @@ func AssignUser(id, user string) (*Task, error) {
 func UnassignUser(id, user string) (*Task, error) {
 	task, err := store.getTask(id)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "could not get task to unassign user")
 	}
 
 	assignedUser := strings.TrimSpace(task.AssignedUser)
 	if assignedUser != user {
 		err = errors.New("the assigned user and the user to unassign differ")
 		task = nil
+		// TODO this might be a bug, check and test this
 	}
 
 	return store.unassignUser(id)
@@ -90,7 +91,7 @@ func UnassignUser(id, user string) (*Task, error) {
 func SetProcessPoints(id string, newPoints int, user string) (*Task, error) {
 	task, err := store.getTask(id)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "could not get task to set process points")
 	}
 
 	if user != task.AssignedUser {

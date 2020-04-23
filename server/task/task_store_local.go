@@ -1,10 +1,9 @@
 package task
 
 import (
-	"github.com/hauke96/simple-task-manager/server/util"
 	"database/sql"
-	"errors"
 	"fmt"
+	"github.com/hauke96/simple-task-manager/server/util"
 )
 
 type storeLocal struct {
@@ -60,7 +59,7 @@ func (s *storeLocal) getTask(id string) (*Task, error) {
 		}
 	}
 
-	return nil, errors.New(fmt.Sprintf("Task with id '%s' not found", id))
+	return nil, fmt.Errorf("task with id '%s' not found", id)
 }
 
 func (s *storeLocal) addTasks(newTasks []*Task) ([]*Task, error) {

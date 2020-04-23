@@ -62,7 +62,7 @@ func (s *storeLocal) getProject(id string) (*Project, error) {
 		}
 	}
 
-	return nil, errors.New(fmt.Sprintf("Project with ID '%s' not found", id))
+	return nil, fmt.Errorf("project with ID '%s' not found", id)
 }
 
 func (s *storeLocal) addUser(user, id, potentialOwner string) (*Project, error) {

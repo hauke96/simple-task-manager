@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"github.com/pkg/errors"
 	"net/http"
 	"strconv"
 	"strings"
@@ -63,12 +64,12 @@ func Init() error {
 	}
 
 	if err != nil {
-		return err
+		return errors.Wrap(err, "Could not start listening")
 	}
 
 	sigolo.Info("Start serving ...")
 
-	return err
+	return nil
 }
 
 func getInfo(w http.ResponseWriter, r *http.Request) {

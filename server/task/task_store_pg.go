@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/hauke96/sigolo"
+	"github.com/pkg/errors"
 	"strconv"
 	"strings"
 )
@@ -34,7 +35,7 @@ func (s *storePg) getTasks(taskIds []string) ([]*Task, error) {
 
 	rows, err := s.db.Query(query)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "error executing query")
 	}
 	defer rows.Close()
 
@@ -43,12 +44,12 @@ func (s *storePg) getTasks(taskIds []string) ([]*Task, error) {
 		var t taskRow
 		err = rows.Scan(&t.id, &t.processPoints, &t.maxProcessPoints, &t.geometry, &t.assignedUser)
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "unable to scan task row")
 		}
 
 		task, err := rowToTask(rows)
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "error converting row to task")
 		}
 
 		tasks = append(tasks, task)
@@ -73,7 +74,7 @@ func (s *storePg) addTasks(newTasks []*Task) ([]*Task, error) {
 	for _, t := range newTasks {
 		id, err := s.addTask(t)
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrapf(err, "error adding task '%s'", t.Id)
 		}
 
 		taskIds = append(taskIds, id)
@@ -85,7 +86,8 @@ func (s *storePg) addTasks(newTasks []*Task) ([]*Task, error) {
 func (s *storePg) addTask(task *Task) (string, error) {
 	geometryBytes, err := json.Marshal(task.Geometry)
 	if err != nil {
-		return "", err
+		sigolo.Error("Cannot parse geometry:\n%s", task.Geometry)
+		return "", errors.Wrapf(err, "unable to marshal geometry of task '%s'", task.Id)
 	}
 
 	query := fmt.Sprintf("INSERT INTO %s(process_points, max_process_points, geometry, assigned_user) VALUES('%d', '%d', '%s', '%s') RETURNING *;",

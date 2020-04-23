@@ -2,9 +2,9 @@ package project
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 	"github.com/hauke96/sigolo"
+	"github.com/pkg/errors"
 	"strconv"
 	"strings"
 
@@ -35,14 +35,14 @@ func (s *storePg) getProjects(user string) ([]*Project, error) {
 
 	rows, err := s.db.Query(query)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "error executing query")
 	}
 
 	projects := make([]*Project, 0)
 	for rows.Next() {
 		project, err := rowToProject(rows)
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "error converting row into project")
 		}
 
 		projects = append(projects, project)
@@ -66,7 +66,7 @@ func (s *storePg) addProject(draft *Project, user string) (*Project, error) {
 func (s *storePg) addUser(userToAdd string, id string, owner string) (*Project, error) {
 	originalProject, err := GetProject(id)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrapf(err, "error getting project with ID '%s'", id)
 	}
 
 	users := strings.Join(originalProject.Users, ",")
@@ -77,7 +77,7 @@ func (s *storePg) addUser(userToAdd string, id string, owner string) (*Project, 
 func (s *storePg) removeUser(id string, userToRemove string) (*Project, error) {
 	originalProject, err := GetProject(id)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrapf(err, "error getting project with ID '%s'", id)
 	}
 
 	remainingUsers := make([]string, 0)
@@ -104,7 +104,7 @@ func execQuery(db *sql.DB, query string) (*Project, error) {
 	sigolo.Debug(query)
 	rows, err := db.Query(query)
 	if err != nil {
-		return nil, fmt.Errorf("could not run query: %w", err)
+		return nil, errors.Wrap(err, "could not run query")
 	}
 	defer rows.Close()
 
@@ -121,7 +121,7 @@ func rowToProject(rows *sql.Rows) (*Project, error) {
 	var p projectRow
 	err := rows.Scan(&p.id, &p.name, &p.taskIds, &p.users, &p.owner)
 	if err != nil {
-		return nil, fmt.Errorf("could not scan rows: %w", err)
+		return nil, errors.Wrap(err, "could not scan rows")
 	}
 
 	result := Project{}
