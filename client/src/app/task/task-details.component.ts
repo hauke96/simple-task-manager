@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { TaskService } from './task.service';
 import { Task } from './task.material';
 import { UserService } from '../user/user.service';
+import { ProjectService } from '../project/project.service';
+import { ErrorService } from '../common/error.service';
 
 @Component({
   selector: 'app-task-details',
@@ -14,7 +16,8 @@ export class TaskDetailsComponent implements OnInit {
 
   constructor(
     private taskService: TaskService,
-    private userService: UserService
+    private userService: UserService,
+    private errorService: ErrorService,
   ) {
   }
 
@@ -40,5 +43,13 @@ export class TaskDetailsComponent implements OnInit {
 
   public onSaveButtonClick() {
     this.taskService.setProcessPoints(this.task.id, this.newProcessPoints);
+  }
+
+  public onOpenJosmButtonClicked() {
+    this.taskService.openInJosm(this.task)
+      .subscribe(() => {},
+        err => {
+          this.errorService.addError('Unable to open JOSM. Is it running?');
+        });
   }
 }

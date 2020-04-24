@@ -1,6 +1,6 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { flatMap, tap } from 'rxjs/operators';
+import { flatMap, map, tap } from 'rxjs/operators';
 import { Project } from './project.material';
 import { Task } from './../task/task.material';
 import { TaskService } from './../task/task.service';
@@ -47,7 +47,9 @@ export class ProjectService {
 
   // Gets the tasks of the given project
   public getTasks(id: string): Observable<Task[]> {
-    return this.http.get<Task[]>(environment.url_projects + '/' + id + '/tasks');
+    return this.http.get<Task[]>(environment.url_projects + '/' + id + '/tasks')
+      .pipe(
+        map(tasks => tasks.map((t: Task) => new Task(t.id, t.processPoints, t.maxProcessPoints, t.geometry, t.assignedUser))));
   }
 
   public removeUser(id: string, user: string): Observable<any> {

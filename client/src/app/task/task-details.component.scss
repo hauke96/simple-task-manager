@@ -19,6 +19,7 @@
 	display: flex;
 	align-items: center;
 	height: 40px; // To stay equally high, regardless of what the content is
+	margin-bottom: $space-large;
 }
 
 .points-label {

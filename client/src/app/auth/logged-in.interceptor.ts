@@ -13,12 +13,17 @@ export class LoggedInInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    if (request.url.startsWith('http://localhost:8111')) {
+      return next.handle(request);
+    }
+
     const token = localStorage.getItem('auth_token');
     request = request.clone({
       setHeaders: {
         Authorization: token
       }
     });
+
     return next.handle(request)
       .pipe(catchError((e: HttpErrorResponse) => {
         console.error(e);

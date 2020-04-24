@@ -1,8 +1,9 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { Task } from './task.material';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
+import { from, Observable } from 'rxjs';
+import { concatMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -54,5 +55,21 @@ export class TaskService {
 
     this.http.delete<Task>(environment.url_task_assignedUser.replace('{id}', id))
       .subscribe(t => this.selectedTaskChanged.emit(t));
+  }
+
+  public openInJosm(task: Task) {
+    const e = task.getExtent();
+
+    // Make sequential requests to these URLs
+    return from([
+      'http://localhost:8111/load_data?new_layer=true&layer_name=task-shape&data=' + encodeURIComponent(task.getGeometryAsOsm()),
+      'http://localhost:8111/load_and_zoom?new_layer=true&left=' + e[0] + '&right=' + e[2] + '&top=' + e[3] + '&bottom=' + e[1]
+    ])
+      .pipe(
+        concatMap(url => {
+          console.log('Call: ' + url);
+          return this.http.get(url, {responseType: 'text'});
+        })
+      );
   }
 }
