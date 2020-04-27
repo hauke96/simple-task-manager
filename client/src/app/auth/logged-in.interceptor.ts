@@ -28,7 +28,8 @@ export class LoggedInInterceptor implements HttpInterceptor {
       .pipe(catchError((e: HttpErrorResponse) => {
         console.error(e);
         if (e.status === 401) {
-          this.errorService.addError('Authorization failed: ' + (e as HttpErrorResponse).message);
+          console.error('Trigger logout: ' + (e as HttpErrorResponse).message);
+          this.errorService.addError('Logout because authorization was not successful');
           this.authService.logout();
         }
         throw e;
