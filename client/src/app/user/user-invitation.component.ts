@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ProjectService } from '../project/project.service';
-import { Project } from '../project/project.material';
 import { ErrorService } from '../common/error.service';
 
 @Component({

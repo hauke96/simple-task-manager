@@ -4,6 +4,7 @@ import { ProjectService } from './project.service';
 import { TaskService } from '../task/task.service';
 import { Project } from './project.material';
 import { Task } from '../task/task.material';
+import { UserService } from '../user/user.service';
 
 @Component({
   selector: 'app-project',
@@ -18,7 +19,8 @@ export class ProjectComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private projectService: ProjectService,
-    private taskService: TaskService
+    private taskService: TaskService,
+    private userService: UserService
   ) {
   }
 
@@ -26,5 +28,9 @@ export class ProjectComponent implements OnInit {
     this.thisProject = this.route.snapshot.data.project;
     this.tasks = this.route.snapshot.data.tasks;
     this.taskService.selectTask(this.tasks[0]);
+  }
+
+  isOwner(): boolean {
+    return this.userService.getUser() === this.thisProject.owner;
   }
 }
