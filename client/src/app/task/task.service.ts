@@ -27,33 +27,6 @@ export class TaskService {
     return this.selectedTask;
   }
 
-  public getExtent(task: Task): Extent {
-    return new Polygon([task.geometry]).getExtent();
-  }
-
-  public getGeometryAsOsm(task: Task): string {
-    let osm = '<osm version="0.6" generator="simple-task-manager">';
-
-    for (let i = 0; i < task.geometry.length; i++) {
-      const lat = task.geometry[i][1];
-      const lon = task.geometry[i][0];
-
-      osm += `<node id='-${(i + 1)}' action='modify' visible='true' lat='${lat}' lon='${lon}' />`;
-    }
-
-    osm += `<way id='-${task.geometry.length}' action='modify' visible='true'>`;
-
-    for (let i = 0; i < task.geometry.length; i++) {
-      osm += `<nd ref='-${(i + 1)}' />`;
-    }
-
-    osm += `<nd ref='-1' />`; // close the ring by adding first node again
-
-    osm += '</way></osm>';
-
-    return osm;
-  }
-
   public createNewTasks(geometries: [[number, number]][], maxProcessPoints: number): Observable<Task[]> {
     const tasks = geometries.map(g => new Task('', 0, maxProcessPoints, g));
     return this.http.post<Task[]>(environment.url_tasks, JSON.stringify(tasks));
@@ -100,5 +73,32 @@ export class TaskService {
           return this.http.get(url, {responseType: 'text'});
         })
       );
+  }
+
+  private getExtent(task: Task): Extent {
+    return new Polygon([task.geometry]).getExtent();
+  }
+
+  private getGeometryAsOsm(task: Task): string {
+    let osm = '<osm version="0.6" generator="simple-task-manager">';
+
+    for (let i = 0; i < task.geometry.length; i++) {
+      const lat = task.geometry[i][1];
+      const lon = task.geometry[i][0];
+
+      osm += `<node id='-${(i + 1)}' action='modify' visible='true' lat='${lat}' lon='${lon}' />`;
+    }
+
+    osm += `<way id='-${task.geometry.length}' action='modify' visible='true'>`;
+
+    for (let i = 0; i < task.geometry.length; i++) {
+      osm += `<nd ref='-${(i + 1)}' />`;
+    }
+
+    osm += `<nd ref='-1' />`; // close the ring by adding first node again
+
+    osm += '</way></osm>';
+
+    return osm;
   }
 }
