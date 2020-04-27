@@ -114,4 +114,9 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
         this.errorService.addError('Could not create project');
       });
   }
+
+  onShapesCreated(features: Feature[]) {
+    this.vectorSource.refresh(); // clears the source
+    features.forEach(f => this.vectorSource.addFeature(f));
+  }
 }

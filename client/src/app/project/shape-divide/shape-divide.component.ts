@@ -1,10 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { polygon as turfPolygon, Units } from '@turf/helpers';
 import squareGrid from '@turf/square-grid';
 import hexGrid from '@turf/hex-grid';
 import triangleGrid from '@turf/triangle-grid';
 import { Polygon } from 'ol/geom';
 import { Feature } from 'ol';
+import { Task } from '../../task/task.material';
 
 @Component({
   selector: 'app-shape-divide',
@@ -12,10 +13,11 @@ import { Feature } from 'ol';
   styleUrls: ['./shape-divide.component.scss']
 })
 export class ShapeDivideComponent implements OnInit {
-
   @Input() public gridCellSize: number;
   @Input() public gridCellShape: string;
   @Input() private lastDrawnPolygon: Feature;
+
+  @Output() public shapesCreated: EventEmitter<Feature[]> = new EventEmitter();
 
   constructor() { }
 
@@ -49,10 +51,7 @@ export class ShapeDivideComponent implements OnInit {
         break;
     }
 
-    // TODO move this to event handler of creation component
-    // this.vectorSource.refresh(); // clears the source
-
-    grid.features.forEach(g => {
+    const newFeatures = grid.features.map(g => {
       // Turn geo GeoJSON polygon from turf.js into an openlayers polygon and
       // transform it into the used coordinate system.
       let geometry = new Polygon(g.geometry.coordinates);
@@ -60,13 +59,9 @@ export class ShapeDivideComponent implements OnInit {
 
       // create the map feature and set the task-id to select the task when the
       // polygon has been clicked
-      // TODO collect these
-      const feature = new Feature(geometry);
-
-      // TODO this will happen in the creation component
-      // this.vectorSource.addFeature(feature);
+      return new Feature(geometry);
     });
 
-    // TODO fire event with all new shapes
+    this.shapesCreated.emit(newFeatures);
   }
 }

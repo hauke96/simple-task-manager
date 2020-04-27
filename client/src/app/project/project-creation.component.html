@@ -18,7 +18,7 @@
 			</div>
 		</form>
 
-		<app-shape-divide [gridCellShape]="gridCellShape" [gridCellSize]="gridCellSize" [lastDrawnPolygon]="lastDrawnPolygon"></app-shape-divide>
+		<app-shape-divide [gridCellShape]="gridCellShape" [gridCellSize]="gridCellSize" [lastDrawnPolygon]="lastDrawnPolygon" (shapesCreated)="onShapesCreated($event)"></app-shape-divide>
 	</div>
 	<div class="map-container">
 		<div id="map"></div>
