@@ -15,17 +15,14 @@ import { Task } from '../../task/task.material';
 export class ShapeDivideComponent implements OnInit {
   @Input() public gridCellSize: number;
   @Input() public gridCellShape: string;
-  @Input() private lastDrawnPolygon: Feature;
+  @Input() public lastDrawnPolygon: Feature;
+  @Input() public hasTasks: boolean;
 
   @Output() public shapesCreated: EventEmitter<Feature[]> = new EventEmitter();
 
   constructor() { }
 
   ngOnInit(): void {
-  }
-
-  public get hasTasks(): boolean {
-    return !!this.lastDrawnPolygon;
   }
 
   public onDivideButtonClicked() {

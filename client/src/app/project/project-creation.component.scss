@@ -26,6 +26,10 @@
 .project-properties-container ::ng-deep div {
 	margin-bottom: $space-base
 }
+.project-properties-container ::ng-deep .tab-list,
+.project-properties-container ::ng-deep .tab-list div {
+	margin-bottom: 0px;
+}
 
 .map-container {
 	margin-top: $space-large;

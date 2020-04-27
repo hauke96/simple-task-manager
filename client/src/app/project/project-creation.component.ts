@@ -22,10 +22,10 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   public newMaxProcessPoints: number;
   public gridCellSize: number;
   public gridCellShape: string;
+  public lastDrawnPolygon: Feature;
 
   private map: Map;
   private vectorSource: VectorSource;
-  private lastDrawnPolygon: Feature;
 
   constructor(
     private projectService: ProjectService,
@@ -94,6 +94,10 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       this.lastDrawnPolygon = evt.feature;
     });
     this.map.addInteraction(draw);
+  }
+
+  public get hasTasks(): boolean {
+    return !!this.lastDrawnPolygon;
   }
 
   public onSaveButtonClicked() {

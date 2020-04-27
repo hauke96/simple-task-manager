@@ -1,7 +1,9 @@
 <app-toolbar>
 	<div>
 		<button [routerLink]="['/manager']">&#60; Cancel</button>
-		<button class="save-button" (click)="onSaveButtonClicked()" [disabled]="!creationForm.form.valid || !hasTasks">Save</button>
+		<button class="save-button" (click)="onSaveButtonClicked()" [disabled]="!creationForm.form.valid || !hasTasks">
+			Save
+		</button>
 	</div>
 </app-toolbar>
 <div class="root-container">
@@ -18,7 +20,18 @@
 			</div>
 		</form>
 
-		<app-shape-divide [gridCellShape]="gridCellShape" [gridCellSize]="gridCellSize" [lastDrawnPolygon]="lastDrawnPolygon" (shapesCreated)="onShapesCreated($event)"></app-shape-divide>
+		<!-- Different shape creation methods: Divide, Upload -->
+		<app-tabs [tabs]="['Divide', 'Upload']" #tabs>
+			<div *ngIf="tabs.tabIndex === 0">
+				<div class="tab-container">
+					<app-shape-divide [gridCellShape]="gridCellShape"
+									  [gridCellSize]="gridCellSize"
+									  [lastDrawnPolygon]="lastDrawnPolygon"
+									  [hasTasks]="hasTasks"
+									  (shapesCreated)="onShapesCreated($event)"></app-shape-divide>
+				</div>
+			</div>
+		</app-tabs>
 	</div>
 	<div class="map-container">
 		<div id="map"></div>
