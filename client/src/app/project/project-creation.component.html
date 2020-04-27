@@ -17,25 +17,8 @@
 				<input type="number" [(ngModel)]="newMaxProcessPoints" required name="maxProcessPointsField">
 			</div>
 		</form>
-		<form #divisionForm="ngForm">
-			<h2>Divide:</h2>
-			<div>
-				<span class="input-field-label">Shape size:</span>
-				<input type="number" [(ngModel)]="gridCellSize" [disabled]="!hasTasks" required name="shapeSizeField">
-				meters
-			</div>
-			<div>
-				<span class="input-field-label">Shape:</span>
-				<select [(ngModel)]="gridCellShape" [disabled]="!hasTasks" required name="shapeSelection">
-					<option value="squareGrid">square</option>
-					<option value="hexGrid">hexagon</option>
-					<option value="triangleGrid">triangle</option>
-				</select>
-			</div>
-			<br>
-			<span>This divides the last drawn polygon into the selected shape. Beware, all other shapes will be removed.</span><br><br>
-			<button (click)="onDivideButtonClicked()" [disabled]="!divisionForm.form.valid && !hasTasks">Divide</button>
-		</form>
+
+		<app-shape-divide [gridCellShape]="gridCellShape" [gridCellSize]="gridCellSize" [lastDrawnPolygon]="lastDrawnPolygon"></app-shape-divide>
 	</div>
 	<div class="map-container">
 		<div id="map"></div>

@@ -23,6 +23,7 @@ import { UserInvitationComponent } from './user/user-invitation.component';
 import { ProjectSettingsComponent } from './project/project-settings.component';
 import { NotificationComponent } from './ui/notification.component';
 import { ToolbarComponent } from './ui/toolbar.component';
+import { ShapeDivideComponent } from './project/shape-divide/shape-divide.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { ToolbarComponent } from './ui/toolbar.component';
     UserInvitationComponent,
     ProjectSettingsComponent,
     NotificationComponent,
-    ToolbarComponent
+    ToolbarComponent,
+    ShapeDivideComponent
   ],
   imports: [
     BrowserModule,

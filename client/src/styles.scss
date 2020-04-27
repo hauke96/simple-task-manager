@@ -147,3 +147,8 @@ input:focus {
 input.ng-invalid:not(form)  {
 	border: 1px solid $color-warn;
 }
+
+.input-field-label {
+	display: inline-block;
+	min-width: 180px;
+}
