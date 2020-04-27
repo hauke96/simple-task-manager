@@ -1,7 +1,7 @@
 <app-toolbar>
 	<div class="back-button-container">
 		<button [routerLink]="['/manager']">&#60; Back</button>
-		<p class="project-label">Project: {{thisProject?.name}}</p>
+		<p class="project-label">Project: {{project?.name}}</p>
 	</div>
 </app-toolbar>
 <div class="root-container">
@@ -10,20 +10,20 @@
 			<div *ngIf="tabs.tabIndex === 0">
 				<div class="tab-container">
 					<h1>Tasks</h1>
-					<app-task-list *ngIf="tasks" [projectId]="thisProject?.id" [tasks]="tasks"></app-task-list>
+					<app-task-list *ngIf="tasks" [projectId]="project?.id" [tasks]="tasks"></app-task-list>
 				</div>
 			</div>
 			<div *ngIf="tabs.tabIndex === 1">
 				<div class="tab-container">
 					<h1>Users</h1>
-					<app-user-invitation *ngIf="isOwner()" class="tab-container-item" [projectId]="thisProject?.id"></app-user-invitation>
-					<app-user-list [project]="thisProject"></app-user-list>
+					<app-user-invitation *ngIf="isOwner()" class="tab-container-item" [projectId]="project?.id"></app-user-invitation>
+					<app-user-list [project]="project"></app-user-list>
 				</div>
 			</div>
 			<div *ngIf="tabs.tabIndex === 2">
 				<div class="tab-container">
 					<h1>Settings</h1>
-					<app-project-settings [projectId]="thisProject?.id" [projectOwner]="thisProject.owner"></app-project-settings>
+					<app-project-settings [projectId]="project?.id" [projectOwner]="project.owner"></app-project-settings>
 				</div>
 			</div>
 		</app-tabs>

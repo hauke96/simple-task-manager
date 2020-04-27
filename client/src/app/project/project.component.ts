@@ -12,7 +12,7 @@ import { UserService } from '../user/user.service';
   styleUrls: ['./project.component.scss']
 })
 export class ProjectComponent implements OnInit {
-  public thisProject: Project;
+  public project: Project;
   public tasks: Task[];
 
   constructor(
@@ -25,12 +25,12 @@ export class ProjectComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.thisProject = this.route.snapshot.data.project;
+    this.project = this.route.snapshot.data.project;
     this.tasks = this.route.snapshot.data.tasks;
     this.taskService.selectTask(this.tasks[0]);
   }
 
   isOwner(): boolean {
-    return this.userService.getUser() === this.thisProject.owner;
+    return this.userService.getUser() === this.project.owner;
   }
 }
