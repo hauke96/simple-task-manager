@@ -4,6 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
 import { from, Observable } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
+import { Polygon } from 'ol/geom';
+import { Extent } from 'ol/extent';
 
 @Injectable({
   providedIn: 'root'
@@ -16,11 +18,6 @@ export class TaskService {
   constructor(private http: HttpClient) {
   }
 
-  public createNewTasks(geometries: [[number, number]][], maxProcessPoints: number): Observable<Task[]> {
-    const tasks = geometries.map(g => new Task('', 0, maxProcessPoints, g));
-    return this.http.post<Task[]>(environment.url_tasks, JSON.stringify(tasks));
-  }
-
   public selectTask(task: Task) {
     this.selectedTask = task;
     this.selectedTaskChanged.emit(task);
@@ -28,6 +25,38 @@ export class TaskService {
 
   public getSelectedTask(): Task {
     return this.selectedTask;
+  }
+
+  public getExtent(task: Task): Extent {
+    return new Polygon([task.geometry]).getExtent();
+  }
+
+  public getGeometryAsOsm(task: Task): string {
+    let osm = '<osm version="0.6" generator="simple-task-manager">';
+
+    for (let i = 0; i < task.geometry.length; i++) {
+      const lat = task.geometry[i][1];
+      const lon = task.geometry[i][0];
+
+      osm += `<node id='-${(i + 1)}' action='modify' visible='true' lat='${lat}' lon='${lon}' />`;
+    }
+
+    osm += `<way id='-${task.geometry.length}' action='modify' visible='true'>`;
+
+    for (let i = 0; i < task.geometry.length; i++) {
+      osm += `<nd ref='-${(i + 1)}' />`;
+    }
+
+    osm += `<nd ref='-1' />`; // close the ring by adding first node again
+
+    osm += '</way></osm>';
+
+    return osm;
+  }
+
+  public createNewTasks(geometries: [[number, number]][], maxProcessPoints: number): Observable<Task[]> {
+    const tasks = geometries.map(g => new Task('', 0, maxProcessPoints, g));
+    return this.http.post<Task[]>(environment.url_tasks, JSON.stringify(tasks));
   }
 
   public setProcessPoints(id: string, newProcessPoints: number) {
@@ -58,11 +87,11 @@ export class TaskService {
   }
 
   public openInJosm(task: Task) {
-    const e = task.getExtent();
+    const e = this.getExtent(task);
 
     // Make sequential requests to these URLs
     return from([
-      'http://localhost:8111/load_data?new_layer=true&layer_name=task-shape&data=' + encodeURIComponent(task.getGeometryAsOsm()),
+      'http://localhost:8111/load_data?new_layer=true&layer_name=task-shape&data=' + encodeURIComponent(this.getGeometryAsOsm(task)),
       'http://localhost:8111/load_and_zoom?new_layer=true&left=' + e[0] + '&right=' + e[2] + '&top=' + e[3] + '&bottom=' + e[1]
     ])
       .pipe(

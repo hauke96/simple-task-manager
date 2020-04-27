@@ -47,9 +47,7 @@ export class ProjectService {
 
   // Gets the tasks of the given project
   public getTasks(id: string): Observable<Task[]> {
-    return this.http.get<Task[]>(environment.url_projects + '/' + id + '/tasks')
-      .pipe(
-        map(tasks => tasks.map((t: Task) => new Task(t.id, t.processPoints, t.maxProcessPoints, t.geometry, t.assignedUser))));
+    return this.http.get<Task[]>(environment.url_projects + '/' + id + '/tasks');
   }
 
   public removeUser(id: string, user: string): Observable<any> {
