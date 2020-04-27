@@ -10,11 +10,11 @@
 	<div class="project-properties-container">
 		<form #creationForm="ngForm">
 			<h2>Properties:</h2>
-			<div>
+			<div class="form-entry">
 				<span class="input-field-label">Name:</span>
 				<input [(ngModel)]="newProjectName" required name="nameField">
 			</div>
-			<div>
+			<div class="form-entry">
 				<span class="input-field-label">Max. points per task:</span>
 				<input type="number" [(ngModel)]="newMaxProcessPoints" required name="maxProcessPointsField">
 			</div>
