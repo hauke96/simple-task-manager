@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ErrorService } from '../../common/error.service';
 
 @Component({
   selector: 'app-shape-upload',
@@ -7,7 +8,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ShapeUploadComponent implements OnInit {
 
-  constructor() {
+  constructor(
+    private errorService: ErrorService
+  ) {
   }
 
   ngOnInit(): void {
@@ -22,8 +25,8 @@ export class ShapeUploadComponent implements OnInit {
       console.log(evt.target.result);
     };
     reader.onerror = (evt) => {
-      // TODO use error service
       console.error(evt);
+      this.errorService.addError('Could not upload file \'${evt.target.files[0]}\'');
     };
   }
 }
