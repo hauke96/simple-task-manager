@@ -32,6 +32,11 @@
 									  (shapesCreated)="onShapesCreated($event)"></app-shape-divide>
 				</div>
 			</div>
+			<div *ngIf="tabs.tabIndex === 1">
+				<div class="tab-container">
+					<app-shape-upload></app-shape-upload>
+				</div>
+			</div>
 		</app-tabs>
 	</div>
 	<div class="map-container">

@@ -24,6 +24,7 @@ import { ProjectSettingsComponent } from './project/project-settings.component';
 import { NotificationComponent } from './ui/notification.component';
 import { ToolbarComponent } from './ui/toolbar.component';
 import { ShapeDivideComponent } from './project/shape-divide/shape-divide.component';
+import { ShapeUploadComponent } from './project/shape-upload/shape-upload.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { ShapeDivideComponent } from './project/shape-divide/shape-divide.compon
     ProjectSettingsComponent,
     NotificationComponent,
     ToolbarComponent,
-    ShapeDivideComponent
+    ShapeDivideComponent,
+    ShapeUploadComponent
   ],
   imports: [
     BrowserModule,
