@@ -7,9 +7,23 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ShapeUploadComponent implements OnInit {
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit(): void {
   }
 
+  public onFileSelected(event: any) {
+    const reader = new FileReader();
+    reader.readAsText(event.target.files[0], 'UTF-8');
+
+    reader.onload = (evt) => {
+      // TODO use service to turn file into polygons
+      console.log(evt.target.result);
+    };
+    reader.onerror = (evt) => {
+      // TODO use error service
+      console.error(evt);
+    };
+  }
 }

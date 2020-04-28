@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ShapeDivideComponent } from './shape-divide.component';
+import { FormsModule } from '@angular/forms';
 
 describe('ShapeDivideComponent', () => {
   let component: ShapeDivideComponent;
@@ -8,9 +9,12 @@ describe('ShapeDivideComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ShapeDivideComponent ]
+      imports: [
+        FormsModule
+      ],
+      declarations: [ShapeDivideComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
