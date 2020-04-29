@@ -1,9 +1,9 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ErrorService } from '../../common/error.service';
 import { Feature } from 'ol';
-import { GPX } from 'ol/format';
+import { GeoJSON, GPX } from 'ol/format';
 import GeometryType from 'ol/geom/GeometryType';
-import { LineString, MultiLineString, Polygon } from 'ol/geom';
+import { Geometry, GeometryCollection, LinearRing, LineString, MultiLineString, Polygon } from 'ol/geom';
 
 @Component({
   selector: 'app-shape-upload',
@@ -44,8 +44,10 @@ export class ShapeUploadComponent implements OnInit {
   public fileToFeatures(fileName: any, content: string | ArrayBuffer): Feature[] {
     let features: Feature[];
 
-    if (fileName.endsWith('.gpx')) {
+    if (fileName.toLowerCase().endsWith('.gpx')) {
       features = this.gpxToFeatures(content);
+    } else if (fileName.toLowerCase().endsWith('.geojson')) {
+      features = this.geojsonToFeatures(content);
     } else {
       throw new Error(`Unknown file type of file ${fileName}`);
     }
@@ -53,28 +55,37 @@ export class ShapeUploadComponent implements OnInit {
     return features;
   }
 
-  public gpxToFeatures(result: string | ArrayBuffer): Feature[] {
-    const features: Feature[] = [];
+  public gpxToFeatures(content: string | ArrayBuffer): Feature[] {
     const fmt = new GPX();
 
-    const rawFeatures = fmt.readFeatures(result);
+    // Turn e.g. (multi) line strings into separate polygons
+    return this.expandFeatures(fmt.readFeatures(content));
+  }
 
-    // Turn (multi) line strings into separate polygons
+  private geojsonToFeatures(content: string | ArrayBuffer): Feature[] {
+    const fmt = new GeoJSON();
+
+    // Turn e.g. (multi) line strings into separate polygons
+    return this.expandFeatures(fmt.readFeatures(content));
+  }
+
+  // This takes all kind of geometries and builds polygons out of them. Each multi-geometry (e.g. MultiLineString) is separated and each
+  // sub-geometry in there will results a separate polygon.
+  private expandFeatures(rawFeatures: Feature<Geometry>[]): Feature[] {
+    const features: Feature[] = [];
+
     rawFeatures.forEach(rawFeature => {
       let lineStrings: LineString[];
 
       // A GPX file can contain both, line string and multi line strings
-      const geometryType = rawFeature.getGeometry().getType();
-      if (geometryType === GeometryType.MULTI_LINE_STRING) {
-        const multiLineString = (rawFeature.getGeometry() as MultiLineString);
-        lineStrings = multiLineString.getLineStrings();
-      } else if (geometryType === GeometryType.LINE_STRING) {
-        lineStrings = [(rawFeature.getGeometry() as LineString)];
-      } else if (geometryType === GeometryType.POINT) {
+      lineStrings = this.featureToLineStrings(rawFeature.getGeometry());
+
+      if (!lineStrings || lineStrings.length === 0) {
         return;
-      } else {
-        throw new Error(`Invalid geometry type ${geometryType} in GPX file`);
       }
+
+      // Only line strings with at least 3 points can create a polygon
+      lineStrings = lineStrings.filter(s => s.getCoordinates().length >= 3);
 
       const polygons = lineStrings.map(s => new Polygon([s.getCoordinates()]));
       const actualFeatures = polygons.map(p => new Feature(p));
@@ -82,5 +93,39 @@ export class ShapeUploadComponent implements OnInit {
     });
 
     return features;
+  }
+
+  private featureToLineStrings(geometry: Geometry): LineString[] {
+    switch (geometry.getType()) {
+      case GeometryType.POLYGON:
+        const polygon = (geometry as Polygon);
+        return polygon.getLinearRings().map(r => new LineString(r.getCoordinates()));
+
+      case GeometryType.MULTI_POLYGON:
+        // TODO Decide how to deal with that? Maybe some day we'll use GeoJson as default format than, this wouldn't be a problem
+        return [];
+
+      case GeometryType.GEOMETRY_COLLECTION:
+        const geomCollection = geometry as GeometryCollection;
+        const result: LineString[] = [];
+        geomCollection.getGeometries()
+          .map(g => this.featureToLineStrings(g))
+          .forEach(l => l.forEach(l2 => result.push(l2)));
+        return result;
+
+      case GeometryType.MULTI_LINE_STRING:
+        const multiLineString = (geometry as MultiLineString);
+        return multiLineString.getLineStrings();
+
+      case GeometryType.LINE_STRING:
+        return [(geometry as LineString)];
+
+      case GeometryType.LINEAR_RING:
+        const ring = (geometry as LinearRing);
+        return [new LineString(ring.getCoordinates())];
+
+      default:
+        return [];
+    }
   }
 }
