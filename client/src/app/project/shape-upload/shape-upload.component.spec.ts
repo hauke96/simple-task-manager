@@ -118,8 +118,7 @@ const exampleGeoJson = `
   }]
 }`;
 
-const exampleOsm = `
-<?xml version='1.0' encoding='UTF-8'?>
+const exampleOsm = `<?xml version='1.0' encoding='UTF-8'?>
 <osm version='0.6' generator='JOSM'>
   <node id='-102866' action='modify' visible='true' lat='53.5635399425' lon='9.94572136883' />
   <node id='-102867' action='modify' visible='true' lat='53.56193448431' lon='9.94036008925' />

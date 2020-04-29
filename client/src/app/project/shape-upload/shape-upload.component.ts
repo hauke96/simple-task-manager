@@ -64,16 +64,9 @@ export class ShapeUploadComponent implements OnInit {
     return this.expandFeatures(format.readFeatures(content) as Feature[]);
   }
 
-  private osmToFeatures(content: string | ArrayBuffer): Feature[] {
-    const fmt = new OSMXML();
-
-    // Turn e.g. (multi) line strings into separate polygons
-    return this.expandFeatures(fmt.readFeatures(content));
-  }
-
   // This takes all kind of geometries and builds polygons out of them. Each multi-geometry (e.g. MultiLineString) is separated and each
   // sub-geometry in there will results a separate polygon.
-  private expandFeatures(rawFeatures: Feature<Geometry>[]): Feature[] {
+  private expandFeatures(rawFeatures: Feature[]): Feature[] {
     const features: Feature[] = [];
 
     rawFeatures.forEach(rawFeature => {
