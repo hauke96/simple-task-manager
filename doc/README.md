@@ -1,13 +1,18 @@
-# Authentication
+Here you'll find some documentation about the simple task manager. This is ordered into few categories:
 
-See the "authentication.md" file in this folder.
+### api
+* General information about the API
+* API methods
+* versioning
 
-# Server architecture
+### architecture
+* client and server code architecture
 
-The package name is named after the modeled **domain** (e.g. "project") and then contains **technical** files (e.g. "project_store_pg").
+### authentication
+* technical in-depth description of the authentication and authorization process
+* token creation, handling and validation
 
-## Diagram
-
-The `util` and `config` package are wildly used by multiple packages and are to lowest package in the hierarchy.
-
-![](server-diagram.png)
+### operation
+* enable HTTPS
+* create SSL certificates
+* automatic renewal of SSL certs
