@@ -156,7 +156,7 @@ func setProcessPoints_v2(w http.ResponseWriter, r *http.Request, token *auth.Tok
 		return
 	}
 
-	processPoints, err := util.GetIntParam("process_points", w, r)
+	processPoints, err := util.GetIntParam("process_points", r)
 	if err != nil {
 		util.ResponseBadRequest(w, err.Error())
 		return

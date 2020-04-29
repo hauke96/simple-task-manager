@@ -31,7 +31,7 @@ func GetParam(param string, r *http.Request) (string, error) {
 	return value, nil
 }
 
-func GetIntParam(param string, w http.ResponseWriter, r *http.Request) (int, error) {
+func GetIntParam(param string, r *http.Request) (int, error) {
 	valueString, err := GetParam(param, r)
 	if err != nil {
 		return 0, err
