@@ -6,6 +6,7 @@ import triangleGrid from '@turf/triangle-grid';
 import { Polygon } from 'ol/geom';
 import { Feature } from 'ol';
 import { Task } from '../../task/task.material';
+import { ErrorService } from '../../common/error.service';
 
 @Component({
   selector: 'app-shape-divide',
@@ -20,7 +21,9 @@ export class ShapeDivideComponent implements OnInit {
 
   @Output() public shapesCreated: EventEmitter<Feature[]> = new EventEmitter();
 
-  constructor() { }
+  constructor(
+    private errorService: ErrorService
+  ) { }
 
   ngOnInit(): void {
   }
@@ -46,6 +49,11 @@ export class ShapeDivideComponent implements OnInit {
       case 'triangleGrid':
         grid = triangleGrid(extent, this.gridCellSize, options);
         break;
+      default:
+        const e = `Unknown shape type ${this.gridCellShape}`
+        console.error(e);
+        this.errorService.addError(e);
+        return;
     }
 
     const newFeatures = grid.features.map(g => {
