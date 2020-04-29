@@ -98,8 +98,9 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     this.map.addInteraction(draw);
   }
 
+  // See if the vector layer has some features.
   public get hasTasks(): boolean {
-    return !!this.lastDrawnPolygon;
+    return !!this.vectorSource && this.vectorSource.getFeatures().length !== 0;
   }
 
   public onSaveButtonClicked() {
