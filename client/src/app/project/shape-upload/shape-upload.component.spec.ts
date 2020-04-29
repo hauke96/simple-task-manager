@@ -118,6 +118,71 @@ const exampleGeoJson = `
   }]
 }`;
 
+const exampleOsm = `
+<?xml version='1.0' encoding='UTF-8'?>
+<osm version='0.6' generator='JOSM'>
+  <node id='-102866' action='modify' visible='true' lat='53.5635399425' lon='9.94572136883' />
+  <node id='-102867' action='modify' visible='true' lat='53.56193448431' lon='9.94036008925' />
+  <node id='-102868' action='modify' visible='true' lat='53.55886215974' lon='9.93731127543' />
+  <node id='-102869' action='modify' visible='true' lat='53.55529821937' lon='9.93754290421' />
+  <node id='-102870' action='modify' visible='true' lat='53.5523742059' lon='9.9409814351' />
+  <node id='-102871' action='modify' visible='true' lat='53.55101867765' lon='9.94653515883' />
+  <node id='-102872' action='modify' visible='true' lat='53.55166215855' lon='9.95244080736' />
+  <node id='-102873' action='modify' visible='true' lat='53.55410027059' lon='9.956823379' />
+  <node id='-102874' action='modify' visible='true' lat='53.55755871285' lon='9.95829143824' />
+  <node id='-102875' action='modify' visible='true' lat='53.56093935099' lon='9.95637888662' />
+  <node id='-102876' action='modify' visible='true' lat='53.56316898795' lon='9.95169294579' />
+  <node id='-102878' action='modify' visible='true' lat='53.56141927648' lon='9.96531986265' />
+  <node id='-102879' action='modify' visible='true' lat='53.56151951772' lon='9.95122213743' />
+  <node id='-102880' action='modify' visible='true' lat='53.55392284551' lon='9.95106904001' />
+  <node id='-102881' action='modify' visible='true' lat='53.55382258626' lon='9.96516676523' />
+  <node id='-102882' action='modify' visible='true' lat='53.55369984564' lon='9.97152508096' />
+  <node id='-102883' action='modify' visible='true' lat='53.55776052607' lon='9.97755743114' />
+  <node id='-102884' action='modify' visible='true' lat='53.55377266776' lon='9.97769094485' />
+  <node id='-102913' action='modify' visible='true' lat='53.55767707867' lon='9.97139197508' />
+  <node id='-102937' action='modify' visible='true' lat='53.5537241197' lon='9.97358036893' />
+  <node id='-102938' action='modify' visible='true' lat='53.55374839374' lon='9.97563565689' />
+  <node id='-102939' action='modify' visible='true' lat='53.5578224344' lon='9.98213149482' />
+  <node id='-102940' action='modify' visible='true' lat='53.55779461866' lon='9.9800763428' />
+  <node id='-102941' action='modify' visible='true' lat='53.55961949415' lon='9.9754391644' />
+  <node id='-102942' action='modify' visible='true' lat='53.55960827499' lon='9.97338343961' />
+  <way id='-101907' action='modify' visible='true'>
+    <nd ref='-102866' />
+    <nd ref='-102867' />
+    <nd ref='-102868' />
+    <nd ref='-102869' />
+    <nd ref='-102870' />
+    <nd ref='-102871' />
+    <nd ref='-102872' />
+    <nd ref='-102873' />
+    <nd ref='-102874' />
+    <nd ref='-102875' />
+    <nd ref='-102876' />
+    <nd ref='-102866' />
+  </way>
+  <way id='-101918' action='modify' visible='true'>
+    <nd ref='-102878' />
+    <nd ref='-102879' />
+    <nd ref='-102880' />
+    <nd ref='-102881' />
+    <nd ref='-102878' />
+  </way>
+  <way id='-101922' action='modify' visible='true'>
+    <nd ref='-102882' />
+    <nd ref='-102913' />
+    <nd ref='-102883' />
+    <nd ref='-102884' />
+    <nd ref='-102938' />
+    <nd ref='-102941' />
+    <nd ref='-102939' />
+    <nd ref='-102940' />
+    <nd ref='-102942' />
+    <nd ref='-102937' />
+    <nd ref='-102882' />
+  </way>
+</osm>
+`;
+
 describe('ShapeUploadComponent', () => {
   let component: ShapeUploadComponent;
   let fixture: ComponentFixture<ShapeUploadComponent>;
@@ -148,10 +213,16 @@ describe('ShapeUploadComponent', () => {
     expect(features.length).toEqual(3);
   });
 
-  it('should read GPX file', () => {
+  it('should read GeoJson file', () => {
     const features = component.fileToFeatures('example.geojson', exampleGeoJson);
 
     expect(features.length).toEqual(2);
+  });
+
+  it('should read OSM file', () => {
+    const features = component.fileToFeatures('example.osm', exampleOsm);
+
+    expect(features.length).toEqual(3);
   });
 
   it('should fail on unknown file extension', () => {

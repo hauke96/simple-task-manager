@@ -4,6 +4,9 @@ import { Feature } from 'ol';
 import { GeoJSON, GPX } from 'ol/format';
 import GeometryType from 'ol/geom/GeometryType';
 import { Geometry, GeometryCollection, LinearRing, LineString, MultiLineString, Polygon } from 'ol/geom';
+import OSMXML from 'ol/format/OSMXML';
+import XMLFeature from 'ol/format/XMLFeature';
+import FeatureFormat from 'ol/format/Feature';
 
 @Component({
   selector: 'app-shape-upload',
@@ -45,9 +48,11 @@ export class ShapeUploadComponent implements OnInit {
     let features: Feature[];
 
     if (fileName.toLowerCase().endsWith('.gpx')) {
-      features = this.gpxToFeatures(content);
+      features = this.dataToFeatures(content, new GPX());
     } else if (fileName.toLowerCase().endsWith('.geojson')) {
-      features = this.geojsonToFeatures(content);
+      features = this.dataToFeatures(content, new GeoJSON());
+    } else if (fileName.toLowerCase().endsWith('.osm')) {
+      features = this.dataToFeatures(content, new OSMXML());
     } else {
       throw new Error(`Unknown file type of file ${fileName}`);
     }
@@ -55,15 +60,12 @@ export class ShapeUploadComponent implements OnInit {
     return features;
   }
 
-  public gpxToFeatures(content: string | ArrayBuffer): Feature[] {
-    const fmt = new GPX();
-
-    // Turn e.g. (multi) line strings into separate polygons
-    return this.expandFeatures(fmt.readFeatures(content));
+  public dataToFeatures(content: string | ArrayBuffer, format: FeatureFormat): Feature[]{
+    return this.expandFeatures(format.readFeatures(content) as Feature[]);
   }
 
-  private geojsonToFeatures(content: string | ArrayBuffer): Feature[] {
-    const fmt = new GeoJSON();
+  private osmToFeatures(content: string | ArrayBuffer): Feature[] {
+    const fmt = new OSMXML();
 
     // Turn e.g. (multi) line strings into separate polygons
     return this.expandFeatures(fmt.readFeatures(content));
