@@ -34,7 +34,7 @@
 			</div>
 			<div *ngIf="tabs.tabIndex === 1">
 				<div class="tab-container">
-					<app-shape-upload></app-shape-upload>
+					<app-shape-upload (featuresUploaded)="onShapesCreated($event)"></app-shape-upload>
 				</div>
 			</div>
 		</app-tabs>
