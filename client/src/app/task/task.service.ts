@@ -27,7 +27,7 @@ export class TaskService {
     return this.selectedTask;
   }
 
-  public createNewTasks(geometries: [[number, number]][], maxProcessPoints: number): Observable<Task[]> {
+  public createNewTasks(geometries: [number, number][][], maxProcessPoints: number): Observable<Task[]> {
     const tasks = geometries.map(g => new Task('', 0, maxProcessPoints, g));
     return this.http.post<Task[]>(environment.url_tasks, JSON.stringify(tasks));
   }

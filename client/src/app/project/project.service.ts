@@ -27,7 +27,7 @@ export class ProjectService {
     return this.http.get<Project>(environment.url_projects_by_id.replace('{id}', id));
   }
 
-  public createNewProject(name: string, maxProcessPoints: number, geometries: [[number, number]][]): Observable<Project> {
+  public createNewProject(name: string, maxProcessPoints: number, geometries: [number, number][][]): Observable<Project> {
     // Create new tasks with the given geometries and collect their IDs
     return this.taskService.createNewTasks(geometries, maxProcessPoints)
       .pipe(flatMap(tasks => {

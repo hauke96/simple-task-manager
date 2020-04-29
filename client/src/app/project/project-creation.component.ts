@@ -11,6 +11,8 @@ import { Polygon } from 'ol/geom';
 import { Fill, Stroke, Style } from 'ol/style';
 import { Draw } from 'ol/interaction';
 import { ErrorService } from '../common/error.service';
+import { Coordinate } from 'ol/coordinate';
+import GeometryType from 'ol/geom/GeometryType';
 
 @Component({
   selector: 'app-project-creation',
@@ -88,7 +90,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
 
     const draw = new Draw({
       source: this.vectorSource,
-      type: 'Polygon'
+      type: GeometryType.POLYGON
     });
     draw.on('drawend', evt => {
       this.lastDrawnPolygon = evt.feature;
@@ -101,17 +103,20 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   }
 
   public onSaveButtonClicked() {
-    const coordinates: [[number, number]][] = [];
-    this.vectorSource.getFeatures().map(f => {
+    const coordinates: Coordinate[][] = this.vectorSource.getFeatures().map(f => {
       let polygon = (f.getGeometry() as Polygon);
-      polygon = polygon.transform('EPSG:3857', 'EPSG:4326');
+
+      // Even though we transformed the coordinates after their creation from EPSG:4326 into EPSG:3857, the OSM- and overall Geo-World works
+      // with lat/lon values, so we transform it back.
+      polygon = polygon.transform('EPSG:3857', 'EPSG:4326') as Polygon;
+
       // The openlayers "Polygon" Class can contain multiple rings. Because the
       // user just draws things, there only exist polygons having only one ring.
       // Therefore we take the first and only ring as our task geometry.
-      coordinates.push(polygon.getCoordinates()[0]);
+      return polygon.getCoordinates()[0];
     });
 
-    this.projectService.createNewProject(this.newProjectName, this.newMaxProcessPoints, coordinates)
+    this.projectService.createNewProject(this.newProjectName, this.newMaxProcessPoints, coordinates as [number, number][][])
       .subscribe(project => {
         this.router.navigate(['/manager']);
       }, e => {
