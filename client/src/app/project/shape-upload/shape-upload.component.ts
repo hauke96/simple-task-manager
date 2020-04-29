@@ -91,6 +91,7 @@ export class ShapeUploadComponent implements OnInit {
   }
 
   private featureToLineStrings(geometry: Geometry): LineString[] {
+    console.log(geometry.getType());
     switch (geometry.getType()) {
       case GeometryType.POLYGON:
         const polygon = (geometry as Polygon);

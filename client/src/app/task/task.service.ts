@@ -37,6 +37,7 @@ export class TaskService {
       throw new Error('Task with id \'' + id + '\' not selected');
     }
 
+    // TODO return and do error handling
     this.http.post<Task>(environment.url_task_processPoints.replace('{id}', id) + '?process_points=' + newProcessPoints, '')
       .subscribe(t => this.selectedTaskChanged.emit(t));
   }
@@ -46,6 +47,7 @@ export class TaskService {
       throw new Error('Task with id \'' + id + '\' not selected');
     }
 
+    // TODO return and do error handling
     this.http.post<Task>(environment.url_task_assignedUser.replace('{id}', id), '')
       .subscribe(t => this.selectedTaskChanged.emit(t));
   }
@@ -55,6 +57,7 @@ export class TaskService {
       throw new Error('Task with id \'' + id + '\' not selected');
     }
 
+    // TODO return and do error handling
     this.http.delete<Task>(environment.url_task_assignedUser.replace('{id}', id))
       .subscribe(t => this.selectedTaskChanged.emit(t));
   }
@@ -75,11 +78,11 @@ export class TaskService {
       );
   }
 
-  private getExtent(task: Task): Extent {
+  public getExtent(task: Task): Extent {
     return new Polygon([task.geometry]).getExtent();
   }
 
-  private getGeometryAsOsm(task: Task): string {
+  public getGeometryAsOsm(task: Task): string {
     let osm = '<osm version="0.6" generator="simple-task-manager">';
 
     for (let i = 0; i < task.geometry.length; i++) {
@@ -89,7 +92,7 @@ export class TaskService {
       osm += `<node id='-${(i + 1)}' action='modify' visible='true' lat='${lat}' lon='${lon}' />`;
     }
 
-    osm += `<way id='-${task.geometry.length}' action='modify' visible='true'>`;
+    osm += `<way id='-${task.geometry.length + 1}' action='modify' visible='true'>`;
 
     for (let i = 0; i < task.geometry.length; i++) {
       osm += `<nd ref='-${(i + 1)}' />`;
