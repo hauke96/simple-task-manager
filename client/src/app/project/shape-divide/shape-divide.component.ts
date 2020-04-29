@@ -51,8 +51,7 @@ export class ShapeDivideComponent implements OnInit {
     const newFeatures = grid.features.map(g => {
       // Turn geo GeoJSON polygon from turf.js into an openlayers polygon and
       // transform it into the used coordinate system.
-      let geometry = new Polygon(g.geometry.coordinates);
-      geometry = geometry.transform('EPSG:4326', 'EPSG:3857');
+      const geometry = new Polygon(g.geometry.coordinates);
 
       // create the map feature and set the task-id to select the task when the
       // polygon has been clicked
