@@ -25,6 +25,7 @@ import { NotificationComponent } from './ui/notification.component';
 import { ToolbarComponent } from './ui/toolbar.component';
 import { ShapeDivideComponent } from './project/shape-divide/shape-divide.component';
 import { ShapeUploadComponent } from './project/shape-upload/shape-upload.component';
+import { ProcessPointsValidatorDirective } from './ui/process-points-validator.directive';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { ShapeUploadComponent } from './project/shape-upload/shape-upload.compon
     NotificationComponent,
     ToolbarComponent,
     ShapeDivideComponent,
-    ShapeUploadComponent
+    ShapeUploadComponent,
+    ProcessPointsValidatorDirective
   ],
   imports: [
     BrowserModule,

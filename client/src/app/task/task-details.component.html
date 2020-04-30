@@ -1,3 +1,4 @@
+<!-- Assign row -->
 <div class="assign-container">
 	<p>Task: {{task?.id}}</p>
 	<div class="assign-button-container">
@@ -6,13 +7,20 @@
 		<button *ngIf="task?.assignedUser === currentUser" (click)="onUnassignButtonClicked()">Unassign</button>
 	</div>
 </div>
+
+<!-- Process points row -->
 <div class="process-point-container">
 	<form *ngIf="task?.assignedUser === currentUser; else currentUserElse" #processPointsForm="ngForm">
 		<span class="points-label">Points:</span>
-		<input [(ngModel)]="newProcessPoints" type="number" required name="processPointsField">
+		<input name="processPointInput"
+			   [(ngModel)]="newProcessPoints"
+			   type="number"
+			   required
+			   appProcessPointsValidator="{{task?.maxProcessPoints}}">
 		/
 		{{task?.maxProcessPoints}}
-		<button class="save-button" (click)="onSaveButtonClick()" [disabled]="!processPointsForm.form.valid">Save</button>
+		<button class="save-button" (click)="onSaveButtonClick()" [disabled]="!processPointsForm.form.valid">Save
+		</button>
 	</form>
 	<ng-template #currentUserElse>
 		<span class="points-label">Points:</span>
@@ -21,4 +29,6 @@
 		{{task?.maxProcessPoints}}
 	</ng-template>
 </div>
+
+<!-- Open in JOSM row -->
 <button (click)="onOpenJosmButtonClicked()">Open in JOSM</button>
