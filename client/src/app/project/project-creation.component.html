@@ -16,7 +16,11 @@
 			</div>
 			<div class="form-entry">
 				<span class="input-field-label">Max. points per task:</span>
-				<input type="number" [(ngModel)]="newMaxProcessPoints" required name="maxProcessPointsField">
+				<input type="number"
+					   [(ngModel)]="newMaxProcessPoints"
+					   required
+					   name="maxProcessPointsField"
+					   appMinValidator="0">
 			</div>
 		</form>
 
