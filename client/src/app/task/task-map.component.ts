@@ -145,7 +145,7 @@ export class TaskMapComponent implements AfterViewInit {
     let geometry = new Polygon([task.geometry]);
 
     // transform from lat/long into WSG84 to show on map
-    geometry = geometry.clone().transform('EPSG:4326', 'EPSG:3857');
+    geometry = geometry.clone().transform('EPSG:4326', 'EPSG:3857') as Polygon;
 
     // create the map feature and set the task-id to select the task when the
     // polygon has been clicked

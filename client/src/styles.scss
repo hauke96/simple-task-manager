@@ -1,12 +1,18 @@
 @import "colors.scss";
 
+// =====================
 // Global distances etc.
+// =====================
+
 $space-base: 10px;
 $space-small: $space-base / 2;
 $space-large: $space-base * 2;
 $space-huge: $space-base * 4;
 
+// =====
 // Fonts
+// =====
+
 $font-small: 9pt;
 
 * {
@@ -26,26 +32,35 @@ code {
 	font-family: monospace;
 }
 
+// ==============
 // General things
+// ==============
+
 body {
 	color: $very-dark-gray;
 	margin: 0px;
 	height: 100vh;
 }
 
-// Container aroung a screen filling component for better spacing to the screen edges
+// Container around a screen filling component for better spacing to the screen edges
 .root-container {
 	margin: $space-large;
 }
 
+// ==========
 // Alignments
+// ==========
+
 .center {
 	margin-right: auto;
 	margin-left: auto;
 	text-align: center;
 }
 
+// ===========
 // UI elements
+// ===========
+
 button {
 	height: $space-huge;
 	padding-left: $space-large;
@@ -146,4 +161,14 @@ input:focus {
 
 input.ng-invalid:not(form)  {
 	border: 1px solid $color-warn;
+}
+
+.input-field-label {
+	display: inline-block;
+	min-width: 180px;
+}
+
+.hline {
+	border-bottom: 1px solid $light-gray;
+	margin: $space-large $space-base;
 }

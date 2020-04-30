@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { TaskService } from './task.service';
 import { Task } from './task.material';
 import { UserService } from '../user/user.service';
-import { ProjectService } from '../project/project.service';
 import { ErrorService } from '../common/error.service';
 
 @Component({

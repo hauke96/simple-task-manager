@@ -23,6 +23,10 @@ import { UserInvitationComponent } from './user/user-invitation.component';
 import { ProjectSettingsComponent } from './project/project-settings.component';
 import { NotificationComponent } from './ui/notification.component';
 import { ToolbarComponent } from './ui/toolbar.component';
+import { ShapeDivideComponent } from './project/shape-divide/shape-divide.component';
+import { ShapeUploadComponent } from './project/shape-upload/shape-upload.component';
+import { MaxValidatorDirective } from './ui/max-validator.directive';
+import { MinValidatorDirective } from './ui/min-validator.directive';
 
 @NgModule({
   declarations: [
@@ -42,7 +46,11 @@ import { ToolbarComponent } from './ui/toolbar.component';
     UserInvitationComponent,
     ProjectSettingsComponent,
     NotificationComponent,
-    ToolbarComponent
+    ToolbarComponent,
+    ShapeDivideComponent,
+    ShapeUploadComponent,
+    MaxValidatorDirective,
+    MinValidatorDirective
   ],
   imports: [
     BrowserModule,

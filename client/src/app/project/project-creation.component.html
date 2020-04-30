@@ -1,41 +1,43 @@
 <app-toolbar>
 	<div>
 		<button [routerLink]="['/manager']">&#60; Cancel</button>
-		<button class="save-button" (click)="onSaveButtonClicked()" [disabled]="!creationForm.form.valid || !hasTasks">Save</button>
+		<button class="save-button" (click)="onSaveButtonClicked()" [disabled]="!creationForm.form.valid || !hasTasks">
+			Save
+		</button>
 	</div>
 </app-toolbar>
 <div class="root-container">
 	<div class="project-properties-container">
 		<form #creationForm="ngForm">
 			<h2>Properties:</h2>
-			<div>
+			<div class="form-entry">
 				<span class="input-field-label">Name:</span>
 				<input [(ngModel)]="newProjectName" required name="nameField">
 			</div>
-			<div>
+			<div class="form-entry">
 				<span class="input-field-label">Max. points per task:</span>
 				<input type="number" [(ngModel)]="newMaxProcessPoints" required name="maxProcessPointsField">
 			</div>
 		</form>
-		<form #divisionForm="ngForm">
-			<h2>Divide:</h2>
-			<div>
-				<span class="input-field-label">Shape size:</span>
-				<input type="number" [(ngModel)]="gridCellSize" [disabled]="!hasTasks" required name="shapeSizeField">
-				meters
+
+		<h2>Create shapes:</h2>
+		<!-- Different shape creation methods: Divide, Upload -->
+		<app-tabs [tabs]="['Divide', 'Upload']" #tabs>
+			<div *ngIf="tabs.tabIndex === 0">
+				<div class="tab-container">
+					<app-shape-divide [gridCellShape]="gridCellShape"
+									  [gridCellSize]="gridCellSize"
+									  [lastDrawnPolygon]="lastDrawnPolygon"
+									  [hasTasks]="hasTasks"
+									  (shapesCreated)="onShapesCreated($event)"></app-shape-divide>
+				</div>
 			</div>
-			<div>
-				<span class="input-field-label">Shape:</span>
-				<select [(ngModel)]="gridCellShape" [disabled]="!hasTasks" required name="shapeSelection">
-					<option value="squareGrid">square</option>
-					<option value="hexGrid">hexagon</option>
-					<option value="triangleGrid">triangle</option>
-				</select>
+			<div *ngIf="tabs.tabIndex === 1">
+				<div class="tab-container">
+					<app-shape-upload (featuresUploaded)="onShapesCreated($event)"></app-shape-upload>
+				</div>
 			</div>
-			<br>
-			<span>This divides the last drawn polygon into the selected shape. Beware, all other shapes will be removed.</span><br><br>
-			<button (click)="onDivideButtonClicked()" [disabled]="!divisionForm.form.valid && !hasTasks">Divide</button>
-		</form>
+		</app-tabs>
 	</div>
 	<div class="map-container">
 		<div id="map"></div>
