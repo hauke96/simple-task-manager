@@ -1,17 +1,17 @@
 @import "../../styles.scss";
 
-.headline {
+.assign-container {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
 }
 
-.assign-container {
+.assign-button-container {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
 }
-.assign-container > button {
+.assign-button-container > button {
 	margin-left: $space-large;
 }
 
