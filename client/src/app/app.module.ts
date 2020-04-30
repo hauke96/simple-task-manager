@@ -25,7 +25,8 @@ import { NotificationComponent } from './ui/notification.component';
 import { ToolbarComponent } from './ui/toolbar.component';
 import { ShapeDivideComponent } from './project/shape-divide/shape-divide.component';
 import { ShapeUploadComponent } from './project/shape-upload/shape-upload.component';
-import { ProcessPointsValidatorDirective } from './ui/process-points-validator.directive';
+import { MaxValidatorDirective } from './ui/max-validator.directive';
+import { MinValidatorDirective } from './ui/min-validator.directive';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { ProcessPointsValidatorDirective } from './ui/process-points-validator.d
     ToolbarComponent,
     ShapeDivideComponent,
     ShapeUploadComponent,
-    ProcessPointsValidatorDirective
+    MaxValidatorDirective,
+    MinValidatorDirective
   ],
   imports: [
     BrowserModule,

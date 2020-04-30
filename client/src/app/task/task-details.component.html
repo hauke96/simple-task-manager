@@ -16,7 +16,8 @@
 			   [(ngModel)]="newProcessPoints"
 			   type="number"
 			   required
-			   appProcessPointsValidator="{{task?.maxProcessPoints}}">
+			   appMinValidator="0"
+			   appMaxValidator="{{task?.maxProcessPoints}}">
 		/
 		{{task?.maxProcessPoints}}
 		<button class="save-button" (click)="onSaveButtonClick()" [disabled]="!processPointsForm.form.valid">Save
