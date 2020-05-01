@@ -31,7 +31,8 @@ var (
 )
 
 func Init() {
-	tokenInit()
+	err := tokenInit()
+	sigolo.FatalCheck(err)
 
 	oauthRedirectUrl = fmt.Sprintf("%s:%d/oauth_callback", config.Conf.ServerUrl, config.Conf.Port)
 	oauthConsumerKey = config.Conf.OauthConsumerKey
@@ -56,7 +57,14 @@ func Init() {
 
 func OauthLogin(w http.ResponseWriter, r *http.Request) {
 	userConfig := &oauth1a.UserConfig{}
-	configKey := fmt.Sprintf("%x", sha256.Sum256(getRandomBytes(64)))
+
+	randomBytes, err := getRandomBytes(64)
+	if err != nil {
+		util.ResponseInternalError(w, fmt.Sprintf("Coulc not get random bytes for config key: %s", err.Error()))
+		return
+	}
+
+	configKey := fmt.Sprintf("%x", sha256.Sum256(randomBytes))
 
 	clientRedirectUrl, err := util.GetParam("redirect", r)
 	if err != nil {
@@ -182,11 +190,19 @@ func requestUserInformation(userConfig *oauth1a.UserConfig) (string, error) {
 	return osm.User.DisplayName, nil
 }
 
-func getRandomBytes(count int) []byte {
+func getRandomBytes(count int) ([]byte, error) {
 	bytes := make([]byte, count)
-	// TODO error handling
-	rand.Read(bytes)
-	return bytes
+
+	n, err := rand.Read(bytes)
+
+	if n != count {
+		return nil, errors.New(fmt.Sprintf("Could not read all %d random bytes", count))
+	}
+	if err != nil {
+		return nil, errors.Wrap(err, "Unable to read random bytes")
+	}
+
+	return bytes, nil
 }
 
 // verifyRequest checks the integrity of the token and the "validUntil" date. It

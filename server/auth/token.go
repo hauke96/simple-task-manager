@@ -16,12 +16,15 @@ type Token struct {
 	User       string `json:"user"`
 	Secret     string `json:"secret"`
 }
-var(
+
+var (
 	key []byte
 )
 
-func tokenInit() {
-	key = getRandomBytes(265)
+func tokenInit() error {
+	bytes, err := getRandomBytes(265)
+	key = bytes
+	return err
 }
 
 func createTokenString(err error, userName string, validUntil int64) (string, error) {
