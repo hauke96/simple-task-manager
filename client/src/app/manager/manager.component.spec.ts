@@ -35,6 +35,7 @@ describe('ManagerComponent', () => {
   });
 
   it('should get user name correctly', () => {
+    localStorage.removeItem('auth_token');
     expect(component.userName).toBeFalsy();
 
     spyOn(userService, 'getUser').and.returnValue('test-user');

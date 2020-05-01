@@ -21,7 +21,7 @@ export class AuthService {
     }
   }
 
-  private setUserNameFromToken() {
+  public setUserNameFromToken() {
     try {
       const encodedToken = localStorage.getItem('auth_token');
       const decodedToken = atob(encodedToken);
@@ -35,7 +35,10 @@ export class AuthService {
   }
 
   public isAuthenticated(): boolean {
-    return !!localStorage.getItem('auth_token');
+    return !!localStorage.getItem('auth_token')
+      && localStorage.getItem('auth_token').trim() !== 'null'
+      && localStorage.getItem('auth_token').trim() !== 'undefined'
+      && localStorage.getItem('auth_token').trim().length > 0;
   }
 
   // performs the authentication process, sets the user name in the UserService
