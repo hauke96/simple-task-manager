@@ -1,6 +1,6 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { flatMap, map, tap } from 'rxjs/operators';
+import { flatMap, tap } from 'rxjs/operators';
 import { Project } from './project.material';
 import { Task } from './../task/task.material';
 import { TaskService } from './../task/task.service';
@@ -27,11 +27,12 @@ export class ProjectService {
     return this.http.get<Project>(environment.url_projects_by_id.replace('{id}', id));
   }
 
-  public createNewProject(name: string, maxProcessPoints: number, geometries: [number, number][][]): Observable<Project> {
+  public createNewProject(name: string, maxProcessPoints: number, projectDescription: string, geometries: [number, number][][])
+    : Observable<Project> {
     // Create new tasks with the given geometries and collect their IDs
     return this.taskService.createNewTasks(geometries, maxProcessPoints)
       .pipe(flatMap(tasks => {
-        const p = new Project('', name, tasks.map(t => t.id));
+        const p = new Project('', name, projectDescription, tasks.map(t => t.id));
         return this.http.post<Project>(environment.url_projects, JSON.stringify(p));
       }));
   }

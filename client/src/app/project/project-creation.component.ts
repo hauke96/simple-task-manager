@@ -19,8 +19,12 @@ import GeometryType from 'ol/geom/GeometryType';
   styleUrls: ['./project-creation.component.scss']
 })
 export class ProjectCreationComponent implements OnInit, AfterViewInit {
+  // Project values
   public newProjectName: string;
   public newMaxProcessPoints: number;
+  public projectDescription: string;
+
+  // Polygon division values
   public gridCellSize: number;
   public gridCellShape: string;
   public lastDrawnPolygon: Feature;
@@ -116,11 +120,12 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       return polygon;
     });
 
-    this.createProject(this.newProjectName, this.newMaxProcessPoints, polygons);
+    this.createProject(this.newProjectName, this.newMaxProcessPoints, this.projectDescription, polygons);
   }
 
-  public createProject(name: string, maxProcessPoints: number, polygons: Polygon[]) {
-    this.projectService.createNewProject(name, maxProcessPoints, polygons.map(p => p.getCoordinates()[0]) as [number, number][][])
+  public createProject(name: string, maxProcessPoints: number, projectDescription: string, polygons: Polygon[]) {
+    const geometries = polygons.map(p => p.getCoordinates()[0]) as [number, number][][];
+    this.projectService.createNewProject(name, maxProcessPoints, projectDescription, geometries)
       .subscribe(project => {
         this.router.navigate(['/manager']);
       }, e => {

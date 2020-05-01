@@ -50,14 +50,14 @@ describe('ProjectCreationComponent', () => {
   it('should correctly create project', () => {
     const name = 'test name';
 
-    const spyService = spyOn(projectService, 'createNewProject').and.returnValue(of(new Project('123', name, ['1', '2'])));
+    const spyService = spyOn(projectService, 'createNewProject').and.returnValue(of(new Project('123', name, 'lorem ipsum', ['1', '2'])));
     const spyRouter = spyOn(routerMock, 'navigate').and.callThrough();
 
     const polygons: Polygon[] = [];
     polygons.push(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]]));
     polygons.push(new Polygon([[[4000, 4000], [5000, 6000], [6000, 4000], [4000, 4000]]]));
 
-    component.createProject(name, 100, polygons);
+    component.createProject(name, 100, 'lorem ipsum', polygons);
 
     expect(spyService).toHaveBeenCalled();
     expect(spyRouter).toHaveBeenCalledWith(['/manager']);
@@ -71,7 +71,7 @@ describe('ProjectCreationComponent', () => {
     polygons.push(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]]));
     polygons.push(new Polygon([[[4000, 4000], [5000, 6000], [6000, 4000], [4000, 4000]]]));
 
-    component.createProject(name, 100, polygons);
+    component.createProject(name, 100, 'lorem ipsum', polygons);
 
     expect(spyService).toHaveBeenCalled();
     expect(spyRouter).not.toHaveBeenCalled();
