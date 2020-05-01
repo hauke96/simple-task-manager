@@ -6,35 +6,41 @@
 </app-toolbar>
 <div class="root-container">
 	<div class="task-list-details-container">
+		<div>
+			<h2>Project: {{project.name}}</h2>
+			{{project.description}}
+		</div>
 		<app-tabs [tabs]="['Tasks', 'Users', 'Settings']" #tabs>
 			<div *ngIf="tabs.tabIndex === 0">
 				<div class="tab-container">
-					<h1>Tasks</h1>
+					<h2>Tasks</h2>
 					<app-task-list *ngIf="tasks" [projectId]="project?.id" [tasks]="tasks"></app-task-list>
 				</div>
 			</div>
 			<div *ngIf="tabs.tabIndex === 1">
 				<div class="tab-container">
-					<h1>Users</h1>
-					<app-user-invitation *ngIf="isOwner()" class="tab-container-item" [projectId]="project?.id"></app-user-invitation>
+					<h2>Users</h2>
+					<app-user-invitation *ngIf="isOwner()" class="tab-container-item"
+										 [projectId]="project?.id"></app-user-invitation>
 					<app-user-list [project]="project"></app-user-list>
 				</div>
 			</div>
 			<div *ngIf="tabs.tabIndex === 2">
 				<div class="tab-container">
-					<h1>Settings</h1>
-					<app-project-settings [projectId]="project?.id" [projectOwner]="project.owner"></app-project-settings>
+					<h2>Settings</h2>
+					<app-project-settings [projectId]="project?.id"
+										  [projectOwner]="project.owner"></app-project-settings>
 				</div>
 			</div>
 		</app-tabs>
 
 		<div class="task-details-container">
-			<h1>Task Details</h1>
+			<h2>Task Details</h2>
 			<app-task-details></app-task-details>
 		</div>
 	</div>
 	<div class="map-container">
-		<h1>Map</h1>
+		<h2>Map</h2>
 		<app-task-map *ngIf="tasks" [tasks]="tasks" class="map"></app-task-map>
 	</div>
 </div>
