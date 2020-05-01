@@ -7,8 +7,8 @@
 <div class="root-container">
 	<div class="task-list-details-container">
 		<div>
-			<h2>Project: {{project.name}}</h2>
-			{{project.description}}
+			<h2>Project: {{project?.name}}</h2>
+			{{project?.description}}
 		</div>
 		<app-tabs [tabs]="['Tasks', 'Users', 'Settings']" #tabs>
 			<div *ngIf="tabs.tabIndex === 0">
