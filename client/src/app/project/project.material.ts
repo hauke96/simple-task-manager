@@ -3,8 +3,8 @@ export class Project {
               public name: string,
               public description: string,
               public taskIds: string[],
-              public users?: string[],
-              public owner?: string
+              public users: string[],
+              public owner: string
   ) {
   }
 }

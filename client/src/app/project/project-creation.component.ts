@@ -12,6 +12,7 @@ import { Fill, Stroke, Style } from 'ol/style';
 import { Draw } from 'ol/interaction';
 import { ErrorService } from '../common/error.service';
 import GeometryType from 'ol/geom/GeometryType';
+import { UserService } from '../user/user.service';
 
 @Component({
   selector: 'app-project-creation',
@@ -35,6 +36,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   constructor(
     private projectService: ProjectService,
     private errorService: ErrorService,
+    private userService: UserService,
     private router: Router
   ) {
   }
@@ -125,7 +127,8 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
 
   public createProject(name: string, maxProcessPoints: number, projectDescription: string, polygons: Polygon[]) {
     const geometries = polygons.map(p => p.getCoordinates()[0]) as [number, number][][];
-    this.projectService.createNewProject(name, maxProcessPoints, projectDescription, geometries)
+    const owner = this.userService.getUser();
+    this.projectService.createNewProject(name, maxProcessPoints, projectDescription, geometries, [owner], owner)
       .subscribe(project => {
         this.router.navigate(['/manager']);
       }, e => {

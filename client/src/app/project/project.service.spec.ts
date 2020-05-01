@@ -40,7 +40,7 @@ describe('ProjectService', () => {
       ]);
     });
 
-    service.createNewProject('project name', 100, geometries)
+    service.createNewProject('project name', 100, 'lorem ipsum', geometries, ['user'], 'user')
       .subscribe(p => {
         // Only these properties can be checked. All others (like 'owner') are set by the server, which we don't use here
         expect(p.id).toEqual('');

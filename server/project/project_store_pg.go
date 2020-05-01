@@ -12,11 +12,12 @@ import (
 )
 
 type projectRow struct {
-	id      int
-	name    string
-	taskIds string
-	users   string
-	owner   string
+	id          int
+	name        string
+	taskIds     string
+	users       string
+	owner       string
+	description string
 }
 
 type storePg struct {
@@ -59,7 +60,13 @@ func (s *storePg) getProject(id string) (*Project, error) {
 func (s *storePg) addProject(draft *Project, user string) (*Project, error) {
 	taskIds := strings.Join(draft.TaskIDs, ",")
 
-	query := fmt.Sprintf("INSERT INTO %s(name, task_ids, users, owner) VALUES('%s', '%s', '%s', '%s') RETURNING *", s.table, draft.Name, taskIds, draft.Users, draft.Owner)
+	query := fmt.Sprintf("INSERT INTO %s(name, task_ids, description, users, owner) VALUES('%s', '%s', '%s', '%s', '%s') RETURNING *",
+		s.table,
+		draft.Name,
+		taskIds,
+		draft.Description,
+		draft.Users,
+		draft.Owner)
 	return execQuery(s.db, query)
 }
 
@@ -125,7 +132,7 @@ func execQuery(db *sql.DB, query string) (*Project, error) {
 // rowToProject turns the current row into a Project object. This does not close the row.
 func rowToProject(rows *sql.Rows) (*Project, error) {
 	var p projectRow
-	err := rows.Scan(&p.id, &p.name, &p.taskIds, &p.users, &p.owner)
+	err := rows.Scan(&p.id, &p.name, &p.taskIds, &p.users, &p.owner, &p.description)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not scan rows")
 	}
@@ -137,6 +144,7 @@ func rowToProject(rows *sql.Rows) (*Project, error) {
 	result.TaskIDs = strings.Split(p.taskIds, ",")
 	result.Users = strings.Split(p.users, ",")
 	result.Owner = p.owner
+	result.Description = p.description
 
 	return &result, nil
 }

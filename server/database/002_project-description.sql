@@ -1,0 +1,3 @@
+ALTER TABLE projects ADD COLUMN description TEXT NOT NULL DEFAULT '';
+
+INSERT INTO db_versions VALUES('002');
