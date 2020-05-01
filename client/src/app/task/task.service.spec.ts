@@ -66,26 +66,23 @@ describe('TaskService', () => {
       of(new Task('id123', newProcessPoints, 100, [[0, 0], [100, 100], [200, 0], [0, 0]]))
     );
 
-    service.setProcessPoints('id123', newProcessPoints);
-    // TODO check return value when implemented
+    service.setProcessPoints('id123', newProcessPoints)
+      .subscribe(
+        t => expect(t.processPoints).toEqual(newProcessPoints),
+        e => fail(e));
   });
 
-  it('should cancel when other task selected', () => {
+  it('should cancel setting process points when other task selected', () => {
     const newProcessPoints = 50;
     const task = new Task('different-task', 10, 100, [[0, 0], [100, 100], [200, 0], [0, 0]]);
     service.selectTask(task);
 
     const spy = spyOn(httpClient, 'post');
 
-    service.selectTask(task);
-    try {
-      service.setProcessPoints('id123', newProcessPoints);
-
-      // This operation should throw an error
-      fail();
-    } catch (e) {
-      expect(spy).not.toHaveBeenCalled();
-    }
+    service.setProcessPoints('id123', newProcessPoints)
+      .subscribe(
+        t => fail('Other task was selected'),
+        () => expect(spy).not.toHaveBeenCalled());
   });
 
   it('should call server on assign', () => {
@@ -97,8 +94,10 @@ describe('TaskService', () => {
       of(new Task('id123', 10, 100, [[0, 0], [100, 100], [200, 0], [0, 0]], userToAssign))
     );
 
-    service.assign('id123', userToAssign);
-    // TODO check return value when implemented
+    service.assign('id123', userToAssign)
+      .subscribe(
+        t => expect(t.assignedUser).toEqual(userToAssign),
+        e => fail(e));
   });
 
   it('should abort assign when other task selected', () => {
@@ -107,14 +106,11 @@ describe('TaskService', () => {
     const spy = spyOn(httpClient, 'post');
 
     service.selectTask(task);
-    try {
-      service.assign('id123', userToAssign);
 
-      // This operation should throw an error
-      fail();
-    } catch (e) {
-      expect(spy).not.toHaveBeenCalled();
-    }
+    service.assign('id123', userToAssign)
+      .subscribe(
+        t => fail('Other task was selected'),
+        () => expect(spy).not.toHaveBeenCalled());
   });
 
   it('should call server on unassign', () => {
@@ -126,8 +122,10 @@ describe('TaskService', () => {
       of(new Task('id123', 10, 100, [[0, 0], [100, 100], [200, 0], [0, 0]]))
     );
 
-    service.unassign('id123');
-    // TODO check return value when implemented
+    service.unassign('id123')
+      .subscribe(
+        t => expect(t.assignedUser).toEqual(''),
+        e => fail(e));
   });
 
   it('should abort unassign when other task selected', () => {
@@ -136,14 +134,11 @@ describe('TaskService', () => {
     const spy = spyOn(httpClient, 'post');
 
     service.selectTask(task);
-    try {
-      service.unassign('id123');
 
-      // This operation should throw an error
-      fail();
-    } catch (e) {
-      expect(spy).not.toHaveBeenCalled();
-    }
+    service.unassign('id123')
+      .subscribe(
+        t => fail('Other task was selected'),
+        () => expect(spy).not.toHaveBeenCalled());
   });
 
   it('should calculate the extent correctly', () => {

@@ -33,20 +33,42 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   public onAssignButtonClicked() {
-    this.taskService.assign(this.task.id, this.userService.getUser());
+    this.taskService.assign(this.task.id, this.userService.getUser())
+      .subscribe(
+        () => {
+        },
+        e => {
+          console.error(e);
+          this.errorService.addError('Could not assign user');
+        });
   }
 
   public onUnassignButtonClicked() {
-    this.taskService.unassign(this.task.id);
+    this.taskService.unassign(this.task.id)
+      .subscribe(
+        () => {
+        },
+        e => {
+          console.error(e);
+          this.errorService.addError('Could not unassign user');
+        });
   }
 
   public onSaveButtonClick() {
-    this.taskService.setProcessPoints(this.task.id, this.newProcessPoints);
+    this.taskService.setProcessPoints(this.task.id, this.newProcessPoints)
+      .subscribe(
+        () => {
+        },
+        e => {
+          console.error(e);
+          this.errorService.addError('Could not set process points');
+        });
   }
 
   public onOpenJosmButtonClicked() {
     this.taskService.openInJosm(this.task)
-      .subscribe(() => {},
+      .subscribe(() => {
+        },
         err => {
           this.errorService.addError('Unable to open JOSM. Is it running?');
         });

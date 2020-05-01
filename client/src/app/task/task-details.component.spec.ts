@@ -6,6 +6,7 @@ import { TaskService } from './task.service';
 import { Task } from './task.material';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
+import { of } from 'rxjs';
 
 describe('TaskDetailsComponent', () => {
   let component: TaskDetailsComponent;
@@ -35,14 +36,17 @@ describe('TaskDetailsComponent', () => {
     spyOn(taskService, 'assign').and.callFake((id: string, user: string) => {
       task.assignedUser = user;
       taskService.selectedTaskChanged.emit(task);
+      return of(task);
     });
     spyOn(taskService, 'unassign').and.callFake((id: string) => {
       task.assignedUser = '';
       taskService.selectedTaskChanged.emit(task);
+      return of(task);
     });
     spyOn(taskService, 'setProcessPoints').and.callFake((id: string, points: number) => {
       task.processPoints = points;
       taskService.selectedTaskChanged.emit(task);
+      return of(task);
     });
 
     userService = TestBed.inject(UserService);

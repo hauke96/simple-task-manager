@@ -2,8 +2,8 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { Task } from './task.material';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
-import { from, Observable } from 'rxjs';
-import { concatMap } from 'rxjs/operators';
+import { from, Observable, of, throwError } from 'rxjs';
+import { concatMap, tap } from 'rxjs/operators';
 import { Polygon } from 'ol/geom';
 import { Extent } from 'ol/extent';
 
@@ -32,34 +32,31 @@ export class TaskService {
     return this.http.post<Task[]>(environment.url_tasks, JSON.stringify(tasks));
   }
 
-  public setProcessPoints(id: string, newProcessPoints: number) {
+  public setProcessPoints(id: string, newProcessPoints: number): Observable<Task> {
     if (id !== this.selectedTask.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
-      throw new Error('Task with id \'' + id + '\' not selected');
+      return throwError('Task with id \'' + id + '\' not selected');
     }
 
-    // TODO return and do error handling
-    this.http.post<Task>(environment.url_task_processPoints.replace('{id}', id) + '?process_points=' + newProcessPoints, '')
-      .subscribe(t => this.selectedTaskChanged.emit(t));
+    return this.http.post<Task>(environment.url_task_processPoints.replace('{id}', id) + '?process_points=' + newProcessPoints, '')
+      .pipe(tap(t => this.selectedTaskChanged.emit(t)));
   }
 
-  public assign(id: string, user: string) {
+  public assign(id: string, user: string): Observable<Task> {
     if (id !== this.selectedTask.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
-      throw new Error('Task with id \'' + id + '\' not selected');
+      return throwError('Task with id \'' + id + '\' not selected');
     }
 
-    // TODO return and do error handling
-    this.http.post<Task>(environment.url_task_assignedUser.replace('{id}', id), '')
-      .subscribe(t => this.selectedTaskChanged.emit(t));
+    return this.http.post<Task>(environment.url_task_assignedUser.replace('{id}', id), '')
+      .pipe(tap(t => this.selectedTaskChanged.emit(t)));
   }
 
-  public unassign(id: string) {
+  public unassign(id: string): Observable<Task> {
     if (id !== this.selectedTask.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
-      throw new Error('Task with id \'' + id + '\' not selected');
+      return throwError('Task with id \'' + id + '\' not selected');
     }
 
-    // TODO return and do error handling
-    this.http.delete<Task>(environment.url_task_assignedUser.replace('{id}', id))
-      .subscribe(t => this.selectedTaskChanged.emit(t));
+    return this.http.delete<Task>(environment.url_task_assignedUser.replace('{id}', id))
+      .pipe(tap(t => this.selectedTaskChanged.emit(t)));
   }
 
   public openInJosm(task: Task) {
