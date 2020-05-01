@@ -11,11 +11,12 @@ import (
 )
 
 type Project struct {
-	Id      string   `json:"id"`
-	Name    string   `json:"name"`
-	TaskIDs []string `json:"taskIds"`
-	Users   []string `json:"users"`
-	Owner   string   `json:"owner"`
+	Id          string   `json:"id"`
+	Name        string   `json:"name"`
+	TaskIDs     []string `json:"taskIds"`
+	Users       []string `json:"users"`
+	Owner       string   `json:"owner"`
+	Description string   `json:"description"`
 }
 
 type store interface {
@@ -30,7 +31,8 @@ type store interface {
 }
 
 var (
-	projectStore store
+	projectStore         store
+	maxDescriptionLength = 10000
 )
 
 func Init() {
@@ -75,6 +77,10 @@ func AddProject(project *Project, user string) (*Project, error) {
 
 	if len(project.TaskIDs) == 0 {
 		return nil, errors.New("No tasks have been specified")
+	}
+
+	if len(project.Description) > maxDescriptionLength {
+		return nil, errors.New(fmt.Sprintf("Description too long. Maximum allowed are %d characters.", maxDescriptionLength))
 	}
 
 	return projectStore.addProject(project, user)
