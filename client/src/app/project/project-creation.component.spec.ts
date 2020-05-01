@@ -50,7 +50,7 @@ describe('ProjectCreationComponent', () => {
   it('should correctly create project', () => {
     const name = 'test name';
 
-    const spyService = spyOn(projectService, 'createNewProject').and.returnValue(of(new Project('123', name, 'lorem ipsum', ['1', '2'])));
+    const spyService = spyOn(projectService, 'createNewProject').and.returnValue(of(new Project('123', name, 'lorem ipsum', ['1', '2'], ['user'], 'user')));
     const spyRouter = spyOn(routerMock, 'navigate').and.callThrough();
 
     const polygons: Polygon[] = [];

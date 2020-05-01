@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { ProjectService } from '../project/project.service';
 import { UserService } from './user.service';
 import { Project } from '../project/project.material';
-import { of, throwError } from 'rxjs';
+import { throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { ErrorService } from '../common/error.service';
 import { MockRouter } from '../common/mock-router';
@@ -51,7 +51,7 @@ describe('UserListComponent', () => {
   });
 
   it('should detect removable users', () => {
-    component.project = new Project('1', 'test project', ['2', '3'], ['test-user', 'user-a', 'user-b'], 'test-user');
+    component.project = new Project('1', 'test project', 'lorem ipsum', ['2', '3'], ['test-user', 'user-a', 'user-b'], 'test-user');
     expect(component).toBeTruthy();
 
     expect(component.canRemove('test-user')).toBeFalse();
@@ -61,7 +61,7 @@ describe('UserListComponent', () => {
 
   it('should remove user correctly', () => {
     const removeUserSpy = spyOn(projectService, 'removeUser').and.callThrough();
-    component.project = new Project('1', 'test project', ['2', '3'], ['test-user', 'user-a', 'user-b'], 'test-user');
+    component.project = new Project('1', 'test project', 'lorem ipsum', ['2', '3'], ['test-user', 'user-a', 'user-b'], 'test-user');
     expect(component).toBeTruthy();
 
     component.onRemoveUserClicked('user-a');
@@ -74,7 +74,7 @@ describe('UserListComponent', () => {
     const removeUserSpy = spyOn(projectService, 'removeUser').and.returnValue(throwError('test error'));
     const errorServiceSpy = spyOn(errorService, 'addError').and.callThrough();
 
-    component.project = new Project('1', 'test project', ['2', '3'], ['test-user', 'user-a', 'user-b'], 'test-user');
+    component.project = new Project('1', 'test project', 'lorem ipsum', ['2', '3'], ['test-user', 'user-a', 'user-b'], 'test-user');
     expect(component).toBeTruthy();
 
     component.onRemoveUserClicked('user-a');

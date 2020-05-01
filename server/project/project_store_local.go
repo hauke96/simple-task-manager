@@ -48,8 +48,6 @@ func (s *storeLocal) getProjects(user string) ([]*Project, error) {
 
 func (s *storeLocal) addProject(project *Project, user string) (*Project, error) {
 	project.Id = util.GetId()
-	project.Users = []string{user}
-	project.Owner = user
 	s.projects = append(s.projects, project)
 	return project, nil
 }

@@ -235,7 +235,6 @@ func testAddAndGetProject(t *testing.T) {
 
 	user := "Jack"
 	p := Project{
-		Id:      "this should be overwritten",
 		Name:    "Test name",
 		TaskIDs: []string{"t-11"},
 		Users:   []string{user, "user2"},
@@ -244,13 +243,13 @@ func testAddAndGetProject(t *testing.T) {
 
 	newProject, err := AddProject(&p, user)
 	if err != nil {
-		t.Error("Adding should work: %w", err)
+		t.Errorf("Adding should work: %s", err.Error())
 		t.Fail()
 		return
 	}
 
 	if len(newProject.Users) != 2 {
-		t.Errorf("User amount should be 1 but was %d", len(newProject.Users))
+		t.Errorf("User amount should be 2 but was %d", len(newProject.Users))
 		t.Fail()
 		return
 	}
