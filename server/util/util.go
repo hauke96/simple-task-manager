@@ -41,15 +41,11 @@ func GetIntParam(param string, r *http.Request) (int, error) {
 }
 
 func ResponseBadRequest(w http.ResponseWriter, err string) {
-	sigolo.Error("Response with status %d: %s", http.StatusBadRequest, err)
-	w.WriteHeader(http.StatusBadRequest)
-	w.Write([]byte(err))
+	Response(w, err, http.StatusBadRequest)
 }
 
 func ResponseInternalError(w http.ResponseWriter, err string) {
-	sigolo.Error("Response with status %d: %s", http.StatusInternalServerError, err)
-	w.WriteHeader(http.StatusInternalServerError)
-	w.Write([]byte(err))
+	Response(w, err, http.StatusInternalServerError)
 }
 
 func Response(w http.ResponseWriter, data string, status int) {

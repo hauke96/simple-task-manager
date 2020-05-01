@@ -11,6 +11,8 @@ import (
 	"github.com/hauke96/simple-task-manager/server/task"
 )
 
+// Helper struct to read raw data from database. The "Project" struct has higher-level structure (e.g. arrays), which we
+// don't have in the database columns.
 type projectRow struct {
 	id          int
 	name        string
