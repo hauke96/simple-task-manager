@@ -2,6 +2,7 @@ package task
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"github.com/hauke96/simple-task-manager/server/util"
 )
@@ -49,6 +50,10 @@ func (s *storeLocal) getTasks(taskIds []string) ([]*Task, error) {
 		}
 	}
 
+	if len(result) == 0{
+		return nil, errors.New("No Tasks found")
+	}
+
 	return result, nil
 }
 
@@ -66,7 +71,7 @@ func (s *storeLocal) addTasks(newTasks []*Task) ([]*Task, error) {
 	result := make([]*Task, 0)
 
 	for _, t := range newTasks {
-		t.Id = "t-" + util.GetId()
+		t.Id = util.GetId()
 		result = append(result, t)
 	}
 

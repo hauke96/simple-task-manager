@@ -113,7 +113,13 @@ func execQuery(db *sql.DB, query string) (*Project, error) {
 		return nil, errors.New("there is no next row or an error happened")
 	}
 
-	return rowToProject(rows)
+	p, err := rowToProject(rows)
+
+	if p == nil && err == nil {
+		return nil, errors.New(fmt.Sprintf("Project does not exist"))
+	}
+
+	return p, err
 }
 
 // rowToProject turns the current row into a Project object. This does not close the row.

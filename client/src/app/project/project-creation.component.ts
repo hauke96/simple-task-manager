@@ -11,7 +11,6 @@ import { Polygon } from 'ol/geom';
 import { Fill, Stroke, Style } from 'ol/style';
 import { Draw } from 'ol/interaction';
 import { ErrorService } from '../common/error.service';
-import { Coordinate } from 'ol/coordinate';
 import GeometryType from 'ol/geom/GeometryType';
 
 @Component({
@@ -104,7 +103,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   }
 
   public onSaveButtonClicked() {
-    const coordinates: Coordinate[][] = this.vectorSource.getFeatures().map(f => {
+    const polygons: Polygon[] = this.vectorSource.getFeatures().map(f => {
       let polygon = (f.getGeometry() as Polygon);
 
       // Even though we transformed the coordinates after their creation from EPSG:4326 into EPSG:3857, the OSM- and overall Geo-World works
@@ -114,10 +113,14 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       // The openlayers "Polygon" Class can contain multiple rings. Because the
       // user just draws things, there only exist polygons having only one ring.
       // Therefore we take the first and only ring as our task geometry.
-      return polygon.getCoordinates()[0];
+      return polygon;
     });
 
-    this.projectService.createNewProject(this.newProjectName, this.newMaxProcessPoints, coordinates as [number, number][][])
+    this.createProject(this.newProjectName, this.newMaxProcessPoints, polygons);
+  }
+
+  public createProject(name: string, maxProcessPoints: number, polygons: Polygon[]) {
+    this.projectService.createNewProject(name, maxProcessPoints, polygons.map(p => p.getCoordinates()[0]) as [number, number][][])
       .subscribe(project => {
         this.router.navigate(['/manager']);
       }, e => {
@@ -125,7 +128,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       });
   }
 
-  // This function expects the geometry to be in the EPSG:4326 projection.
+// This function expects the geometry to be in the EPSG:4326 projection.
   onShapesCreated(features: Feature[]) {
     // Transform geometries into the correct projection
     features.forEach(f => {

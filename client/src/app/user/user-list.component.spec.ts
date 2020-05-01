@@ -9,12 +9,7 @@ import { Project } from '../project/project.material';
 import { of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { ErrorService } from '../common/error.service';
-
-class MockRouter {
-  navigate(commands: any[]) {
-    return of(true).toPromise();
-  }
-}
+import { MockRouter } from '../common/mock-router';
 
 describe('UserListComponent', () => {
   let component: UserListComponent;

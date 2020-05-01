@@ -49,10 +49,6 @@ func GetTasks(taskIds []string) ([]*Task, error) {
 	return store.getTasks(taskIds)
 }
 
-func GetTask(id string) (*Task, error) {
-	return store.getTask(id)
-}
-
 // AddTasks sets the ID of the tasks and adds them to the storage.
 func AddTasks(newTasks []*Task) ([]*Task, error) {
 	return store.addTasks(newTasks)
@@ -80,9 +76,7 @@ func UnassignUser(id, user string) (*Task, error) {
 
 	assignedUser := strings.TrimSpace(task.AssignedUser)
 	if assignedUser != user {
-		err = errors.New("the assigned user and the user to unassign differ")
-		task = nil
-		// TODO this might be a bug, check and test this
+		return nil, errors.New("the assigned user and the user to unassign differ")
 	}
 
 	return store.unassignUser(id)

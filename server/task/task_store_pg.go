@@ -55,6 +55,10 @@ func (s *storePg) getTasks(taskIds []string) ([]*Task, error) {
 		tasks = append(tasks, task)
 	}
 
+	if len(tasks) == 0 {
+		return nil, errors.New(fmt.Sprintf("Tasks do not exist"))
+	}
+
 	return tasks, nil
 }
 
@@ -86,7 +90,7 @@ func (s *storePg) addTasks(newTasks []*Task) ([]*Task, error) {
 func (s *storePg) addTask(task *Task) (string, error) {
 	geometryBytes, err := json.Marshal(task.Geometry)
 	if err != nil {
-		sigolo.Error("Cannot parse geometry:\n%s", task.Geometry)
+		sigolo.Error("Cannot parse geometry:\n%v", task.Geometry)
 		return "", errors.Wrapf(err, "unable to marshal geometry of task '%s'", task.Id)
 	}
 
@@ -126,7 +130,13 @@ func execQuery(db *sql.DB, query string) (*Task, error) {
 	defer rows.Close()
 
 	rows.Next()
-	return rowToTask(rows)
+	t, err := rowToTask(rows)
+
+	if t == nil && err == nil {
+		return nil, errors.New(fmt.Sprintf("Task does not exist"))
+	}
+
+	return t, err
 }
 
 // rowToTask turns the current row into a Task object. This does not close the row.
