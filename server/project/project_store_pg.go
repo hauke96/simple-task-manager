@@ -33,10 +33,10 @@ func (s *storePg) init(db *sql.DB) {
 }
 
 func (s *storePg) getProjects(user string) ([]*Project, error) {
-	query := fmt.Sprintf("SELECT * FROM %s WHERE users LIKE '%%%s%%'", s.table, user)
+	query := fmt.Sprintf("SELECT * FROM %s WHERE users LIKE $1", s.table)
 	sigolo.Debug("%s", query)
 
-	rows, err := s.db.Query(query)
+	rows, err := s.db.Query(query, "%"+user+"%")
 	if err != nil {
 		return nil, errors.Wrap(err, "error executing query")
 	}
@@ -55,22 +55,17 @@ func (s *storePg) getProjects(user string) ([]*Project, error) {
 }
 
 func (s *storePg) getProject(id string) (*Project, error) {
-	query := fmt.Sprintf("SELECT * FROM %s WHERE id='%s'", s.table, id)
-	return execQuery(s.db, query)
+	query := fmt.Sprintf("SELECT * FROM %s WHERE id=$1", s.table)
+	return execQuery(s.db, query, id)
 }
 
 func (s *storePg) addProject(draft *Project, user string) (*Project, error) {
 	taskIds := strings.Join(draft.TaskIDs, ",")
 	users := strings.Join(draft.Users, ",")
 
-	query := fmt.Sprintf("INSERT INTO %s(name, task_ids, description, users, owner) VALUES('%s', '%s', '%s', '%s', '%s') RETURNING *",
-		s.table,
-		draft.Name,
-		taskIds,
-		draft.Description,
-		users,
-		draft.Owner)
-	return execQuery(s.db, query)
+	query := fmt.Sprintf("INSERT INTO %s (name, task_ids, description, users, owner) VALUES($1, $2, $3, $4, $5) RETURNING *", s.table)
+
+	return execQuery(s.db, query, draft.Name, taskIds, draft.Description, users, draft.Owner)
 }
 
 func (s *storePg) addUser(userToAdd string, id string, owner string) (*Project, error) {
@@ -79,9 +74,11 @@ func (s *storePg) addUser(userToAdd string, id string, owner string) (*Project, 
 		return nil, errors.Wrapf(err, "error getting project with ID '%s'", id)
 	}
 
+	originalProject.Users = append(originalProject.Users, userToAdd)
 	users := strings.Join(originalProject.Users, ",")
-	query := fmt.Sprintf("UPDATE %s SET users='%s,%s' WHERE id=%s RETURNING *", s.table, users, userToAdd, id)
-	return execQuery(s.db, query)
+
+	query := fmt.Sprintf("UPDATE %s SET users=$1 WHERE id=$2 RETURNING *", s.table)
+	return execQuery(s.db, query, users, id)
 }
 
 func (s *storePg) removeUser(id string, userToRemove string) (*Project, error) {
@@ -98,21 +95,21 @@ func (s *storePg) removeUser(id string, userToRemove string) (*Project, error) {
 	}
 
 	users := strings.Join(remainingUsers, ",")
-	query := fmt.Sprintf("UPDATE %s SET users='%s' WHERE id=%s RETURNING *", s.table, users, id)
-	return execQuery(s.db, query)
+	query := fmt.Sprintf("UPDATE %s SET users=$1 WHERE id=$2 RETURNING *", s.table)
+	return execQuery(s.db, query, users, id)
 }
 
 func (s *storePg) delete(id string) error {
-	query := fmt.Sprintf("DELETE FROM %s WHERE id=%s", s.table, id)
+	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", s.table)
 
-	_, err := s.db.Exec(query)
+	_, err := s.db.Exec(query, id)
 	return err
 }
 
 // execQuery executed the given query, turns the result into a Project object and closes the query.
-func execQuery(db *sql.DB, query string) (*Project, error) {
+func execQuery(db *sql.DB, query string, params ...interface{}) (*Project, error) {
 	sigolo.Debug(query)
-	rows, err := db.Query(query)
+	rows, err := db.Query(query, params...)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not run query")
 	}
