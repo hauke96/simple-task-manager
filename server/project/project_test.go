@@ -238,8 +238,8 @@ func testAddAndGetProject(t *testing.T) {
 		Id:      "this should be overwritten",
 		Name:    "Test name",
 		TaskIDs: []string{"t-11"},
-		Users:   []string{"noname-user"},
-		Owner:   "noname-user",
+		Users:   []string{user, "user2"},
+		Owner:   user,
 	}
 
 	newProject, err := AddProject(&p, user)
@@ -249,13 +249,13 @@ func testAddAndGetProject(t *testing.T) {
 		return
 	}
 
-	if len(newProject.Users) != 1 {
+	if len(newProject.Users) != 2 {
 		t.Errorf("User amount should be 1 but was %d", len(newProject.Users))
 		t.Fail()
 		return
 	}
-	if newProject.Users[0] != user {
-		t.Errorf("User should be '%s' but was '%s'", user, newProject.Users[0])
+	if newProject.Users[0] != user || newProject.Users[1] != "user2" {
+		t.Errorf("User not matching")
 		t.Fail()
 		return
 	}

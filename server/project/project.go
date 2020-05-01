@@ -50,8 +50,33 @@ func GetProjects(user string) ([]*Project, error) {
 	return projectStore.getProjects(user)
 }
 
+// AddProject adds the project, as requested by user "user".
 func AddProject(project *Project, user string) (*Project, error) {
-	// TODO check whether all necessary fields are set
+	if project.Id != "" {
+		return nil, errors.New("Id not empty")
+	}
+
+	if project.Owner == "" {
+		return nil, errors.New("Owner must be set")
+	}
+
+	usersContainOwner := false
+	for _, u := range project.Users {
+		usersContainOwner = usersContainOwner || (u == project.Owner)
+	}
+
+	if !usersContainOwner {
+		return nil, errors.New("Owner must be within users list")
+	}
+
+	if project.Name == "" {
+		return nil, errors.New("Project must have a title")
+	}
+
+	if len(project.TaskIDs) == 0 {
+		return nil, errors.New("No tasks have been specified")
+	}
+
 	return projectStore.addProject(project, user)
 }
 
