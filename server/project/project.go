@@ -220,9 +220,9 @@ func GetTasks(id string, user string) ([]*task.Task, error) {
 		return nil, errors.Wrap(err, "could not get project")
 	}
 
-	// Only the owner can delete a project
+	// Only members of the project can get tasks
 	if !isUserInProject(p, user) {
-		return nil, fmt.Errorf("the user '%s' is not the owner of project '%s'", user, p.Id)
+		return nil, fmt.Errorf("the user '%s' is not a member of the project '%s'", user, p.Id)
 	}
 
 	return projectStore.getTasks(id)

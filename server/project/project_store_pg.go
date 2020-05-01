@@ -61,13 +61,14 @@ func (s *storePg) getProject(id string) (*Project, error) {
 
 func (s *storePg) addProject(draft *Project, user string) (*Project, error) {
 	taskIds := strings.Join(draft.TaskIDs, ",")
+	users := strings.Join(draft.Users, ",")
 
 	query := fmt.Sprintf("INSERT INTO %s(name, task_ids, description, users, owner) VALUES('%s', '%s', '%s', '%s', '%s') RETURNING *",
 		s.table,
 		draft.Name,
 		taskIds,
 		draft.Description,
-		draft.Users,
+		users,
 		draft.Owner)
 	return execQuery(s.db, query)
 }
