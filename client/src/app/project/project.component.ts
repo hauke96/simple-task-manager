@@ -28,6 +28,8 @@ export class ProjectComponent implements OnInit {
     this.project = this.route.snapshot.data.project;
     this.tasks = this.route.snapshot.data.tasks;
     this.taskService.selectTask(this.tasks[0]);
+
+    this.projectService.projectChanged.subscribe(p => this.project = p);
   }
 
   isOwner(): boolean {
