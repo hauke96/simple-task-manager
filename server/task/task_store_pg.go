@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/hauke96/sigolo"
+	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/pkg/errors"
 	"strconv"
 	"strings"
@@ -46,7 +47,7 @@ func (s *storePg) getTasks(taskIds []string) ([]*Task, error) {
 
 	// Generate "IN" clause with "$1,$2,,..." string for all IDs
 	query := fmt.Sprintf("SELECT * FROM %s WHERE id IN (%s);", s.table, strings.Join(queryPlaceholderStrings, ","))
-	sigolo.Debug(query)
+	util.LogQuery(query, taskIdNumbers)
 
 	rows, err := s.db.Query(query, taskIdNumbers...)
 	if err != nil {
@@ -137,7 +138,7 @@ func (s *storePg) setProcessPoints(id string, newPoints int) (*Task, error) {
 
 // execQuery executed the given query, turns the result into a Task object and closes the query.
 func execQuery(db *sql.DB, query string, params ...interface{}) (*Task, error) {
-	sigolo.Debug(query)
+	util.LogQuery(query, params)
 	rows, err := db.Query(query, params...)
 	if err != nil {
 		return nil, err

@@ -3,7 +3,7 @@ package project
 import (
 	"database/sql"
 	"fmt"
-	"github.com/hauke96/sigolo"
+	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/pkg/errors"
 	"strconv"
 	"strings"
@@ -34,7 +34,10 @@ func (s *storePg) init(db *sql.DB) {
 
 func (s *storePg) getProjects(user string) ([]*Project, error) {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE users LIKE $1", s.table)
-	sigolo.Debug("%s", query)
+
+	// The logging needs "%%" as escape sequence for the simple "%"
+	arg := interface{}("%%" + user + "%%")
+	util.LogQuery(query, []interface{}{arg})
 
 	rows, err := s.db.Query(query, "%"+user+"%")
 	if err != nil {
@@ -61,8 +64,6 @@ func (s *storePg) getProject(id string) (*Project, error) {
 
 func (s *storePg) getProjectByTask(taskId string) (*Project, error) {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE task_ids LIKE $1", s.table)
-	sigolo.Debug("%s", query)
-
 	return execQuery(s.db, query, taskId)
 }
 
@@ -115,7 +116,7 @@ func (s *storePg) delete(id string) error {
 
 // execQuery executed the given query, turns the result into a Project object and closes the query.
 func execQuery(db *sql.DB, query string, params ...interface{}) (*Project, error) {
-	sigolo.Debug(query)
+	util.LogQuery(query, params)
 	rows, err := db.Query(query, params...)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not run query")
