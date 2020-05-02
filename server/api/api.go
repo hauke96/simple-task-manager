@@ -31,19 +31,19 @@ func Init() error {
 	// API v1
 	router_v1, version := Init_v1(router)
 	supportedApiVersions = append(supportedApiVersions, version)
-	sigolo.Info("Registered routes for API %s:", supportedApiVersions)
+	sigolo.Info("Registered routes for API %s:", version)
 	printRoutes(router_v1)
 
 	// API v2
 	router_v2, version := Init_v2(router)
 	supportedApiVersions = append(supportedApiVersions, version)
-	sigolo.Info("Registered routes for API %s:", supportedApiVersions)
+	sigolo.Info("Registered routes for API %s:", version)
 	printRoutes(router_v2)
 
 	// API v2.1
 	router_v2_1, version := Init_v2_1(router)
 	supportedApiVersions = append(supportedApiVersions, version)
-	sigolo.Info("Registered routes for API %s:", supportedApiVersions)
+	sigolo.Info("Registered routes for API %s:", version)
 	printRoutes(router_v2_1)
 
 	router.Methods(http.MethodOptions).HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
