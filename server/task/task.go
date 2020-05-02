@@ -82,13 +82,15 @@ func UnassignUser(id, user string) (*Task, error) {
 	return store.unassignUser(id)
 }
 
-func SetProcessPoints(id string, newPoints int, user string) (*Task, error) {
+// SetProcessPoints updates the process points on task "id". When "needsAssignedUser" is true, this also checks, whether
+// the assigned user is equal to the "user" parameter.
+func SetProcessPoints(id string, newPoints int, user string, needsAssignedUser bool) (*Task, error) {
 	task, err := store.getTask(id)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not get task to set process points")
 	}
 
-	if user != task.AssignedUser {
+	if needsAssignedUser && user != task.AssignedUser {
 		return nil, fmt.Errorf("user '%s' not assigned to this task", user)
 	}
 

@@ -32,7 +32,7 @@ export class ProjectComponent implements OnInit {
     this.projectService.projectChanged.subscribe(p => this.project = p);
   }
 
-  isOwner(): boolean {
+  public isOwner(): boolean {
     return this.userService.getUser() === this.project.owner;
   }
 }

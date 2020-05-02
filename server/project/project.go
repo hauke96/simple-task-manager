@@ -11,18 +11,20 @@ import (
 )
 
 type Project struct {
-	Id          string   `json:"id"`
-	Name        string   `json:"name"`
-	TaskIDs     []string `json:"taskIds"`
-	Users       []string `json:"users"`
-	Owner       string   `json:"owner"`
-	Description string   `json:"description"`
+	Id              string   `json:"id"`
+	Name            string   `json:"name"`
+	TaskIDs         []string `json:"taskIds"`
+	Users           []string `json:"users"`
+	Owner           string   `json:"owner"`
+	Description     string   `json:"description"`
+	NeedsAssignment bool     `json:"needsAssignment"` // When "true", the tasks of this project need to have an assigned user
 }
 
 type store interface {
 	init(db *sql.DB)
 	getProjects(user string) ([]*Project, error)
 	getProject(id string) (*Project, error)
+	getProjectByTask(taskId string) (*Project, error)
 	addProject(draft *Project, user string) (*Project, error)
 	addUser(userToAdd string, id string, owner string) (*Project, error)
 	removeUser(id string, userToRemove string) (*Project, error)
@@ -88,6 +90,10 @@ func AddProject(project *Project, user string) (*Project, error) {
 
 func GetProject(id string) (*Project, error) {
 	return projectStore.getProject(id)
+}
+
+func GetProjectByTask(taskId string) (*Project, error) {
+	return projectStore.getProjectByTask(taskId)
 }
 
 func AddUser(user, id, potentialOwner string) (*Project, error) {

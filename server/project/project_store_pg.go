@@ -3,12 +3,11 @@ package project
 import (
 	"database/sql"
 	"fmt"
-	"github.com/hauke96/sigolo"
+	"github.com/hauke96/simple-task-manager/server/task"
+	"github.com/hauke96/simple-task-manager/server/util"
+	"github.com/lib/pq"
 	"github.com/pkg/errors"
 	"strconv"
-	"strings"
-
-	"github.com/hauke96/simple-task-manager/server/task"
 )
 
 // Helper struct to read raw data from database. The "Project" struct has higher-level structure (e.g. arrays), which we
@@ -16,8 +15,8 @@ import (
 type projectRow struct {
 	id          int
 	name        string
-	taskIds     string
-	users       string
+	taskIds     []string
+	users       []string
 	owner       string
 	description string
 }
@@ -33,10 +32,11 @@ func (s *storePg) init(db *sql.DB) {
 }
 
 func (s *storePg) getProjects(user string) ([]*Project, error) {
-	query := fmt.Sprintf("SELECT * FROM %s WHERE users LIKE $1", s.table)
-	sigolo.Debug("%s", query)
+	query := fmt.Sprintf("SELECT * FROM %s WHERE $1=ANY(users)", s.table)
 
-	rows, err := s.db.Query(query, "%"+user+"%")
+	util.LogQuery(query, user)
+
+	rows, err := s.db.Query(query, user)
 	if err != nil {
 		return nil, errors.Wrap(err, "error executing query")
 	}
@@ -59,13 +59,15 @@ func (s *storePg) getProject(id string) (*Project, error) {
 	return execQuery(s.db, query, id)
 }
 
-func (s *storePg) addProject(draft *Project, user string) (*Project, error) {
-	taskIds := strings.Join(draft.TaskIDs, ",")
-	users := strings.Join(draft.Users, ",")
+func (s *storePg) getProjectByTask(taskId string) (*Project, error) {
+	query := fmt.Sprintf("SELECT * FROM %s WHERE $1=ANY(task_ids)", s.table)
+	return execQuery(s.db, query, taskId)
+}
 
+func (s *storePg) addProject(draft *Project, user string) (*Project, error) {
 	query := fmt.Sprintf("INSERT INTO %s (name, task_ids, description, users, owner) VALUES($1, $2, $3, $4, $5) RETURNING *", s.table)
 
-	return execQuery(s.db, query, draft.Name, taskIds, draft.Description, users, draft.Owner)
+	return execQuery(s.db, query, draft.Name, pq.Array(draft.TaskIDs), draft.Description, pq.Array(draft.Users), draft.Owner)
 }
 
 func (s *storePg) addUser(userToAdd string, id string, owner string) (*Project, error) {
@@ -74,11 +76,10 @@ func (s *storePg) addUser(userToAdd string, id string, owner string) (*Project, 
 		return nil, errors.Wrapf(err, "error getting project with ID '%s'", id)
 	}
 
-	originalProject.Users = append(originalProject.Users, userToAdd)
-	users := strings.Join(originalProject.Users, ",")
+	newUsers := append(originalProject.Users, userToAdd)
 
 	query := fmt.Sprintf("UPDATE %s SET users=$1 WHERE id=$2 RETURNING *", s.table)
-	return execQuery(s.db, query, users, id)
+	return execQuery(s.db, query, pq.Array(newUsers), id)
 }
 
 func (s *storePg) removeUser(id string, userToRemove string) (*Project, error) {
@@ -94,9 +95,8 @@ func (s *storePg) removeUser(id string, userToRemove string) (*Project, error) {
 		}
 	}
 
-	users := strings.Join(remainingUsers, ",")
 	query := fmt.Sprintf("UPDATE %s SET users=$1 WHERE id=$2 RETURNING *", s.table)
-	return execQuery(s.db, query, users, id)
+	return execQuery(s.db, query, pq.Array(remainingUsers), id)
 }
 
 func (s *storePg) delete(id string) error {
@@ -108,7 +108,7 @@ func (s *storePg) delete(id string) error {
 
 // execQuery executed the given query, turns the result into a Project object and closes the query.
 func execQuery(db *sql.DB, query string, params ...interface{}) (*Project, error) {
-	sigolo.Debug(query)
+	util.LogQuery(query, params)
 	rows, err := db.Query(query, params...)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not run query")
@@ -132,7 +132,7 @@ func execQuery(db *sql.DB, query string, params ...interface{}) (*Project, error
 // rowToProject turns the current row into a Project object. This does not close the row.
 func rowToProject(rows *sql.Rows) (*Project, error) {
 	var p projectRow
-	err := rows.Scan(&p.id, &p.name, &p.taskIds, &p.users, &p.owner, &p.description)
+	err := rows.Scan(&p.id, &p.name, &p.owner, &p.description, pq.Array(&p.taskIds), pq.Array(&p.users))
 	if err != nil {
 		return nil, errors.Wrap(err, "could not scan rows")
 	}
@@ -141,10 +141,16 @@ func rowToProject(rows *sql.Rows) (*Project, error) {
 
 	result.Id = strconv.Itoa(p.id)
 	result.Name = p.name
-	result.TaskIDs = strings.Split(p.taskIds, ",")
-	result.Users = strings.Split(p.users, ",")
+	result.Users = p.users
 	result.Owner = p.owner
 	result.Description = p.description
+	result.NeedsAssignment = len(result.Users) > 1
+
+	result.TaskIDs = p.taskIds
+	//result.TaskIDs = make([]string, len(p.taskIds))
+	//for i, v := range p.taskIds {
+	//	result.TaskIDs[i] = strconv.Itoa(v)
+	//}
 
 	return &result, nil
 }
