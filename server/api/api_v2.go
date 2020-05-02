@@ -162,7 +162,13 @@ func setProcessPoints_v2(w http.ResponseWriter, r *http.Request, token *auth.Tok
 		return
 	}
 
-	task, err := task.SetProcessPoints(taskId, processPoints, token.User)
+	project, err := project.GetProjectByTask(taskId)
+	if err != nil {
+		util.ResponseInternalError(w, err.Error())
+		return
+	}
+
+	task, err := task.SetProcessPoints(taskId, processPoints, token.User, project.NeedsAssignment)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return

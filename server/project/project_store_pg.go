@@ -59,6 +59,13 @@ func (s *storePg) getProject(id string) (*Project, error) {
 	return execQuery(s.db, query, id)
 }
 
+func (s *storePg) getProjectByTask(taskId string) (*Project, error) {
+	query := fmt.Sprintf("SELECT * FROM %s WHERE task_ids LIKE $1", s.table)
+	sigolo.Debug("%s", query)
+
+	return execQuery(s.db, query, taskId)
+}
+
 func (s *storePg) addProject(draft *Project, user string) (*Project, error) {
 	taskIds := strings.Join(draft.TaskIDs, ",")
 	users := strings.Join(draft.Users, ",")
@@ -145,6 +152,7 @@ func rowToProject(rows *sql.Rows) (*Project, error) {
 	result.Users = strings.Split(p.users, ",")
 	result.Owner = p.owner
 	result.Description = p.description
+	result.NeedsAssignment = len(result.Users) > 1
 
 	return &result, nil
 }

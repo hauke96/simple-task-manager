@@ -1,7 +1,7 @@
 <!-- Assign row -->
 <div class="assign-container">
 	<p>Task: {{task?.id}}</p>
-	<div class="assign-button-container">
+	<div class="assign-button-container" *ngIf="needUserAssignment">
 		<button *ngIf="!task?.assignedUser" (click)="onAssignButtonClicked()">Assign me</button>
 		<p *ngIf="!!task?.assignedUser && task?.assignedUser !== currentUser">Assigned to: {{task?.assignedUser}}</p>
 		<button *ngIf="task?.assignedUser === currentUser" (click)="onUnassignButtonClicked()">Unassign</button>
@@ -10,7 +10,7 @@
 
 <!-- Process points row -->
 <div class="process-point-container">
-	<form *ngIf="task?.assignedUser === currentUser; else currentUserElse" #processPointsForm="ngForm">
+	<form *ngIf="task?.assignedUser === currentUser || !needUserAssignment; else currentUserElse" #processPointsForm="ngForm">
 		<span class="points-label">Points:</span>
 		<input name="processPointInput"
 			   [(ngModel)]="newProcessPoints"

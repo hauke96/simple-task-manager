@@ -265,7 +265,7 @@ func TestSetProcessPoints_cache(t *testing.T) {
 
 func testSetProcessPoints(t *testing.T) {
 	// Test Increase number
-	task, err := SetProcessPoints("3", 70, "Maria")
+	task, err := SetProcessPoints("3", 70, "Maria", true)
 	if err != nil {
 		t.Errorf("Error: %s\n", err.Error())
 		t.Fail()
@@ -277,7 +277,7 @@ func testSetProcessPoints(t *testing.T) {
 	}
 
 	// Test Decrease number
-	task, err = SetProcessPoints("3", 10, "Maria")
+	task, err = SetProcessPoints("3", 10, "Maria", true)
 	if err != nil {
 		t.Errorf("Error: %s\n", err.Error())
 		t.Fail()
@@ -289,21 +289,21 @@ func testSetProcessPoints(t *testing.T) {
 	}
 
 	// Test negative number
-	task, err = SetProcessPoints("3", -10, "Maria")
+	task, err = SetProcessPoints("3", -10, "Maria", true)
 	if err == nil {
 		t.Errorf("Negative numbers not allowed\n")
 		t.Fail()
 	}
 
 	// Test not assigned user
-	task, err = SetProcessPoints("3", 20, "Max")
+	task, err = SetProcessPoints("3", 20, "Max", true)
 	if err == nil {
 		t.Errorf("Only assigned user is allowed to set process points\n")
 		t.Fail()
 	}
 
 	// Test not existing project
-	task, err = SetProcessPoints("300", 20, "Max")
+	task, err = SetProcessPoints("300", 20, "Max", true)
 	if err == nil { // database returns just not a task
 		t.Errorf("Should be unable to set points on not existing task\n")
 		t.Fail()

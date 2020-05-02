@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { TaskService } from './task.service';
 import { Task } from './task.material';
 import { UserService } from '../user/user.service';
@@ -10,6 +10,8 @@ import { ErrorService } from '../common/error.service';
   styleUrls: ['./task-details.component.scss']
 })
 export class TaskDetailsComponent implements OnInit {
+  @Input() public needUserAssignment: boolean;
+
   public task: Task;
   public newProcessPoints: number;
 
