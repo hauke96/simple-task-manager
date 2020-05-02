@@ -1,3 +1,5 @@
+BEGIN TRANSACTION;
+
 -- Define tables "projects", "tasks", "db_version"
 CREATE TABLE projects(
     id          SERIAL PRIMARY KEY  NOT NULL,
@@ -15,9 +17,6 @@ CREATE TABLE tasks(
     assigned_user       TEXT
 );
 
-CREATE TABLE db_versions(
-    version TEXT NOT NULL
-);
-
--- Store version of the database scheme
 INSERT INTO db_versions VALUES('001');
+
+END TRANSACTION;
