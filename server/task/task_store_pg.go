@@ -47,7 +47,7 @@ func (s *storePg) getTasks(taskIds []string) ([]*Task, error) {
 
 	// Generate "IN" clause with "$1,$2,,..." string for all IDs
 	query := fmt.Sprintf("SELECT * FROM %s WHERE id IN (%s);", s.table, strings.Join(queryPlaceholderStrings, ","))
-	util.LogQuery(query, taskIdNumbers)
+	util.LogQuery(query, taskIdNumbers...)
 
 	rows, err := s.db.Query(query, taskIdNumbers...)
 	if err != nil {

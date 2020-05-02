@@ -54,9 +54,9 @@ func Response(w http.ResponseWriter, data string, status int) {
 	w.Write([]byte(data))
 }
 
-func LogQuery(query string, args []interface{}) {
+func LogQuery(query string, args ...interface{}) {
 	for i, a := range args {
-		query = strings.ReplaceAll(query, fmt.Sprintf("$%d", i+1), fmt.Sprintf("%v", a))
+		query = strings.Replace(query, fmt.Sprintf("$%d", i+1), fmt.Sprintf("%v", a), 1)
 	}
 
 	sigolo.Debug(query)
