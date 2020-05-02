@@ -3,4 +3,7 @@ FROM golang:latest
 COPY . ./stm-server/
 WORKDIR ./stm-server/
 
-ENTRYPOINT go run main.go -c ./config/prod.json
+RUN apt update
+RUN apt install -y postgresql-client
+
+ENTRYPOINT cd database && ./init-db.sh && cd .. && go run main.go -c ./config/prod.json
