@@ -481,7 +481,13 @@ func testRemoveArbitraryUserNotAllowed(t *testing.T) {
 		return
 	}
 
-	p, _ = GetProject("2")
+	p, err = GetProject("2")
+
+	if err != nil{
+		t.Error(err.Error())
+		t.Fail()
+	}
+
 	containsUser := false
 	for _, u := range p.Users {
 		if u == userToRemove {

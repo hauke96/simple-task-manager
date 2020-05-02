@@ -108,7 +108,7 @@ func (s *storePg) delete(id string) error {
 
 // execQuery executed the given query, turns the result into a Project object and closes the query.
 func execQuery(db *sql.DB, query string, params ...interface{}) (*Project, error) {
-	util.LogQuery(query, params)
+	util.LogQuery(query, params...)
 	rows, err := db.Query(query, params...)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not run query")
