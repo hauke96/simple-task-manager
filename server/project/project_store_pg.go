@@ -64,7 +64,7 @@ func (s *storePg) getProject(id string) (*Project, error) {
 
 func (s *storePg) getProjectByTask(taskId string) (*Project, error) {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE task_ids LIKE $1", s.table)
-	return execQuery(s.db, query, taskId)
+	return execQuery(s.db, query, "%"+taskId+"%")
 }
 
 func (s *storePg) addProject(draft *Project, user string) (*Project, error) {
