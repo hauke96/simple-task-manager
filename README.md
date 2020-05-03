@@ -43,6 +43,8 @@ The `README.md` there also gives you instructions on setup, running, building, e
 The `docker-compose.yml` creates three docker container for the client, server and the database.
 Because the container build and test themselves, starting everything probably takes a few minutes.
 
+To increase build time, there's an own [base image for the client](https://hub.docker.com/r/simpletaskmanager/stm-client-base).
+
 During development I recommend to manually start the client and server (see according `README.md` files) and just use the docker container for the database.
 
 # Contribute
@@ -50,23 +52,3 @@ During development I recommend to manually start the client and server (see acco
 Currently there are no guidelines. Feel free to create issues or a pull request.
 
 **Keep in mind:** Development takes place on the `dev` branch or on separate feature branches.
-
-# Feature ideas for future releases
-
-*(See also the issue and project pages)*
-
-* [ ] Better shape handling when creating a project (e.g. delete or move drawn shapes)
-* [ ] Confirm invitation
-* [x] Remove user from project
-* [ ] Add tasks to running project
-* [ ] Leave comments on a task
-* [ ] WebSocket connections for live updates
-* [ ] Chat in the project
-* [ ] Validation of tasks
-  * [ ] Choose between optional validations (uses can mark a task as valid but that doesn't change anything) and mandatory validations (at least *x* validations are needed to finish a task)
-* [ ] Load regions
-  * [ ] From `.osm` and/or `.gpx` file
-  * [ ] From overpass-query / -result
-* [x] Internal development
-  * [x] Use go modules? (may or may not be useful)
-  * [x] Create Docker container for client and server
