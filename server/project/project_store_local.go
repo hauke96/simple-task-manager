@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/hauke96/sigolo"
-
 	"github.com/hauke96/simple-task-manager/server/task"
 	"github.com/hauke96/simple-task-manager/server/util"
 )
@@ -46,10 +45,20 @@ func (s *storeLocal) getProjects(user string) ([]*Project, error) {
 	return result, nil
 }
 
+func (s *storeLocal) getProjectByTask(taskId string) (*Project, error) {
+	for _, p := range s.projects {
+		for _, t := range p.TaskIDs {
+			if t == taskId {
+				return p, nil
+			}
+		}
+	}
+
+	return nil, errors.New("project not found")
+}
+
 func (s *storeLocal) addProject(project *Project, user string) (*Project, error) {
 	project.Id = util.GetId()
-	project.Users = []string{user}
-	project.Owner = user
 	s.projects = append(s.projects, project)
 	return project, nil
 }
@@ -62,7 +71,7 @@ func (s *storeLocal) getProject(id string) (*Project, error) {
 		}
 	}
 
-	return nil, errors.New(fmt.Sprintf("Project with ID '%s' not found", id))
+	return nil, fmt.Errorf("project with ID '%s' not found", id)
 }
 
 func (s *storeLocal) addUser(user, id, potentialOwner string) (*Project, error) {

@@ -10,11 +10,9 @@ import { Attribution, defaults as defaultControls, ScaleLine } from 'ol/control'
 import { Polygon } from 'ol/geom';
 import { Fill, Stroke, Style } from 'ol/style';
 import { Draw } from 'ol/interaction';
-import { polygon as turfPolygon, Units } from '@turf/helpers';
-import squareGrid from '@turf/square-grid';
-import hexGrid from '@turf/hex-grid';
-import triangleGrid from '@turf/triangle-grid';
 import { ErrorService } from '../common/error.service';
+import GeometryType from 'ol/geom/GeometryType';
+import { UserService } from '../user/user.service';
 
 @Component({
   selector: 'app-project-creation',
@@ -22,18 +20,23 @@ import { ErrorService } from '../common/error.service';
   styleUrls: ['./project-creation.component.scss']
 })
 export class ProjectCreationComponent implements OnInit, AfterViewInit {
+  // Project values
   public newProjectName: string;
   public newMaxProcessPoints: number;
+  public projectDescription: string;
+
+  // Polygon division values
   public gridCellSize: number;
   public gridCellShape: string;
+  public lastDrawnPolygon: Feature;
 
   private map: Map;
   private vectorSource: VectorSource;
-  private lastDrawnPolygon: Feature;
 
   constructor(
     private projectService: ProjectService,
     private errorService: ErrorService,
+    private userService: UserService,
     private router: Router
   ) {
   }
@@ -92,7 +95,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
 
     const draw = new Draw({
       source: this.vectorSource,
-      type: 'Polygon'
+      type: GeometryType.POLYGON
     });
     draw.on('drawend', evt => {
       this.lastDrawnPolygon = evt.feature;
@@ -100,64 +103,47 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     this.map.addInteraction(draw);
   }
 
+  // See if the vector layer has some features.
   public get hasTasks(): boolean {
-    return !!this.lastDrawnPolygon;
-  }
-
-  public onDivideButtonClicked() {
-    const polygon = this.lastDrawnPolygon.getGeometry() as Polygon;
-    const extent = polygon.transform('EPSG:3857', 'EPSG:4326').getExtent();
-
-    // Use meters and only show grid cells within the original polygon (-> mask)
-    const options = {
-      units: 'meters' as Units,
-      mask: turfPolygon(polygon.getCoordinates())
-    };
-
-    let grid;
-    switch (this.gridCellShape) {
-      case 'squareGrid':
-        grid = squareGrid(extent, this.gridCellSize, options);
-        break;
-      case 'hexGrid':
-        grid = hexGrid(extent, this.gridCellSize, options);
-        break;
-      case 'triangleGrid':
-        grid = triangleGrid(extent, this.gridCellSize, options);
-        break;
-    }
-
-    this.vectorSource.refresh(); // clears the source
-
-    grid.features.forEach(g => {
-      // Turn geo GeoJSON polygon from turf.js into an openlayers polygon and
-      // transform it into the used coordinate system.
-      let geometry = new Polygon(g.geometry.coordinates);
-      geometry = geometry.transform('EPSG:4326', 'EPSG:3857');
-
-      // create the map feature and set the task-id to select the task when the
-      // polygon has been clicked
-      const feature = new Feature(geometry);
-      this.vectorSource.addFeature(feature);
-    });
+    return !!this.vectorSource && this.vectorSource.getFeatures().length !== 0;
   }
 
   public onSaveButtonClicked() {
-    const coordinates: [[number, number]][] = [];
-    this.vectorSource.getFeatures().map(f => {
+    const polygons: Polygon[] = this.vectorSource.getFeatures().map(f => {
       let polygon = (f.getGeometry() as Polygon);
-      polygon = polygon.transform('EPSG:3857', 'EPSG:4326');
+
+      // Even though we transformed the coordinates after their creation from EPSG:4326 into EPSG:3857, the OSM- and overall Geo-World works
+      // with lat/lon values, so we transform it back.
+      polygon = polygon.transform('EPSG:3857', 'EPSG:4326') as Polygon;
+
       // The openlayers "Polygon" Class can contain multiple rings. Because the
       // user just draws things, there only exist polygons having only one ring.
       // Therefore we take the first and only ring as our task geometry.
-      coordinates.push(polygon.getCoordinates()[0]);
+      return polygon;
     });
 
-    this.projectService.createNewProject(this.newProjectName, this.newMaxProcessPoints, coordinates)
+    this.createProject(this.newProjectName, this.newMaxProcessPoints, this.projectDescription, polygons);
+  }
+
+  public createProject(name: string, maxProcessPoints: number, projectDescription: string, polygons: Polygon[]) {
+    const geometries = polygons.map(p => p.getCoordinates()[0]) as [number, number][][];
+    const owner = this.userService.getUser();
+    this.projectService.createNewProject(name, maxProcessPoints, projectDescription, geometries, [owner], owner)
       .subscribe(project => {
         this.router.navigate(['/manager']);
       }, e => {
         this.errorService.addError('Could not create project');
       });
+  }
+
+// This function expects the geometry to be in the EPSG:4326 projection.
+  onShapesCreated(features: Feature[]) {
+    // Transform geometries into the correct projection
+    features.forEach(f => {
+      f.getGeometry().transform('EPSG:4326', 'EPSG:3857');
+    });
+
+    this.vectorSource.refresh(); // clears the source
+    features.forEach(f => this.vectorSource.addFeature(f));
   }
 }

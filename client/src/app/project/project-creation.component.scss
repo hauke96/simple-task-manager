@@ -22,13 +22,9 @@
 	margin-right: $space-large;
 	max-width: 450px;
 }
-.project-properties-container div {
+// Also apply style to divs in child components using ::ng-deep
+.project-properties-container ::ng-deep .form-entry {
 	margin-bottom: $space-base
-}
-
-.input-field-label {
-	display: inline-block;
-	min-width: 180px;
 }
 
 .map-container {
@@ -45,4 +41,9 @@
 
 .save-button {
 	margin-left: $space-base;
+}
+
+.description-text-area {
+	width: 100%;
+	height: 120px;
 }

@@ -2,9 +2,9 @@ package task
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 	"github.com/hauke96/sigolo"
+	"github.com/pkg/errors"
 	"strings"
 
 	"github.com/hauke96/simple-task-manager/server/config"
@@ -49,10 +49,6 @@ func GetTasks(taskIds []string) ([]*Task, error) {
 	return store.getTasks(taskIds)
 }
 
-func GetTask(id string) (*Task, error) {
-	return store.getTask(id)
-}
-
 // AddTasks sets the ID of the tasks and adds them to the storage.
 func AddTasks(newTasks []*Task) ([]*Task, error) {
 	return store.addTasks(newTasks)
@@ -61,7 +57,7 @@ func AddTasks(newTasks []*Task) ([]*Task, error) {
 func AssignUser(id, user string) (*Task, error) {
 	task, err := store.getTask(id)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "could not get task to assign user")
 	}
 
 	// Task has already an assigned user
@@ -75,25 +71,26 @@ func AssignUser(id, user string) (*Task, error) {
 func UnassignUser(id, user string) (*Task, error) {
 	task, err := store.getTask(id)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "could not get task to unassign user")
 	}
 
 	assignedUser := strings.TrimSpace(task.AssignedUser)
 	if assignedUser != user {
-		err = errors.New("the assigned user and the user to unassign differ")
-		task = nil
+		return nil, errors.New("the assigned user and the user to unassign differ")
 	}
 
 	return store.unassignUser(id)
 }
 
-func SetProcessPoints(id string, newPoints int, user string) (*Task, error) {
+// SetProcessPoints updates the process points on task "id". When "needsAssignedUser" is true, this also checks, whether
+// the assigned user is equal to the "user" parameter.
+func SetProcessPoints(id string, newPoints int, user string, needsAssignedUser bool) (*Task, error) {
 	task, err := store.getTask(id)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "could not get task to set process points")
 	}
 
-	if user != task.AssignedUser {
+	if needsAssignedUser && user != task.AssignedUser {
 		return nil, fmt.Errorf("user '%s' not assigned to this task", user)
 	}
 

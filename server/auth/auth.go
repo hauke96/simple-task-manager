@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/xml"
+	"github.com/pkg/errors"
 	"time"
 
 	"fmt"
@@ -30,7 +31,8 @@ var (
 )
 
 func Init() {
-	tokenInit()
+	err := tokenInit()
+	sigolo.FatalCheck(err)
 
 	oauthRedirectUrl = fmt.Sprintf("%s:%d/oauth_callback", config.Conf.ServerUrl, config.Conf.Port)
 	oauthConsumerKey = config.Conf.OauthConsumerKey
@@ -55,7 +57,14 @@ func Init() {
 
 func OauthLogin(w http.ResponseWriter, r *http.Request) {
 	userConfig := &oauth1a.UserConfig{}
-	configKey := fmt.Sprintf("%x", sha256.Sum256(getRandomBytes(64)))
+
+	randomBytes, err := getRandomBytes(64)
+	if err != nil {
+		util.ResponseInternalError(w, fmt.Sprintf("Coulc not get random bytes for config key: %s", err.Error()))
+		return
+	}
+
+	configKey := fmt.Sprintf("%x", sha256.Sum256(randomBytes))
 
 	clientRedirectUrl, err := util.GetParam("redirect", r)
 	if err != nil {
@@ -72,13 +81,13 @@ func OauthLogin(w http.ResponseWriter, r *http.Request) {
 	httpClient := new(http.Client)
 	err = userConfig.GetRequestToken(service, httpClient)
 	if err != nil {
-		sigolo.Error(err.Error())
+		sigolo.Error("could not get request token from config: %s", err.Error())
 		return
 	}
 
 	url, err := userConfig.GetAuthorizeURL(service)
 	if err != nil {
-		sigolo.Error(err.Error())
+		sigolo.Error("could not get authorization URL from config: %s", err.Error())
 		return
 	}
 
@@ -98,7 +107,7 @@ func OauthCallback(w http.ResponseWriter, r *http.Request) {
 	// Get the config where the request tokens are stored in. They are needed later to get some basic user information.
 	userConfig, ok := configs[configKey]
 	if !ok || userConfig == nil {
-		sigolo.Error("User config not found")
+		util.ResponseBadRequest(w, "User config not found")
 		return
 	}
 	configs[configKey] = nil // Remove the config, we don't need it  anymore
@@ -113,13 +122,13 @@ func OauthCallback(w http.ResponseWriter, r *http.Request) {
 	// Request access token from the OSM server in order to then get some user information.
 	err = requestAccessToken(r, userConfig)
 	if err != nil {
-		sigolo.Error(err.Error())
+		util.ResponseInternalError(w, err.Error())
 		return
 	}
 
 	userName, err := requestUserInformation(userConfig)
 	if err != nil {
-		sigolo.Error(err.Error())
+		util.ResponseInternalError(w, err.Error())
 		return
 	}
 
@@ -131,8 +140,9 @@ func OauthCallback(w http.ResponseWriter, r *http.Request) {
 	tokenValidDuration, _ := time.ParseDuration("24h")
 	validUntil := time.Now().Add(tokenValidDuration).Unix()
 
-	encodedTokenString, done := createTokenString(err, userName, validUntil)
-	if done {
+	encodedTokenString, err := createTokenString(err, userName, validUntil)
+	if err != nil {
+		util.ResponseInternalError(w, err.Error())
 		return
 	}
 
@@ -153,29 +163,25 @@ func requestAccessToken(r *http.Request, userConfig *oauth1a.UserConfig) error {
 func requestUserInformation(userConfig *oauth1a.UserConfig) (string, error) {
 	req, err := http.NewRequest("GET", osmUserDetailsUrl, nil)
 	if err != nil {
-		sigolo.Error("Creating request user information failed: %s", err.Error())
-		return "", err
+		return "", errors.Wrap(err, "Creating request user information failed")
 	}
 
 	// The OSM server expects a signed request
 	err = service.Sign(req, userConfig)
 	if err != nil {
-		sigolo.Error("Signing request failed: %s", err.Error())
-		return "", err
+		return "", errors.Wrap(err, "Signing request failed")
 	}
 
 	client := &http.Client{}
 	response, err := client.Do(req)
 	if err != nil {
-		sigolo.Error("Requesting user information failed: %s", err.Error())
-		return "", err
+		return "", errors.Wrap(err, "Requesting user information failed")
 	}
 
 	responseBody, err := ioutil.ReadAll(response.Body)
 	defer response.Body.Close()
 	if err != nil {
-		sigolo.Error("Could not get response body: %s", err.Error())
-		return "", err
+		return "", errors.Wrap(err, "Could not get response body")
 	}
 
 	var osm util.Osm
@@ -184,11 +190,19 @@ func requestUserInformation(userConfig *oauth1a.UserConfig) (string, error) {
 	return osm.User.DisplayName, nil
 }
 
-func getRandomBytes(count int) []byte {
+func getRandomBytes(count int) ([]byte, error) {
 	bytes := make([]byte, count)
-	// TODO error handling
-	rand.Read(bytes)
-	return bytes
+
+	n, err := rand.Read(bytes)
+
+	if n != count {
+		return nil, errors.New(fmt.Sprintf("Could not read all %d random bytes", count))
+	}
+	if err != nil {
+		return nil, errors.Wrap(err, "Unable to read random bytes")
+	}
+
+	return bytes, nil
 }
 
 // verifyRequest checks the integrity of the token and the "validUntil" date. It

@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NotificationComponent } from './notification.component';
 import { RouterTestingModule } from '@angular/router/testing';
 
-describe('LoadingComponent', () => {
+describe('NotificationComponent', () => {
   let component: NotificationComponent;
   let fixture: ComponentFixture<NotificationComponent>;
 

@@ -35,7 +35,7 @@ Start your database and call this script (from within that folder).
 You need the tools `createdb` and `psql`. Both are -- for ubuntu users -- available in the package `postgresql-client`.
 
 **tl;dr:**
-* Make sure `createdb` and `psql` are installed
+* Make sure `psql` is installed
 * start database (if not already running)
 * `cd server/database/`
 * `./init-db.sh`

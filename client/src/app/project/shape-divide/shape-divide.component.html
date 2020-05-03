@@ -1,0 +1,18 @@
+<form #divisionForm="ngForm">
+	<span>This divides the last drawn polygon into the selected shape. Beware, all other shapes will be removed.</span>
+	<div class="hline"></div>
+	<div class="form-entry">
+		<span class="input-field-label">Shape size:</span>
+		<input type="number" [(ngModel)]="gridCellSize" [disabled]="!hasTasks" required name="shapeSizeField">
+		meters
+	</div>
+	<div class="form-entry">
+		<span class="input-field-label">Shape:</span>
+		<select [(ngModel)]="gridCellShape" [disabled]="!hasTasks" required name="shapeSelection">
+			<option value="squareGrid">square</option>
+			<option value="hexGrid">hexagon</option>
+			<option value="triangleGrid">triangle</option>
+		</select>
+	</div>
+	<button (click)="onDivideButtonClicked()" [disabled]="!divisionForm.form.valid && !hasTasks">Divide</button>
+</form>

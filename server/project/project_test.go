@@ -235,27 +235,26 @@ func testAddAndGetProject(t *testing.T) {
 
 	user := "Jack"
 	p := Project{
-		Id:      "this should be overwritten",
 		Name:    "Test name",
 		TaskIDs: []string{"t-11"},
-		Users:   []string{"noname-user"},
-		Owner:   "noname-user",
+		Users:   []string{user, "user2"},
+		Owner:   user,
 	}
 
 	newProject, err := AddProject(&p, user)
 	if err != nil {
-		t.Error("Adding should work: %w", err)
+		t.Errorf("Adding should work: %s", err.Error())
 		t.Fail()
 		return
 	}
 
-	if len(newProject.Users) != 1 {
-		t.Errorf("User amount should be 1 but was %d", len(newProject.Users))
+	if len(newProject.Users) != 2 {
+		t.Errorf("User amount should be 2 but was %d", len(newProject.Users))
 		t.Fail()
 		return
 	}
-	if newProject.Users[0] != user {
-		t.Errorf("User should be '%s' but was '%s'", user, newProject.Users[0])
+	if newProject.Users[0] != user || newProject.Users[1] != "user2" {
+		t.Errorf("User not matching")
 		t.Fail()
 		return
 	}
@@ -482,7 +481,13 @@ func testRemoveArbitraryUserNotAllowed(t *testing.T) {
 		return
 	}
 
-	p, _ = GetProject("2")
+	p, err = GetProject("2")
+
+	if err != nil{
+		t.Error(err.Error())
+		t.Fail()
+	}
+
 	containsUser := false
 	for _, u := range p.Users {
 		if u == userToRemove {

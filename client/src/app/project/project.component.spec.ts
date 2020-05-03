@@ -23,7 +23,8 @@ describe('ProjectComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {snapshot: {data: {tasks: [task]}}}
-        }]
+        }
+      ]
     })
       .compileComponents();
   }));

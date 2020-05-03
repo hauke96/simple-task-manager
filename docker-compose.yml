@@ -1,6 +1,13 @@
 version: '3.4'
 
 services:
+  stm-client-base:
+    build:
+      network: host
+      context: ./client/
+      dockerfile: Dockerfile-base
+    container_name: stm-client-base
+    network_mode: host
   stm-server:
     build:
       network: host
@@ -12,6 +19,8 @@ services:
       - "8080:8080"
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
+    depends_on:
+      - "stm-db"
   stm-client:
     build:
       network: host
@@ -35,3 +44,9 @@ services:
       - "5432:5432"
     volumes:
       - "./postgres-data:/var/lib/postgresql/data"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 1s
+      timeout: 2s
+      retries: 30
+      start_period: 1s

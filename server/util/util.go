@@ -1,7 +1,6 @@
 package util
 
 import (
-	"errors"
 	"fmt"
 	"github.com/hauke96/sigolo"
 	"net/http"
@@ -14,7 +13,7 @@ var (
 )
 
 const (
-	VERSION = "0.7.0"
+	VERSION = "0.8.0"
 )
 
 func GetId() string {
@@ -26,14 +25,13 @@ func GetId() string {
 func GetParam(param string, r *http.Request) (string, error) {
 	value := r.FormValue(param)
 	if strings.TrimSpace(value) == "" {
-		errMsg := fmt.Sprintf("Parameter '%s' not specified", param)
-		return "", errors.New(errMsg)
+		return "", fmt.Errorf("parameter '%s' not specified", param)
 	}
 
 	return value, nil
 }
 
-func GetIntParam(param string, w http.ResponseWriter, r *http.Request) (int, error) {
+func GetIntParam(param string, r *http.Request) (int, error) {
 	valueString, err := GetParam(param, r)
 	if err != nil {
 		return 0, err
@@ -43,19 +41,23 @@ func GetIntParam(param string, w http.ResponseWriter, r *http.Request) (int, err
 }
 
 func ResponseBadRequest(w http.ResponseWriter, err string) {
-	sigolo.Error("Response with status %d: %s", http.StatusBadRequest, err)
-	w.WriteHeader(http.StatusBadRequest)
-	w.Write([]byte(err))
+	Response(w, err, http.StatusBadRequest)
 }
 
 func ResponseInternalError(w http.ResponseWriter, err string) {
-	sigolo.Error("Response with status %d: %s", http.StatusInternalServerError, err)
-	w.WriteHeader(http.StatusInternalServerError)
-	w.Write([]byte(err))
+	Response(w, err, http.StatusInternalServerError)
 }
 
 func Response(w http.ResponseWriter, data string, status int) {
 	sigolo.Error("Response with status %d: %s", status, data)
 	w.WriteHeader(status)
 	w.Write([]byte(data))
+}
+
+func LogQuery(query string, args ...interface{}) {
+	for i, a := range args {
+		query = strings.Replace(query, fmt.Sprintf("$%d", i+1), fmt.Sprintf("%v", a), 1)
+	}
+
+	sigolo.Debug(query)
 }

@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/hauke96/sigolo"
+	"github.com/hauke96/simple-task-manager/server/util"
+	"github.com/pkg/errors"
 	"strconv"
 	"strings"
 )
@@ -28,30 +30,50 @@ func (s *storePg) init(db *sql.DB) {
 }
 
 func (s *storePg) getTasks(taskIds []string) ([]*Task, error) {
-	ids := strings.Join(taskIds, ",")
-	query := fmt.Sprintf("SELECT * FROM %s WHERE id IN (%s);", s.table, ids)
-	sigolo.Debug(query)
+	// Turn the given taskIDs into a slice of "interface{}", because the "Query" function below need this type.
+	// Also create the query parameter placeholder string ("$1", "$2", etc.).
+	taskIdNumbers := make([]interface{}, len(taskIds))
+	queryPlaceholderStrings := make([]string, len(taskIds))
+	for i, _ := range taskIds {
+		n, err := strconv.Atoi(taskIds[i])
 
-	rows, err := s.db.Query(query)
+		if err != nil {
+			return nil, err
+		}
+
+		taskIdNumbers[i] = n
+		queryPlaceholderStrings[i] = fmt.Sprintf("$%d", i+1)
+	}
+
+	// Generate "IN" clause with "$1,$2,,..." string for all IDs
+	query := fmt.Sprintf("SELECT * FROM %s WHERE id IN (%s);", s.table, strings.Join(queryPlaceholderStrings, ","))
+	util.LogQuery(query, taskIdNumbers...)
+
+	rows, err := s.db.Query(query, taskIdNumbers...)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "error executing query")
 	}
 	defer rows.Close()
 
+	// Read all tasks from the returned rows of the query
 	tasks := make([]*Task, 0)
 	for rows.Next() {
 		var t taskRow
 		err = rows.Scan(&t.id, &t.processPoints, &t.maxProcessPoints, &t.geometry, &t.assignedUser)
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "unable to scan task row")
 		}
 
 		task, err := rowToTask(rows)
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "error converting row to task")
 		}
 
 		tasks = append(tasks, task)
+	}
+
+	if len(tasks) == 0 {
+		return nil, errors.New(fmt.Sprintf("Tasks do not exist"))
 	}
 
 	return tasks, nil
@@ -73,7 +95,7 @@ func (s *storePg) addTasks(newTasks []*Task) ([]*Task, error) {
 	for _, t := range newTasks {
 		id, err := s.addTask(t)
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrapf(err, "error adding task '%s'", t.Id)
 		}
 
 		taskIds = append(taskIds, id)
@@ -85,12 +107,12 @@ func (s *storePg) addTasks(newTasks []*Task) ([]*Task, error) {
 func (s *storePg) addTask(task *Task) (string, error) {
 	geometryBytes, err := json.Marshal(task.Geometry)
 	if err != nil {
-		return "", err
+		sigolo.Error("Cannot parse geometry:\n%v", task.Geometry)
+		return "", errors.Wrapf(err, "unable to marshal geometry of task '%s'", task.Id)
 	}
 
-	query := fmt.Sprintf("INSERT INTO %s(process_points, max_process_points, geometry, assigned_user) VALUES('%d', '%d', '%s', '%s') RETURNING *;",
-		s.table, task.ProcessPoints, task.MaxProcessPoints, string(geometryBytes), task.AssignedUser)
-	t, err := execQuery(s.db, query)
+	query := fmt.Sprintf("INSERT INTO %s(process_points, max_process_points, geometry, assigned_user) VALUES($1, $2, $3, $4) RETURNING *;", s.table)
+	t, err := execQuery(s.db, query, task.ProcessPoints, task.MaxProcessPoints, string(geometryBytes), task.AssignedUser)
 
 	if err == nil && t != nil {
 		return t.Id, nil
@@ -100,31 +122,37 @@ func (s *storePg) addTask(task *Task) (string, error) {
 }
 
 func (s *storePg) assignUser(id, user string) (*Task, error) {
-	query := fmt.Sprintf("UPDATE %s SET assigned_user='%s' WHERE id=%s RETURNING *;", s.table, user, id)
-	return execQuery(s.db, query)
+	query := fmt.Sprintf("UPDATE %s SET assigned_user=$1 WHERE id=$2 RETURNING *;", s.table)
+	return execQuery(s.db, query, user, id)
 }
 
 func (s *storePg) unassignUser(id string) (*Task, error) {
-	query := fmt.Sprintf("UPDATE %s SET assigned_user='' WHERE id=%s RETURNING *;", s.table, id)
-	return execQuery(s.db, query)
+	query := fmt.Sprintf("UPDATE %s SET assigned_user='' WHERE id=$1 RETURNING *;", s.table)
+	return execQuery(s.db, query, id)
 }
 
 func (s *storePg) setProcessPoints(id string, newPoints int) (*Task, error) {
-	query := fmt.Sprintf("UPDATE %s SET process_points=%d WHERE id=%s RETURNING *;", s.table, newPoints, id)
-	return execQuery(s.db, query)
+	query := fmt.Sprintf("UPDATE %s SET process_points=$1 WHERE id=$2 RETURNING *;", s.table)
+	return execQuery(s.db, query, newPoints, id)
 }
 
 // execQuery executed the given query, turns the result into a Task object and closes the query.
-func execQuery(db *sql.DB, query string) (*Task, error) {
-	sigolo.Debug(query)
-	rows, err := db.Query(query)
+func execQuery(db *sql.DB, query string, params ...interface{}) (*Task, error) {
+	util.LogQuery(query, params)
+	rows, err := db.Query(query, params...)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
 	rows.Next()
-	return rowToTask(rows)
+	t, err := rowToTask(rows)
+
+	if t == nil && err == nil {
+		return nil, errors.New(fmt.Sprintf("Task does not exist"))
+	}
+
+	return t, err
 }
 
 // rowToTask turns the current row into a Task object. This does not close the row.

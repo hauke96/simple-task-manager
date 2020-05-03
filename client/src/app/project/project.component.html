@@ -1,40 +1,46 @@
 <app-toolbar>
 	<div class="back-button-container">
 		<button [routerLink]="['/manager']">&#60; Back</button>
-		<p class="project-label">Project: {{thisProject?.name}}</p>
+		<p class="project-label">Project: {{project?.name}}</p>
 	</div>
 </app-toolbar>
 <div class="root-container">
 	<div class="task-list-details-container">
+		<div *ngIf="project?.description.trim().length !== 0">
+			<h2>Description:</h2>
+			<div class="description-text">{{project?.description}}</div>
+		</div>
 		<app-tabs [tabs]="['Tasks', 'Users', 'Settings']" #tabs>
 			<div *ngIf="tabs.tabIndex === 0">
 				<div class="tab-container">
-					<h1>Tasks</h1>
-					<app-task-list *ngIf="tasks" [projectId]="thisProject?.id" [tasks]="tasks"></app-task-list>
+					<h2>Tasks</h2>
+					<app-task-list *ngIf="tasks" [projectId]="project?.id" [tasks]="tasks"></app-task-list>
 				</div>
 			</div>
 			<div *ngIf="tabs.tabIndex === 1">
 				<div class="tab-container">
-					<h1>Users</h1>
-					<app-user-invitation class="tab-container-item" [projectId]="thisProject?.id"></app-user-invitation>
-					<app-user-list [project]="thisProject"></app-user-list>
+					<h2>Users</h2>
+					<app-user-invitation *ngIf="isOwner()" class="tab-container-item"
+										 [projectId]="project?.id"></app-user-invitation>
+					<app-user-list [project]="project"></app-user-list>
 				</div>
 			</div>
 			<div *ngIf="tabs.tabIndex === 2">
 				<div class="tab-container">
-					<h1>Settings</h1>
-					<app-project-settings [projectId]="thisProject?.id" [projectOwner]="thisProject.owner"></app-project-settings>
+					<h2>Settings</h2>
+					<app-project-settings [projectId]="project?.id"
+										  [projectOwner]="project.owner"></app-project-settings>
 				</div>
 			</div>
 		</app-tabs>
 
 		<div class="task-details-container">
 			<h1>Task Details</h1>
-			<app-task-details></app-task-details>
+			<app-task-details [needUserAssignment]="project?.needsAssignment"></app-task-details>
 		</div>
 	</div>
 	<div class="map-container">
-		<h1>Map</h1>
+		<h2>Map</h2>
 		<app-task-map *ngIf="tasks" [tasks]="tasks" class="map"></app-task-map>
 	</div>
 </div>

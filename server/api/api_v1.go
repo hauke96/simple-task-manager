@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/hauke96/sigolo"
 	"io/ioutil"
@@ -44,14 +43,16 @@ func getProjects(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 func addProject(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		errMsg := fmt.Sprintf("Error reading request body: %s", err.Error())
-		sigolo.Error(errMsg)
-		util.ResponseBadRequest(w, errMsg)
+		util.ResponseBadRequest(w, err.Error())
 		return
 	}
 
 	var draftProject project.Project
-	json.Unmarshal(bodyBytes, &draftProject)
+	err = json.Unmarshal(bodyBytes, &draftProject)
+	if err != nil {
+		util.ResponseInternalError(w, err.Error())
+		return
+	}
 
 	updatedProject, err := project.AddProject(&draftProject, token.User)
 	if err != nil {
@@ -102,7 +103,7 @@ func getTasks(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 		return
 	}
 	if !userOwnsTasks {
-		sigolo.Error("At least one task belongs to a project where the user '%s' is not part of", token.User)
+		sigolo.Error("At least one task belongs to a project where the user '%s' is not a member of", token.User)
 		util.Response(w, "Not all tasks belong to user", http.StatusForbidden)
 		return
 	}
@@ -126,7 +127,11 @@ func addTask(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	}
 
 	var tasks []*task.Task
-	json.Unmarshal(bodyBytes, &tasks)
+	err = json.Unmarshal(bodyBytes, &tasks)
+	if err != nil {
+		util.ResponseInternalError(w, err.Error())
+		return
+	}
 
 	updatedTasks, err := task.AddTasks(tasks)
 	if err != nil {
@@ -141,7 +146,6 @@ func addTask(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 func assignUser(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	taskId, err := util.GetParam("id", r)
 	if err != nil {
-		sigolo.Error(err.Error())
 		util.ResponseBadRequest(w, err.Error())
 		return
 	}
@@ -150,7 +154,6 @@ func assignUser(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 
 	task, err := task.AssignUser(taskId, user)
 	if err != nil {
-		sigolo.Error(err.Error())
 		util.ResponseInternalError(w, err.Error())
 		return
 	}
@@ -164,7 +167,6 @@ func assignUser(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 func unassignUser(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	taskId, err := util.GetParam("id", r)
 	if err != nil {
-		sigolo.Error(err.Error())
 		util.ResponseBadRequest(w, err.Error())
 		return
 	}
@@ -173,7 +175,6 @@ func unassignUser(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 
 	task, err := task.UnassignUser(taskId, user)
 	if err != nil {
-		sigolo.Error(err.Error())
 		util.ResponseInternalError(w, err.Error())
 		return
 	}
@@ -187,21 +188,24 @@ func unassignUser(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 func setProcessPoints(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	taskId, err := util.GetParam("id", r)
 	if err != nil {
-		sigolo.Error(err.Error())
 		util.ResponseBadRequest(w, err.Error())
 		return
 	}
 
-	processPoints, err := util.GetIntParam("process_points", w, r)
+	processPoints, err := util.GetIntParam("process_points", r)
 	if err != nil {
-		sigolo.Error(err.Error())
 		util.ResponseBadRequest(w, err.Error())
 		return
 	}
 
-	task, err := task.SetProcessPoints(taskId, processPoints, token.User)
+	project, err := project.GetProjectByTask(taskId)
 	if err != nil {
-		sigolo.Error(err.Error())
+		util.ResponseInternalError(w, err.Error())
+		return
+	}
+
+	task, err := task.SetProcessPoints(taskId, processPoints, token.User, project.NeedsAssignment)
+	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
 	}

@@ -4,6 +4,7 @@ import { ProjectService } from './project.service';
 import { TaskService } from '../task/task.service';
 import { Project } from './project.material';
 import { Task } from '../task/task.material';
+import { UserService } from '../user/user.service';
 
 @Component({
   selector: 'app-project',
@@ -11,20 +12,27 @@ import { Task } from '../task/task.material';
   styleUrls: ['./project.component.scss']
 })
 export class ProjectComponent implements OnInit {
-  public thisProject: Project;
+  public project: Project;
   public tasks: Task[];
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private projectService: ProjectService,
-    private taskService: TaskService
+    private taskService: TaskService,
+    private userService: UserService
   ) {
   }
 
   ngOnInit(): void {
-    this.thisProject = this.route.snapshot.data.project;
+    this.project = this.route.snapshot.data.project;
     this.tasks = this.route.snapshot.data.tasks;
     this.taskService.selectTask(this.tasks[0]);
+
+    this.projectService.projectChanged.subscribe(p => this.project = p);
+  }
+
+  public isOwner(): boolean {
+    return this.userService.getUser() === this.project.owner;
   }
 }

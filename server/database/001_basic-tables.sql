@@ -1,4 +1,6 @@
--- Define tables "projects", "db_version"
+BEGIN TRANSACTION;
+
+-- Define tables "projects", "tasks", "db_version"
 CREATE TABLE projects(
     id          SERIAL PRIMARY KEY  NOT NULL,
     name        TEXT                NOT NULL,
@@ -8,16 +10,13 @@ CREATE TABLE projects(
 );
 
 CREATE TABLE tasks(
-    id                  SERIAL PRIMARY KEY  NOT NULL,
+    id                  SERIAL PRIMARY KEY NOT NULL,
     process_points      INT,
     max_process_points  INT,
-    geometry            TEXT, -- String representation of [][]float
+    geometry            TEXT,
     assigned_user       TEXT
 );
 
-CREATE TABLE db_versions(
-    version TEXT NOT NULL
-);
-
--- Store version of the database scheme
 INSERT INTO db_versions VALUES('001');
+
+END TRANSACTION;

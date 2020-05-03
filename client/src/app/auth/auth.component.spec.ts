@@ -7,12 +7,7 @@ import { UserService } from '../user/user.service';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { NgZone } from '@angular/core';
-
-class MockRouter {
-  navigate(commands: any[]) {
-    return of(true).toPromise();
-  }
-}
+import { MockRouter } from '../common/mock-router';
 
 describe('AuthComponent', () => {
   let component: AuthComponent;

@@ -1,6 +1,6 @@
 {
   "name": "simple-task-manager",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "scripts": {
     "ng": "ng",
     "dev": "ng serve --watch",
@@ -23,8 +23,8 @@
     "@turf/hex-grid": "^6.0.2",
     "@turf/square-grid": "^6.0.2",
     "@turf/triangle-grid": "^6.0.1",
-    "@types/openlayers": "^4.6.17",
-    "ol": "^6.2.1",
+    "@types/ol": "^6.3.1",
+    "ol": "^6.3.1",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
