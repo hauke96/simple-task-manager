@@ -16,3 +16,7 @@ Here you'll find some documentation about the simple task manager. This is order
 * enable HTTPS
 * create SSL certificates
 * automatic renewal of SSL certs
+
+### testing
+* write server and client tests
+* run these tests
