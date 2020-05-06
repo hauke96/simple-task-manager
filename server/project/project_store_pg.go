@@ -106,20 +106,6 @@ func (s *storePg) delete(id string) error {
 	return err
 }
 
-func (s *storePg) verifyMembership(id string, user string) (bool, error) {
-	query := fmt.Sprintf("SELECT * FROM %s WHERE id=$1 AND $2=ANY(users)", s.table)
-
-	util.LogQuery(query, id, user)
-	rows, err := s.db.Query(query, id, user)
-	if err != nil {
-		return false, errors.Wrap(err, fmt.Sprintf("error membership of user %s in project %s", user, id))
-	}
-	defer rows.Close()
-
-	// If there's a next row, then the user "user" is in the list of users in project "id"
-	return rows.Next(), nil
-}
-
 // execQuery executed the given query, turns the result into a Project object and closes the query.
 func execQuery(db *sql.DB, query string, params ...interface{}) (*Project, error) {
 	util.LogQuery(query, params...)
