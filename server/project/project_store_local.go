@@ -132,19 +132,3 @@ func (s *storeLocal) getTasks(id string) ([]*task.Task, error) {
 
 	return task.GetTasks(p.TaskIDs)
 }
-
-func (s *storeLocal) verifyMembership(id string, user string) (bool, error) {
-	p, err := s.getProject(id)
-
-	if err != nil {
-		return false, err
-	}
-
-	for _, u := range p.Users {
-		if u == user {
-			return true, nil
-		}
-	}
-
-	return false, nil
-}

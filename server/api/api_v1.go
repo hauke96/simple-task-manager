@@ -198,7 +198,7 @@ func setProcessPoints(w http.ResponseWriter, r *http.Request, token *auth.Token)
 		return
 	}
 
-	project, err := project.GetProjectByTask(taskId)
+	project, err := project.GetProjectByTask(taskId, token.User)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return

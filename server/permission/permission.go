@@ -33,7 +33,7 @@ func VerifyOwnership(projectId string, user string) error {
 
 	// If there's a next row, then the user "user" is in the owner of the project "projectId"
 	if !rows.Next() {
-		return errors.New(fmt.Sprintf("user %s is not the owner of project %s", user, projectId)
+		return errors.New(fmt.Sprintf("user %s is not the owner of project %s", user, projectId))
 	}
 
 	return nil
@@ -52,7 +52,7 @@ func VerifyMembershipProject(projectId string, user string) error {
 
 	// If there's a next row, then the user "user" is in the list of members of project "projectId"
 	if !rows.Next() {
-		return errors.New(fmt.Sprintf("user %s is not a member of project %s", user, projectId)
+		return errors.New(fmt.Sprintf("user %s is not a member of project %s", user, projectId))
 	}
 
 	return nil
@@ -71,7 +71,7 @@ func VerifyMembershipTask(taskId string, user string) error {
 
 	// If there's a next row, then the given task in in the list of a project where the given user is a member of.
 	if !rows.Next() {
-		return errors.New(fmt.Sprintf("user %s is not a member of the project where the task %s is in", user, taskId)
+		return errors.New(fmt.Sprintf("user %s is not a member of the project where the task %s is in", user, taskId))
 	}
 
 	return nil

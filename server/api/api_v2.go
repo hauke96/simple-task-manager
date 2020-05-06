@@ -162,7 +162,8 @@ func setProcessPoints_v2(w http.ResponseWriter, r *http.Request, token *auth.Tok
 		return
 	}
 
-	project, err := project.GetProjectByTask(taskId)
+	// TODO use permission service
+	project, err := project.GetProjectByTask(taskId, token.User)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return

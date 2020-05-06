@@ -30,7 +30,6 @@ type store interface {
 	removeUser(id string, userToRemove string) (*Project, error)
 	delete(id string) error
 	getTasks(id string) ([]*task.Task, error)
-	verifyMembership(id string, user string) (bool, error)
 }
 
 var (
@@ -90,15 +89,16 @@ func AddProject(project *Project, user string) (*Project, error) {
 }
 
 func GetProject(id string, potentialMember string) (*Project, error) {
+	// TODO remove use permission service
 	// Check if user is a member of the project. If not, throw error
-	userIsMember, err := IsUserInProject(id, potentialMember)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not get project: user membership verification failed")
-	}
-
-	if !userIsMember {
-		return nil, fmt.Errorf("the user '%s' is not a member of the project '%s'", potentialMember, id)
-	}
+	//userIsMember, err := IsUserInProject(id, potentialMember)
+	//if err != nil {
+	//	return nil, errors.Wrap(err, "could not get project: user membership verification failed")
+	//}
+	//
+	//if !userIsMember {
+	//	return nil, fmt.Errorf("the user '%s' is not a member of the project '%s'", potentialMember, id)
+	//}
 
 	return projectStore.getProject(id)
 }
@@ -110,15 +110,16 @@ func GetProjectByTask(taskId string, potentialMember string) (*Project, error) {
 		return nil, errors.Wrap(err, "error getting project")
 	}
 
-	userIsMember, err := projectStore.verifyMembership(project.Id, potentialMember)
-
-	if err != nil {
-		return nil, errors.Wrap(err, "could not get project: user membership verification failed")
-	}
-	
-	if !userIsMember{
-		return nil, errors.New(fmt.Sprintf("user %s is not a member of project %s, where the task %s belongs to", potentialMember, project.Id, taskId))
-	}
+	// TODO remove and use permission service
+	//userIsMember, err := projectStore.verifyMembership(project.Id, potentialMember)
+	//
+	//if err != nil {
+	//	return nil, errors.Wrap(err, "could not get project: user membership verification failed")
+	//}
+	//
+	//if !userIsMember{
+	//	return nil, errors.New(fmt.Sprintf("user %s is not a member of project %s, where the task %s belongs to", potentialMember, project.Id, taskId))
+	//}
 	
 	return project, nil
 }
@@ -155,15 +156,16 @@ func LeaveProject(id string, potentialMember string) (*Project, error) {
 		return nil, fmt.Errorf("the owner '%s' is not allowed to leave the project '%s'", potentialMember, p.Id)
 	}
 
+	// TODO remove use permission service
 	// Check if user is a member of the project. If not, throw error
-	userIsMember, err := IsUserInProject(id, potentialMember)
-	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("cannot remove user %s from project: membership verification failed", potentialMember))
-	}
-
-	if !userIsMember {
-		return nil, fmt.Errorf("the user '%s' is not a member of the project '%s'", potentialMember, p.Id)
-	}
+	//userIsMember, err := IsUserInProject(id, potentialMember)
+	//if err != nil {
+	//	return nil, errors.Wrap(err, fmt.Sprintf("cannot remove user %s from project: membership verification failed", potentialMember))
+	//}
+	//
+	//if !userIsMember {
+	//	return nil, fmt.Errorf("the user '%s' is not a member of the project '%s'", potentialMember, p.Id)
+	//}
 
 	return projectStore.removeUser(id, potentialMember)
 }
@@ -179,16 +181,17 @@ func RemoveUser(id, requestingUser, userToRemove string) (*Project, error) {
 		return nil, fmt.Errorf("user '%s' is not allowed to remove another user", requestingUser)
 	}
 
+	// TODO remove and use permission service
 	// Check if user is already in project. If so, just do nothing and return
-	projectContainsUser,err := projectStore.verifyMembership(id, userToRemove)
-
-	if err != nil {
-		return nil, errors.Wrap(err, "cannot remove user: verification of membership failed")
-	}
-
-	if !projectContainsUser {
-		return nil, errors.New("cannot remove user: the user is not a member of the project")
-	}
+	//projectContainsUser,err := projectStore.verifyMembership(id, userToRemove)
+	//
+	//if err != nil {
+	//	return nil, errors.Wrap(err, "cannot remove user: verification of membership failed")
+	//}
+	//
+	//if !projectContainsUser {
+	//	return nil, errors.New("cannot remove user: the user is not a member of the project")
+	//}
 
 	return projectStore.removeUser(id, userToRemove)
 }
@@ -251,30 +254,21 @@ func DeleteProject(id, potentialOwner string) error {
 }
 
 func GetTasks(id string, user string) ([]*task.Task, error) {
-	p, err := projectStore.getProject(id)
+	_, err := projectStore.getProject(id)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not get project")
 	}
 
+	// TODO remove use permission service
 	// Only members of the project can get tasks
-	userIsMember, err := IsUserInProject(id, user)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not get tasks: user membership verification failed")
-	}
-
-	if !userIsMember {
-		return nil, fmt.Errorf("the user '%s' is not a member of the project '%s'", user, p.Id)
-	}
+	//userIsMember, err := IsUserInProject(id, user)
+	//if err != nil {
+	//	return nil, errors.Wrap(err, "could not get tasks: user membership verification failed")
+	//}
+	//
+	//if !userIsMember {
+	//	return nil, fmt.Errorf("the user '%s' is not a member of the project '%s'", user, p.Id)
+	//}
 
 	return projectStore.getTasks(id)
-}
-
-func IsUserInProject(id string, user string) (bool, error) {
-	ok, err := projectStore.verifyMembership(id, user)
-
-	if err != nil {
-		return false, errors.Wrap(err, fmt.Sprintf("error verifying membership of user %s in project %s", user, id))
-	}
-
-	return ok, nil
 }
