@@ -53,7 +53,7 @@ func testVerifyOwnership(t *testing.T) {
 	// Test ownership of tasks of project 1
 	b, err := VerifyOwnership("Peter", []string{"1"})
 	if err != nil {
-		t.Error("Verification of ownership should work: %w", err)
+		t.Errorf("Verification of ownership should work: %s", err.Error())
 		t.Fail()
 		return
 	}
@@ -66,7 +66,7 @@ func testVerifyOwnership(t *testing.T) {
 	// Test ownership of tasks of project 2
 	b, err = VerifyOwnership("Peter", []string{"2", "3", "4"})
 	if err != nil {
-		t.Error("Verification of ownership should work: %w", err)
+		t.Errorf("Verification of ownership should work: %s", err.Error())
 		t.Fail()
 		return
 	}
@@ -114,7 +114,7 @@ func testGetProjects(t *testing.T) {
 	// For Peter (being part of only project 1)
 	userProjects, err = GetProjects("Peter")
 	if err != nil {
-		t.Error("Getting should work: %w", err)
+		t.Errorf("Getting should work: %s", err.Error())
 		t.Fail()
 		return
 	}
@@ -148,7 +148,7 @@ func TestGetTasks_cache(t *testing.T) {
 func testGetTasks(t *testing.T) {
 	tasks, err := GetTasks("1", "Peter")
 	if err != nil {
-		t.Error("Get should work: %w", err)
+		t.Errorf("Get should work: %s", err.Error())
 		t.Fail()
 		return
 	}
@@ -295,7 +295,7 @@ func testAddUser(t *testing.T) {
 
 	p, err := AddUser(newUser, "1", "Peter")
 	if err != nil {
-		t.Error("This should work: %w", err)
+		t.Errorf("This should work: %s", err.Error())
 		t.Fail()
 		return
 	}
@@ -348,7 +348,7 @@ func testAddUserTwice(t *testing.T) {
 
 	_, err := AddUser(newUser, "1", "Peter")
 	if err != nil {
-		t.Error("This should work: %w", err)
+		t.Errorf("This should work: %s", err.Error())
 		t.Fail()
 		return
 	}
@@ -382,7 +382,7 @@ func testRemoveUser(t *testing.T) {
 
 	p, err := RemoveUser("1", "Peter", userToRemove)
 	if err != nil {
-		t.Error("This should work: %w", err)
+		t.Errorf("This should work: %s", err.Error())
 		t.Fail()
 		return
 	}
@@ -436,7 +436,7 @@ func testRemoveNonOwnerUser(t *testing.T) {
 	// Carl is not owner and removes himself, which is ok
 	p, err := RemoveUser("2", "Carl", userToRemove)
 	if err != nil {
-		t.Error("This should work: %w", err)
+		t.Errorf("This should work: %s", err.Error())
 		t.Fail()
 		return
 	}
@@ -476,7 +476,7 @@ func testRemoveArbitraryUserNotAllowed(t *testing.T) {
 	// Michael is not member of the project and should not be allowed to remove anyone
 	p, err := RemoveUser("2", "Michael", userToRemove)
 	if err == nil {
-		t.Error("This should not work: %w", err)
+		t.Errorf("This should not work: %s", err.Error())
 		t.Fail()
 		return
 	}
@@ -506,7 +506,7 @@ func testRemoveArbitraryUserNotAllowed(t *testing.T) {
 	userToRemove = "Nina" // Not a member of the project
 	p, err = RemoveUser("2", "Peter", userToRemove)
 	if err == nil {
-		t.Error("This should not work: %w", err)
+		t.Errorf("This should not work: %s", err.Error())
 		t.Fail()
 		return
 	}
@@ -564,7 +564,7 @@ func testLeaveProject(t *testing.T) {
 
 	p, err := LeaveProject("2", userToRemove)
 	if err != nil {
-		t.Error("This should work: %w", err)
+		t.Errorf("This should work: %s", err.Error())
 		t.Fail()
 		return
 	}
@@ -630,6 +630,8 @@ func TestDeleteProject_cache(t *testing.T) {
 func testDeleteProject(t *testing.T) {
 	id := "1" // owned by "Peter"
 
+	// Try to remove with now-owning user
+
 	err := DeleteProject(id, "Maria") // Maria does not own this project
 	if err == nil {
 		t.Error("Maria does not own this project, this should not work")
@@ -637,9 +639,18 @@ func testDeleteProject(t *testing.T) {
 		return
 	}
 
+	_, err = GetProject(id)
+	if err != nil {
+		t.Errorf("The project should exist: %s", err.Error())
+		t.Fail()
+		return
+	}
+
+	// Actually remove project
+
 	err = DeleteProject(id, "Peter") // Maria does not own this project
 	if err != nil {
-		t.Error("Peter owns this project, this should work")
+		t.Errorf("Peter owns this project, this should work: %s", err.Error())
 		t.Fail()
 		return
 	}
@@ -654,6 +665,64 @@ func testDeleteProject(t *testing.T) {
 	err = DeleteProject("45356475", "Peter")
 	if err == nil {
 		t.Error("This project does not exist, this should not work")
+		t.Fail()
+		return
+	}
+}
+
+
+func TestVerifyMembership_pg(t *testing.T) {
+	if !*useDatabase {
+		t.SkipNow()
+		return
+	}
+
+	preparePg()
+	testVerifyMembership(t, )
+}
+
+func TestVerifyMembership_cache(t *testing.T) {
+	prepareCache()
+	testVerifyMembership(t)
+}
+
+func testVerifyMembership(t *testing.T) {
+	isMember, err := projectStore.verifyMembership("2", "Donny")
+	if !isMember {
+		t.Errorf("Donny should be a member")
+		t.Fail()
+		return
+	}
+	if err != nil {
+		t.Errorf("Checking Membership of Maria failed: %s", err.Error())
+		t.Fail()
+		return
+	}
+
+	// Check Peter (who isn't a member)
+
+	isMember, err = projectStore.verifyMembership("2", "Peter")
+	if isMember {
+		t.Errorf("Peter should not be a member")
+		t.Fail()
+		return
+	}
+	if err != nil {
+		t.Errorf("Checking Membership of Peter failed: %s", err.Error())
+		t.Fail()
+		return
+	}
+
+	// Check empty string
+
+	isMember, err = projectStore.verifyMembership("2", "")
+	if isMember {
+		t.Errorf("Empty string should not be a member")
+		t.Fail()
+		return
+	}
+	if err != nil {
+		t.Errorf("Checking Membership of an empty string failed: %s", err.Error())
 		t.Fail()
 		return
 	}

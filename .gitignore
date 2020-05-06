@@ -3,6 +3,7 @@ server/server
 server/server.debug
 server/coverage.out
 server/go.sum
+server/test.log
 
 # IDE stuff
 **.idea

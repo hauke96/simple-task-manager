@@ -155,6 +155,13 @@ func testAssignUser(t *testing.T) {
 		t.Errorf("Should be unable to assign user to not existing task\n")
 		t.Fail()
 	}
+
+	// Assign user who is not a member should fail
+	_, err = AssignUser("2", "non-member user")
+	if err == nil {
+		t.Errorf("Should not be able to assigned user who is not a member of the project")
+		t.Fail()
+	}
 }
 
 func TestAssignUserTwice_pg(t *testing.T) {
@@ -221,27 +228,9 @@ func testUnassignUser(t *testing.T) {
 		t.Errorf("Should be unable to unassign user from not existing task\n")
 		t.Fail()
 	}
-}
 
-func TestUnassignDifferentUser_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
-
-	preparePg()
-	AssignUser("2", "assigned-user")
-	testUnassignDifferentUser(t)
-}
-
-func TestUnassignDifferentUser_cache(t *testing.T) {
-	prepareCache()
-	AssignUser("2", "assigned-user")
-	testUnassignDifferentUser(t)
-}
-
-func testUnassignDifferentUser(t *testing.T) {
-	_, err := UnassignUser("2", "different assigned-user")
+	// Unassign totally different user
+	_, err = UnassignUser("2", "different assigned-user")
 	if err == nil {
 		t.Errorf("Should not be able to unassigned different user")
 		t.Fail()

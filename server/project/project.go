@@ -30,6 +30,7 @@ type store interface {
 	removeUser(id string, userToRemove string) (*Project, error)
 	delete(id string) error
 	getTasks(id string) ([]*task.Task, error)
+	verifyMembership(id string, user string) (bool, error)
 }
 
 var (
@@ -99,7 +100,7 @@ func GetProjectByTask(taskId string) (*Project, error) {
 func AddUser(user, id, potentialOwner string) (*Project, error) {
 	p, err := projectStore.getProject(id)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "unable to get project to add user")
 	}
 
 	// Only the owner is allowed to invite
@@ -128,9 +129,14 @@ func LeaveProject(id string, user string) (*Project, error) {
 		return nil, fmt.Errorf("the owner '%s' is not allowed to leave the project '%s'", user, p.Id)
 	}
 
-	// Check if user is exists in project. If not, throw error
-	if !isUserInProject(p, user) {
-		return nil, fmt.Errorf("the user '%s' is not part of the project '%s'", user, p.Id)
+	// Check if user is a member of the project. If not, throw error
+	userIsMember, err := IsUserInProject(id, user)
+	if err != nil {
+		return nil, err
+	}
+
+	if !userIsMember {
+		return nil, fmt.Errorf("the user '%s' is not a member of the project '%s'", user, p.Id)
 	}
 
 	return projectStore.removeUser(id, user)
@@ -227,20 +233,24 @@ func GetTasks(id string, user string) ([]*task.Task, error) {
 	}
 
 	// Only members of the project can get tasks
-	if !isUserInProject(p, user) {
+	userIsMember, err := IsUserInProject(id, user)
+	if err != nil {
+		return nil, err
+	}
+
+	if !userIsMember {
 		return nil, fmt.Errorf("the user '%s' is not a member of the project '%s'", user, p.Id)
 	}
 
 	return projectStore.getTasks(id)
 }
 
-func isUserInProject(p *Project, user string) bool {
-	userIsInProject := false
-	for _, u := range p.Users {
-		if u == user {
-			userIsInProject = true
-			break
-		}
+func IsUserInProject(id string, user string) (bool, error) {
+	ok, err := projectStore.verifyMembership(id, user)
+
+	if err != nil {
+		return false, errors.Wrap(err, fmt.Sprintf("Error verifying membership of user %s in project %s", user, id))
 	}
-	return userIsInProject
+
+	return ok, nil
 }
