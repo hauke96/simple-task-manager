@@ -14,6 +14,8 @@ import (
 	"github.com/hauke96/simple-task-manager/server/util"
 )
 
+// TODO remove this api version
+
 func Init_v1(router *mux.Router) (*mux.Router, string) {
 	router_v1 := router.PathPrefix("/v1").Subrouter()
 
