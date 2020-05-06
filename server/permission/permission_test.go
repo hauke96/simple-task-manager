@@ -1,15 +1,12 @@
 package permission
 
 import (
-	"flag"
 	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/config"
 	"testing"
 
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 )
-
-var useDatabase = flag.Bool("with-db", false, "Whether to use the database as well (next to the cache) or not")
 
 func prepare() {
 	config.Conf = &config.Config{

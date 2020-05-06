@@ -52,7 +52,7 @@ echo "Execute tests"
 echo
 
 # go test github.com/hauke96/simple-task-manager/server/permission -coverprofile=coverage.out -v ./... -args -with-db true | tee test.log
-go test -coverprofile=coverage.out -v ./... -args -with-db true | tee test.log
+go test -coverprofile=coverage.out -v ./... | tee test.log
 
 # Show failed functions with file and line number. This makes it a bit easier to find them.
 echo

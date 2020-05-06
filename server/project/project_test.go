@@ -1,7 +1,6 @@
 package project
 
 import (
-	"flag"
 	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/permission"
 	"testing"
@@ -12,8 +11,6 @@ import (
 
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 )
-
-var useDatabase = flag.Bool("with-db", false, "Whether to use the database as well (next to the cache) or not")
 
 func preparePg() {
 	config.Conf = &config.Config{
@@ -26,36 +23,9 @@ func preparePg() {
 	task.Init()
 }
 
-func prepareCache() {
-	config.Conf = &config.Config{
-		Store: "cache",
-	}
-
-	sigolo.LogLevel = sigolo.LOG_DEBUG
-	Init()
-	permission.Init()
-	task.Init()
-}
-
-func TestVerifyOwnership_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
-
+func TestVerifyOwnership(t *testing.T) {
 	preparePg()
-	testVerifyOwnership(t)
-}
 
-func TestVerifyOwnership_cache(t *testing.T) {
-	t.SkipNow()
-	return
-
-	prepareCache()
-	testVerifyOwnership(t)
-}
-
-func testVerifyOwnership(t *testing.T) {
 	// Test ownership of tasks of project 1
 	b, err := VerifyOwnership("Peter", []string{"1"})
 	if err != nil {
@@ -83,25 +53,9 @@ func testVerifyOwnership(t *testing.T) {
 	}
 }
 
-func TestGetProjects_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
-
+func TestGetProjects(t *testing.T) {
 	preparePg()
-	testGetProjects(t)
-}
 
-func TestGetProjects_cache(t *testing.T) {
-	t.SkipNow()
-	return
-
-	prepareCache()
-	testGetProjects(t)
-}
-
-func testGetProjects(t *testing.T) {
 	// For Maria (being part of project 1 and 2)
 	userProjects, err := GetProjects("Maria")
 	if err != nil {
@@ -139,25 +93,9 @@ func testGetProjects(t *testing.T) {
 	}
 }
 
-func TestGetTasks_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
-
+func TestGetTasks(t *testing.T) {
 	preparePg()
-	testGetTasks(t)
-}
 
-func TestGetTasks_cache(t *testing.T) {
-	t.SkipNow()
-	return
-
-	prepareCache()
-	testGetTasks(t)
-}
-
-func testGetTasks(t *testing.T) {
 	tasks, err := GetTasks("1", "Peter")
 	if err != nil {
 		t.Errorf("Get should work: %s", err.Error())
@@ -225,25 +163,9 @@ func testGetTasks(t *testing.T) {
 	}
 }
 
-func TestAddAndGetProject_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
-
+func TestAddAndGetProject(t *testing.T) {
 	preparePg()
-	testAddAndGetProject(t)
-}
 
-func TestAddAndGetProject_cache(t *testing.T) {
-	t.SkipNow()
-	return
-
-	prepareCache()
-	testAddAndGetProject(t)
-}
-
-func testAddAndGetProject(t *testing.T) {
 	if config.Conf.Store == "cache" {
 		util.NextId = 6
 	}
@@ -290,25 +212,9 @@ func testAddAndGetProject(t *testing.T) {
 	}
 }
 
-func TestAddUser_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
-
+func TestAddUser(t *testing.T) {
 	preparePg()
-	testAddUser(t)
-}
 
-func TestAddUser_cache(t *testing.T) {
-	t.SkipNow()
-	return
-
-	prepareCache()
-	testAddUser(t)
-}
-
-func testAddUser(t *testing.T) {
 	newUser := "new user"
 
 	p, err := AddUser(newUser, "1", "Peter")
@@ -346,25 +252,9 @@ func testAddUser(t *testing.T) {
 	}
 }
 
-func TestAddUserTwice_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
-
+func TestAddUserTwice(t *testing.T) {
 	preparePg()
-	testAddUserTwice(t)
-}
 
-func TestAddUserTwice_cache(t *testing.T) {
-	t.SkipNow()
-	return
-
-	prepareCache()
-	testAddUserTwice(t)
-}
-
-func testAddUserTwice(t *testing.T) {
 	newUser := "another-new-user"
 
 	_, err := AddUser(newUser, "1", "Peter")
@@ -383,25 +273,9 @@ func testAddUserTwice(t *testing.T) {
 	}
 }
 
-func TestRemoveUser_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
-
+func TestRemoveUser(t *testing.T) {
 	preparePg()
-	testRemoveUser(t)
-}
 
-func TestRemoveUser_cache(t *testing.T) {
-	t.SkipNow()
-	return
-
-	prepareCache()
-	testRemoveUser(t)
-}
-
-func testRemoveUser(t *testing.T) {
 	userToRemove := "Maria"
 
 	p, err := RemoveUser("1", "Peter", userToRemove)
@@ -439,25 +313,9 @@ func testRemoveUser(t *testing.T) {
 	}
 }
 
-func TestRemoveNonOwnerUser_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
-
+func TestRemoveNonOwnerUser(t *testing.T) {
 	preparePg()
-	testRemoveNonOwnerUser(t)
-}
 
-func TestRemoveNonOwnerUser_cache(t *testing.T) {
-	t.SkipNow()
-	return
-
-	prepareCache()
-	testRemoveNonOwnerUser(t)
-}
-
-func testRemoveNonOwnerUser(t *testing.T) {
 	userToRemove := "Carl"
 
 	// Carl is not owner and removes himself, which is ok
@@ -482,25 +340,9 @@ func testRemoveNonOwnerUser(t *testing.T) {
 	}
 }
 
-func TestRemoveArbitraryUserNotAllowed_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
-
+func TestRemoveArbitraryUserNotAllowed(t *testing.T) {
 	preparePg()
-	testRemoveArbitraryUserNotAllowed(t)
-}
 
-func TestRemoveArbitraryUserNotAllowed_cache(t *testing.T) {
-	t.SkipNow()
-	return
-
-	prepareCache()
-	testRemoveArbitraryUserNotAllowed(t)
-}
-
-func testRemoveArbitraryUserNotAllowed(t *testing.T) {
 	userToRemove := "Anna"
 
 	// Michael is not member of the project and should not be allowed to remove anyone
@@ -542,25 +384,9 @@ func testRemoveArbitraryUserNotAllowed(t *testing.T) {
 	}
 }
 
-func TestRemoveUserTwice_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
-
+func TestRemoveUserTwice(t *testing.T) {
 	preparePg()
-	testRemoveUserTwice(t)
-}
 
-func TestRemoveUserTwice_cache(t *testing.T) {
-	t.SkipNow()
-	return
-
-	prepareCache()
-	testRemoveUserTwice(t)
-}
-
-func testRemoveUserTwice(t *testing.T) {
 	_, err := RemoveUser("2", "Maria", "John")
 	if err != nil {
 		t.Error("This should work: ", err)
@@ -577,25 +403,9 @@ func testRemoveUserTwice(t *testing.T) {
 	}
 }
 
-func TestLeaveProject_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
-
+func TestLeaveProject(t *testing.T) {
 	preparePg()
-	testLeaveProject(t)
-}
 
-func TestLeaveProject_cache(t *testing.T) {
-	t.SkipNow()
-	return
-
-	prepareCache()
-	testLeaveProject(t)
-}
-
-func testLeaveProject(t *testing.T) {
 	userToRemove := "Anna"
 
 	p, err := LeaveProject("2", userToRemove)
@@ -648,25 +458,9 @@ func testLeaveProject(t *testing.T) {
 	}
 }
 
-func TestDeleteProject_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
-
+func TestDeleteProject(t *testing.T) {
 	preparePg()
-	testDeleteProject(t)
-}
 
-func TestDeleteProject_cache(t *testing.T) {
-	t.SkipNow()
-	return
-
-	prepareCache()
-	testDeleteProject(t)
-}
-
-func testDeleteProject(t *testing.T) {
 	id := "1" // owned by "Peter"
 
 	// Try to remove with now-owning user

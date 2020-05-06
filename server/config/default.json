@@ -4,6 +4,5 @@
 	"oauth-consumer-key": "TWaSD2RpZbtxuV5reVZ7jOQNDGmPjDux2BGK3zUy",
 	"oauth-secret": "a8K9wAU4Z8v8G7ayxnOpjnsLknkW72Txh62Nsu1C",
 	"osm-base-url": "https://master.apis.dev.openstreetmap.org",
-	"debug-logging": true,
-	"store": "postgres"
+	"debug-logging": true
 }

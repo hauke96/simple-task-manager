@@ -1,11 +1,9 @@
 package task
 
 import (
-	"flag"
 	"fmt"
 	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/permission"
-	"github.com/hauke96/simple-task-manager/server/util"
 	"testing"
 
 	"github.com/hauke96/simple-task-manager/server/config"
@@ -13,9 +11,7 @@ import (
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 )
 
-var useDatabase = flag.Bool("with-db", false, "Whether to use the database as well (next to the cache) or not")
-
-func preparePg() {
+func prepare() {
 	config.Conf = &config.Config{
 		Store: "postgres",
 	}
@@ -25,35 +21,9 @@ func preparePg() {
 	permission.Init()
 }
 
-func prepareCache() {
-	config.Conf = &config.Config{
-		Store: "cache",
-	}
+func TestGetTasks(t *testing.T) {
+	prepare()
 
-	sigolo.LogLevel = sigolo.LOG_DEBUG
-	Init()
-	permission.Init()
-}
-
-func TestGetTasks_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
-
-	preparePg()
-	testGetTasks(t)
-}
-
-func TestGetTasks_cache(t *testing.T) {
-	t.SkipNow()
-	return
-
-	prepareCache()
-	testGetTasks(t)
-}
-
-func testGetTasks(t *testing.T) {
 	ids := []string{"2", "3"}
 
 	tasks, err := GetTasks(ids, "Clara")
@@ -93,26 +63,9 @@ func testGetTasks(t *testing.T) {
 	}
 }
 
-func TestAddTasks_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
+func TestAddTasks(t *testing.T) {
+	prepare()
 
-	preparePg()
-	testAddTasks(t)
-}
-
-func TestAddTasks_cache(t *testing.T) {
-	t.SkipNow()
-	return
-
-	prepareCache()
-	util.NextId = 5
-	testAddTasks(t)
-}
-
-func testAddTasks(t *testing.T) {
 	rawTask := &Task{
 		ProcessPoints:    5,
 		MaxProcessPoints: 250,
@@ -136,25 +89,9 @@ func testAddTasks(t *testing.T) {
 	}
 }
 
-func TestAssignUser_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
+func TestAssignUser(t *testing.T) {
+	prepare()
 
-	preparePg()
-	testAssignUser(t)
-}
-
-func TestAssignUser_cache(t *testing.T) {
-	t.SkipNow()
-	return
-
-	prepareCache()
-	testAssignUser(t)
-}
-
-func testAssignUser(t *testing.T) {
 	task, err := AssignUser("2", "assigned-user")
 	if err != nil {
 		t.Errorf("Error: %s\n", err.Error())
@@ -181,25 +118,9 @@ func testAssignUser(t *testing.T) {
 	}
 }
 
-func TestAssignUserTwice_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
+func TestAssignUserTwice(t *testing.T) {
+	prepare()
 
-	preparePg()
-	testAssignUserTwice(t)
-}
-
-func TestAssignUserTwice_cache(t *testing.T) {
-	t.SkipNow()
-	return
-
-	prepareCache()
-	testAssignUserTwice(t)
-}
-
-func testAssignUserTwice(t *testing.T) {
 	_, err := AssignUser("4", "foo-bar")
 	if err != nil {
 		t.Errorf("Error: %s\n", err.Error())
@@ -213,27 +134,10 @@ func testAssignUserTwice(t *testing.T) {
 	}
 }
 
-func TestUnassignUser_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
-
-	preparePg()
+func TestUnassignUser(t *testing.T) {
+	prepare()
 	AssignUser("2", "assigned-user")
-	testUnassignUser(t)
-}
 
-func TestUnassignUser_cache(t *testing.T) {
-	t.SkipNow()
-	return
-
-	prepareCache()
-	AssignUser("2", "assigned-user")
-	testUnassignUser(t)
-}
-
-func testUnassignUser(t *testing.T) {
 	task, err := UnassignUser("2", "assigned-user")
 	if err != nil {
 		t.Errorf("Error: %s\n", err.Error())
@@ -260,25 +164,9 @@ func testUnassignUser(t *testing.T) {
 	}
 }
 
-func TestSetProcessPoints_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
+func TestSetProcessPoints(t *testing.T) {
+	prepare()
 
-	preparePg()
-	testSetProcessPoints(t)
-}
-
-func TestSetProcessPoints_cache(t *testing.T) {
-	t.SkipNow()
-	return
-
-	prepareCache()
-	testSetProcessPoints(t)
-}
-
-func testSetProcessPoints(t *testing.T) {
 	// Test Increase number
 	task, err := SetProcessPoints("3", 70, "Maria")
 	if err != nil {

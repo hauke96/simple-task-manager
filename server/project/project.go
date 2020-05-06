@@ -7,7 +7,6 @@ import (
 	"github.com/hauke96/simple-task-manager/server/permission"
 	"github.com/pkg/errors"
 
-	"github.com/hauke96/simple-task-manager/server/config"
 	"github.com/hauke96/simple-task-manager/server/task"
 )
 
@@ -39,16 +38,11 @@ var (
 )
 
 func Init() {
-	if config.Conf.Store == "postgres" {
-		db, err := sql.Open("postgres", "user=postgres password=geheim dbname=stm sslmode=disable")
-		sigolo.FatalCheck(err)
+	db, err := sql.Open("postgres", "user=postgres password=geheim dbname=stm sslmode=disable")
+	sigolo.FatalCheck(err)
 
-		projectStore = &storePg{}
-		projectStore.init(db)
-	} else if config.Conf.Store == "cache" {
-		projectStore = &storeLocal{}
-		projectStore.init(nil)
-	}
+	projectStore = &storePg{}
+	projectStore.init(db)
 }
 
 func GetProjects(user string) ([]*Project, error) {
@@ -104,12 +98,12 @@ func GetProjectByTask(taskId string, potentialMember string) (*Project, error) {
 		return nil, errors.Wrap(err, "user membership verification failed")
 	}
 
-	project, err:= projectStore.getProjectByTask(taskId)
-	
+	project, err := projectStore.getProjectByTask(taskId)
+
 	if err != nil {
 		return nil, errors.Wrap(err, "error getting project")
 	}
-	
+
 	return project, nil
 }
 

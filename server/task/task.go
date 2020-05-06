@@ -7,8 +7,6 @@ import (
 	"github.com/hauke96/simple-task-manager/server/permission"
 	"github.com/pkg/errors"
 	"strings"
-
-	"github.com/hauke96/simple-task-manager/server/config"
 )
 
 type Task struct {
@@ -34,16 +32,11 @@ var (
 )
 
 func Init() {
-	if config.Conf.Store == "postgres" {
-		db, err := sql.Open("postgres", "user=postgres password=geheim dbname=stm sslmode=disable")
-		sigolo.FatalCheck(err)
+	db, err := sql.Open("postgres", "user=postgres password=geheim dbname=stm sslmode=disable")
+	sigolo.FatalCheck(err)
 
-		store = &storePg{}
-		store.init(db)
-	} else if config.Conf.Store == "cache" {
-		store = &storeLocal{}
-		store.init(nil)
-	}
+	store = &storePg{}
+	store.init(db)
 }
 
 func GetTasks(taskIds []string, requestingUser string) ([]*Task, error) {
