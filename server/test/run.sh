@@ -57,7 +57,7 @@ go test -coverprofile=coverage.out -v ./... | tee test.log
 # Show failed functions with file and line number. This makes it a bit easier to find them.
 echo
 echo
-if cat test.log | grep -q "FAIL:"
+if cat test.log | grep -i -q "fail"
 then
 	echo "Failed tests:"
 	FAILED_FUNCTIONS=$(cat test.log | grep "FAIL:" | grep -o " [a-zA-Z0-9_]* " | sed 's/ //g' | tr '\n' ' ')

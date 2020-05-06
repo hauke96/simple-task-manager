@@ -6,16 +6,10 @@ import (
 	"github.com/hauke96/simple-task-manager/server/permission"
 	"testing"
 
-	"github.com/hauke96/simple-task-manager/server/config"
-
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 )
 
 func prepare() {
-	config.Conf = &config.Config{
-		Store: "postgres",
-	}
-
 	sigolo.LogLevel = sigolo.LOG_DEBUG
 	Init()
 	permission.Init()

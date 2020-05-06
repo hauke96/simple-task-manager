@@ -8,19 +8,9 @@ import (
 	"strings"
 )
 
-var (
-	NextId = 0 // public for tests
-)
-
 const (
 	VERSION = "0.9.0-dev"
 )
-
-func GetId() string {
-	id := NextId
-	NextId += 1
-	return strconv.Itoa(id)
-}
 
 func GetParam(param string, r *http.Request) (string, error) {
 	value := r.FormValue(param)

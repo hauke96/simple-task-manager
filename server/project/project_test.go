@@ -5,18 +5,11 @@ import (
 	"github.com/hauke96/simple-task-manager/server/permission"
 	"testing"
 
-	"github.com/hauke96/simple-task-manager/server/config"
 	"github.com/hauke96/simple-task-manager/server/task"
-	"github.com/hauke96/simple-task-manager/server/util"
-
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 )
 
-func preparePg() {
-	config.Conf = &config.Config{
-		Store: "postgres",
-	}
-
+func prepare() {
 	sigolo.LogLevel = sigolo.LOG_DEBUG
 	Init()
 	permission.Init()
@@ -24,7 +17,7 @@ func preparePg() {
 }
 
 func TestVerifyOwnership(t *testing.T) {
-	preparePg()
+	prepare()
 
 	// Test ownership of tasks of project 1
 	b, err := VerifyOwnership("Peter", []string{"1"})
@@ -54,7 +47,7 @@ func TestVerifyOwnership(t *testing.T) {
 }
 
 func TestGetProjects(t *testing.T) {
-	preparePg()
+	prepare()
 
 	// For Maria (being part of project 1 and 2)
 	userProjects, err := GetProjects("Maria")
@@ -94,7 +87,7 @@ func TestGetProjects(t *testing.T) {
 }
 
 func TestGetTasks(t *testing.T) {
-	preparePg()
+	prepare()
 
 	tasks, err := GetTasks("1", "Peter")
 	if err != nil {
@@ -164,11 +157,7 @@ func TestGetTasks(t *testing.T) {
 }
 
 func TestAddAndGetProject(t *testing.T) {
-	preparePg()
-
-	if config.Conf.Store == "cache" {
-		util.NextId = 6
-	}
+	prepare()
 
 	user := "Jack"
 	p := Project{
@@ -213,7 +202,7 @@ func TestAddAndGetProject(t *testing.T) {
 }
 
 func TestAddUser(t *testing.T) {
-	preparePg()
+	prepare()
 
 	newUser := "new user"
 
@@ -253,7 +242,7 @@ func TestAddUser(t *testing.T) {
 }
 
 func TestAddUserTwice(t *testing.T) {
-	preparePg()
+	prepare()
 
 	newUser := "another-new-user"
 
@@ -274,7 +263,7 @@ func TestAddUserTwice(t *testing.T) {
 }
 
 func TestRemoveUser(t *testing.T) {
-	preparePg()
+	prepare()
 
 	userToRemove := "Maria"
 
@@ -314,7 +303,7 @@ func TestRemoveUser(t *testing.T) {
 }
 
 func TestRemoveNonOwnerUser(t *testing.T) {
-	preparePg()
+	prepare()
 
 	userToRemove := "Carl"
 
@@ -341,7 +330,7 @@ func TestRemoveNonOwnerUser(t *testing.T) {
 }
 
 func TestRemoveArbitraryUserNotAllowed(t *testing.T) {
-	preparePg()
+	prepare()
 
 	userToRemove := "Anna"
 
@@ -385,7 +374,7 @@ func TestRemoveArbitraryUserNotAllowed(t *testing.T) {
 }
 
 func TestRemoveUserTwice(t *testing.T) {
-	preparePg()
+	prepare()
 
 	_, err := RemoveUser("2", "Maria", "John")
 	if err != nil {
@@ -404,7 +393,7 @@ func TestRemoveUserTwice(t *testing.T) {
 }
 
 func TestLeaveProject(t *testing.T) {
-	preparePg()
+	prepare()
 
 	userToRemove := "Anna"
 
@@ -459,7 +448,7 @@ func TestLeaveProject(t *testing.T) {
 }
 
 func TestDeleteProject(t *testing.T) {
-	preparePg()
+	prepare()
 
 	id := "1" // owned by "Peter"
 
