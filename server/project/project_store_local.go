@@ -124,11 +124,11 @@ func (s *storeLocal) delete(id string) error {
 	return nil
 }
 
-func (s *storeLocal) getTasks(id string) ([]*task.Task, error) {
+func (s *storeLocal) getTasks(id string, user string) ([]*task.Task, error) {
 	p, err := s.getProject(id)
 	if err != nil {
 		return nil, err
 	}
 
-	return task.GetTasks(p.TaskIDs)
+	return task.GetTasks(p.TaskIDs, user)
 }

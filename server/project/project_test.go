@@ -3,6 +3,7 @@ package project
 import (
 	"flag"
 	"github.com/hauke96/sigolo"
+	"github.com/hauke96/simple-task-manager/server/permission"
 	"testing"
 
 	"github.com/hauke96/simple-task-manager/server/config"
@@ -21,6 +22,7 @@ func preparePg() {
 
 	sigolo.LogLevel = sigolo.LOG_DEBUG
 	Init()
+	permission.Init()
 	task.Init()
 }
 
@@ -31,6 +33,7 @@ func prepareCache() {
 
 	sigolo.LogLevel = sigolo.LOG_DEBUG
 	Init()
+	permission.Init()
 	task.Init()
 }
 
@@ -45,6 +48,9 @@ func TestVerifyOwnership_pg(t *testing.T) {
 }
 
 func TestVerifyOwnership_cache(t *testing.T) {
+	t.SkipNow()
+	return
+
 	prepareCache()
 	testVerifyOwnership(t)
 }
@@ -88,6 +94,9 @@ func TestGetProjects_pg(t *testing.T) {
 }
 
 func TestGetProjects_cache(t *testing.T) {
+	t.SkipNow()
+	return
+
 	prepareCache()
 	testGetProjects(t)
 }
@@ -141,6 +150,9 @@ func TestGetTasks_pg(t *testing.T) {
 }
 
 func TestGetTasks_cache(t *testing.T) {
+	t.SkipNow()
+	return
+
 	prepareCache()
 	testGetTasks(t)
 }
@@ -224,6 +236,9 @@ func TestAddAndGetProject_pg(t *testing.T) {
 }
 
 func TestAddAndGetProject_cache(t *testing.T) {
+	t.SkipNow()
+	return
+
 	prepareCache()
 	testAddAndGetProject(t)
 }
@@ -286,6 +301,9 @@ func TestAddUser_pg(t *testing.T) {
 }
 
 func TestAddUser_cache(t *testing.T) {
+	t.SkipNow()
+	return
+
 	prepareCache()
 	testAddUser(t)
 }
@@ -339,6 +357,9 @@ func TestAddUserTwice_pg(t *testing.T) {
 }
 
 func TestAddUserTwice_cache(t *testing.T) {
+	t.SkipNow()
+	return
+
 	prepareCache()
 	testAddUserTwice(t)
 }
@@ -373,6 +394,9 @@ func TestRemoveUser_pg(t *testing.T) {
 }
 
 func TestRemoveUser_cache(t *testing.T) {
+	t.SkipNow()
+	return
+
 	prepareCache()
 	testRemoveUser(t)
 }
@@ -426,6 +450,9 @@ func TestRemoveNonOwnerUser_pg(t *testing.T) {
 }
 
 func TestRemoveNonOwnerUser_cache(t *testing.T) {
+	t.SkipNow()
+	return
+
 	prepareCache()
 	testRemoveNonOwnerUser(t)
 }
@@ -466,6 +493,9 @@ func TestRemoveArbitraryUserNotAllowed_pg(t *testing.T) {
 }
 
 func TestRemoveArbitraryUserNotAllowed_cache(t *testing.T) {
+	t.SkipNow()
+	return
+
 	prepareCache()
 	testRemoveArbitraryUserNotAllowed(t)
 }
@@ -523,6 +553,9 @@ func TestRemoveUserTwice_pg(t *testing.T) {
 }
 
 func TestRemoveUserTwice_cache(t *testing.T) {
+	t.SkipNow()
+	return
+
 	prepareCache()
 	testRemoveUserTwice(t)
 }
@@ -535,7 +568,7 @@ func testRemoveUserTwice(t *testing.T) {
 		return
 	}
 
-	// "Maria" was removed above to we remove her here the second time
+	// "John" was removed above to we remove him here the second time
 	_, err = RemoveUser("2", "Maria", "John")
 	if err == nil {
 		t.Error("Removing a user twice should not work")
@@ -555,6 +588,9 @@ func TestLeaveProject_pg(t *testing.T) {
 }
 
 func TestLeaveProject_cache(t *testing.T) {
+	t.SkipNow()
+	return
+
 	prepareCache()
 	testLeaveProject(t)
 }
@@ -623,6 +659,9 @@ func TestDeleteProject_pg(t *testing.T) {
 }
 
 func TestDeleteProject_cache(t *testing.T) {
+	t.SkipNow()
+	return
+
 	prepareCache()
 	testDeleteProject(t)
 }
@@ -665,64 +704,6 @@ func testDeleteProject(t *testing.T) {
 	err = DeleteProject("45356475", "Peter")
 	if err == nil {
 		t.Error("This project does not exist, this should not work")
-		t.Fail()
-		return
-	}
-}
-
-
-func TestVerifyMembership_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
-
-	preparePg()
-	testVerifyMembership(t, )
-}
-
-func TestVerifyMembership_cache(t *testing.T) {
-	prepareCache()
-	testVerifyMembership(t)
-}
-
-func testVerifyMembership(t *testing.T) {
-	isMember, err := projectStore.verifyMembership("2", "Donny")
-	if !isMember {
-		t.Errorf("Donny should be a member")
-		t.Fail()
-		return
-	}
-	if err != nil {
-		t.Errorf("Checking Membership of Maria failed: %s", err.Error())
-		t.Fail()
-		return
-	}
-
-	// Check Peter (who isn't a member)
-
-	isMember, err = projectStore.verifyMembership("2", "Peter")
-	if isMember {
-		t.Errorf("Peter should not be a member")
-		t.Fail()
-		return
-	}
-	if err != nil {
-		t.Errorf("Checking Membership of Peter failed: %s", err.Error())
-		t.Fail()
-		return
-	}
-
-	// Check empty string
-
-	isMember, err = projectStore.verifyMembership("2", "")
-	if isMember {
-		t.Errorf("Empty string should not be a member")
-		t.Fail()
-		return
-	}
-	if err != nil {
-		t.Errorf("Checking Membership of an empty string failed: %s", err.Error())
 		t.Fail()
 		return
 	}
