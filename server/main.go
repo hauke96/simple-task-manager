@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/hauke96/kingpin"
 	"github.com/hauke96/sigolo"
+	"github.com/hauke96/simple-task-manager/server/permission"
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 	"os"
 
@@ -49,6 +50,7 @@ func main() {
 	configureLogging()
 
 	// Init of Config, Services, Storages, etc.
+	permission.Init()
 	project.Init()
 	task.Init()
 	auth.Init()
