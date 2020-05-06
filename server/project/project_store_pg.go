@@ -71,7 +71,7 @@ func (s *storePg) addProject(draft *Project, user string) (*Project, error) {
 }
 
 func (s *storePg) addUser(userToAdd string, id string, owner string) (*Project, error) {
-	originalProject, err := GetProject(id)
+	originalProject, err := s.getProject(id)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error getting project with ID '%s'", id)
 	}
@@ -83,7 +83,7 @@ func (s *storePg) addUser(userToAdd string, id string, owner string) (*Project, 
 }
 
 func (s *storePg) removeUser(id string, userToRemove string) (*Project, error) {
-	originalProject, err := GetProject(id)
+	originalProject, err := s.getProject(id)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error getting project with ID '%s'", id)
 	}

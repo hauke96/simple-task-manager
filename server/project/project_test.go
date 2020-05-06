@@ -481,7 +481,7 @@ func testRemoveArbitraryUserNotAllowed(t *testing.T) {
 		return
 	}
 
-	p, err = GetProject("2")
+	p, err = GetProject("2", "Maria")
 
 	if err != nil{
 		t.Error(err.Error())
@@ -639,7 +639,7 @@ func testDeleteProject(t *testing.T) {
 		return
 	}
 
-	_, err = GetProject(id)
+	_, err = GetProject(id, "Peter")
 	if err != nil {
 		t.Errorf("The project should exist: %s", err.Error())
 		t.Fail()
@@ -655,7 +655,7 @@ func testDeleteProject(t *testing.T) {
 		return
 	}
 
-	_, err = GetProject(id)
+	_, err = GetProject(id, "Peter")
 	if err == nil {
 		t.Error("The project should not exist anymore")
 		t.Fail()

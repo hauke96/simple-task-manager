@@ -41,7 +41,7 @@ func getProject_v2_1(w http.ResponseWriter, r *http.Request, token *auth.Token) 
 		return
 	}
 
-	tasks, err := project.GetProject(projectId)
+	tasks, err := project.GetProject(projectId, token.User)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
