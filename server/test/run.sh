@@ -50,5 +50,33 @@ psql -h localhost -U postgres -f dump.sql stm
 cd ..
 echo "Execute tests"
 echo
-go test -coverprofile=coverage.out -v ./... -args -with-db true
-go tool cover -html=coverage.out
+
+go test -coverprofile=coverage.out -v ./... -args -with-db true | tee test.log
+
+# Show failed functions with file and line number. This makes it a bit easier to find them.
+echo
+echo
+if cat test.log | grep -q "FAIL:"
+then
+	echo "Failed tests:"
+	FAILED_FUNCTIONS=$(cat test.log | grep "FAIL:" | grep -o " [a-zA-Z0-9_]* " | sed 's/ //g' | tr '\n' ' ')
+	for FUNC in $FAILED_FUNCTIONS
+	do
+		FUNC_DEF=$(grep --color=never -Hrn "$FUNC" | grep -o --color=never "[a-zA-Z\./_]*\.go:[[:digit:]]*:func $FUNC")
+		echo "    - $FUNC    " | tr -d '\n'
+		echo $FUNC_DEF | grep -o --color=never "[a-zA-Z\./_]*\.go" | tr -d '\n'
+		echo " : " | tr -d '\n'
+		echo $FUNC_DEF | grep -o --color=never "[[:digit:]]*"
+	done
+else
+	echo "PASSED"
+fi
+echo
+echo
+
+rm -f test.log
+
+echo "Open coverage with:"
+echo
+echo "    go tool cover -html=../coverage.out"
+echo
