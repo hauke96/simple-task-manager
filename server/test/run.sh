@@ -1,12 +1,20 @@
 #!/bin/bash
 
+set -e
+
+SLEEP=3
+
+function wait()
+{
+	echo "Wait... ($SLEEP s)"
+	sleep $SLEEP
+}
+
 echo "!! WARNING !!"
 echo "This script will remove the database folder"
 echo
 echo "Any key to continue ..."
 read
-
-set -e
 
 # Switch to "./" (root folder of repo) where the docker-compose.yml and postgres-data is
 cd ../../
@@ -20,15 +28,14 @@ then
 	echo "Stop and remove container 'stm-db'"
 	docker stop stm-db
 	docker rm -f stm-db
+	wait
 fi
 
 echo "Start new 'stm-db' container"
 docker-compose up -d --build stm-db
 
 # Wait until container is up
-SLEEP=1
-echo "Wait for docker container ($SLEEP s)"
-sleep $SLEEP
+wait
 
 echo "Initialize new database"
 cd server/database
