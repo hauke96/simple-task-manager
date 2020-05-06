@@ -8,31 +8,40 @@ read
 
 set -e
 
-# Switch to root dir where the docker-compose.yml and postgres-data is
+# Switch to "./" (root folder of repo) where the docker-compose.yml and postgres-data is
 cd ../../
 
 echo "Remove 'postgres-data' folder"
 sudo rm -rf postgres-data
 
-echo "Stop and remove 'stm-db' docker container and start new one"
-docker stop stm-db
-docker rm stm-db
-docker-compose up -d stm-db
+# If container "stm-db" exists, stop and remove it
+if docker container list | grep -q "stm-db"
+then
+	echo "Stop and remove container 'stm-db'"
+	docker stop stm-db
+	docker rm -f stm-db
+fi
+
+echo "Start new 'stm-db' container"
+docker-compose up -d --build stm-db
 
 # Wait until container is up
-echo "Wait for docker container (5s)"
-sleep 5
+SLEEP=1
+echo "Wait for docker container ($SLEEP s)"
+sleep $SLEEP
 
 echo "Initialize new database"
 cd server/database
 ./init-db.sh
 
 echo "Fill database with dummy data"
+# Switch from "./server/database" into "./server/test"
 cd ../test
 psql -h localhost -U postgres -f dump.sql stm
 
+# Go into ./server folder
+cd ..
 echo "Execute tests"
 echo
-cd ..
 go test -coverprofile=coverage.out -v ./... -args -with-db true
 go tool cover -html=coverage.out
