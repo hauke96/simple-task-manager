@@ -2,8 +2,8 @@ This file describes the client and server tests, how they work, how to write one
 
 # Server tests
 
-Here we have two kinds of tests: Tests for local stores and postgres stores (see the `/doc/architecture/` documentation to see what a "store" is).
-The local stores are not used on production so they might be removed in the future.
+Here we have test which test the service (e.g. the `project.go` file) as well as the store underneath it.
+So we directly work on a real database and can also check whether the SQL statements are working or not.
 
 The interesting part is in the `/server/test` folder where you'll find a `run.sh` script.
 Basically this script starts a docker container and runs the tests, because the postgres store tests need this container.
@@ -16,12 +16,12 @@ See issue [#29](https://github.com/hauke96/simple-task-manager/issues/29) for th
 You have to write two golang tests which use one function.
 
 Lets say you want to write the test `TestGetProjects` to test whether the store returns the correct projects.
-Then you have to create the functions `TestGetProjects_pg(*testing.T)` and `TestGetProjects_cache(*testing.T)` in order to test the postgres and the local store.
-The actual test logic is in a third, private function `testGetProjects(*testing.T)`, which is called by the other two functions.
+Then you have to create the functions `TestGetProjects(*testing.T)` which first calls `prepare()` in order to set up the database.
+After that, you can write the logic you want to test.
 
 ## Run tests
 
-**! IMPORTANT !** All data in your `stm-db` docker container will be removed.
+**! IMPORTANT !** All data in your `postgres-data` folder and your `stm-db` docker container will be removed.
 
 * go into `/server/test`
 * execute `./run.sh`
