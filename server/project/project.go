@@ -25,6 +25,7 @@ type store interface {
 	getProjects(user string) ([]*Project, error)
 	getProject(id string) (*Project, error)
 	getProjectByTask(taskId string) (*Project, error)
+	areTasksUsed(taskIds []string) (bool, error)
 	addProject(draft *Project, user string) (*Project, error)
 	addUser(userToAdd string, id string, owner string) (*Project, error)
 	removeUser(id string, userToRemove string) (*Project, error)
@@ -74,6 +75,14 @@ func AddProject(project *Project, user string) (*Project, error) {
 
 	if len(project.TaskIDs) == 0 {
 		return nil, errors.New("No tasks have been specified")
+	}
+
+	tasksAlreadyUsed, err := projectStore.areTasksUsed(project.TaskIDs)
+	if err != nil {
+		return nil, errors.Wrap(err, "error checking whether given tasks are already used")
+	}
+	if tasksAlreadyUsed {
+		return nil, errors.New("The given tasks are already used in other Projects")
 	}
 
 	if len(project.Description) > maxDescriptionLength {

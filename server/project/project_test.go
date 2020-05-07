@@ -162,7 +162,7 @@ func TestAddAndGetProject(t *testing.T) {
 	user := "Jack"
 	p := Project{
 		Name:    "Test name",
-		TaskIDs: []string{"t-11"},
+		TaskIDs: []string{"11"},
 		Users:   []string{user, "user2"},
 		Owner:   user,
 	}
@@ -196,6 +196,25 @@ func TestAddAndGetProject(t *testing.T) {
 	}
 	if newProject.Owner != user {
 		t.Errorf("Owner should be '%s' but was '%s'", user, newProject.Owner)
+		t.Fail()
+		return
+	}
+}
+
+func TestAddProjectWithUsedTasks(t *testing.T) {
+	prepare()
+
+	user := "Jen"
+	p := Project{
+		Name:    "Test name",
+		TaskIDs: []string{"1", "22", "33"}, // one task already used in a project
+		Users:   []string{user, "user2"},
+		Owner:   user,
+	}
+
+	_, err := AddProject(&p, user)
+	if err == nil {
+		t.Errorf("The tasks are already used. This should not work.")
 		t.Fail()
 		return
 	}
@@ -344,7 +363,7 @@ func TestRemoveArbitraryUserNotAllowed(t *testing.T) {
 
 	p, err = GetProject("2", "Maria")
 
-	if err != nil{
+	if err != nil {
 		t.Error(err.Error())
 		t.Fail()
 	}

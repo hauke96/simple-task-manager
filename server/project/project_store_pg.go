@@ -65,6 +65,32 @@ func (s *storePg) getProjectByTask(taskId string) (*Project, error) {
 	return execQuery(s.db, query, taskId)
 }
 
+// areTasksUsed checks whether any of the given tasks is already part of a project. Returns false and an error in case
+// of an error.
+func (s *storePg) areTasksUsed(taskIds []string) (bool, error) {
+	query := fmt.Sprintf("SELECT COUNT(*) FROM %s WHERE task_ids && $1", s.table)
+
+	util.LogQuery(query, taskIds)
+	rows, err := s.db.Query(query, pq.Array(taskIds))
+	if err != nil {
+		return false, errors.Wrap(err, "could not run query")
+	}
+	defer rows.Close()
+
+	ok := rows.Next()
+	if !ok {
+		return false, errors.New("there is no next row or an error happened")
+	}
+
+	var count int
+	err = rows.Scan(&count)
+	if err != nil {
+		return false, errors.Wrap(err, "could not scan count from rows")
+	}
+
+	return count != 0, nil
+}
+
 func (s *storePg) addProject(draft *Project, user string) (*Project, error) {
 	query := fmt.Sprintf("INSERT INTO %s (name, task_ids, description, users, owner) VALUES($1, $2, $3, $4, $5) RETURNING *", s.table)
 
