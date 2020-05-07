@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/util"
+	"github.com/lib/pq"
 	"github.com/pkg/errors"
 	"strconv"
 	"strings"
@@ -46,6 +47,7 @@ func (s *storePg) getTasks(taskIds []string) ([]*Task, error) {
 	}
 
 	// Generate "IN" clause with "$1,$2,,..." string for all IDs
+	// TODO use postgres arrays
 	query := fmt.Sprintf("SELECT * FROM %s WHERE id IN (%s);", s.table, strings.Join(queryPlaceholderStrings, ","))
 	util.LogQuery(query, taskIdNumbers...)
 
@@ -136,9 +138,21 @@ func (s *storePg) setProcessPoints(id string, newPoints int) (*Task, error) {
 	return execQuery(s.db, query, newPoints, id)
 }
 
+func (s *storePg) delete(taskIds []string) error {
+	query := fmt.Sprintf("DELETE FROM %s WHERE id=ALL($1)", s.table)
+
+	util.LogQuery(query, taskIds)
+	_, err := s.db.Exec(query, pq.Array(taskIds))
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // execQuery executed the given query, turns the result into a Task object and closes the query.
 func execQuery(db *sql.DB, query string, params ...interface{}) (*Task, error) {
-	util.LogQuery(query, params)
+	util.LogQuery(query, params...)
 	rows, err := db.Query(query, params...)
 	if err != nil {
 		return nil, err

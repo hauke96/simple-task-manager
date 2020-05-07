@@ -489,6 +489,14 @@ func TestDeleteProject(t *testing.T) {
 
 	// Actually remove project
 
+	project, err := GetProject(id, "Peter")
+	if err != nil {
+		t.Errorf("Error getting project to relete: %s", err.Error())
+		t.Fail()
+		return
+	}
+	taskIds := project.TaskIDs
+
 	err = DeleteProject(id, "Peter") // Maria does not own this project
 	if err != nil {
 		t.Errorf("Peter owns this project, this should work: %s", err.Error())
@@ -502,6 +510,15 @@ func TestDeleteProject(t *testing.T) {
 		t.Fail()
 		return
 	}
+
+	_, err = task.GetTasks(taskIds, "Peter")
+	if err == nil {
+		t.Error("The tasks should not exist anymore")
+		t.Fail()
+		return
+	}
+
+	// Delete not existing project
 
 	err = DeleteProject("45356475", "Peter")
 	if err == nil {

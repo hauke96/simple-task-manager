@@ -25,6 +25,7 @@ type taskStore interface {
 	assignUser(id, user string) (*Task, error)
 	unassignUser(id string) (*Task, error)
 	setProcessPoints(id string, newPoints int) (*Task, error)
+	delete(taskIds []string) error
 }
 
 var (
@@ -39,6 +40,7 @@ func Init() {
 	store.init(db)
 }
 
+// GetTasks checks the membership of the requesting user and gets the tasks requested by the IDs.
 func GetTasks(taskIds []string, requestingUser string) ([]*Task, error) {
 	err := permission.VerifyMembershipTasks(taskIds, requestingUser)
 	if err != nil {
@@ -106,4 +108,22 @@ func SetProcessPoints(id string, newPoints int, user string) (*Task, error) {
 	}
 
 	return store.setProcessPoints(id, newPoints)
+}
+
+// Delete will remove the given tasks, if the requestingUser is a member of the project these tasks are in.
+// WARNING: This method, unfortunately, doesn't check the task relation to project, so there might be broken references
+// left (from a project to a not existing task). So: USE WITH CARE!!!
+// This relates to the github issue https://github.com/hauke96/simple-task-manager/issues/33
+func Delete(taskIds []string, requestingUser string) error {
+	err := permission.VerifyMembershipTasks(taskIds, requestingUser)
+	if err != nil {
+		return errors.Wrap(err, "user membership verification failed")
+	}
+
+	err = store.delete(taskIds)
+	if err != nil {
+		return errors.Wrap(err, "unable to remove tasks")
+	}
+
+	return nil
 }

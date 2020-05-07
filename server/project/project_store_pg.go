@@ -182,8 +182,9 @@ func rowToProject(rows *sql.Rows) (*Project, error) {
 	return &result, nil
 }
 
-func (s *storePg) getTasks(id string, user string) ([]*task.Task, error) {
-	p, err := s.getProject(id)
+// getTasks will get the tasks for the given projectId and also checks the ownership of the given user.
+func (s *storePg) getTasks(projectId string, user string) ([]*task.Task, error) {
+	p, err := s.getProject(projectId)
 	if err != nil {
 		return nil, err
 	}

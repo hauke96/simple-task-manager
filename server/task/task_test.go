@@ -213,3 +213,26 @@ func TestSetProcessPoints(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestDelete(t *testing.T) {
+	prepare()
+
+	// tasks of project 2
+	taskIds := []string{"2", "3", "4"}
+
+	err := Delete(taskIds, "Maria")
+	if err != nil {
+		t.Errorf("error deleting tasks: %s", err.Error())
+		t.Fail()
+		return
+	}
+
+	for i := 0; i < len(taskIds); i++ {
+		_, err := GetTasks([]string{taskIds[i]}, "Maria")
+		if err == nil {
+			t.Errorf("The task %s should not exist anymore", taskIds[i])
+			t.Fail()
+			return
+		}
+	}
+}

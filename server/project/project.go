@@ -220,13 +220,22 @@ func VerifyOwnership(user string, taskIds []string) (bool, error) {
 	return true, nil
 }
 
-func DeleteProject(id, potentialOwner string) error {
-	err := permission.VerifyOwnership(id, potentialOwner)
+func DeleteProject(projectId, potentialOwner string) error {
+	err := permission.VerifyOwnership(projectId, potentialOwner)
 	if err != nil {
 		return errors.Wrap(err, "ownership verification failed")
 	}
 
-	err = projectStore.delete(id)
+	project, err := projectStore.getProject(projectId)
+	if err != nil {
+		return errors.Wrap(err, "unable to read project before removal")
+	}
+
+	// First delete the tasks, due to ownership check which won't work, when there's no project anymore.
+	task.Delete(project.TaskIDs, potentialOwner)
+
+	// Then remove the project
+	err = projectStore.delete(projectId)
 	if err != nil {
 		return errors.Wrap(err, "could not remove project")
 	}
