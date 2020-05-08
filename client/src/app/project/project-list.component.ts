@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from './../user/user.service';
 import { Project } from './project.material';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ProcessPointColorService } from '../common/process-point-color.service';
 
 @Component({
   selector: 'app-project-list',
@@ -14,7 +15,8 @@ export class ProjectListComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private userService: UserService
+    private userService: UserService,
+    private processPointColorService: ProcessPointColorService
   ) {
   }
 
@@ -28,5 +30,13 @@ export class ProjectListComponent implements OnInit {
 
   public onProjectListItemClicked(id: string) {
     this.router.navigate(['/project', id]);
+  }
+
+  getProcessPointColor(project: Project) {
+    return this.processPointColorService.getProcessPointsColor(project.doneProcessPoints, project.totalProcessPoints);
+  }
+
+  getProcessPointWidth(project: Project): string {
+    return Math.floor(project.doneProcessPoints / project.totalProcessPoints * 50) + 'px';
   }
 }

@@ -10,6 +10,7 @@ import VectorSource from 'ol/source/Vector';
 import { Attribution, defaults as defaultControls, ScaleLine } from 'ol/control';
 import { Polygon } from 'ol/geom';
 import { Fill, Stroke, Style, Text } from 'ol/style';
+import { ProcessPointColorService } from '../common/process-point-color.service';
 
 @Component({
   selector: 'app-task-map',
@@ -25,7 +26,8 @@ export class TaskMapComponent implements AfterViewInit {
 
   constructor(
     private taskService: TaskService,
-    private userService: UserService
+    private userService: UserService,
+    private processPointColorService: ProcessPointColorService
   ) {
   }
 
@@ -36,15 +38,10 @@ export class TaskMapComponent implements AfterViewInit {
       const task = this.tasks.find(t => t.id === feature.get('task_id'));
 
       // Convert process point count to color (0 points = red; max points = green)
-      let r = Math.round(Math.min(255, 512 * (1 - (task.processPoints / task.maxProcessPoints)))).toString(16);
-      let g = Math.round(Math.min(255, 512 * (task.processPoints / task.maxProcessPoints))).toString(16);
-      if (r.length === 1) {
-        r = '0' + r;
-      }
-      if (g.length === 1) {
-        g = '0' + g;
-      }
-      let fillColor = '#' + r + g + '00';
+      const processPoints = task.processPoints;
+      const maxProcessPoints = task.maxProcessPoints;
+
+      let fillColor = this.processPointColorService.getProcessPointsColor(processPoints, maxProcessPoints);
 
       // Border color and fill transparency
       let borderColor = '#009688b0';

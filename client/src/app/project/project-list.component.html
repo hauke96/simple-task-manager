@@ -1,10 +1,12 @@
 <h1>Projekte</h1>
 <div *ngIf="projects?.length !== 0">
 	<div *ngFor="let p of projects" class="list-item" (click)="onProjectListItemClicked(p.id)">
-		<div>
-			{{p.name}} <span class="light-label">({{p.doneProcessPoints}}/{{p.totalProcessPoints}})</span>
-		</div>
-		<div>
+		<span>{{p.name}}</span>
+		<div class="list-item-column">
+			<span class="light-label">({{p.doneProcessPoints}}/{{p.totalProcessPoints}})</span>
+			<div class="border-bar">
+				<div class="color-bar" [style.background-color]="getProcessPointColor(p)" [style.border-color]="getProcessPointColor(p)" [style.width]="getProcessPointWidth(p)"></div>
+			</div>
 			<span class="light-label" *ngIf="p.owner === currentUser">Owned by you</span>
 		</div>
 	</div>
