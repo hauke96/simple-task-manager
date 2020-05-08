@@ -13,6 +13,7 @@ import { Draw } from 'ol/interaction';
 import { ErrorService } from '../../common/error.service';
 import GeometryType from 'ol/geom/GeometryType';
 import { UserService } from '../../user/user.service';
+import Snap from 'ol/interaction/Snap';
 
 @Component({
   selector: 'app-project-creation',
@@ -93,6 +94,10 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       })
     });
 
+    this.addMapInteractions();
+  }
+
+  private addMapInteractions() {
     const draw = new Draw({
       source: this.vectorSource,
       type: GeometryType.POLYGON
@@ -101,6 +106,11 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       this.lastDrawnPolygon = evt.feature;
     });
     this.map.addInteraction(draw);
+
+    const snap = new Snap({
+      source: this.vectorSource
+    });
+    this.map.addInteraction(snap);
   }
 
   // See if the vector layer has some features.
@@ -136,7 +146,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       });
   }
 
-// This function expects the geometry to be in the EPSG:4326 projection.
+  // This function expects the geometry to be in the EPSG:4326 projection.
   onShapesCreated(features: Feature[]) {
     // Transform geometries into the correct projection
     features.forEach(f => {
