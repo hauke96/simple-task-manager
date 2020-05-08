@@ -9,6 +9,9 @@ services:
     container_name: stm-client-base
     network_mode: host
   stm-server:
+    environment:
+      - OAUTH_CONSUMER_KEY
+      - OAUTH_SECRET
     build:
       network: host
       context: ./server/

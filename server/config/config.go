@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"strings"
 
 	"github.com/hauke96/sigolo"
@@ -38,11 +39,19 @@ func LoadConfig(file string) {
 		sigolo.FatalCheck(err)
 	}
 
+	oauthConsumerKey, _ := os.LookupEnv("OAUTH_CONSUMER_KEY")
+	oauthSecret, _ := os.LookupEnv("OAUTH_SECRET")
+
+	// Simply overwrite values read from config
+	Conf.OauthConsumerKey = oauthConsumerKey
+	Conf.OauthSecret = oauthSecret
+
 	sigolo.Info("Use config file '%s'", file)
 
-	wholeConfStr := fmt.Sprintf("%#v", Conf)                            // -> "main.Config{Serve...}"
-	splittedConfStr := strings.Split(wholeConfStr, "{")                 // --> "main.Config" and "Serve...}"
-	propertyString := splittedConfStr[1][0 : len(splittedConfStr[1])-1] // clut last "}" off
+	// Parse config struct to print it:
+	wholeConfStr := fmt.Sprintf("%#v", Conf)                      // -> "main.Config{Serve...}"
+	splitConfStr := strings.Split(wholeConfStr, "{")              // --> "main.Config" and "Serve...}"
+	propertyString := splitConfStr[1][0 : len(splitConfStr[1])-1] // cut last "}" off
 	propertyList := strings.Split(propertyString, ", ")
 
 	sigolo.Info("Config:")
