@@ -2,7 +2,7 @@
 <div *ngIf="projects?.length !== 0">
 	<div *ngFor="let p of projects" class="list-item" (click)="onProjectListItemClicked(p.id)">
 		<div>
-			{{p.name}} <span class="light-label">({{p.id}})</span>
+			{{p.name}} <span class="light-label">({{p.doneProcessPoints}}/{{p.totalProcessPoints}})</span>
 		</div>
 		<div>
 			<span class="light-label" *ngIf="p.owner === currentUser">Owned by you</span>

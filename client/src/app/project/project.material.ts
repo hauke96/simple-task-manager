@@ -5,7 +5,9 @@ export class Project {
               public taskIds: string[],
               public users: string[],
               public owner: string,
-              public needsAssignment: boolean = true
+              public needsAssignment: boolean = true,
+              public totalProcessPoints?: number,
+              public doneProcessPoints?: number
   ) {
   }
 }

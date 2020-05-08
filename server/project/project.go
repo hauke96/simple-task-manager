@@ -11,13 +11,15 @@ import (
 )
 
 type Project struct {
-	Id              string   `json:"id"`
-	Name            string   `json:"name"`
-	TaskIDs         []string `json:"taskIds"`
-	Users           []string `json:"users"`
-	Owner           string   `json:"owner"`
-	Description     string   `json:"description"`
-	NeedsAssignment bool     `json:"needsAssignment"` // When "true", the tasks of this project need to have an assigned user
+	Id                 string   `json:"id"`
+	Name               string   `json:"name"`
+	TaskIDs            []string `json:"taskIds"`
+	Users              []string `json:"users"`
+	Owner              string   `json:"owner"`
+	Description        string   `json:"description"`
+	NeedsAssignment    bool     `json:"needsAssignment"`    // When "true", the tasks of this project need to have an assigned user
+	TotalProcessPoints int      `json:"totalProcessPoints"` // Sum of all maximum process points of all tasks
+	DoneProcessPoints  int      `json:"doneProcessPoints"`  // Sum of all process points that have been set
 }
 
 type store interface {
@@ -47,7 +49,19 @@ func Init() {
 }
 
 func GetProjects(user string) ([]*Project, error) {
-	return projectStore.getProjects(user)
+	projects, err:= projectStore.getProjects(user)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, p:=range projects {
+		err = addProcessPointData(p, user)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return projects, nil
 }
 
 // AddProject adds the project, as requested by user "user".
@@ -98,7 +112,32 @@ func GetProject(id string, potentialMember string) (*Project, error) {
 		return nil, errors.Wrap(err, "user membership verification failed")
 	}
 
-	return projectStore.getProject(id)
+	project, err := projectStore.getProject(id)
+	if err != nil {
+		return nil, errors.Wrap(err, "getting project failed")
+	}
+
+	err = addProcessPointData(project, potentialMember)
+	if err != nil {
+		return nil, err
+	}
+
+	return project, nil
+}
+
+func addProcessPointData(project *Project, potentialMember string) error {
+	tasks, err := GetTasks(project.Id, potentialMember)
+	if err != nil {
+		return errors.Wrap(err, "getting tasks of project failed")
+	}
+
+	// Collect the overall finish-state of the project
+	for _, t := range tasks {
+		sigolo.Info("%s: %d / %d", t.Id, t.ProcessPoints, t.MaxProcessPoints)
+		project.DoneProcessPoints += t.ProcessPoints
+		project.TotalProcessPoints += t.MaxProcessPoints
+	}
+	return nil
 }
 
 func GetProjectByTask(taskId string, potentialMember string) (*Project, error) {
