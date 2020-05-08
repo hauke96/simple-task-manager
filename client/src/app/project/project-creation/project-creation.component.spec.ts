@@ -6,10 +6,10 @@ import { FormsModule } from '@angular/forms';
 import { Polygon } from 'ol/geom';
 import { of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
-import { ProjectService } from './project.service';
-import { Project } from './project.material';
+import { ProjectService } from '../project.service';
+import { Project } from '../project.material';
 import { Feature } from 'ol';
-import { MockRouter } from '../common/mock-router';
+import { MockRouter } from '../../common/mock-router';
 
 describe('ProjectCreationComponent', () => {
   let component: ProjectCreationComponent;

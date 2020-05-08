@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ProjectService } from './project.service';
+import { ProjectService } from '../project.service';
 import { Feature, Map, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import { OSM } from 'ol/source';
@@ -10,9 +10,9 @@ import { Attribution, defaults as defaultControls, ScaleLine } from 'ol/control'
 import { Polygon } from 'ol/geom';
 import { Fill, Stroke, Style } from 'ol/style';
 import { Draw } from 'ol/interaction';
-import { ErrorService } from '../common/error.service';
+import { ErrorService } from '../../common/error.service';
 import GeometryType from 'ol/geom/GeometryType';
-import { UserService } from '../user/user.service';
+import { UserService } from '../../user/user.service';
 
 @Component({
   selector: 'app-project-creation',
