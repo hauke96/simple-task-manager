@@ -7,11 +7,18 @@
 			<div class="border-bar">
 				<div class="color-bar" [style.background-color]="getProcessPointColor(p)" [style.border-color]="getProcessPointColor(p)" [style.width]="getProcessPointWidth(p)"></div>
 			</div>
-			<span class="light-label" *ngIf="p.owner === currentUser">Owned by you</span>
+			<div class="admin-label">
+				<span class="light-label" *ngIf="p.owner === currentUser">*</span>
+			</div>
 		</div>
 	</div>
 </div>
+
 <div *ngIf="projects?.length === 0">
 	<p class="light-label">You currently don't have any projects.</p>
 </div>
-<button class="create-project-button" [routerLink]="['/new-project']">Create project</button>
+
+<div class="bottom-line">
+	<button [routerLink]="['/new-project']">Create project</button>
+	<span class="light-label" *ngIf="projects?.length !== 0">* you own this project</span>
+</div>

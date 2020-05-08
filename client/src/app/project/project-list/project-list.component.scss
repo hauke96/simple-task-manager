@@ -10,16 +10,16 @@
 	align-items: center;
 }
 
-.create-project-button {
-	margin-top: $space-large;
-}
-
 .light-label {
 	color: $gray-mid;
 }
 
+.admin-label {
+	min-width: 10px;
+}
+
 .border-bar {
-	width: 50px;
+	width: 100px;
 	padding: 2px;
 	margin-left: $space-base;
 	margin-right: $space-base;
@@ -33,4 +33,10 @@
 .color-bar {
 	height: $space-base - 4px;
 	border: 1px solid;
+}
+
+.bottom-line {
+	margin-top: $space-large;
+	display: flex;
+	justify-content: space-between;
 }

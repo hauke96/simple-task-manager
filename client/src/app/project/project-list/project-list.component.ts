@@ -37,6 +37,6 @@ export class ProjectListComponent implements OnInit {
   }
 
   getProcessPointWidth(project: Project): string {
-    return Math.floor(project.doneProcessPoints / project.totalProcessPoints * 50) + 'px';
+    return Math.floor(project.doneProcessPoints / project.totalProcessPoints * 100) + 'px';
   }
 }
