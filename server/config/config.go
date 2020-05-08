@@ -17,8 +17,8 @@ var (
 type Config struct {
 	ServerUrl        string `json:"server-url"`
 	Port             int    `json:"port"`
-	OauthConsumerKey string `json:"oauth-consumer-key"`
-	OauthSecret      string `json:"oauth-secret"`
+	OauthConsumerKey string
+	OauthSecret      string
 	OsmBaseUrl       string `json:"osm-base-url"`
 	DebugLogging     bool   `json:"debug-logging"`
 	SslCertFile      string `json:"ssl-cert-file"`
