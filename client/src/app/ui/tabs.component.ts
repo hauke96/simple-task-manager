@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-tabs',
@@ -7,6 +7,8 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class TabsComponent implements OnInit {
   @Input() tabs: string[];
+
+  @Output() tabSelected = new EventEmitter<number>();
 
   public tabTitle: string;
   public tabIndex: number;
@@ -22,5 +24,7 @@ export class TabsComponent implements OnInit {
   public onTabClicked(tabTitle: string) {
     this.tabIndex = this.tabs.indexOf(tabTitle);
     this.tabTitle = tabTitle;
+
+    this.tabSelected.emit(this.tabIndex);
   }
 }
