@@ -15,6 +15,7 @@ import GeometryType from 'ol/geom/GeometryType';
 import { UserService } from '../../user/user.service';
 import Snap from 'ol/interaction/Snap';
 import Modify from 'ol/interaction/Modify';
+import Select, { SelectEvent } from 'ol/interaction/Select';
 
 @Component({
   selector: 'app-project-creation',
@@ -35,6 +36,8 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   private map: Map;
   private vectorSource: VectorSource;
   private modifyInteraction: Modify;
+  private drawInteraction: Draw;
+  private selectInteraction: Select;
 
   constructor(
     private projectService: ProjectService,
@@ -100,19 +103,19 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   }
 
   private addMapInteractions() {
-    const draw = new Draw({
+    this.drawInteraction = new Draw({
       source: this.vectorSource,
       type: GeometryType.POLYGON
     });
-    draw.on('drawend', evt => {
+    this.drawInteraction.on('drawend', evt => {
       this.lastDrawnPolygon = evt.feature;
       this.modifyInteraction.setActive(true);
     });
-    draw.on('drawstart', evt => {
+    this.drawInteraction.on('drawstart', evt => {
       // Disable modify interaction, otherwise it's not possible to click on existing nodes when drawing
       this.modifyInteraction.setActive(false);
     });
-    this.map.addInteraction(draw);
+    this.map.addInteraction(this.drawInteraction);
 
     const snap = new Snap({
       source: this.vectorSource
@@ -123,6 +126,13 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       source: this.vectorSource
     });
     this.map.addInteraction(this.modifyInteraction);
+
+    this.selectInteraction = new Select();
+    this.selectInteraction.setActive(false);
+    this.selectInteraction.on('select', (e: SelectEvent) => {
+      this.vectorSource.removeFeature(e.selected[0]);
+    });
+    this.map.addInteraction(this.selectInteraction);
   }
 
   // See if the vector layer has some features.
@@ -159,7 +169,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   }
 
   // This function expects the geometry to be in the EPSG:4326 projection.
-  onShapesCreated(features: Feature[]) {
+  public onShapesCreated(features: Feature[]) {
     // Transform geometries into the correct projection
     features.forEach(f => {
       f.getGeometry().transform('EPSG:4326', 'EPSG:3857');
@@ -167,5 +177,31 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
 
     this.vectorSource.refresh(); // clears the source
     features.forEach(f => this.vectorSource.addFeature(f));
+  }
+
+  // This function expects the geometry to be in the EPSG:4326 projection.
+  public onShapesUploaded(features: Feature[]) {
+    this.vectorSource.clear();
+
+    this.onShapesCreated(features);
+  }
+
+  onTabSelected(tabIndex: number) {
+    switch (tabIndex) {
+      case 0: // Tab: Draw
+        this.drawInteraction.setActive(true);
+        this.modifyInteraction.setActive(true);
+        this.selectInteraction.setActive(false);
+        break;
+      case 1: // Tab: Upload
+        this.drawInteraction.setActive(false);
+        this.modifyInteraction.setActive(true);
+        this.selectInteraction.setActive(false);
+        break;
+      case 2:
+        this.drawInteraction.setActive(false);
+        this.modifyInteraction.setActive(false);
+        this.selectInteraction.setActive(true);
+    }
   }
 }
