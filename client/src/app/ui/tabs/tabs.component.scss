@@ -1,0 +1,33 @@
+@import "../../../styles";
+
+:host {
+	min-height: 0px;
+	display: flex;
+	flex-direction: column;
+}
+
+button {
+	background-color: white;
+	margin-right: -1px; // get rid of douple sized border between two buttons
+}
+button.selected:hover,
+.selected {
+	border-bottom: 2px solid $color-mid;
+	background-color: $color-very-light;
+}
+
+.tab-list {
+	display: flex;
+	flex-direction: row;
+}
+
+.tab-content {
+//	z-index: -1; // So that the button border is above this border
+	margin-top: -1px;
+	border: 1px solid $color-light;
+	padding: $space-base;
+	min-height: 0px;
+	display: flex;
+	flex-direction: column;
+	overflow: auto;
+}

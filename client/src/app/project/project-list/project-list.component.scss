@@ -1,0 +1,36 @@
+@import "../../../styles";
+
+.list-item {
+	display: flex;
+	justify-content: space-between;
+}
+
+.list-item-column {
+	display: flex;
+	align-items: center;
+}
+
+.create-project-button {
+	margin-top: $space-large;
+}
+
+.light-label {
+	color: $gray-mid;
+}
+
+.border-bar {
+	width: 50px;
+	padding: 2px;
+	margin-left: $space-base;
+	margin-right: $space-base;
+	//border-radius: 50%;
+	border: 1px solid $color-light;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+.color-bar {
+	height: $space-base - 4px;
+	border: 1px solid;
+}
