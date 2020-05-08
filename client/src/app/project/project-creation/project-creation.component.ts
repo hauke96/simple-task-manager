@@ -14,6 +14,7 @@ import { ErrorService } from '../../common/error.service';
 import GeometryType from 'ol/geom/GeometryType';
 import { UserService } from '../../user/user.service';
 import Snap from 'ol/interaction/Snap';
+import Modify from 'ol/interaction/Modify';
 
 @Component({
   selector: 'app-project-creation',
@@ -33,6 +34,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
 
   private map: Map;
   private vectorSource: VectorSource;
+  private modifyInteraction: Modify;
 
   constructor(
     private projectService: ProjectService,
@@ -104,6 +106,11 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     });
     draw.on('drawend', evt => {
       this.lastDrawnPolygon = evt.feature;
+      this.modifyInteraction.setActive(true);
+    });
+    draw.on('drawstart', evt => {
+      // Disable modify interaction, otherwise it's not possible to click on existing nodes when drawing
+      this.modifyInteraction.setActive(false);
     });
     this.map.addInteraction(draw);
 
@@ -111,6 +118,11 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       source: this.vectorSource
     });
     this.map.addInteraction(snap);
+
+    this.modifyInteraction = new Modify({
+      source: this.vectorSource
+    });
+    this.map.addInteraction(this.modifyInteraction);
   }
 
   // See if the vector layer has some features.
