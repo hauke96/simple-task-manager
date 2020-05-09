@@ -25,4 +25,15 @@ describe('TabsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should select tab correctly', () => {
+    const eventSpy = spyOn(component.tabSelected, 'emit').and.callThrough();
+    component.tabs = ['tab1', 'tab2'];
+
+    component.onTabClicked('tab1');
+    expect(eventSpy).toHaveBeenCalledWith(0);
+
+    component.onTabClicked('tab2');
+    expect(eventSpy).toHaveBeenCalledWith(1);
+  });
 });

@@ -33,11 +33,13 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   public gridCellShape: string;
   public lastDrawnPolygon: Feature;
 
+  // public for tests
+  public modifyInteraction: Modify;
+  public drawInteraction: Draw;
+  public selectInteraction: Select;
+  public vectorSource: VectorSource;
+
   private map: Map;
-  private vectorSource: VectorSource;
-  private modifyInteraction: Modify;
-  private drawInteraction: Draw;
-  private selectInteraction: Select;
 
   constructor(
     private projectService: ProjectService,
@@ -202,6 +204,9 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
         this.drawInteraction.setActive(false);
         this.modifyInteraction.setActive(false);
         this.selectInteraction.setActive(true);
+        break;
+      default:
+        throw new Error('Unknown tab index ' + tabIndex);
     }
   }
 }

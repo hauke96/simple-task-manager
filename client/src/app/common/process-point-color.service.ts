@@ -4,21 +4,21 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class ProcessPointColorService {
-
-  private fullColorMaxValue = 255;
-  private paleColorMaxValue = 127;
-
   constructor() {
   }
 
   public getProcessPointsColor(processPoints: number, maxProcessPoints: number): string {
-    return this.calcColor(this.fullColorMaxValue, processPoints, maxProcessPoints);
+    return this.calcColor(processPoints, maxProcessPoints);
   }
 
-  private calcColor(saturation: number, processPoints: number, maxProcessPoints: number) {
-    const rValue = (255 - saturation) + Math.min(saturation, 2 * saturation * (1 - (processPoints / maxProcessPoints)));
-    const gValue = (255 - saturation) + Math.min(saturation, 2 * saturation * (processPoints / maxProcessPoints));
-    const bValue = 255 - saturation;
+  private calcColor(processPoints: number, maxProcessPoints: number) {
+    if (processPoints < 0 || maxProcessPoints <= 0) {
+      throw new Error('Input values [' + processPoints + ' / ' + maxProcessPoints + '] out of range');
+    }
+
+    const rValue = Math.min(255, 511 * (1 - (processPoints / maxProcessPoints)));
+    const gValue = Math.min(255, 511 * (processPoints / maxProcessPoints));
+    const bValue = 0;
 
     let r = Math.round(rValue).toString(16);
     let g = Math.round(gValue).toString(16);

@@ -91,4 +91,62 @@ describe('ProjectCreationComponent', () => {
 
     expect(spySource).toHaveBeenCalledTimes(2);
   });
+
+  it('should add uploaded shape correctly', () => {
+    const vectorSourceClearSpy = spyOn(component.vectorSource, 'clear').and.callThrough();
+    const vectorSourceAddSpy = spyOn(component.vectorSource, 'addFeature').and.callThrough();
+
+    const feature = new Feature(new Polygon([[[0, 0]]]));
+    component.onShapesUploaded([feature]);
+
+    expect(vectorSourceClearSpy).toHaveBeenCalled();
+    expect(vectorSourceAddSpy).toHaveBeenCalledWith(feature);
+  });
+
+  it('should set interaction for "Draw" tab', () => {
+    component.onTabSelected(0);
+
+    expect(component.drawInteraction.getActive()).toEqual(true);
+    expect(component.modifyInteraction.getActive()).toEqual(true);
+    expect(component.selectInteraction.getActive()).toEqual(false);
+  });
+
+  it('should set interaction for "Upload" tab', () => {
+    component.onTabSelected(1);
+
+    expect(component.drawInteraction.getActive()).toEqual(false);
+    expect(component.modifyInteraction.getActive()).toEqual(true);
+    expect(component.selectInteraction.getActive()).toEqual(false);
+  });
+
+  it('should set interaction for "Delete" tab', () => {
+    component.onTabSelected(2);
+
+    expect(component.drawInteraction.getActive()).toEqual(false);
+    expect(component.modifyInteraction.getActive()).toEqual(false);
+    expect(component.selectInteraction.getActive()).toEqual(true);
+  });
+
+  it('should error on unknown tab', () => {
+    expect(() => component.onTabSelected(85746)).toThrow();
+  });
+
+  it('should create project with all properties', () => {
+    const saveSpy = spyOn(component, 'createProject').and.callFake(() => {
+    });
+
+    const description = 'some description';
+    const maxProcessPoints = 1234;
+    const name = 'my project';
+    const feature = new Feature(new Polygon([[[0, 0]]]));
+
+    component.projectDescription = description;
+    component.newMaxProcessPoints = maxProcessPoints;
+    component.newProjectName = name;
+    component.vectorSource.addFeature(feature);
+
+    component.onSaveButtonClicked();
+
+    expect(saveSpy).toHaveBeenCalledWith(name, maxProcessPoints, description, [feature.getGeometry() as Polygon]);
+  });
 });
