@@ -6,7 +6,7 @@ echo -n "OAuth consumer key: "
 read $OAUTH_CONSUMER_KEY
 
 echo -n "OAuth secret: "
-read $OAUTH_SECRET
+read -s $OAUTH_SECRET
 echo
 
 export OAUTH_CONSUMER_KEY=$OAUTH_CONSUMER_KEY
