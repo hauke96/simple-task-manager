@@ -13,8 +13,7 @@ Within these domain-packages, there are different types of files:
 * Server
     * service
     * material
-    * local store
-    * persistent store (postgresql connection)
+    * store (postgresql connection)
 * Client
     * service
     * material
@@ -30,7 +29,10 @@ Example: The "TaskDetailsComponent" shows all relevant information for a task an
 Therefore the logic of setting these (basically the service call) is located there.
 
 The **server services** are located in `project.go` and `task.go` and are called from the API classes.
-They contain quite a lot of checking logic to allow specific actions (e.g. deleting a project) only to specific users. 
+They contain quite a lot of checking logic to allow specific actions (e.g. deleting a project) only to specific users.
+
+This **permission** checking is performed in the `permission.go` used by these services.
+The permission service uses both databases (for tasks and projects) to fully check different permissions, however, this service doesn't have any dependencies to the task and project package. 
 
 The server **store** is basically what DDD calls a "repository" (a class saving data to a specific place).
 I use the term "store" for that mainly because it's easier to type.

@@ -1,0 +1,38 @@
+<div>
+	<app-notification></app-notification>
+	<div>
+		<div class="center logo">
+			<img src="./assets/icon.png">
+		</div>
+		<div class="center heading">
+			Welcome to the SimpleTaskManager for <a href="https://openstreetmap.org" target="_blank">OpenStreetMap</a>
+		</div>
+		<div class="center login-button">
+			<button (click)="onLoginButtonClick()">Login</button>
+		</div>
+		<div class="notice">
+			<div class="notice-container">
+				<div class="notice-bar"></div>
+				<div class="notice-text">
+					<b>New features in 0.9.0:</b>
+					<ul>
+						<li>Added default hashtags in JOSM changeset comment</li>
+						<li>Snapping, editing and removing polygon when creating project</li>
+						<li>Show overall project finish state</li>
+					</ul>
+					Internals:
+					<ul>
+						<li>Better permission checking</li>
+						<li>Read OAuth string (consumer key & secret) from environment variables instead of config</li>
+						<li>Also delete tasks, when project should be deleted</li>
+						<li>Removed in-memory storage</li>
+						<li>Added missing tests</li>
+						<li>Moved client-components into separate folders</li>
+						<li>Fixed some bugs</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<app-footer></app-footer>

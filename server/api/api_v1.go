@@ -14,6 +14,8 @@ import (
 	"github.com/hauke96/simple-task-manager/server/util"
 )
 
+// TODO remove this api version
+
 func Init_v1(router *mux.Router) (*mux.Router, string) {
 	router_v1 := router.PathPrefix("/v1").Subrouter()
 
@@ -108,7 +110,7 @@ func getTasks(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 		return
 	}
 
-	tasks, err := task.GetTasks(taskIds)
+	tasks, err := task.GetTasks(taskIds, token.User)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -198,13 +200,7 @@ func setProcessPoints(w http.ResponseWriter, r *http.Request, token *auth.Token)
 		return
 	}
 
-	project, err := project.GetProjectByTask(taskId)
-	if err != nil {
-		util.ResponseInternalError(w, err.Error())
-		return
-	}
-
-	task, err := task.SetProcessPoints(taskId, processPoints, token.User, project.NeedsAssignment)
+	task, err := task.SetProcessPoints(taskId, processPoints, token.User)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return

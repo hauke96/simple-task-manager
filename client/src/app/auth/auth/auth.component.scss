@@ -1,0 +1,56 @@
+@import "../../../styles";
+
+:host {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.logo {
+	margin-top: $space-huge;
+	opacity: 0.75;
+}
+
+.heading {
+	max-width: 500px;
+	font-size: 20pt;
+	margin-top: $space-huge;
+}
+
+.login-button {
+	padding: $space-large;
+	margin-top: $space-huge;
+	margin-bottom: $space-huge;
+	margin-right: $space-huge;
+	margin-left: $space-huge;
+	border-top: 1px solid $light-gray;
+	border-bottom: 1px solid $light-gray;
+}
+
+.notice {
+	display: flex;
+	justify-content: center;
+	padding-top: 25px; // compensate the -5px from below and get 5px actual space
+}
+
+.notice-container {
+	max-width: 500px;
+}
+
+.notice-text b {
+	font-weight: 500;
+}
+
+.notice-title {
+	text-align: right;
+}
+
+.notice-bar {
+	width: 1px;
+	background-color: $gray-mid;
+	margin-left: 15px;
+	margin-right: 15px;
+	margin-top: -20px;
+	margin-bottom: -5px;
+}

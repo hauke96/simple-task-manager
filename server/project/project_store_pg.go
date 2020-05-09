@@ -3,6 +3,7 @@ package project
 import (
 	"database/sql"
 	"fmt"
+	"github.com/hauke96/simple-task-manager/server/permission"
 	"github.com/hauke96/simple-task-manager/server/task"
 	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/lib/pq"
@@ -59,9 +60,30 @@ func (s *storePg) getProject(id string) (*Project, error) {
 	return execQuery(s.db, query, id)
 }
 
-func (s *storePg) getProjectByTask(taskId string) (*Project, error) {
-	query := fmt.Sprintf("SELECT * FROM %s WHERE $1=ANY(task_ids)", s.table)
-	return execQuery(s.db, query, taskId)
+// areTasksUsed checks whether any of the given tasks is already part of a project. Returns false and an error in case
+// of an error.
+func (s *storePg) areTasksUsed(taskIds []string) (bool, error) {
+	query := fmt.Sprintf("SELECT COUNT(*) FROM %s WHERE task_ids && $1", s.table)
+
+	util.LogQuery(query, taskIds)
+	rows, err := s.db.Query(query, pq.Array(taskIds))
+	if err != nil {
+		return false, errors.Wrap(err, "could not run query")
+	}
+	defer rows.Close()
+
+	ok := rows.Next()
+	if !ok {
+		return false, errors.New("there is no next row or an error happened")
+	}
+
+	var count int
+	err = rows.Scan(&count)
+	if err != nil {
+		return false, errors.Wrap(err, "could not scan count from rows")
+	}
+
+	return count != 0, nil
 }
 
 func (s *storePg) addProject(draft *Project, user string) (*Project, error) {
@@ -71,7 +93,7 @@ func (s *storePg) addProject(draft *Project, user string) (*Project, error) {
 }
 
 func (s *storePg) addUser(userToAdd string, id string, owner string) (*Project, error) {
-	originalProject, err := GetProject(id)
+	originalProject, err := s.getProject(id)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error getting project with ID '%s'", id)
 	}
@@ -83,7 +105,7 @@ func (s *storePg) addUser(userToAdd string, id string, owner string) (*Project, 
 }
 
 func (s *storePg) removeUser(id string, userToRemove string) (*Project, error) {
-	originalProject, err := GetProject(id)
+	originalProject, err := s.getProject(id)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error getting project with ID '%s'", id)
 	}
@@ -144,22 +166,23 @@ func rowToProject(rows *sql.Rows) (*Project, error) {
 	result.Users = p.users
 	result.Owner = p.owner
 	result.Description = p.description
-	result.NeedsAssignment = len(result.Users) > 1
-
 	result.TaskIDs = p.taskIds
-	//result.TaskIDs = make([]string, len(p.taskIds))
-	//for i, v := range p.taskIds {
-	//	result.TaskIDs[i] = strconv.Itoa(v)
-	//}
+
+	needsAssignment, err := permission.AssignmentInProjectNeeded(result.Id)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("unable to get assignment requirement for newly read project %s", result.Id))
+	}
+	result.NeedsAssignment = needsAssignment
 
 	return &result, nil
 }
 
-func (s *storePg) getTasks(id string) ([]*task.Task, error) {
-	p, err := s.getProject(id)
+// getTasks will get the tasks for the given projectId and also checks the ownership of the given user.
+func (s *storePg) getTasks(projectId string, user string) ([]*task.Task, error) {
+	p, err := s.getProject(projectId)
 	if err != nil {
 		return nil, err
 	}
 
-	return task.GetTasks(p.TaskIDs)
+	return task.GetTasks(p.TaskIDs, user)
 }

@@ -2,6 +2,16 @@
 
 # Some logging to see how long building an deployment takes plus the deployment itself.
 
+echo -n "OAuth consumer key: "
+read OAUTH_CONSUMER_KEY_INPUT
+
+echo -n "OAuth secret: "
+read -s OAUTH_SECRET_INPUT
+echo
+
+export OAUTH_CONSUMER_KEY=$OAUTH_CONSUMER_KEY_INPUT
+export OAUTH_SECRET=$OAUTH_SECRET_INPUT
+
 clear
 date
 echo -e "\n\n\n"

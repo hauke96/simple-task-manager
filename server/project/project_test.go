@@ -1,59 +1,28 @@
 package project
 
 import (
-	"flag"
 	"github.com/hauke96/sigolo"
+	"github.com/hauke96/simple-task-manager/server/permission"
 	"testing"
 
-	"github.com/hauke96/simple-task-manager/server/config"
 	"github.com/hauke96/simple-task-manager/server/task"
-	"github.com/hauke96/simple-task-manager/server/util"
-
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 )
 
-var useDatabase = flag.Bool("with-db", false, "Whether to use the database as well (next to the cache) or not")
-
-func preparePg() {
-	config.Conf = &config.Config{
-		Store: "postgres",
-	}
-
+func prepare() {
 	sigolo.LogLevel = sigolo.LOG_DEBUG
 	Init()
+	permission.Init()
 	task.Init()
 }
 
-func prepareCache() {
-	config.Conf = &config.Config{
-		Store: "cache",
-	}
+func TestVerifyOwnership(t *testing.T) {
+	prepare()
 
-	sigolo.LogLevel = sigolo.LOG_DEBUG
-	Init()
-	task.Init()
-}
-
-func TestVerifyOwnership_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
-
-	preparePg()
-	testVerifyOwnership(t)
-}
-
-func TestVerifyOwnership_cache(t *testing.T) {
-	prepareCache()
-	testVerifyOwnership(t)
-}
-
-func testVerifyOwnership(t *testing.T) {
 	// Test ownership of tasks of project 1
 	b, err := VerifyOwnership("Peter", []string{"1"})
 	if err != nil {
-		t.Error("Verification of ownership should work: %w", err)
+		t.Errorf("Verification of ownership should work: %s", err.Error())
 		t.Fail()
 		return
 	}
@@ -66,7 +35,7 @@ func testVerifyOwnership(t *testing.T) {
 	// Test ownership of tasks of project 2
 	b, err = VerifyOwnership("Peter", []string{"2", "3", "4"})
 	if err != nil {
-		t.Error("Verification of ownership should work: %w", err)
+		t.Errorf("Verification of ownership should work: %s", err.Error())
 		t.Fail()
 		return
 	}
@@ -77,22 +46,9 @@ func testVerifyOwnership(t *testing.T) {
 	}
 }
 
-func TestGetProjects_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
+func TestGetProjects(t *testing.T) {
+	prepare()
 
-	preparePg()
-	testGetProjects(t)
-}
-
-func TestGetProjects_cache(t *testing.T) {
-	prepareCache()
-	testGetProjects(t)
-}
-
-func testGetProjects(t *testing.T) {
 	// For Maria (being part of project 1 and 2)
 	userProjects, err := GetProjects("Maria")
 	if err != nil {
@@ -114,7 +70,7 @@ func testGetProjects(t *testing.T) {
 	// For Peter (being part of only project 1)
 	userProjects, err = GetProjects("Peter")
 	if err != nil {
-		t.Error("Getting should work: %w", err)
+		t.Errorf("Getting should work: %s", err.Error())
 		t.Fail()
 		return
 	}
@@ -130,25 +86,12 @@ func testGetProjects(t *testing.T) {
 	}
 }
 
-func TestGetTasks_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
+func TestGetTasks(t *testing.T) {
+	prepare()
 
-	preparePg()
-	testGetTasks(t)
-}
-
-func TestGetTasks_cache(t *testing.T) {
-	prepareCache()
-	testGetTasks(t)
-}
-
-func testGetTasks(t *testing.T) {
 	tasks, err := GetTasks("1", "Peter")
 	if err != nil {
-		t.Error("Get should work: %w", err)
+		t.Errorf("Get should work: %s", err.Error())
 		t.Fail()
 		return
 	}
@@ -213,30 +156,13 @@ func testGetTasks(t *testing.T) {
 	}
 }
 
-func TestAddAndGetProject_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
-
-	preparePg()
-	testAddAndGetProject(t)
-}
-
-func TestAddAndGetProject_cache(t *testing.T) {
-	prepareCache()
-	testAddAndGetProject(t)
-}
-
-func testAddAndGetProject(t *testing.T) {
-	if config.Conf.Store == "cache" {
-		util.NextId = 6
-	}
+func TestAddAndGetProject(t *testing.T) {
+	prepare()
 
 	user := "Jack"
 	p := Project{
 		Name:    "Test name",
-		TaskIDs: []string{"t-11"},
+		TaskIDs: []string{"11"},
 		Users:   []string{user, "user2"},
 		Owner:   user,
 	}
@@ -275,27 +201,33 @@ func testAddAndGetProject(t *testing.T) {
 	}
 }
 
-func TestAddUser_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
+func TestAddProjectWithUsedTasks(t *testing.T) {
+	prepare()
+
+	user := "Jen"
+	p := Project{
+		Name:    "Test name",
+		TaskIDs: []string{"1", "22", "33"}, // one task already used in a project
+		Users:   []string{user, "user2"},
+		Owner:   user,
 	}
 
-	preparePg()
-	testAddUser(t)
+	_, err := AddProject(&p, user)
+	if err == nil {
+		t.Errorf("The tasks are already used. This should not work.")
+		t.Fail()
+		return
+	}
 }
 
-func TestAddUser_cache(t *testing.T) {
-	prepareCache()
-	testAddUser(t)
-}
+func TestAddUser(t *testing.T) {
+	prepare()
 
-func testAddUser(t *testing.T) {
 	newUser := "new user"
 
 	p, err := AddUser(newUser, "1", "Peter")
 	if err != nil {
-		t.Error("This should work: %w", err)
+		t.Errorf("This should work: %s", err.Error())
 		t.Fail()
 		return
 	}
@@ -328,27 +260,14 @@ func testAddUser(t *testing.T) {
 	}
 }
 
-func TestAddUserTwice_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
+func TestAddUserTwice(t *testing.T) {
+	prepare()
 
-	preparePg()
-	testAddUserTwice(t)
-}
-
-func TestAddUserTwice_cache(t *testing.T) {
-	prepareCache()
-	testAddUserTwice(t)
-}
-
-func testAddUserTwice(t *testing.T) {
 	newUser := "another-new-user"
 
 	_, err := AddUser(newUser, "1", "Peter")
 	if err != nil {
-		t.Error("This should work: %w", err)
+		t.Errorf("This should work: %s", err.Error())
 		t.Fail()
 		return
 	}
@@ -362,27 +281,14 @@ func testAddUserTwice(t *testing.T) {
 	}
 }
 
-func TestRemoveUser_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
+func TestRemoveUser(t *testing.T) {
+	prepare()
 
-	preparePg()
-	testRemoveUser(t)
-}
-
-func TestRemoveUser_cache(t *testing.T) {
-	prepareCache()
-	testRemoveUser(t)
-}
-
-func testRemoveUser(t *testing.T) {
 	userToRemove := "Maria"
 
 	p, err := RemoveUser("1", "Peter", userToRemove)
 	if err != nil {
-		t.Error("This should work: %w", err)
+		t.Errorf("This should work: %s", err.Error())
 		t.Fail()
 		return
 	}
@@ -415,28 +321,15 @@ func testRemoveUser(t *testing.T) {
 	}
 }
 
-func TestRemoveNonOwnerUser_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
+func TestRemoveNonOwnerUser(t *testing.T) {
+	prepare()
 
-	preparePg()
-	testRemoveNonOwnerUser(t)
-}
-
-func TestRemoveNonOwnerUser_cache(t *testing.T) {
-	prepareCache()
-	testRemoveNonOwnerUser(t)
-}
-
-func testRemoveNonOwnerUser(t *testing.T) {
 	userToRemove := "Carl"
 
 	// Carl is not owner and removes himself, which is ok
 	p, err := RemoveUser("2", "Carl", userToRemove)
 	if err != nil {
-		t.Error("This should work: %w", err)
+		t.Errorf("This should work: %s", err.Error())
 		t.Fail()
 		return
 	}
@@ -455,35 +348,22 @@ func testRemoveNonOwnerUser(t *testing.T) {
 	}
 }
 
-func TestRemoveArbitraryUserNotAllowed_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
+func TestRemoveArbitraryUserNotAllowed(t *testing.T) {
+	prepare()
 
-	preparePg()
-	testRemoveArbitraryUserNotAllowed(t)
-}
-
-func TestRemoveArbitraryUserNotAllowed_cache(t *testing.T) {
-	prepareCache()
-	testRemoveArbitraryUserNotAllowed(t)
-}
-
-func testRemoveArbitraryUserNotAllowed(t *testing.T) {
 	userToRemove := "Anna"
 
 	// Michael is not member of the project and should not be allowed to remove anyone
 	p, err := RemoveUser("2", "Michael", userToRemove)
 	if err == nil {
-		t.Error("This should not work: %w", err)
+		t.Errorf("This should not work: %s", err.Error())
 		t.Fail()
 		return
 	}
 
-	p, err = GetProject("2")
+	p, err = GetProject("2", "Maria")
 
-	if err != nil{
+	if err != nil {
 		t.Error(err.Error())
 		t.Fail()
 	}
@@ -506,28 +386,15 @@ func testRemoveArbitraryUserNotAllowed(t *testing.T) {
 	userToRemove = "Nina" // Not a member of the project
 	p, err = RemoveUser("2", "Peter", userToRemove)
 	if err == nil {
-		t.Error("This should not work: %w", err)
+		t.Errorf("This should not work: %s", err.Error())
 		t.Fail()
 		return
 	}
 }
 
-func TestRemoveUserTwice_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
+func TestRemoveUserTwice(t *testing.T) {
+	prepare()
 
-	preparePg()
-	testRemoveUserTwice(t)
-}
-
-func TestRemoveUserTwice_cache(t *testing.T) {
-	prepareCache()
-	testRemoveUserTwice(t)
-}
-
-func testRemoveUserTwice(t *testing.T) {
 	_, err := RemoveUser("2", "Maria", "John")
 	if err != nil {
 		t.Error("This should work: ", err)
@@ -535,7 +402,7 @@ func testRemoveUserTwice(t *testing.T) {
 		return
 	}
 
-	// "Maria" was removed above to we remove her here the second time
+	// "John" was removed above to we remove him here the second time
 	_, err = RemoveUser("2", "Maria", "John")
 	if err == nil {
 		t.Error("Removing a user twice should not work")
@@ -544,27 +411,14 @@ func testRemoveUserTwice(t *testing.T) {
 	}
 }
 
-func TestLeaveProject_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
+func TestLeaveProject(t *testing.T) {
+	prepare()
 
-	preparePg()
-	testLeaveProject(t)
-}
-
-func TestLeaveProject_cache(t *testing.T) {
-	prepareCache()
-	testLeaveProject(t)
-}
-
-func testLeaveProject(t *testing.T) {
 	userToRemove := "Anna"
 
 	p, err := LeaveProject("2", userToRemove)
 	if err != nil {
-		t.Error("This should work: %w", err)
+		t.Errorf("This should work: %s", err.Error())
 		t.Fail()
 		return
 	}
@@ -612,23 +466,12 @@ func testLeaveProject(t *testing.T) {
 	}
 }
 
-func TestDeleteProject_pg(t *testing.T) {
-	if !*useDatabase {
-		t.SkipNow()
-		return
-	}
+func TestDeleteProject(t *testing.T) {
+	prepare()
 
-	preparePg()
-	testDeleteProject(t)
-}
-
-func TestDeleteProject_cache(t *testing.T) {
-	prepareCache()
-	testDeleteProject(t)
-}
-
-func testDeleteProject(t *testing.T) {
 	id := "1" // owned by "Peter"
+
+	// Try to remove with now-owning user
 
 	err := DeleteProject(id, "Maria") // Maria does not own this project
 	if err == nil {
@@ -637,19 +480,45 @@ func testDeleteProject(t *testing.T) {
 		return
 	}
 
-	err = DeleteProject(id, "Peter") // Maria does not own this project
+	_, err = GetProject(id, "Peter")
 	if err != nil {
-		t.Error("Peter owns this project, this should work")
+		t.Errorf("The project should exist: %s", err.Error())
 		t.Fail()
 		return
 	}
 
-	_, err = GetProject(id)
+	// Actually remove project
+
+	project, err := GetProject(id, "Peter")
+	if err != nil {
+		t.Errorf("Error getting project to relete: %s", err.Error())
+		t.Fail()
+		return
+	}
+	taskIds := project.TaskIDs
+
+	err = DeleteProject(id, "Peter") // Maria does not own this project
+	if err != nil {
+		t.Errorf("Peter owns this project, this should work: %s", err.Error())
+		t.Fail()
+		return
+	}
+
+	_, err = GetProject(id, "Peter")
 	if err == nil {
 		t.Error("The project should not exist anymore")
 		t.Fail()
 		return
 	}
+
+	_, err = task.GetTasks(taskIds, "Peter")
+	if err == nil {
+		t.Error("The tasks should not exist anymore")
+		t.Fail()
+		return
+	}
+
+	// Delete not existing project
 
 	err = DeleteProject("45356475", "Peter")
 	if err == nil {

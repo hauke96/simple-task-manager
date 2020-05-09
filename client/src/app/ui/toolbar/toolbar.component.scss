@@ -1,0 +1,21 @@
+@import "../../../styles";
+
+.toolbar {
+	left: 0px;
+	padding-left: $space-large;
+	padding-right: $space-large;
+	padding-top: $space-base;
+	padding-bottom: $space-base;
+	background-color: $color-mid;
+	height: $space-huge;
+	display: flex;
+	align-items: center;
+}
+
+.toolbar {
+	justify-content: space-between;
+}
+
+.toolbar > p {
+	color: $light-gray;
+}

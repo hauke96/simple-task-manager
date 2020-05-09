@@ -1,0 +1,19 @@
+@import "../../../styles";
+
+.list-item {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.process-label {
+	color: $gray-mid;
+}
+
+.selected {
+	background-color: $color-very-light;
+}
+
+.done-label {
+	color: green;
+}
