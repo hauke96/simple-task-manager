@@ -133,7 +133,6 @@ func addProcessPointData(project *Project, potentialMember string) error {
 
 	// Collect the overall finish-state of the project
 	for _, t := range tasks {
-		sigolo.Info("%s: %d / %d", t.Id, t.ProcessPoints, t.MaxProcessPoints)
 		project.DoneProcessPoints += t.ProcessPoints
 		project.TotalProcessPoints += t.MaxProcessPoints
 	}
