@@ -10,6 +10,7 @@ import { ErrorService } from '../../common/error.service';
   styleUrls: ['./task-details.component.scss']
 })
 export class TaskDetailsComponent implements OnInit {
+  @Input() public projectId: string;
   @Input() public needUserAssignment: boolean;
 
   public task: Task;
@@ -68,7 +69,7 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   public onOpenJosmButtonClicked() {
-    this.taskService.openInJosm(this.task)
+    this.taskService.openInJosm(this.task, this.projectId)
       .subscribe(() => {
         },
         err => {

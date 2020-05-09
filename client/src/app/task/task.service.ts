@@ -2,7 +2,7 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { Task } from './task.material';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
-import { from, Observable, of, throwError } from 'rxjs';
+import { from, Observable, throwError } from 'rxjs';
 import { concatMap, tap } from 'rxjs/operators';
 import { Polygon } from 'ol/geom';
 import { Extent } from 'ol/extent';
@@ -59,13 +59,15 @@ export class TaskService {
       .pipe(tap(t => this.selectedTaskChanged.emit(t)));
   }
 
-  public openInJosm(task: Task) {
+  public openInJosm(task: Task, projectId: string) {
     const e = this.getExtent(task);
 
     // Make sequential requests to these URLs
     return from([
+      // The task-polygon
       'http://localhost:8111/load_data?new_layer=true&layer_name=task-shape&data=' + encodeURIComponent(this.getGeometryAsOsm(task)),
-      'http://localhost:8111/load_and_zoom?new_layer=true&left=' + e[0] + '&right=' + e[2] + '&top=' + e[3] + '&bottom=' + e[1]
+      // Load data for the extent of the task
+      'http://localhost:8111/load_and_zoom?new_layer=true&left=' + e[0] + '&right=' + e[2] + '&top=' + e[3] + '&bottom=' + e[1] + '&changeset_comment=' + encodeURIComponent('#stm #stm-project-' + projectId + ' ')
     ])
       .pipe(
         concatMap(url => {
