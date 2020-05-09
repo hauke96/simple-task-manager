@@ -139,7 +139,7 @@ func (s *storePg) setProcessPoints(id string, newPoints int) (*Task, error) {
 }
 
 func (s *storePg) delete(taskIds []string) error {
-	query := fmt.Sprintf("DELETE FROM %s WHERE id=ALL($1)", s.table)
+	query := fmt.Sprintf("DELETE FROM %s WHERE id=ANY($1)", s.table)
 
 	util.LogQuery(query, taskIds)
 	_, err := s.db.Exec(query, pq.Array(taskIds))

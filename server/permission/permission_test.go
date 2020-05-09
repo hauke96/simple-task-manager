@@ -127,9 +127,57 @@ func TestVerifyMembershipTask(t *testing.T) {
 	}
 }
 
-// TODO VerifyMembershipTasks
+func TestVerifyMembershipTasks(t *testing.T) {
+	err := VerifyMembershipTasks([]string{"2", "3"}, "Clara")
+	if err != nil {
+		t.Errorf("User 'Clara' is in deed a member of the project of tasks '2' and '3': %s", err.Error())
+		t.Fail()
+		return
+	}
 
-// TODO VerifyAssignment
+	// Not a member
+
+	err = VerifyMembershipTasks([]string{"1", "5"}, "Clara")
+	if err == nil {
+		t.Error("User 'Clara' is NOT a member of the project fo task '1'")
+		t.Fail()
+		return
+	}
+
+	// Not existing task
+
+	err = VerifyMembershipTasks([]string{"34561", "-1"}, "Clara")
+	if err == nil {
+		t.Error("The task '34561' doesn't exist and 'Clara' should not be a member of this")
+		t.Fail()
+		return
+	}
+}
+
+func TestVerifyAssignment(t *testing.T) {
+	err := VerifyAssignment("1", "Peter")
+	if err != nil {
+		t.Errorf("User 'Peter' is in deed assigned to task '1': %s", err.Error())
+		t.Fail()
+		return
+	}
+
+	// Not assigned
+	err = VerifyAssignment("2", "Clara")
+	if err == nil {
+		t.Errorf("User 'Clara' is in NOT assigned to task '2'")
+		t.Fail()
+		return
+	}
+
+	// Not existing task
+	err = VerifyAssignment("875435", "Clara")
+	if err == nil {
+		t.Errorf("User 'Clara' should not be treated as 'assigned' to not existing task '875435'")
+		t.Fail()
+		return
+	}
+}
 
 func TestAssignmentInProjectNeeded(t *testing.T) {
 	assignmentNeeded, err := AssignmentInProjectNeeded("3")
@@ -161,4 +209,43 @@ func TestAssignmentInProjectNeeded(t *testing.T) {
 	}
 }
 
-// TODO AssignmentInTaskNeeded
+func TestAssignmentInTaskNeeded(t *testing.T) {
+	// Assignment not needed
+	needed, err := AssignmentInTaskNeeded("5")
+	if needed {
+		t.Error("Task '5' doesn't need an assignment")
+		t.Fail()
+		return
+	}
+	if err != nil {
+		t.Errorf("Getting assignment requirement should work: %s", err.Error())
+		t.Fail()
+		return
+	}
+
+	// Assignment needed
+	needed, err = AssignmentInTaskNeeded("3")
+	if !needed {
+		t.Error("Task '3' does need an assignment")
+		t.Fail()
+		return
+	}
+	if err != nil {
+		t.Errorf("Getting assignment requirement should work: %s", err.Error())
+		t.Fail()
+		return
+	}
+
+	// Not existing task
+	needed, err = AssignmentInTaskNeeded("84675")
+	if !needed {
+		t.Error("Not existing task '84675' should need an assignment by default")
+		t.Fail()
+		return
+	}
+	if err == nil {
+		t.Error("Getting assignment requirement for not existing task '84675' should not work")
+		t.Fail()
+		return
+	}
+}

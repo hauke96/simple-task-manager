@@ -74,7 +74,7 @@ func TestAddTasks(t *testing.T) {
 	}
 
 	validTaskWithId := addedTasks[0]
-	if validTaskWithId.Id != "6" ||
+	if validTaskWithId.Id != "8" ||
 		validTaskWithId.AssignedUser != "Mark" ||
 		validTaskWithId.MaxProcessPoints != 250 ||
 		validTaskWithId.ProcessPoints != 5 {
@@ -218,7 +218,7 @@ func TestDelete(t *testing.T) {
 	prepare()
 
 	// tasks of project 2
-	taskIds := []string{"2", "3", "4"}
+	taskIds := []string{"6", "7"}
 
 	err := Delete(taskIds, "Maria")
 	if err != nil {
@@ -228,7 +228,12 @@ func TestDelete(t *testing.T) {
 	}
 
 	for i := 0; i < len(taskIds); i++ {
-		_, err := GetTasks([]string{taskIds[i]}, "Maria")
+		tasks, err := GetTasks([]string{taskIds[i]}, "Maria")
+		if tasks != nil && len(tasks) > 0 {
+			t.Errorf("It should not be possible to read task '%s': %#v", taskIds[i], tasks[0])
+			t.Fail()
+			return
+		}
 		if err == nil {
 			t.Errorf("The task %s should not exist anymore", taskIds[i])
 			t.Fail()

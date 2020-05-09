@@ -7,7 +7,7 @@ INSERT INTO db_versions VALUES ('test');
 -- Data for Name: projects; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 INSERT INTO projects(name, task_ids, users, owner) VALUES ('Project 1', '{1}', '{Peter,Maria}', 'Peter');
-INSERT INTO projects(name, task_ids, users, owner) VALUES ('Project 2', '{2,3,4}', '{Maria,John,Anna,Carl,Donny,Clara}', 'Maria');
+INSERT INTO projects(name, task_ids, users, owner) VALUES ('Project 2', '{2,3,4,6,7}', '{Maria,John,Anna,Carl,Donny,Clara}', 'Maria');
 INSERT INTO projects(name, task_ids, users, owner) VALUES ('Project 3', '{5}', '{Otto}', 'Otto');
 
 
@@ -19,3 +19,5 @@ INSERT INTO tasks(process_points, max_process_points, geometry, assigned_user) V
 INSERT INTO tasks(process_points, max_process_points, geometry, assigned_user) VALUES (50, 100, '[[9.944421814136854,53.56429528684478],[9.944078491382948,53.56200127796407],[9.94528012102162,53.56195029857588],[9.946653412037245,53.56429528684478],[9.944421814136854,53.56429528684478]]', 'Maria');
 INSERT INTO tasks(process_points, max_process_points, geometry, assigned_user) VALUES (0, 100, '[[9.951631591968885,53.563785517845105],[9.935667083912245,53.55022340710764],[10.00639157121693,53.53675896834966],[10.013773010425917,53.570921724776724],[9.951631591968885,53.563785517845105]]', '');
 INSERT INTO tasks(process_points, max_process_points, geometry, assigned_user) VALUES (345, 1000, '[[9.951631591968885,53.563785517845105],[9.935667083912245,53.55022340710764],[10.00639157121693,53.53675896834966],[10.013773010425917,53.570921724776724],[9.951631591968885,53.563785517845105]]', '');
+INSERT INTO tasks(process_points, max_process_points, geometry, assigned_user) VALUES (1, 4, '[[9.951631591968885,53.563785517845105],[9.935667083912245,53.55022340710764],[10.00639157121693,53.53675896834966],[10.013773010425917,53.570921724776724],[9.951631591968885,53.563785517845105]]', '');
+INSERT INTO tasks(process_points, max_process_points, geometry, assigned_user) VALUES (3, 4, '[[9.951631591968885,53.563785517845105],[9.935667083912245,53.55022340710764],[10.00639157121693,53.53675896834966],[10.013773010425917,53.570921724776724],[9.951631591968885,53.563785517845105]]', '');
