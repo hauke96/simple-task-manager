@@ -60,11 +60,6 @@ func (s *storePg) getProject(id string) (*Project, error) {
 	return execQuery(s.db, query, id)
 }
 
-func (s *storePg) getProjectByTask(taskId string) (*Project, error) {
-	query := fmt.Sprintf("SELECT * FROM %s WHERE $1=ANY(task_ids)", s.table)
-	return execQuery(s.db, query, taskId)
-}
-
 // areTasksUsed checks whether any of the given tasks is already part of a project. Returns false and an error in case
 // of an error.
 func (s *storePg) areTasksUsed(taskIds []string) (bool, error) {

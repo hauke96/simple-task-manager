@@ -26,7 +26,6 @@ type store interface {
 	init(db *sql.DB)
 	getProjects(user string) ([]*Project, error)
 	getProject(id string) (*Project, error)
-	getProjectByTask(taskId string) (*Project, error)
 	areTasksUsed(taskIds []string) (bool, error)
 	addProject(draft *Project, user string) (*Project, error)
 	addUser(userToAdd string, id string, owner string) (*Project, error)
@@ -137,21 +136,6 @@ func addProcessPointData(project *Project, potentialMember string) error {
 		project.TotalProcessPoints += t.MaxProcessPoints
 	}
 	return nil
-}
-
-func GetProjectByTask(taskId string, potentialMember string) (*Project, error) {
-	err := permission.VerifyMembershipTask(taskId, potentialMember)
-	if err != nil {
-		return nil, errors.Wrap(err, "user membership verification failed")
-	}
-
-	project, err := projectStore.getProjectByTask(taskId)
-
-	if err != nil {
-		return nil, errors.Wrap(err, "error getting project")
-	}
-
-	return project, nil
 }
 
 func AddUser(user, id, potentialOwner string) (*Project, error) {
