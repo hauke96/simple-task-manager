@@ -1,6 +1,7 @@
 #!/bin/bash
 
 typeset -Ag UID_CACHE
+OUTPUT_FILE="migrate-user-names.sql"
 
 function nameToId()
 {
@@ -46,7 +47,7 @@ echo "$PROJECT_DATA"
 echo
 echo
 
-echo "BEGIN TRANSACTION;" > migrate-user-names.sql
+echo "BEGIN TRANSACTION;" > $OUTPUT_FILE
 
 IFS=$'\n'
 for ROW in $PROJECT_DATA
@@ -64,8 +65,8 @@ do
 	echo "Owner      : $OWNER_NAME"
 	echo
 
-	echo "" >> migrate-user-names.sql
-	echo "-- Project: $PROJECT_ID" >> migrate-user-names.sql
+	echo "" >> $OUTPUT_FILE
+	echo "-- Project: $PROJECT_ID" >> $OUTPUT_FILE
 
 	#
 	# Get owners UID
@@ -81,12 +82,12 @@ do
 		echo -e "  Won't migrate this user, so this project will be removed.\e[0m"
 		echo
 
-		echo "DELETE FROM tasks USING projects P WHERE P.id='"$PROJECT_ID"' AND tasks.id=ANY(P.task_ids::integer[]);" >> migrate-user-names.sql
-		echo "DELETE FROM projects WHERE id='"$PROJECT_ID"';" >> migrate-user-names.sql
+		echo "DELETE FROM tasks USING projects P WHERE P.id='"$PROJECT_ID"' AND tasks.id=ANY(P.task_ids::integer[]);" >> $OUTPUT_FILE
+		echo "DELETE FROM projects WHERE id='"$PROJECT_ID"';" >> $OUTPUT_FILE
 
 		continue
 	else
-		echo "UPDATE projects SET owner='$OWNER_ID' WHERE id='$PROJECT_ID';" >> migrate-user-names.sql	
+		echo "UPDATE projects SET owner='$OWNER_ID' WHERE id='$PROJECT_ID';" >> $OUTPUT_FILE	
 	fi
 
 	UID_CACHE["$OWNER_NAME"]="$OWNER_ID"
@@ -122,7 +123,7 @@ do
 	# Add the closing bracket and turn "{," into "{".
 	USER_ID_DB_ARRAY=$(echo "$USER_ID_DB_ARRAY}" | sed "s/^{,/{/g")
 
-	echo "UPDATE projects SET users='$USER_ID_DB_ARRAY' WHERE id='$PROJECT_ID';" >> migrate-user-names.sql
+	echo "UPDATE projects SET users='$USER_ID_DB_ARRAY' WHERE id='$PROJECT_ID';" >> $OUTPUT_FILE
 
 	echo
 done
@@ -158,8 +159,8 @@ do
 	echo "Assigned user : $USER_STRING"
 	echo
 
-	echo "" >> migrate-user-names.sql
-	echo "-- Task: $TASK_ID" >> migrate-user-names.sql
+	echo "" >> $OUTPUT_FILE
+	echo "-- Task: $TASK_ID" >> $OUTPUT_FILE
 
 	#
 	# Get UID
@@ -175,30 +176,43 @@ do
 		echo -e "  Won't migrate this user, so this task will be unassigned.\e[0m"
 		echo
 
-		echo "UPDATE tasks SET assigned_user='' WHERE id='"$TASK_ID"';" >> migrate-user-names.sql
+		echo "UPDATE tasks SET assigned_user='' WHERE id='"$TASK_ID"';" >> $OUTPUT_FILE
 
 		continue
 	else
-		echo "UPDATE tasks SET assigned_user='"$USER_ID"' WHERE id='"$TASK_ID"';" >> migrate-user-names.sql
+		echo "UPDATE tasks SET assigned_user='"$USER_ID"' WHERE id='"$TASK_ID"';" >> $OUTPUT_FILE
 	fi
 
 	echo
 done
 
 #
+# Set version
+#
+echo "INSERT INTO db_versions VALUES('004');" >> $OUTPUT_FILE
+
+#
 # Generate the SQL script
 #
 
-
-echo "END TRANSACTION;" >> migrate-user-names.sql
-
-echo
-echo "Execute SQL:"
-echo
-
-cat migrate-user-names.sql
-#psql -h localhost -U postgres -f migrate-user-names.sql stm
+echo "END TRANSACTION;" >> $OUTPUT_FILE
 
 echo
-echo
+echo "Execute SQL..."
+
+psql -q -v ON_ERROR_STOP=1 -h localhost -U postgres -f $OUTPUT_FILE stm
+OK=$?
+if [ $OK -ne 0 ]
+then
+  echo
+  echo "Migration FAILED!"
+  echo
+  echo "Exit code: $OK"
+  echo "See the error log and the '$OUTPUT_FILE' for details."
+  exit 1
+fi
+
 echo "Migration DONE"
+
+echo "Remove '$OUTPUT_FILE'"
+rm $OUTPUT_FILE
