@@ -54,7 +54,7 @@ describe('AuthService', () => {
   });
 
   it('constructor should set user name correctly', () => {
-    localStorage.setItem('auth_token', 'eyJ2YWxpZF91bnRpbCI6MjU4ODM3MTQ0MywidXNlciI6InRlc3QtdXNlciIsInNlY3JldCI6IjB2VnZCWTRzUVg0K002OW8reExIS0puaGFmSHpDZDZRQ1lody9qczZUdDA9In0K');
+    localStorage.setItem('auth_token', 'eyJ2YWxpZF91bnRpbCI6MjU4ODM3MTQ0MywidXNlciI6InRlc3QtdXNlciIsInVpZCI6IjEyMzQ1Iiwic2VjcmV0IjoiMHZWdkJZNHNRWDQrTTY5byt4TEhLSm5oYWZIekNkNlFDWWh3L2pzNlR0MD0ifQo=');
 
     service.setUserNameFromToken();
 

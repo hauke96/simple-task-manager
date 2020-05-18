@@ -21,10 +21,10 @@ export class UserService {
   }
 
   public getUserName(): string {
-    return this.currentUser.name;
+    return this.currentUser ? this.currentUser.name : undefined;
   }
 
-  getUserId() {
-    return this.currentUser.uid;
+  public getUserId() {
+    return this.currentUser ? this.currentUser.uid : undefined;
   }
 }
