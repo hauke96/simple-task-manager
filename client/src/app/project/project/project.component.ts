@@ -33,6 +33,6 @@ export class ProjectComponent implements OnInit {
   }
 
   public isOwner(): boolean {
-    return this.userService.getUserName() === this.project.owner;
+    return this.userService.getUserId() === this.project.owner;
   }
 }

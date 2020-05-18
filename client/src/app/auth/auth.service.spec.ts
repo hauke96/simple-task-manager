@@ -60,6 +60,7 @@ describe('AuthService', () => {
 
     expect(logoutSpy).not.toHaveBeenCalled();
     expect(userService.getUserName()).toEqual('test-user'); // Encoded in token
+    expect(userService.getUserId()).toEqual('12345'); // Encoded in token
   });
 
   it('constructor should set user name correctly', () => {

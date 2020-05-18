@@ -60,7 +60,7 @@ export class TaskMapComponent implements AfterViewInit {
       }
 
       // Text (porcess percentage)
-      const labelWeight = this.userService.getUserName() === task.assignedUser ? 'bold 10pt' : 'normal 8pt';
+      const labelWeight = this.userService.getUserId() === task.assignedUser ? 'bold 10pt' : 'normal 8pt';
       let labelText: string;
       if (task.processPoints === task.maxProcessPoints) {
         labelText = 'DONE';

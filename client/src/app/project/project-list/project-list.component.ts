@@ -24,8 +24,8 @@ export class ProjectListComponent implements OnInit {
     this.projects = this.route.snapshot.data.projects;
   }
 
-  public get currentUser(): string {
-    return this.userService.getUserName();
+  public get currentUserId(): string {
+    return this.userService.getUserId();
   }
 
   public onProjectListItemClicked(id: string) {
