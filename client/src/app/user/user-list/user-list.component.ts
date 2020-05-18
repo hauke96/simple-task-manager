@@ -4,7 +4,6 @@ import { Project } from '../../project/project.material';
 import { CurrentUserService } from '../current-user.service';
 import { ErrorService } from '../../common/error.service';
 import { User } from '../user.material';
-import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-user-list',
@@ -18,34 +17,11 @@ export class UserListComponent implements OnInit {
   constructor(
     private projectService: ProjectService,
     private currentUserService: CurrentUserService,
-    private userService: UserService,
     private errorService: ErrorService
   ) {
   }
 
   ngOnInit(): void {
-    // When e.g. a user has been added
-    this.projectService.projectChanged.subscribe(p => {
-      this.project = p;
-      this.updateUsers();
-    });
-  }
-
-  private updateUsers() {
-    if (!this.project) {
-      this.users = [];
-      return;
-    }
-
-    this.userService.getUsersFromIds(this.project.users).subscribe(
-      (users: User[]) => {
-        this.users = users;
-      },
-      e => {
-        console.error(e);
-        this.errorService.addError('Unable to update users');
-      }
-    );
   }
 
   public onRemoveUserClicked(user: string) {

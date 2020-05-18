@@ -6,6 +6,8 @@ import { Project } from '../project.material';
 import { Task } from '../../task/task.material';
 import { CurrentUserService } from '../../user/current-user.service';
 import { User } from '../../user/user.material';
+import { UserService } from '../../user/user.service';
+import { ErrorService } from '../../common/error.service';
 
 @Component({
   selector: 'app-project',
@@ -21,8 +23,10 @@ export class ProjectComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private projectService: ProjectService,
+    private userService: UserService,
     private taskService: TaskService,
-    private currentUserService: CurrentUserService
+    private currentUserService: CurrentUserService,
+    private errorService: ErrorService
   ) {
   }
 
@@ -32,7 +36,27 @@ export class ProjectComponent implements OnInit {
     this.users = this.route.snapshot.data.users;
     this.taskService.selectTask(this.tasks[0]);
 
-    this.projectService.projectChanged.subscribe(p => this.project = p);
+    this.projectService.projectChanged.subscribe(p => {
+      this.project = p;
+      this.updateUsers();
+    });
+  }
+
+  private updateUsers() {
+    if (!this.project) {
+      this.users = [];
+      return;
+    }
+
+    this.userService.getUsersFromIds(this.project.users).subscribe(
+      (users: User[]) => {
+        this.users = users;
+      },
+      e => {
+        console.error(e);
+        this.errorService.addError('Unable to update users');
+      }
+    );
   }
 
   public isOwner(): boolean {

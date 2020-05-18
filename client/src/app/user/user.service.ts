@@ -33,7 +33,11 @@ export class UserService {
 
     return this.http.get(changesetUrl, {responseType: 'text'}).pipe(
       map(result => {
-        return this.extractUserFromXmlAttributes(result, 'changeset', 'user', 'uid')[0];
+        const user = this.extractUserFromXmlAttributes(result, 'changeset', 'user', 'uid')[0];
+        if (!user) {
+          throw new Error('User \'' + userName + '\' not found in changesets');
+        }
+        return user;
       }),
       catchError((e: HttpErrorResponse) => {
         // This error might occur when the user hasn't created a changeset yet. Therefore we don't use the error service here.
@@ -43,7 +47,11 @@ export class UserService {
         // Second try, this time via the notes API
         return this.http.get(notesUrl, {responseType: 'text'}).pipe(
           map(result => {
-            return this.extractDataFromComment(result, userName);
+            const user = this.extractDataFromComment(result, userName);
+            if (!user) {
+              throw new Error('User \'' + userName + '\' not found in notes');
+            }
+            return user;
           })
         );
       })
@@ -73,14 +81,16 @@ export class UserService {
     if (window.DOMParser) {
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString('' + xmlString, 'application/xml');
-      const commentNodes = xmlDoc.getElementsByTagName('comment');
+      const note = xmlDoc.getElementsByTagName('note')[0];
+      const comments = note.getElementsByTagName('comments');
+      const commentNodes = comments[0].getElementsByTagName('comment');
 
       // tslint:disable-next-line:prefer-for-of
       for (let i = 0; i < commentNodes.length; i++) {
         // Check whether the user of the comment is the user we search for
-        const name = commentNodes[i].getElementsByTagName('user')[0].nodeValue;
+        const name = (commentNodes[i].getElementsByTagName('user'))[0].textContent;
         if (name === userName) {
-          const uid = commentNodes[i].getElementsByTagName('uid')[0].nodeValue;
+          const uid = commentNodes[i].getElementsByTagName('uid')[0].textContent;
           return new User(name, uid);
         }
       }
