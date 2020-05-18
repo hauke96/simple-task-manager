@@ -43,7 +43,7 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   private updateUser() {
-    if (!this.task.assignedUser) {
+    if (!this.task || !this.task.assignedUser) {
       this.assignedUserName = undefined;
       return;
     }

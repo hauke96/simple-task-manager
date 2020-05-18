@@ -47,16 +47,16 @@ describe('ProjectSettingsComponent', () => {
   });
 
   it('should set action for owner correctly', () => {
-    component.projectOwner = 'test-user';
-    spyOn(currentUserService, 'getUserName').and.returnValue('test-user');
+    component.projectOwner = '123';
+    spyOn(currentUserService, 'getUserId').and.returnValue('123');
     component.ngOnInit();
     // @ts-ignore
     expect(component.action).toEqual('delete');
   });
 
   it('should set action for non-owner correctly', () => {
-    component.projectOwner = 'test-user';
-    spyOn(currentUserService, 'getUserName').and.returnValue('some other user');
+    component.projectOwner = '123';
+    spyOn(currentUserService, 'getUserId').and.returnValue('234');
     component.ngOnInit();
     // @ts-ignore
     expect(component.action).toEqual('leave');
@@ -135,10 +135,10 @@ describe('ProjectSettingsComponent', () => {
   //
 
   it('should leave project on yes button', () => {
-    spyOn(currentUserService, 'getUserName').and.returnValue('test-user');
+    spyOn(currentUserService, 'getUserId').and.returnValue('123');
     spyOn(projectService, 'removeUser').and.callFake((id: string, user: string) => {
       expect(id).toEqual('1');
-      expect(user).toEqual('test-user');
+      expect(user).toEqual('123');
       return of({});
     });
     spyOn(routerMock, 'navigate').and.callThrough();
@@ -154,10 +154,10 @@ describe('ProjectSettingsComponent', () => {
   });
 
   it('should not navigate on error when leaving project', () => {
-    spyOn(currentUserService, 'getUserName').and.returnValue('test-user');
+    spyOn(currentUserService, 'getUserId').and.returnValue('123');
     spyOn(projectService, 'removeUser').and.callFake((id: string, user: string) => {
       expect(id).toEqual('1');
-      expect(user).toEqual('test-user');
+      expect(user).toEqual('123');
       return throwError('Test-error');
     });
     spyOn(routerMock, 'navigate').and.callThrough();

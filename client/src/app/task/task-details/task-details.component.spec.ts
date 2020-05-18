@@ -14,7 +14,7 @@ describe('TaskDetailsComponent', () => {
   let taskService: TaskService;
   let currentUserService: CurrentUserService;
   let task: Task;
-  const testUserName = 'test-user';
+  const testUserId = '123';
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -50,7 +50,7 @@ describe('TaskDetailsComponent', () => {
     });
 
     currentUserService = TestBed.inject(CurrentUserService);
-    spyOn(currentUserService, 'getUserName').and.returnValue(testUserName);
+    spyOn(currentUserService, 'getUserId').and.returnValue(testUserId);
   }));
 
   beforeEach(() => {
@@ -67,10 +67,10 @@ describe('TaskDetailsComponent', () => {
     component.onAssignButtonClicked();
 
     fixture.detectChanges();
-    expect(component.task.assignedUser).toEqual(testUserName);
+    expect(component.task.assignedUser).toEqual(testUserId);
   });
   it('should unassign and update task', () => {
-    task.assignedUser = testUserName;
+    task.assignedUser = testUserId;
 
     component.task = task;
     component.onUnassignButtonClicked();

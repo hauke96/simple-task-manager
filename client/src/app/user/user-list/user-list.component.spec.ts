@@ -41,7 +41,7 @@ describe('UserListComponent', () => {
     errorService = TestBed.inject(ErrorService);
     routerMock = TestBed.inject(Router);
 
-    spyOn(currentUserService, 'getUserName').and.returnValue('test-user');
+    spyOn(currentUserService, 'getUserId').and.returnValue('123');
   }));
 
   beforeEach(() => {
@@ -51,22 +51,22 @@ describe('UserListComponent', () => {
   });
 
   it('should detect removable users', () => {
-    component.project = new Project('1', 'test project', 'lorem ipsum', ['2', '3'], ['test-user', 'user-a', 'user-b'], 'test-user');
+    component.project = new Project('1', 'test project', 'lorem ipsum', ['2', '3'], ['123', '234', '345'], '123');
     expect(component).toBeTruthy();
 
-    expect(component.canRemove('test-user')).toBeFalse();
-    expect(component.canRemove('user-a')).toBeTrue();
-    expect(component.canRemove('user-b')).toBeTrue();
+    expect(component.canRemove('123')).toBeFalse();
+    expect(component.canRemove('234')).toBeTrue();
+    expect(component.canRemove('345')).toBeTrue();
   });
 
   it('should remove user correctly', () => {
     const removeUserSpy = spyOn(projectService, 'removeUser').and.callThrough();
-    component.project = new Project('1', 'test project', 'lorem ipsum', ['2', '3'], ['test-user', 'user-a', 'user-b'], 'test-user');
+    component.project = new Project('1', 'test project', 'lorem ipsum', ['2', '3'], ['123', '234', '345'], '123');
     expect(component).toBeTruthy();
 
-    component.onRemoveUserClicked('user-a');
+    component.onRemoveUserClicked('234');
 
-    expect(removeUserSpy).toHaveBeenCalledWith('1', 'user-a');
+    expect(removeUserSpy).toHaveBeenCalledWith('1', '234');
   });
 
   it('should show error on error', () => {
@@ -74,12 +74,12 @@ describe('UserListComponent', () => {
     const removeUserSpy = spyOn(projectService, 'removeUser').and.returnValue(throwError('test error'));
     const errorServiceSpy = spyOn(errorService, 'addError').and.callThrough();
 
-    component.project = new Project('1', 'test project', 'lorem ipsum', ['2', '3'], ['test-user', 'user-a', 'user-b'], 'test-user');
+    component.project = new Project('1', 'test project', 'lorem ipsum', ['2', '3'], ['123', '234', '345'], '123');
     expect(component).toBeTruthy();
 
-    component.onRemoveUserClicked('user-a');
+    component.onRemoveUserClicked('234');
 
-    expect(removeUserSpy).toHaveBeenCalledWith('1', 'user-a');
+    expect(removeUserSpy).toHaveBeenCalledWith('1', '234');
     expect(errorServiceSpy).toHaveBeenCalled();
   });
 });
