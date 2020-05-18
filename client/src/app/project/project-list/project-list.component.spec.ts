@@ -57,7 +57,7 @@ describe('ProjectListComponent', () => {
   });
 
   it('should get current user correctly', () => {
-    spyOn(userService, 'getUser').and.returnValue('test-user');
+    spyOn(userService, 'getUserName').and.returnValue('test-user');
 
     expect(component.currentUser).toEqual('test-user');
   });

@@ -50,7 +50,7 @@ describe('TaskDetailsComponent', () => {
     });
 
     userService = TestBed.inject(UserService);
-    spyOn(userService, 'getUser').and.returnValue(testUserName);
+    spyOn(userService, 'getUserName').and.returnValue(testUserName);
   }));
 
   beforeEach(() => {

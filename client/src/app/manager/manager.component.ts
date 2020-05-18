@@ -20,7 +20,7 @@ export class ManagerComponent implements OnInit {
   }
 
   public get userName(): string {
-    return this.userService.getUser();
+    return this.userService.getUserName();
   }
 
   public onLogoutClicked() {

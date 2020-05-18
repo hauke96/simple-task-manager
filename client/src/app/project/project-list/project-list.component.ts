@@ -25,7 +25,7 @@ export class ProjectListComponent implements OnInit {
   }
 
   public get currentUser(): string {
-    return this.userService.getUser();
+    return this.userService.getUserName();
   }
 
   public onProjectListItemClicked(id: string) {

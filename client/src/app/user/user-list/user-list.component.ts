@@ -20,7 +20,7 @@ export class UserListComponent implements OnInit {
   }
 
   public canRemove(user: string): boolean {
-    return this.project.owner === this.userService.getUser() && user !== this.userService.getUser();
+    return this.project.owner === this.userService.getUserName() && user !== this.userService.getUserName();
   }
 
   ngOnInit(): void {

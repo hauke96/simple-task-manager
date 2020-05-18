@@ -32,7 +32,7 @@ export class ProjectSettingsComponent implements OnInit {
   }
 
   public get isOwner(): boolean {
-    return this.userService.getUser() === this.projectOwner;
+    return this.userService.getUserName() === this.projectOwner;
   }
 
   public onDeleteButtonClicked() {
@@ -68,7 +68,7 @@ export class ProjectSettingsComponent implements OnInit {
   }
 
   private leaveProject() {
-    this.projectService.removeUser(this.projectId, this.userService.getUser())
+    this.projectService.removeUser(this.projectId, this.userService.getUserName())
       .subscribe(() => {
         this.requestConfirmation = false;
         this.router.navigate(['/manager']);

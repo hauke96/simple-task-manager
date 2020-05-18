@@ -32,11 +32,11 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   public get currentUser(): string {
-    return this.userService.getUser();
+    return this.userService.getUserName();
   }
 
   public onAssignButtonClicked() {
-    this.taskService.assign(this.task.id, this.userService.getUser())
+    this.taskService.assign(this.task.id, this.userService.getUserName())
       .subscribe(
         () => {
         },

@@ -15,7 +15,7 @@ describe('UserService', () => {
 
     service.setUser('test-user');
 
-    expect(service.getUser()).toEqual('test-user');
+    expect(service.getUserName()).toEqual('test-user');
   });
 
   it('should reset correctly', () => {
@@ -24,6 +24,6 @@ describe('UserService', () => {
 
     service.resetUser();
 
-    expect(service.getUser()).toEqual(undefined);
+    expect(service.getUserName()).toEqual(undefined);
   });
 });

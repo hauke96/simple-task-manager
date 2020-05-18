@@ -1,25 +1,30 @@
 import { Injectable } from '@angular/core';
+import { User } from './user.material';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  private currentUser?: string;
+  private currentUser?: User;
 
   // TODO changed event?
 
   constructor() {
   }
 
-  public setUser(user: string) {
-    this.currentUser = user;
+  public setUser(userName: string, uid: string) {
+    this.currentUser = new User(userName, uid);
   }
 
   public resetUser() {
     this.currentUser = undefined;
   }
 
-  public getUser(): string {
-    return this.currentUser;
+  public getUserName(): string {
+    return this.currentUser.name;
+  }
+
+  getUserId() {
+    return this.currentUser.uid;
   }
 }

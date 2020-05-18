@@ -41,7 +41,7 @@ describe('UserListComponent', () => {
     errorService = TestBed.inject(ErrorService);
     routerMock = TestBed.inject(Router);
 
-    spyOn(userService, 'getUser').and.returnValue('test-user');
+    spyOn(userService, 'getUserName').and.returnValue('test-user');
   }));
 
   beforeEach(() => {

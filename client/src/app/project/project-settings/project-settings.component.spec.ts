@@ -48,7 +48,7 @@ describe('ProjectSettingsComponent', () => {
 
   it('should set action for owner correctly', () => {
     component.projectOwner = 'test-user';
-    spyOn(userService, 'getUser').and.returnValue('test-user');
+    spyOn(userService, 'getUserName').and.returnValue('test-user');
     component.ngOnInit();
     // @ts-ignore
     expect(component.action).toEqual('delete');
@@ -56,7 +56,7 @@ describe('ProjectSettingsComponent', () => {
 
   it('should set action for non-owner correctly', () => {
     component.projectOwner = 'test-user';
-    spyOn(userService, 'getUser').and.returnValue('some other user');
+    spyOn(userService, 'getUserName').and.returnValue('some other user');
     component.ngOnInit();
     // @ts-ignore
     expect(component.action).toEqual('leave');
@@ -135,7 +135,7 @@ describe('ProjectSettingsComponent', () => {
   //
 
   it('should leave project on yes button', () => {
-    spyOn(userService, 'getUser').and.returnValue('test-user');
+    spyOn(userService, 'getUserName').and.returnValue('test-user');
     spyOn(projectService, 'removeUser').and.callFake((id: string, user: string) => {
       expect(id).toEqual('1');
       expect(user).toEqual('test-user');
@@ -154,7 +154,7 @@ describe('ProjectSettingsComponent', () => {
   });
 
   it('should not navigate on error when leaving project', () => {
-    spyOn(userService, 'getUser').and.returnValue('test-user');
+    spyOn(userService, 'getUserName').and.returnValue('test-user');
     spyOn(projectService, 'removeUser').and.callFake((id: string, user: string) => {
       expect(id).toEqual('1');
       expect(user).toEqual('test-user');
