@@ -24,6 +24,8 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt
     depends_on:
       - "stm-db"
+    logging:
+      driver: 'journald'
   stm-client:
     build:
       network: host
@@ -35,14 +37,16 @@ services:
       - "80:80"
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
+    logging:
+      driver: 'journald'
   stm-db:
     image: postgres:12.3
     container_name: stm-db
     restart: unless-stopped
     network_mode: host
     environment:
-     - POSTGRES_PASSWORD=geheim
-     - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=geheim
+      - POSTGRES_USER=postgres
     ports:
       - "5432:5432"
     volumes:
@@ -53,3 +57,5 @@ services:
       timeout: 2s
       retries: 30
       start_period: 1s
+    logging:
+      driver: 'journald'
