@@ -3,7 +3,7 @@
 	<p>Task: {{task?.id}}</p>
 	<div class="assign-button-container" *ngIf="needUserAssignment">
 		<button *ngIf="!task?.assignedUser" (click)="onAssignButtonClicked()">Assign me</button>
-		<p *ngIf="!!task?.assignedUser && task?.assignedUser !== currentUserId">Assigned to: {{task?.assignedUser}}</p>
+		<p *ngIf="!!task?.assignedUser && task?.assignedUser !== currentUserId">Assigned to: {{assignedUserName}}</p>
 		<button *ngIf="task?.assignedUser === currentUserId" (click)="onUnassignButtonClicked()">Unassign</button>
 	</div>
 </div>
