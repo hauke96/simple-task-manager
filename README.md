@@ -24,32 +24,12 @@ Once the region is fully mapped, the user finishes it by setting the process poi
 The owner of a project is also able to invite others to a project.
 When one user works on a task, no other user is able to also update the process of that task.
 
-# Development
+# Documentation
 
-Development takes place on the `dev` branch or on separate feature branches.
-The `master` branch only contains released versions.
-
-## Client
-
-The client is an Angular based web application and can be found in the `client/` folder.
-The `README.md` in this folder gives you further instruction on the setup, running, building, etc.
-
-## Server
-
-The server is written in go (aka golang) and can be found in the `server/` folder.
-The `README.md` there also gives you instructions on setup, running, building, etc.
-
-## Deployment
-
-The `docker-compose.yml` creates three docker container for the client, server and the database.
-Because the container build and test themselves, starting everything probably takes a few minutes.
-
-To increase build time, there's an own [base image for the client](https://hub.docker.com/r/simpletaskmanager/stm-client-base).
-
-During development I recommend to manually start the client and server (see according `README.md` files) and just use the docker container for the database.
+Technical documentation (setup, deployment, development, etc.) can be found in the `server` and `client` folder but the main documentation is in the `doc` folder.
 
 # Contribute
 
-Currently there are no guidelines. Feel free to create issues or a pull request.
+Currently there are no real guidelines. Feel free to create issues or a pull request.
 
-**Keep in mind:** Development takes place on the `dev` branch or on separate feature branches.
+**Keep in mind:** Take a look at `doc/development/README.md` before you start coding ;)

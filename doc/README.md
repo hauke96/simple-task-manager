@@ -3,7 +3,7 @@ Here you'll find some documentation about the simple task manager. This is order
 ### api
 * General information about the API
 * API methods
-* versioning
+* versions
 
 ### architecture
 * client and server code architecture
@@ -13,9 +13,10 @@ Here you'll find some documentation about the simple task manager. This is order
 * token creation, handling and validation
 
 ### operation
-* enable HTTPS
-* create SSL certificates
-* automatic renewal of SSL certs
+* HTTPS
+    * create SSL certificates
+    * automatic renewal of SSL certs
+* docker
 
 ### testing
 * write server and client tests
