@@ -2,13 +2,13 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ManagerComponent } from './manager.component';
 import { RouterTestingModule } from '@angular/router/testing';
-import { UserService } from '../user/user.service';
+import { CurrentUserService } from '../user/current-user.service';
 import { AuthService } from '../auth/auth.service';
 
 describe('ManagerComponent', () => {
   let component: ManagerComponent;
   let fixture: ComponentFixture<ManagerComponent>;
-  let userService: UserService;
+  let currentUserService: CurrentUserService;
   let authService: AuthService;
 
   beforeEach(async(() => {
@@ -20,7 +20,7 @@ describe('ManagerComponent', () => {
     })
       .compileComponents();
 
-    userService = TestBed.inject(UserService);
+    currentUserService = TestBed.inject(CurrentUserService);
     authService = TestBed.inject(AuthService);
   }));
 
@@ -38,7 +38,7 @@ describe('ManagerComponent', () => {
     localStorage.removeItem('auth_token');
     expect(component.userName).toBeFalsy();
 
-    spyOn(userService, 'getUserName').and.returnValue('test-user');
+    spyOn(currentUserService, 'getUserName').and.returnValue('test-user');
 
     expect(component.userName).toEqual('test-user');
   });

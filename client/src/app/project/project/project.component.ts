@@ -4,7 +4,7 @@ import { ProjectService } from '../project.service';
 import { TaskService } from '../../task/task.service';
 import { Project } from '../project.material';
 import { Task } from '../../task/task.material';
-import { UserService } from '../../user/user.service';
+import { CurrentUserService } from '../../user/current-user.service';
 
 @Component({
   selector: 'app-project',
@@ -20,7 +20,7 @@ export class ProjectComponent implements OnInit {
     private route: ActivatedRoute,
     private projectService: ProjectService,
     private taskService: TaskService,
-    private userService: UserService
+    private currentUserService: CurrentUserService
   ) {
   }
 
@@ -33,6 +33,6 @@ export class ProjectComponent implements OnInit {
   }
 
   public isOwner(): boolean {
-    return this.userService.getUserId() === this.project.owner;
+    return this.currentUserService.getUserId() === this.project.owner;
   }
 }

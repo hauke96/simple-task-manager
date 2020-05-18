@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../user/user.service';
+import { CurrentUserService } from '../../user/current-user.service';
 import { Project } from '../project.material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProcessPointColorService } from '../../common/process-point-color.service';
@@ -15,7 +15,7 @@ export class ProjectListComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private userService: UserService,
+    private currentUserService: CurrentUserService,
     private processPointColorService: ProcessPointColorService
   ) {
   }
@@ -25,7 +25,7 @@ export class ProjectListComponent implements OnInit {
   }
 
   public get currentUserId(): string {
-    return this.userService.getUserId();
+    return this.currentUserService.getUserId();
   }
 
   public onProjectListItemClicked(id: string) {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../user/user.service';
+import { CurrentUserService } from '../user/current-user.service';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
 
@@ -12,7 +12,7 @@ export class ManagerComponent implements OnInit {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private userService: UserService
+    private currentUserService: CurrentUserService
   ) {
   }
 
@@ -20,7 +20,7 @@ export class ManagerComponent implements OnInit {
   }
 
   public get userName(): string {
-    return this.userService.getUserName();
+    return this.currentUserService.getUserName();
   }
 
   public onLogoutClicked() {

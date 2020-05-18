@@ -12,7 +12,7 @@ import { Fill, Stroke, Style } from 'ol/style';
 import { Draw } from 'ol/interaction';
 import { ErrorService } from '../../common/error.service';
 import GeometryType from 'ol/geom/GeometryType';
-import { UserService } from '../../user/user.service';
+import { CurrentUserService } from '../../user/current-user.service';
 import Snap from 'ol/interaction/Snap';
 import Modify from 'ol/interaction/Modify';
 import Select, { SelectEvent } from 'ol/interaction/Select';
@@ -44,7 +44,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   constructor(
     private projectService: ProjectService,
     private errorService: ErrorService,
-    private userService: UserService,
+    private currentUserService: CurrentUserService,
     private router: Router
   ) {
   }
@@ -161,7 +161,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
 
   public createProject(name: string, maxProcessPoints: number, projectDescription: string, polygons: Polygon[]) {
     const geometries = polygons.map(p => p.getCoordinates()[0]) as [number, number][][];
-    const owner = this.userService.getUserId();
+    const owner = this.currentUserService.getUserId();
     this.projectService.createNewProject(name, maxProcessPoints, projectDescription, geometries, [owner], owner)
       .subscribe(project => {
         this.router.navigate(['/manager']);

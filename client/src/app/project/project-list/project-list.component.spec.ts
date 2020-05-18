@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProjectListComponent } from './project-list.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { UserService } from '../../user/user.service';
+import { CurrentUserService } from '../../user/current-user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MockRouter } from '../../common/mock-router';
 
@@ -11,7 +11,7 @@ describe('ProjectListComponent', () => {
   let component: ProjectListComponent;
   let fixture: ComponentFixture<ProjectListComponent>;
   let routerMock: MockRouter;
-  let userService: UserService;
+  let currentUserService: CurrentUserService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -21,7 +21,7 @@ describe('ProjectListComponent', () => {
         RouterTestingModule.withRoutes([])
       ],
       providers: [
-        UserService,
+        CurrentUserService,
         {
           provide: Router,
           useClass: MockRouter
@@ -35,7 +35,7 @@ describe('ProjectListComponent', () => {
       .compileComponents();
 
     routerMock = TestBed.inject(Router);
-    userService = TestBed.inject(UserService);
+    currentUserService = TestBed.inject(CurrentUserService);
   }));
 
   beforeEach(() => {
@@ -57,7 +57,7 @@ describe('ProjectListComponent', () => {
   });
 
   it('should get current user correctly', () => {
-    spyOn(userService, 'getUserId').and.returnValue('12345');
+    spyOn(currentUserService, 'getUserId').and.returnValue('12345');
 
     expect(component.currentUserId).toEqual('12345');
   });

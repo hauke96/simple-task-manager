@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Input } from '@angular/core';
 import { TaskService } from '../task.service';
-import { UserService } from '../../user/user.service';
+import { CurrentUserService } from '../../user/current-user.service';
 import { Task } from '../task.material';
 import { Feature, Map, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
@@ -26,7 +26,7 @@ export class TaskMapComponent implements AfterViewInit {
 
   constructor(
     private taskService: TaskService,
-    private userService: UserService,
+    private currentUserService: CurrentUserService,
     private processPointColorService: ProcessPointColorService
   ) {
   }
@@ -60,7 +60,7 @@ export class TaskMapComponent implements AfterViewInit {
       }
 
       // Text (porcess percentage)
-      const labelWeight = this.userService.getUserId() === task.assignedUser ? 'bold 10pt' : 'normal 8pt';
+      const labelWeight = this.currentUserService.getUserId() === task.assignedUser ? 'bold 10pt' : 'normal 8pt';
       let labelText: string;
       if (task.processPoints === task.maxProcessPoints) {
         labelText = 'DONE';

@@ -4,7 +4,7 @@ import { UserListComponent } from './user-list.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
 import { ProjectService } from '../../project/project.service';
-import { UserService } from '../user.service';
+import { CurrentUserService } from '../current-user.service';
 import { Project } from '../../project/project.material';
 import { throwError } from 'rxjs';
 import { Router } from '@angular/router';
@@ -15,7 +15,7 @@ describe('UserListComponent', () => {
   let component: UserListComponent;
   let fixture: ComponentFixture<UserListComponent>;
   let projectService: ProjectService;
-  let userService: UserService;
+  let currentUserService: CurrentUserService;
   let errorService: ErrorService;
   let routerMock: MockRouter;
 
@@ -37,11 +37,11 @@ describe('UserListComponent', () => {
       .compileComponents();
 
     projectService = TestBed.inject(ProjectService);
-    userService = TestBed.inject(UserService);
+    currentUserService = TestBed.inject(CurrentUserService);
     errorService = TestBed.inject(ErrorService);
     routerMock = TestBed.inject(Router);
 
-    spyOn(userService, 'getUserName').and.returnValue('test-user');
+    spyOn(currentUserService, 'getUserName').and.returnValue('test-user');
   }));
 
   beforeEach(() => {

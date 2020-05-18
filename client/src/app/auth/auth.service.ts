@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { UserService } from '../user/user.service';
+import { CurrentUserService } from '../user/current-user.service';
 import { Router } from '@angular/router';
 import { ErrorService } from '../common/error.service';
 
@@ -9,7 +9,7 @@ import { ErrorService } from '../common/error.service';
 })
 export class AuthService {
   constructor(
-    private userService: UserService,
+    private currentUserService: CurrentUserService,
     private router: Router,
     private errorService: ErrorService
   ) {
@@ -26,7 +26,7 @@ export class AuthService {
       const encodedToken = localStorage.getItem('auth_token');
       const decodedToken = atob(encodedToken);
       const token = JSON.parse(decodedToken);
-      this.userService.setUser(token.user, token.uid);
+      this.currentUserService.setUser(token.user, token.uid);
     } catch (e) {
       console.error(e);
       this.errorService.addError('Unable to get user name from token');
@@ -78,7 +78,7 @@ export class AuthService {
 
   // Removes all login information from the local storage and also from the user service.
   public logout() {
-    this.userService.resetUser();
+    this.currentUserService.resetUser();
     localStorage.clear();
     this.router.navigate(['/']);
   }

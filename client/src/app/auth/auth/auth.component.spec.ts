@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AuthComponent } from './auth.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AuthService } from '../auth.service';
-import { UserService } from '../../user/user.service';
+import { CurrentUserService } from '../../user/current-user.service';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { NgZone } from '@angular/core';
@@ -25,7 +25,7 @@ describe('AuthComponent', () => {
         HttpClientTestingModule
       ],
       providers: [
-        UserService,
+        CurrentUserService,
         AuthService,
         {
           provide: Router,

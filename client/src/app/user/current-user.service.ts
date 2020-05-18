@@ -4,7 +4,7 @@ import { User } from './user.material';
 @Injectable({
   providedIn: 'root'
 })
-export class UserService {
+export class CurrentUserService {
   private currentUser?: User;
 
   // TODO changed event?

@@ -6,14 +6,14 @@ import { ProjectService } from '../project.service';
 import { of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { MockRouter } from '../../common/mock-router';
-import { UserService } from '../../user/user.service';
+import { CurrentUserService } from '../../user/current-user.service';
 
 describe('ProjectSettingsComponent', () => {
   let component: ProjectSettingsComponent;
   let fixture: ComponentFixture<ProjectSettingsComponent>;
   let projectService: ProjectService;
   let routerMock: MockRouter;
-  let userService: UserService;
+  let currentUserService: CurrentUserService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -33,7 +33,7 @@ describe('ProjectSettingsComponent', () => {
 
     projectService = TestBed.inject(ProjectService);
     routerMock = TestBed.inject(Router);
-    userService = TestBed.inject(UserService);
+    currentUserService = TestBed.inject(CurrentUserService);
   }));
 
   beforeEach(() => {
@@ -48,7 +48,7 @@ describe('ProjectSettingsComponent', () => {
 
   it('should set action for owner correctly', () => {
     component.projectOwner = 'test-user';
-    spyOn(userService, 'getUserName').and.returnValue('test-user');
+    spyOn(currentUserService, 'getUserName').and.returnValue('test-user');
     component.ngOnInit();
     // @ts-ignore
     expect(component.action).toEqual('delete');
@@ -56,7 +56,7 @@ describe('ProjectSettingsComponent', () => {
 
   it('should set action for non-owner correctly', () => {
     component.projectOwner = 'test-user';
-    spyOn(userService, 'getUserName').and.returnValue('some other user');
+    spyOn(currentUserService, 'getUserName').and.returnValue('some other user');
     component.ngOnInit();
     // @ts-ignore
     expect(component.action).toEqual('leave');
@@ -135,7 +135,7 @@ describe('ProjectSettingsComponent', () => {
   //
 
   it('should leave project on yes button', () => {
-    spyOn(userService, 'getUserName').and.returnValue('test-user');
+    spyOn(currentUserService, 'getUserName').and.returnValue('test-user');
     spyOn(projectService, 'removeUser').and.callFake((id: string, user: string) => {
       expect(id).toEqual('1');
       expect(user).toEqual('test-user');
@@ -154,7 +154,7 @@ describe('ProjectSettingsComponent', () => {
   });
 
   it('should not navigate on error when leaving project', () => {
-    spyOn(userService, 'getUserName').and.returnValue('test-user');
+    spyOn(currentUserService, 'getUserName').and.returnValue('test-user');
     spyOn(projectService, 'removeUser').and.callFake((id: string, user: string) => {
       expect(id).toEqual('1');
       expect(user).toEqual('test-user');

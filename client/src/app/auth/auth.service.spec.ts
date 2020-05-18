@@ -1,25 +1,25 @@
 import { TestBed } from '@angular/core/testing';
 
 import { AuthService } from './auth.service';
-import { UserService } from '../user/user.service';
+import { CurrentUserService } from '../user/current-user.service';
 import { RouterTestingModule } from '@angular/router/testing';
 import Spy = jasmine.Spy;
 
 describe('AuthService', () => {
-  let userService: UserService;
+  let currentUserService: CurrentUserService;
   let service: AuthService;
   let logoutSpy: Spy;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        UserService
+        CurrentUserService
       ],
       imports: [
         RouterTestingModule.withRoutes([])
       ]
     });
-    userService = TestBed.inject(UserService);
+    currentUserService = TestBed.inject(CurrentUserService);
 
     service = TestBed.inject(AuthService);
 
@@ -59,8 +59,8 @@ describe('AuthService', () => {
     service.setUserNameFromToken();
 
     expect(logoutSpy).not.toHaveBeenCalled();
-    expect(userService.getUserName()).toEqual('test-user'); // Encoded in token
-    expect(userService.getUserId()).toEqual('12345'); // Encoded in token
+    expect(currentUserService.getUserName()).toEqual('test-user'); // Encoded in token
+    expect(currentUserService.getUserId()).toEqual('12345'); // Encoded in token
   });
 
   it('constructor should set user name correctly', () => {

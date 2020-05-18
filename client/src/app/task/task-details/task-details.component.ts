@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { TaskService } from '../task.service';
 import { Task } from '../task.material';
-import { UserService } from '../../user/user.service';
+import { CurrentUserService } from '../../user/current-user.service';
 import { ErrorService } from '../../common/error.service';
 
 @Component({
@@ -18,7 +18,7 @@ export class TaskDetailsComponent implements OnInit {
 
   constructor(
     private taskService: TaskService,
-    private userService: UserService,
+    private currentUserService: CurrentUserService,
     private errorService: ErrorService,
   ) {
   }
@@ -32,12 +32,12 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   public get currentUserId(): string {
-    return this.userService.getUserId();
+    return this.currentUserService.getUserId();
   }
 
   public onAssignButtonClicked() {
     // TODO do we need the user ID here?
-    this.taskService.assign(this.task.id, this.userService.getUserId())
+    this.taskService.assign(this.task.id, this.currentUserService.getUserId())
       .subscribe(
         () => {
         },

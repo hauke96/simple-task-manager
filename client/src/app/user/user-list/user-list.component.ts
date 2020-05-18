@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ProjectService } from '../../project/project.service';
 import { Project } from '../../project/project.material';
-import { UserService } from '../user.service';
+import { CurrentUserService } from '../current-user.service';
 import { ErrorService } from '../../common/error.service';
 
 @Component({
@@ -14,13 +14,13 @@ export class UserListComponent implements OnInit {
 
   constructor(
     private projectService: ProjectService,
-    private userService: UserService,
+    private currentUserService: CurrentUserService,
     private errorService: ErrorService
   ) {
   }
 
   public canRemove(user: string): boolean {
-    return this.project.owner === this.userService.getUserId() && user !== this.userService.getUserId();
+    return this.project.owner === this.currentUserService.getUserId() && user !== this.currentUserService.getUserId();
   }
 
   ngOnInit(): void {
