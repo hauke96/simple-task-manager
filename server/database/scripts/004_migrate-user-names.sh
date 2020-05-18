@@ -2,6 +2,8 @@
 
 typeset -Ag UID_CACHE
 OUTPUT_FILE="migrate-user-names.sql"
+#URL="https://master.apis.dev.openstreetmap.org"
+URL="https://www.openstreetmap.org"
 
 function nameToId()
 {
@@ -15,7 +17,7 @@ function nameToId()
 
 	# Get the changesets of the user. This is one of the dirty ways to get the UID of a display-name. Unfortunately there's no good and elegant way.
 	# Here we get the first occurrence of the string   uid=... user=...>   and then take the number of e.g.   uid="123456"   and store it in USER_ID.
-	USER_ID=$(curl -G --data-urlencode "display_name=$NAME" -s "https://www.openstreetmap.org/api/0.6/changesets" \
+	USER_ID=$(curl -G --data-urlencode "display_name=$NAME" -s "$URL/api/0.6/changesets" \
 		| grep -o " uid=\"[[:digit:]]*\" user" \
 		| head -n 1 \
 		| grep -o "[[:digit:]]*")
@@ -23,7 +25,7 @@ function nameToId()
 	if [ -z "$USER_ID" ]
 	then
 		# Try to get username via notes
-		USER_ID=$(curl -G --data-urlencode "display_name=$NAME" -s "https://www.openstreetmap.org/api/0.6/notes/search" \
+		USER_ID=$(curl -G --data-urlencode "display_name=$NAME" -s "$URL/api/0.6/notes/search" \
 			| grep --color=never "<uid>\|<user>" \
 			| tr -d '\n' \
 			| sed -r -e "s/<uid>([0-9]*)<\/uid>[ ]*<user>$NAME<\/user>/$\n\1$\n/" \

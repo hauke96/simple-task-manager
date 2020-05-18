@@ -1,6 +1,6 @@
 {
 	"server-url": "http://localhost",
 	"port": 8080,
-	"osm-base-url": "https://www.openstreetmap.org",
+	"osm-base-url": "https://master.apis.dev.openstreetmap.org",
 	"debug-logging": true
 }
