@@ -36,7 +36,7 @@ services:
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
   stm-db:
-    image: postgres
+    image: postgres:12.3
     container_name: stm-db
     restart: unless-stopped
     network_mode: host
