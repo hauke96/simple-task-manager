@@ -9,6 +9,7 @@ import { ProjectCreationComponent } from './project/project-creation/project-cre
 import { AllProjectsResolver } from './project/all-projects.resolver';
 import { AllTasksResolver } from './project/all-tasks.resolver';
 import { ProjectResolver } from './project/project.resolver';
+import { UserResolver } from './user/user.resolver';
 
 const routes: Routes = [
   {path: '', component: AuthComponent},
@@ -17,7 +18,11 @@ const routes: Routes = [
     path: 'project/:id',
     component: ProjectComponent,
     canActivate: [AuthGuard],
-    resolve: {project: ProjectResolver, tasks: AllTasksResolver}
+    resolve: {
+      project: ProjectResolver,
+      tasks: AllTasksResolver,
+      users: UserResolver
+    }
   },
   {path: 'new-project', component: ProjectCreationComponent, canActivate: [AuthGuard]},
   {path: 'oauth-landing', component: OauthLandingComponent},

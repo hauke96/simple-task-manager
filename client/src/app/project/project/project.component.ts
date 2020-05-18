@@ -5,6 +5,7 @@ import { TaskService } from '../../task/task.service';
 import { Project } from '../project.material';
 import { Task } from '../../task/task.material';
 import { CurrentUserService } from '../../user/current-user.service';
+import { User } from '../../user/user.material';
 
 @Component({
   selector: 'app-project',
@@ -14,6 +15,7 @@ import { CurrentUserService } from '../../user/current-user.service';
 export class ProjectComponent implements OnInit {
   public project: Project;
   public tasks: Task[];
+  public users: User[];
 
   constructor(
     private router: Router,
@@ -27,6 +29,7 @@ export class ProjectComponent implements OnInit {
   ngOnInit(): void {
     this.project = this.route.snapshot.data.project;
     this.tasks = this.route.snapshot.data.tasks;
+    this.users = this.route.snapshot.data.users;
     this.taskService.selectTask(this.tasks[0]);
 
     this.projectService.projectChanged.subscribe(p => this.project = p);

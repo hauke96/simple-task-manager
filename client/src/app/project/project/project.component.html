@@ -22,7 +22,7 @@
 					<h2>Users</h2>
 					<app-user-invitation *ngIf="isOwner()" class="tab-container-item"
 										 [projectId]="project?.id"></app-user-invitation>
-					<app-user-list [project]="project"></app-user-list>
+					<app-user-list [project]="project" [users]="users"></app-user-list>
 				</div>
 			</div>
 			<div *ngIf="tabs.tabIndex === 2">
