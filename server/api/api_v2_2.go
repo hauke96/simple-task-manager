@@ -30,7 +30,7 @@ func Init_v2_2(router *mux.Router) (*mux.Router, string) {
 	r.HandleFunc("/tasks/{id}/processPoints", authenticatedHandler(setProcessPoints_v2_2)).Methods(http.MethodPost)
 
 	// Old from v1
-	r.HandleFunc("/tasks", authenticatedHandler(addTask)).Methods(http.MethodPost)
+	r.HandleFunc("/tasks", authenticatedHandler(addTask_v2_2)).Methods(http.MethodPost)
 
 	return r, "v2.2"
 }
@@ -237,4 +237,29 @@ func setProcessPoints_v2_2(w http.ResponseWriter, r *http.Request, token *auth.T
 
 	encoder := json.NewEncoder(w)
 	encoder.Encode(*task)
+}
+
+func addTask_v2_2(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+	bodyBytes, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		sigolo.Error("Error reading request body: %s", err.Error())
+		util.ResponseBadRequest(w, err.Error())
+		return
+	}
+
+	var tasks []*task.Task
+	err = json.Unmarshal(bodyBytes, &tasks)
+	if err != nil {
+		util.ResponseInternalError(w, err.Error())
+		return
+	}
+
+	updatedTasks, err := task.AddTasks(tasks)
+	if err != nil {
+		util.ResponseInternalError(w, err.Error())
+		return
+	}
+
+	encoder := json.NewEncoder(w)
+	encoder.Encode(updatedTasks)
 }
