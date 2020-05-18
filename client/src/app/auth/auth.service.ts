@@ -26,7 +26,7 @@ export class AuthService {
       const encodedToken = localStorage.getItem('auth_token');
       const decodedToken = atob(encodedToken);
       const token = JSON.parse(decodedToken);
-      this.userService.setUser(token.user);
+      this.userService.setUser(token.user, token.uid);
     } catch (e) {
       console.error(e);
       this.errorService.addError('Unable to get user name from token');

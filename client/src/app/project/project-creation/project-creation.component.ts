@@ -161,7 +161,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
 
   public createProject(name: string, maxProcessPoints: number, projectDescription: string, polygons: Polygon[]) {
     const geometries = polygons.map(p => p.getCoordinates()[0]) as [number, number][][];
-    const owner = this.userService.getUser();
+    const owner = this.userService.getUserId();
     this.projectService.createNewProject(name, maxProcessPoints, projectDescription, geometries, [owner], owner)
       .subscribe(project => {
         this.router.navigate(['/manager']);
