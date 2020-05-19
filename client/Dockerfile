@@ -1,5 +1,5 @@
 ## STAGE 1 : Build the client
-FROM simpletaskmanager/stm-client-base:0.8.0 as builder
+FROM simpletaskmanager/stm-client-base:0.10.0-dev as builder
 
 COPY ./ /stm-client/
 WORKDIR /stm-client/
@@ -8,7 +8,7 @@ RUN npm run docker-test
 RUN NODE_OPTIONS="--max_old_space_size=4096" npm run build-prod
 
 ## STAGE 2 : Configure nginx and run client
-FROM nginx:latest
+FROM nginx:1.18.0
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 

@@ -40,27 +40,29 @@ You need the tools `createdb` and `psql`. Both are -- for ubuntu users -- availa
 * `cd server/database/`
 * `./init-db.sh`
 
-## Run
+## During development
+
+### Run
+
+#### OSM OAuth credentials
+
+To perform a login (even a login of your locally running application), you'll need OAuth credentials (so the OAuth consumer-key and -secret) within environment variables:
+
+* `export OAUTH_CONSUMER_KEY="Eln7...rY66"`
+* `export OAUTH_SECRET="fgg1...kl09"`
+
+You can export these variables each time you start a new terminal or just put it into a file of your choice to load then e.g. after your system booted.
+
+#### Start the server
+
+After these variables are visible, start the server:
 
 * `cd server`
 * `go run .`
 
-## Test
+### Test
 
-There are unit tests (files ending with `_test.go`).
-Run the tests from within the `server/` folder with `go test -v ./...`.
-
-All the tests using a real database are skipped.
-To use the database tests as well, go into `server/test/` and run the `run.sh` file.
-This will start the docker container for the database and runs the tests. 
-
-**tl;dr:**
-* `cd server`
-* `go test -v ./...`
-
-### Using a real database
-
-Use the `server/test/run.sh` script to also (additionally to the normal in-memory tests) run tests based on the database.
+Use the `server/test/run.sh` script to run tests and provide the database with dummy data (required for the tests).
 This script will setup the database in a docker container, fill the database with dummy data and executes the tests.
 
 **Warning:**
@@ -82,7 +84,7 @@ Until there's further documentation, just take a look, the properties are quite 
 
 ## HTTPS
 
-I only tried it with letsencrypt certificates.
+I only tried it with *let's encrypt* certificates.
 At least for them, you only need to set the following properties in your configuration (next to the others of course):
 
 ```json
@@ -96,6 +98,8 @@ At least for them, you only need to set the following properties in your configu
 
 **Important:** The `server-url` property has to begin with `https` in order to activate HTTPS.
 
+For **further information**, take a look at the `doc/operation/ssl-cert.md` file.
+
 # Docker
 
 Client and Server can easily be started/deployed as docker containers.
@@ -107,6 +111,8 @@ The database container is also defined in the `docker-compose.yml`.
 
 The default docker configuration uses the production configurations for the `stm.hauke-stieler.de` server, you probably want to change that.
 Just take a look above (configuration section) or take a look at the `server/config/prod.json` file.
+
+Also don't forget to set the **OAuth environment variables** as describes above.
 
 The `stm.hauke-stieler.de` uses Ubuntu so here's a workflow for Ubuntu:
 
@@ -123,10 +129,12 @@ git clone https://github.com/hauke96/simple-task-manager.git
 # 4. Go into the repo
 cd simple-task-manager
 
-# 5. Change configs to your needs
+# 5. Change configs to your needs and define environment variables
 
-# 6. Start the whole thing
+# 6. Start every container ...
 docker-compose up --build
+# ... or just start one
+docker-compose up --build stm-server
 ```
 
 There are several more CLI options, just take a look at `docker` and `docker-compose` guides/tutorials/documentation.

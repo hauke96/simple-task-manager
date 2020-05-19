@@ -1,3 +1,16 @@
+-- 
+-- Reset database
+-- 
+DELETE FROM projects;
+DELETE FROM tasks;
+DELETE FROM db_versions WHERE version='test';
+
+-- 
+-- Reset sequences for primary keys
+-- 
+ALTER SEQUENCE projects_id_seq RESTART WITH 1;
+ALTER SEQUENCE tasks_id_seq RESTART WITH 1;
+
 --
 -- Data for Name: db_versions; Type: TABLE DATA; Schema: public; Owner: postgres
 --

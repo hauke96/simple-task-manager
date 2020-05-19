@@ -48,12 +48,12 @@ func Init() {
 }
 
 func GetProjects(user string) ([]*Project, error) {
-	projects, err:= projectStore.getProjects(user)
+	projects, err := projectStore.getProjects(user)
 	if err != nil {
 		return nil, err
 	}
 
-	for _, p:=range projects {
+	for _, p := range projects {
 		err = addProcessPointData(p, user)
 		if err != nil {
 			return nil, err
@@ -200,7 +200,26 @@ func RemoveUser(id, requestingUser, userToRemove string) (*Project, error) {
 		return nil, fmt.Errorf("non-owner user '%s' is not allowed to remove another user", requestingUser)
 	}
 
-	return projectStore.removeUser(id, userToRemove)
+	project, err := projectStore.removeUser(id, userToRemove)
+	if err != nil {
+		return nil, err
+	}
+
+	// Unassign removed user from all tasks
+	for _, t := range project.TaskIDs {
+		err := permission.VerifyAssignment(t, userToRemove)
+
+		// err != nil means: The user is assigned to the task 't'
+		if err == nil {
+			_, err := task.UnassignUser(t, userToRemove)
+
+			if err != nil {
+				return nil, errors.Wrap(err, fmt.Sprintf("Unable to unassign user '%s' from task '%s'", userToRemove, t))
+			}
+		}
+	}
+
+	return project, nil
 }
 
 // VerifyOwnership checks whether all given tasks are part of projects where the

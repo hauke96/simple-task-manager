@@ -1,4 +1,4 @@
-FROM node as builder
+FROM node:14.2.0 as builder
 MAINTAINER Hauke Stieler<mail@hauke-stieler.de>
 
 RUN npm i -g @angular/cli
