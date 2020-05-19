@@ -52,6 +52,12 @@ func GetTasks(taskIds []string, requestingUser string) ([]*Task, error) {
 
 // AddTasks sets the ID of the tasks and adds them to the storage.
 func AddTasks(newTasks []*Task) ([]*Task, error) {
+	for _, t := range newTasks {
+		if t.ProcessPoints < 0 || t.MaxProcessPoints < 1 || t.MaxProcessPoints < t.ProcessPoints {
+			return nil, errors.New(fmt.Sprintf("process points of task are out of range (%d / %d)", t.ProcessPoints, t.MaxProcessPoints))
+		}
+	}
+
 	return store.addTasks(newTasks)
 }
 

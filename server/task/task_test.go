@@ -84,6 +84,52 @@ func TestAddTasks(t *testing.T) {
 	}
 }
 
+func TestAddTasksInvalidProcessPoints(t *testing.T) {
+	// Max points = 0 is not allowed
+	rawTask := &Task{
+		ProcessPoints:    0,
+		MaxProcessPoints: 0,
+		Geometry:         [][]float64{{1.5, 10}},
+		AssignedUser:     "Mark",
+	}
+
+	_, err := AddTasks([]*Task{rawTask})
+	if err == nil {
+		t.Errorf("Adding task with maxProcessPoints=0 should not be possible")
+		t.Fail()
+	}
+
+	// More points than max is not allowed
+	rawTask.ProcessPoints = 20
+	rawTask.MaxProcessPoints = 10
+
+	_, err = AddTasks([]*Task{rawTask})
+	if err == nil {
+		t.Errorf("Adding task with more than maxProcessPoints should not be possible")
+		t.Fail()
+	}
+
+	// Negative numbers aren't allowed
+	rawTask.ProcessPoints = 0
+	rawTask.MaxProcessPoints = -5
+
+	_, err = AddTasks([]*Task{rawTask})
+	if err == nil {
+		t.Errorf("Adding task with negative maxProcessPoints should not be possible")
+		t.Fail()
+	}
+
+	// Even negative numbers aren't allowed
+	rawTask.ProcessPoints = -5
+	rawTask.MaxProcessPoints = 10
+
+	_, err = AddTasks([]*Task{rawTask})
+	if err == nil {
+		t.Errorf("Adding task with negative processPoints should not be possible")
+		t.Fail()
+	}
+}
+
 func TestAssignUser(t *testing.T) {
 	task, err := AssignUser("2", "assigned-user")
 	if err != nil {
