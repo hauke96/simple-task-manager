@@ -17,6 +17,8 @@ func TestMain(m *testing.M) {
 	Init()
 	permission.Init()
 	task.Init()
+
+	m.Run()
 }
 
 func TestVerifyOwnership(t *testing.T) {

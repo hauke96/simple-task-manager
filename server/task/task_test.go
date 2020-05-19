@@ -16,6 +16,8 @@ func TestMain(m *testing.M) {
 	sigolo.LogLevel = sigolo.LOG_DEBUG
 	Init()
 	permission.Init()
+
+	m.Run()
 }
 
 func TestGetTasks(t *testing.T) {
