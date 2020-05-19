@@ -64,7 +64,6 @@ export class TaskService {
     }
 
     return this.http.delete<Task>(environment.url_task_assignedUser.replace('{id}', id))
-      .pipe(flatMap(task => this.addUserName(task)))
       .pipe(tap(t => this.selectedTaskChanged.emit(t)));
   }
 
