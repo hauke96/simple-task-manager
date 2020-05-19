@@ -3,9 +3,11 @@ import { Task } from './task.material';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
 import { from, Observable, throwError } from 'rxjs';
-import { concatMap, tap } from 'rxjs/operators';
+import { concatMap, map, tap } from 'rxjs/operators';
 import { Polygon } from 'ol/geom';
 import { Extent } from 'ol/extent';
+import { User } from '../user/user.material';
+import { UserService } from '../user/user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +17,10 @@ export class TaskService {
 
   private selectedTask: Task;
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private userService: UserService
+  ) {
   }
 
   public selectTask(task: Task) {
@@ -102,5 +107,22 @@ export class TaskService {
     osm += '</way></osm>';
 
     return osm;
+  }
+
+  public addUserNames(tasks: Task[]): Observable<Task[]> {
+    const userIDs = tasks.filter(t => !!t.assignedUser).map(t => t.assignedUser);
+
+    return this.userService.getUsersFromIds(userIDs)
+      .pipe(
+        map((users: User[]) => {
+          for (const u of users) {
+            const task = tasks.find(t => t.assignedUser === u.uid);
+            if (!!task) {
+              task.assignedUserName = u.name;
+            }
+          }
+          return tasks;
+        })
+      );
   }
 }

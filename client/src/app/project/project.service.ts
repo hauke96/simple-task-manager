@@ -27,8 +27,14 @@ export class ProjectService {
     return this.http.get<Project>(environment.url_projects_by_id.replace('{id}', id));
   }
 
-  public createNewProject(name: string, maxProcessPoints: number, projectDescription: string, geometries: [number, number][][], users: string[], owner: string)
-    : Observable<Project> {
+  public createNewProject(
+    name: string,
+    maxProcessPoints: number,
+    projectDescription: string,
+    geometries: [number, number][][],
+    users: string[],
+    owner: string
+  ): Observable<Project> {
     // Create new tasks with the given geometries and collect their IDs
     return this.taskService.createNewTasks(geometries, maxProcessPoints)
       .pipe(flatMap(tasks => {
@@ -48,7 +54,12 @@ export class ProjectService {
 
   // Gets the tasks of the given project
   public getTasks(id: string): Observable<Task[]> {
-    return this.http.get<Task[]>(environment.url_projects + '/' + id + '/tasks');
+    return this.http.get<Task[]>(environment.url_projects + '/' + id + '/tasks')
+      .pipe(
+        flatMap(tasks => {
+          return this.taskService.addUserNames(tasks);
+        })
+      );
   }
 
   public removeUser(id: string, user: string): Observable<any> {

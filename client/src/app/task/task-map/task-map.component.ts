@@ -71,7 +71,7 @@ export class TaskMapComponent implements AfterViewInit {
       if (currentUserTask) {
         labelText += '\n(you)';
       } else if (hasAssignedUser) {
-        labelText += '\n(' + task.assignedUser + ')';
+        labelText += '\n(' + task.assignedUserName + ')';
       }
 
       return new Style({
