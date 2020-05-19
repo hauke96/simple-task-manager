@@ -4,7 +4,8 @@ export class Task {
     public processPoints: number,
     public maxProcessPoints: number,
     public geometry: [number, number][],
-    public assignedUser?: string
+    public assignedUser?: string,
+    public assignedUserName?: string
   ) {
   }
 }

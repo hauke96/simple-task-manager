@@ -28,23 +28,16 @@ func Init() error {
 	sigolo.Info("Registered general routes:")
 	printRoutes(router)
 
+	// Not supported anymore:
 	// API v1
-	router_v1, version := Init_v1(router)
-	supportedApiVersions = append(supportedApiVersions, version)
-	sigolo.Info("Registered routes for API %s:", version)
-	printRoutes(router_v1)
-
 	// API v2
-	router_v2, version := Init_v2(router)
-	supportedApiVersions = append(supportedApiVersions, version)
-	sigolo.Info("Registered routes for API %s:", version)
-	printRoutes(router_v2)
-
 	// API v2.1
-	router_v2_1, version := Init_v2_1(router)
+
+	// API v2.2
+	router_v2_2, version := Init_v2_2(router)
 	supportedApiVersions = append(supportedApiVersions, version)
 	sigolo.Info("Registered routes for API %s:", version)
-	printRoutes(router_v2_1)
+	printRoutes(router_v2_2)
 
 	router.Methods(http.MethodOptions).HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")

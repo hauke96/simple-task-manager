@@ -5,7 +5,7 @@ COPY ./ /stm-client/
 WORKDIR /stm-client/
 
 RUN npm run docker-test
-RUN NODE_OPTIONS="--max_old_space_size=4096" npm run build
+RUN NODE_OPTIONS="--max_old_space_size=4096" npm run build-prod
 
 ## STAGE 2 : Configure nginx and run client
 FROM nginx:1.18.0

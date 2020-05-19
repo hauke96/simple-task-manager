@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TaskDetailsComponent } from './task-details.component';
-import { UserService } from '../../user/user.service';
+import { CurrentUserService } from '../../user/current-user.service';
 import { TaskService } from '../task.service';
 import { Task } from '../task.material';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -12,9 +12,9 @@ describe('TaskDetailsComponent', () => {
   let component: TaskDetailsComponent;
   let fixture: ComponentFixture<TaskDetailsComponent>;
   let taskService: TaskService;
-  let userService: UserService;
+  let currentUserService: CurrentUserService;
   let task: Task;
-  const testUserName = 'test-user';
+  const testUserId = '123';
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -24,7 +24,7 @@ describe('TaskDetailsComponent', () => {
         FormsModule
       ],
       providers: [
-        UserService,
+        CurrentUserService,
         TaskService,
       ]
     })
@@ -49,8 +49,8 @@ describe('TaskDetailsComponent', () => {
       return of(task);
     });
 
-    userService = TestBed.inject(UserService);
-    spyOn(userService, 'getUser').and.returnValue(testUserName);
+    currentUserService = TestBed.inject(CurrentUserService);
+    spyOn(currentUserService, 'getUserId').and.returnValue(testUserId);
   }));
 
   beforeEach(() => {
@@ -67,10 +67,10 @@ describe('TaskDetailsComponent', () => {
     component.onAssignButtonClicked();
 
     fixture.detectChanges();
-    expect(component.task.assignedUser).toEqual(testUserName);
+    expect(component.task.assignedUser).toEqual(testUserId);
   });
   it('should unassign and update task', () => {
-    task.assignedUser = testUserName;
+    task.assignedUser = testUserId;
 
     component.task = task;
     component.onUnassignButtonClicked();

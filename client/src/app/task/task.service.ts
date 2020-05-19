@@ -2,10 +2,12 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { Task } from './task.material';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
-import { from, Observable, throwError } from 'rxjs';
-import { concatMap, tap } from 'rxjs/operators';
+import { from, Observable, of, throwError } from 'rxjs';
+import { concatMap, flatMap, map, tap } from 'rxjs/operators';
 import { Polygon } from 'ol/geom';
 import { Extent } from 'ol/extent';
+import { User } from '../user/user.material';
+import { UserService } from '../user/user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +17,10 @@ export class TaskService {
 
   private selectedTask: Task;
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private userService: UserService
+  ) {
   }
 
   public selectTask(task: Task) {
@@ -28,8 +33,9 @@ export class TaskService {
   }
 
   public createNewTasks(geometries: [number, number][][], maxProcessPoints: number): Observable<Task[]> {
-    const tasks = geometries.map(g => new Task('', 0, maxProcessPoints, g));
-    return this.http.post<Task[]>(environment.url_tasks, JSON.stringify(tasks));
+    const draftTasks = geometries.map(g => new Task('', 0, maxProcessPoints, g));
+    return this.http.post<Task[]>(environment.url_tasks, JSON.stringify(draftTasks))
+      .pipe(flatMap(tasks => this.addUserNames(tasks)));
   }
 
   public setProcessPoints(id: string, newProcessPoints: number): Observable<Task> {
@@ -38,6 +44,7 @@ export class TaskService {
     }
 
     return this.http.post<Task>(environment.url_task_processPoints.replace('{id}', id) + '?process_points=' + newProcessPoints, '')
+      .pipe(flatMap(task => this.addUserName(task)))
       .pipe(tap(t => this.selectedTaskChanged.emit(t)));
   }
 
@@ -47,6 +54,7 @@ export class TaskService {
     }
 
     return this.http.post<Task>(environment.url_task_assignedUser.replace('{id}', id), '')
+      .pipe(flatMap(task => this.addUserName(task)))
       .pipe(tap(t => this.selectedTaskChanged.emit(t)));
   }
 
@@ -102,5 +110,31 @@ export class TaskService {
     osm += '</way></osm>';
 
     return osm;
+  }
+
+  // Fills the "assignedUserName" of the task with the actual user name.
+  public addUserNames(tasks: Task[]): Observable<Task[]> {
+    const userIDs = tasks.filter(t => !!t.assignedUser).map(t => t.assignedUser);
+
+    if (!!userIDs || userIDs.length === 0) {
+      return of(tasks);
+    }
+
+    return this.userService.getUsersFromIds(userIDs)
+      .pipe(
+        map((users: User[]) => {
+          for (const t of tasks) {
+            const user = users.find(u => t.assignedUser === u.uid);
+            if (!!user) {
+              t.assignedUserName = user.name;
+            }
+          }
+          return tasks;
+        })
+      );
+  }
+
+  public addUserName(task: Task): Observable<Task> {
+    return this.addUserNames([task]).pipe(map(t => t[0]));
   }
 }

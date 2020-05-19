@@ -21,34 +21,6 @@ func TestMain(m *testing.M) {
 	m.Run()
 }
 
-func TestVerifyOwnership(t *testing.T) {
-	// Test ownership of tasks of project 1
-	b, err := VerifyOwnership("Peter", []string{"1"})
-	if err != nil {
-		t.Errorf("Verification of ownership should work: %s", err.Error())
-		t.Fail()
-		return
-	}
-	if !b {
-		t.Errorf("Peter in deed owns task 1")
-		t.Fail()
-		return
-	}
-
-	// Test ownership of tasks of project 2
-	b, err = VerifyOwnership("Peter", []string{"2", "3", "4"})
-	if err != nil {
-		t.Errorf("Verification of ownership should work: %s", err.Error())
-		t.Fail()
-		return
-	}
-	if b { // expect false
-		t.Errorf("Petern does not own tasks 2, 3 and 4")
-		t.Fail()
-		return
-	}
-}
-
 func TestGetProjects(t *testing.T) {
 	// For Maria (being part of project 1 and 2)
 	userProjects, err := GetProjects("Maria")

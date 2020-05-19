@@ -126,7 +126,7 @@ func OauthCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userName, err := requestUserInformation(userConfig)
+	userName, userId, err := requestUserInformation(userConfig)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -140,7 +140,7 @@ func OauthCallback(w http.ResponseWriter, r *http.Request) {
 	tokenValidDuration, _ := time.ParseDuration("24h")
 	validUntil := time.Now().Add(tokenValidDuration).Unix()
 
-	encodedTokenString, err := createTokenString(err, userName, validUntil)
+	encodedTokenString, err := createTokenString(err, userName, userId, validUntil)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -160,34 +160,34 @@ func requestAccessToken(r *http.Request, userConfig *oauth1a.UserConfig) error {
 	return userConfig.GetAccessToken(userConfig.RequestTokenKey, userConfig.Verifier, service, httpClient)
 }
 
-func requestUserInformation(userConfig *oauth1a.UserConfig) (string, error) {
+func requestUserInformation(userConfig *oauth1a.UserConfig) (string, string, error) {
 	req, err := http.NewRequest("GET", osmUserDetailsUrl, nil)
 	if err != nil {
-		return "", errors.Wrap(err, "Creating request user information failed")
+		return "", "", errors.Wrap(err, "Creating request user information failed")
 	}
 
 	// The OSM server expects a signed request
 	err = service.Sign(req, userConfig)
 	if err != nil {
-		return "", errors.Wrap(err, "Signing request failed")
+		return "", "", errors.Wrap(err, "Signing request failed")
 	}
 
 	client := &http.Client{}
 	response, err := client.Do(req)
 	if err != nil {
-		return "", errors.Wrap(err, "Requesting user information failed")
+		return "", "", errors.Wrap(err, "Requesting user information failed")
 	}
 
 	responseBody, err := ioutil.ReadAll(response.Body)
 	defer response.Body.Close()
 	if err != nil {
-		return "", errors.Wrap(err, "Could not get response body")
+		return "", "", errors.Wrap(err, "Could not get response body")
 	}
 
 	var osm util.Osm
 	xml.Unmarshal(responseBody, &osm)
 
-	return osm.User.DisplayName, nil
+	return osm.User.DisplayName, osm.User.UserId, nil
 }
 
 func getRandomBytes(count int) ([]byte, error) {

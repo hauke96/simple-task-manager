@@ -2,9 +2,9 @@ const baseUrl = document.location.protocol + '//' + document.location.hostname +
 const usedApi = 'v2.2';
 
 export const environment = {
-  production: false,
+  production: true,
   oauth_landing: document.location.origin + '/oauth-landing',
-  osm_api_url: 'https://master.apis.dev.openstreetmap.org/api/0.6',
+  osm_api_url: 'https://api.openstreetmap.org/api/0.6',
 
   url_auth: baseUrl + '/oauth_login',
   url_projects: baseUrl + '/' + usedApi + '/projects',

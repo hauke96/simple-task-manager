@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ProjectService } from '../project.service';
 import { Router } from '@angular/router';
-import { UserService } from '../../user/user.service';
+import { CurrentUserService } from '../../user/current-user.service';
 import { ErrorService } from '../../common/error.service';
 
 @Component({
@@ -19,7 +19,7 @@ export class ProjectSettingsComponent implements OnInit {
 
   constructor(
     private projectService: ProjectService,
-    private userService: UserService,
+    private currentUserService: CurrentUserService,
     private errorService: ErrorService,
     private router: Router
   ) {
@@ -32,7 +32,7 @@ export class ProjectSettingsComponent implements OnInit {
   }
 
   public get isOwner(): boolean {
-    return this.userService.getUser() === this.projectOwner;
+    return this.currentUserService.getUserId() === this.projectOwner;
   }
 
   public onDeleteButtonClicked() {
@@ -68,7 +68,7 @@ export class ProjectSettingsComponent implements OnInit {
   }
 
   private leaveProject() {
-    this.projectService.removeUser(this.projectId, this.userService.getUser())
+    this.projectService.removeUser(this.projectId, this.currentUserService.getUserId())
       .subscribe(() => {
         this.requestConfirmation = false;
         this.router.navigate(['/manager']);

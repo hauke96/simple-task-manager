@@ -1,8 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { TaskService } from '../task.service';
 import { Task } from '../task.material';
-import { UserService } from '../../user/user.service';
+import { CurrentUserService } from '../../user/current-user.service';
 import { ErrorService } from '../../common/error.service';
+import { User } from '../../user/user.material';
+import { UserService } from '../../user/user.service';
 
 @Component({
   selector: 'app-task-details',
@@ -15,9 +17,11 @@ export class TaskDetailsComponent implements OnInit {
 
   public task: Task;
   public newProcessPoints: number;
+  public assignedUserName: string;
 
   constructor(
     private taskService: TaskService,
+    private currentUserService: CurrentUserService,
     private userService: UserService,
     private errorService: ErrorService,
   ) {
@@ -25,18 +29,39 @@ export class TaskDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.task = this.taskService.getSelectedTask();
-    this.taskService.selectedTaskChanged.subscribe((task) => {
+    this.updateUser();
+
+    this.taskService.selectedTaskChanged.subscribe((task: Task) => {
       this.task = task;
       this.newProcessPoints = task.processPoints;
+      this.updateUser();
     });
   }
 
-  public get currentUser(): string {
-    return this.userService.getUser();
+  public get currentUserId(): string {
+    return this.currentUserService.getUserId();
+  }
+
+  private updateUser() {
+    if (!this.task || !this.task.assignedUser) {
+      this.assignedUserName = undefined;
+      return;
+    }
+
+    this.userService.getUsersFromIds([this.task.assignedUser]).subscribe(
+      (users: User[]) => {
+        this.assignedUserName = users[0].name;
+      },
+      e => {
+        console.error(e);
+        this.errorService.addError('Unable to load assigned user');
+      }
+    );
   }
 
   public onAssignButtonClicked() {
-    this.taskService.assign(this.task.id, this.userService.getUser())
+    // TODO do we need the user ID here?
+    this.taskService.assign(this.task.id, this.currentUserService.getUserId())
       .subscribe(
         () => {
         },

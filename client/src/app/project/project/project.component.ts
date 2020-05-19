@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectService } from '../project.service';
 import { TaskService } from '../../task/task.service';
 import { Project } from '../project.material';
-import { Task } from '../../task/task.material';
+import { CurrentUserService } from '../../user/current-user.service';
 import { UserService } from '../../user/user.service';
 
 @Component({
@@ -13,26 +13,27 @@ import { UserService } from '../../user/user.service';
 })
 export class ProjectComponent implements OnInit {
   public project: Project;
-  public tasks: Task[];
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private projectService: ProjectService,
+    private userService: UserService,
     private taskService: TaskService,
-    private userService: UserService
+    private currentUserService: CurrentUserService,
   ) {
   }
 
   ngOnInit(): void {
     this.project = this.route.snapshot.data.project;
-    this.tasks = this.route.snapshot.data.tasks;
-    this.taskService.selectTask(this.tasks[0]);
+    this.taskService.selectTask(this.project.tasks[0]);
 
-    this.projectService.projectChanged.subscribe(p => this.project = p);
+    this.projectService.projectChanged.subscribe(p => {
+      this.project = p;
+    });
   }
 
   public isOwner(): boolean {
-    return this.userService.getUser() === this.project.owner;
+    return this.currentUserService.getUserId() === this.project.owner.uid;
   }
 }

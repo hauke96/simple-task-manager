@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { ErrorService } from '../common/error.service';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class LoggedInInterceptor implements HttpInterceptor {
@@ -13,7 +14,8 @@ export class LoggedInInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    if (request.url.startsWith('http://localhost:8111')) {
+    // JOSM-Remote-Control or OSM-API
+    if (request.url.startsWith('http://localhost:8111') || request.url.startsWith(environment.osm_api_url)) {
       return next.handle(request);
     }
 

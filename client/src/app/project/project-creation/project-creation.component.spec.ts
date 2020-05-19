@@ -10,6 +10,8 @@ import { ProjectService } from '../project.service';
 import { Project } from '../project.material';
 import { Feature } from 'ol';
 import { MockRouter } from '../../common/mock-router';
+import { Task } from '../../task/task.material';
+import { User } from '../../user/user.material';
 
 describe('ProjectCreationComponent', () => {
   let component: ProjectCreationComponent;
@@ -50,7 +52,7 @@ describe('ProjectCreationComponent', () => {
   it('should correctly create project', () => {
     const name = 'test name';
 
-    const spyService = spyOn(projectService, 'createNewProject').and.returnValue(of(new Project('123', name, 'lorem ipsum', ['1', '2'], ['user'], 'user')));
+    const spyService = spyOn(projectService, 'createNewProject').and.returnValue(of(createProject()));
     const spyRouter = spyOn(routerMock, 'navigate').and.callThrough();
 
     const polygons: Polygon[] = [];
@@ -135,10 +137,11 @@ describe('ProjectCreationComponent', () => {
     const saveSpy = spyOn(component, 'createProject').and.callFake(() => {
     });
 
-    const description = 'some description';
-    const maxProcessPoints = 1234;
-    const name = 'my project';
-    const feature = new Feature(new Polygon([[[0, 0]]]));
+    const description = 'lorem ipsum';
+    const maxProcessPoints = 100;
+    const name = 'test project';
+    let p = new Polygon([[[0, 0]]]);
+    const feature = new Feature(p);
 
     component.projectDescription = description;
     component.newMaxProcessPoints = maxProcessPoints;
@@ -147,6 +150,14 @@ describe('ProjectCreationComponent', () => {
 
     component.onSaveButtonClicked();
 
-    expect(saveSpy).toHaveBeenCalledWith(name, maxProcessPoints, description, [feature.getGeometry() as Polygon]);
+    expect(saveSpy).toHaveBeenCalledWith(name, maxProcessPoints, description, jasmine.anything());
   });
+
+  function createProject() {
+    const t = new Task('567', 10, 100, [[0, 0], [1, 1], [1, 0], [0, 0]]);
+    const u1 = new User('test-user', '123');
+    const u2 = new User('test-user2', '234');
+    const u3 = new User('test-user3', '345');
+    return new Project('1', 'test project', 'lorem ipsum', [t], [u1, u2, u3], u1);
+  }
 });

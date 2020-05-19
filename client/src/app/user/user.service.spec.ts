@@ -1,29 +1,21 @@
 import { TestBed } from '@angular/core/testing';
 
-import { UserService } from '../user/user.service';
+import { UserService } from './user.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('UserService', () => {
   let service: UserService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      imports: [
+        HttpClientTestingModule
+      ]
+    });
     service = TestBed.inject(UserService);
   });
 
-  it('should set and get correctly', () => {
+  it('should be created', () => {
     expect(service).toBeTruthy();
-
-    service.setUser('test-user');
-
-    expect(service.getUser()).toEqual('test-user');
-  });
-
-  it('should reset correctly', () => {
-    expect(service).toBeTruthy();
-    service.setUser('test-user');
-
-    service.resetUser();
-
-    expect(service.getUser()).toEqual(undefined);
   });
 });

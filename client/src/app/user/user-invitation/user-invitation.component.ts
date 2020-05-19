@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ProjectService } from '../../project/project.service';
 import { ErrorService } from '../../common/error.service';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-user-invitation',
@@ -13,6 +14,7 @@ export class UserInvitationComponent implements OnInit {
 
   constructor(
     private projectService: ProjectService,
+    private userService: UserService,
     private errorService: ErrorService
   ) {
   }
@@ -21,11 +23,18 @@ export class UserInvitationComponent implements OnInit {
   }
 
   public onInvitationButtonClicked() {
-    this.projectService.inviteUser(this.userName, this.projectId)
-      .subscribe(p => {
+    this.userService.getUserId(this.userName).subscribe(
+      user => {
+        console.log(user);
+        this.projectService.inviteUser(user.uid, this.projectId)
+          .subscribe(p => {
+          }, err => {
+            console.log(err);
+            this.errorService.addError('Could not invite user \'' + this.userName + '\'');
+          });
       }, err => {
         console.log(err);
-        this.errorService.addError('Could not invite user \'' + this.userName + '\'');
+        this.errorService.addError('Could not load user ID for user \'' + this.userName + '\'');
       });
   }
 }

@@ -6,6 +6,8 @@ import { TaskService } from '../task/task.service';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 import { Task } from '../task/task.material';
+import { User } from '../user/user.material';
+import { Project } from './project.material';
 
 describe('ProjectService', () => {
   let service: ProjectService;
@@ -32,12 +34,14 @@ describe('ProjectService', () => {
       [[10, 0], [11, 1], [12, 0], [10, 0]]
     ];
 
+    const tasks = [
+      new Task('1', 0, 100, geometries[0]),
+      new Task('2', 0, 100, geometries[1]),
+      new Task('3', 0, 100, geometries[2])
+    ];
+
     spyOn(taskService, 'createNewTasks').and.callFake((geom: [number, number][][], maxProcessPoints: number) => {
-      return of([
-        new Task('1', 0, maxProcessPoints, geom[0]),
-        new Task('2', 0, maxProcessPoints, geom[1]),
-        new Task('3', 0, maxProcessPoints, geom[2])
-      ]);
+      return of(tasks);
     });
 
     service.createNewProject('project name', 100, 'lorem ipsum', geometries, ['user'], 'user')
@@ -45,7 +49,7 @@ describe('ProjectService', () => {
         // Only these properties can be checked. All others (like 'owner') are set by the server, which we don't use here
         expect(p.id).toEqual('');
         expect(p.name).toEqual('project name');
-        expect(p.taskIds).toEqual(['1', '2', '3']);
+        expect(p.tasks).toEqual(tasks);
       }, err => {
         console.error(err);
         fail();
