@@ -16,12 +16,16 @@
 				<div class="notice-text">
 					<b>New features in 0.10.0:</b>
 					<ul>
-						...
+						<li>Bug-Fix: New projects with 0 maximum process points are no longer possible</li>
+						<li>Bug-Fix: Tasks with near-zero coordinates do not appear anymore</li>
+						<li>Bug-Fix: Assigned users become unassigned when leaving the project</li>
 					</ul>
 					Internals:
 					<ul>
 						<li>Use user-ID instead of user name</li>
 						<li>Removed API version v1, v2 and v2.1</li>
+						<li>Reset database before each server test method</li>
+						<li>Use <code>journald</code> as docker logging-driver</li>
 					</ul>
 				</div>
 			</div>
