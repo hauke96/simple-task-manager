@@ -40,7 +40,6 @@ echo "Initialize new database"
 cd server/database
 ./init-db.sh
 
-echo "Fill database with dummy data"
 # Switch from "./server/database" into "./server" folder
 cd ..
 echo "Execute tests"
