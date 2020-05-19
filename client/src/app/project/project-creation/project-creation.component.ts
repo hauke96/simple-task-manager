@@ -167,6 +167,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       .subscribe(project => {
         this.router.navigate(['/manager']);
       }, e => {
+        console.error(e);
         this.errorService.addError('Could not create project');
       });
   }

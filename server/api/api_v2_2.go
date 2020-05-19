@@ -19,17 +19,14 @@ func Init_v2_2(router *mux.Router) (*mux.Router, string) {
 	r.HandleFunc("/projects", authenticatedHandler(getProjects_v2_2)).Methods(http.MethodGet)
 	r.HandleFunc("/projects", authenticatedHandler(addProject_v2_2)).Methods(http.MethodPost)
 	r.HandleFunc("/projects/{id}", authenticatedHandler(getProject_v2_2)).Methods(http.MethodGet)
-	r.HandleFunc("/projects/{id}/users/{user}", authenticatedHandler(removeUser_v2_2)).Methods(http.MethodDelete)
-
 	r.HandleFunc("/projects/{id}", authenticatedHandler(deleteProjects_v2_2)).Methods(http.MethodDelete)
-	r.HandleFunc("/projects/{id}/tasks", authenticatedHandler(getProjectTasks_v2_2)).Methods(http.MethodGet)
 	r.HandleFunc("/projects/{id}/users", authenticatedHandler(addUserToProject_v2_2)).Methods(http.MethodPost)
+	r.HandleFunc("/projects/{id}/users/{uid}", authenticatedHandler(removeUser_v2_2)).Methods(http.MethodDelete)
+	r.HandleFunc("/projects/{id}/tasks", authenticatedHandler(getProjectTasks_v2_2)).Methods(http.MethodGet)
 
 	r.HandleFunc("/tasks/{id}/assignedUser", authenticatedHandler(assignUser_v2_2)).Methods(http.MethodPost)
 	r.HandleFunc("/tasks/{id}/assignedUser", authenticatedHandler(unassignUser_v2_2)).Methods(http.MethodDelete)
 	r.HandleFunc("/tasks/{id}/processPoints", authenticatedHandler(setProcessPoints_v2_2)).Methods(http.MethodPost)
-
-	// Old from v1
 	r.HandleFunc("/tasks", authenticatedHandler(addTask_v2_2)).Methods(http.MethodPost)
 
 	return r, "v2.2"
@@ -96,7 +93,7 @@ func removeUser_v2_2(w http.ResponseWriter, r *http.Request, token *auth.Token) 
 		return
 	}
 
-	user, ok := vars["user"]
+	user, ok := vars["uid"]
 	if !ok {
 		util.ResponseBadRequest(w, "query parameter 'user' not set")
 		return
@@ -146,7 +143,7 @@ func getProjectTasks_v2_2(w http.ResponseWriter, r *http.Request, token *auth.To
 }
 
 func addUserToProject_v2_2(w http.ResponseWriter, r *http.Request, token *auth.Token) {
-	userToAdd, err := util.GetParam("user", r)
+	userToAdd, err := util.GetParam("uid", r)
 	if err != nil {
 		util.ResponseBadRequest(w, err.Error())
 		return
