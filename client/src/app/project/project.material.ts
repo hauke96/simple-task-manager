@@ -23,8 +23,8 @@ export class Project {
               public users: User[],
               public owner: User,
               public needsAssignment: boolean = true,
-              public totalProcessPoints: number,
-              public doneProcessPoints: number
+              public totalProcessPoints?: number,
+              public doneProcessPoints?: number
   ) {
   }
 }

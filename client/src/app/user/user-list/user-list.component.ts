@@ -34,6 +34,7 @@ export class UserListComponent implements OnInit {
   }
 
   public canRemove(user: string): boolean {
-    return this.project.owner === this.currentUserService.getUserId() && user !== this.currentUserService.getUserId();
+    console.log(user + ' // ' + this.project.owner.uid + ' // ' + this.currentUserService.getUserId());
+    return this.project.owner.uid === this.currentUserService.getUserId() && user !== this.currentUserService.getUserId();
   }
 }

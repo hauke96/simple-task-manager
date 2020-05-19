@@ -14,7 +14,7 @@
 			<div *ngIf="tabs.tabIndex === 0">
 				<div class="tab-container">
 					<h2>Tasks</h2>
-					<app-task-list *ngIf="tasks" [projectId]="project?.id" [tasks]="tasks"></app-task-list>
+					<app-task-list *ngIf="project.tasks" [projectId]="project?.id" [tasks]="project.tasks"></app-task-list>
 				</div>
 			</div>
 			<div *ngIf="tabs.tabIndex === 1">
@@ -41,6 +41,6 @@
 	</div>
 	<div class="map-container">
 		<h2>Map</h2>
-		<app-task-map *ngIf="tasks" [tasks]="tasks" class="map"></app-task-map>
+		<app-task-map *ngIf="project.tasks" [tasks]="project.tasks" class="map"></app-task-map>
 	</div>
 </div>

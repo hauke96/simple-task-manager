@@ -7,6 +7,7 @@ import { of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { MockRouter } from '../../common/mock-router';
 import { CurrentUserService } from '../../user/current-user.service';
+import { Project } from '../project.material';
 
 describe('ProjectSettingsComponent', () => {
   let component: ProjectSettingsComponent;
@@ -139,7 +140,7 @@ describe('ProjectSettingsComponent', () => {
     spyOn(projectService, 'removeUser').and.callFake((id: string, user: string) => {
       expect(id).toEqual('1');
       expect(user).toEqual('123');
-      return of({});
+      return of({} as Project);
     });
     spyOn(routerMock, 'navigate').and.callThrough();
     component.projectId = '1';

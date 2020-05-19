@@ -10,6 +10,8 @@ import { throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { ErrorService } from '../../common/error.service';
 import { MockRouter } from '../../common/mock-router';
+import { Task } from '../../task/task.material';
+import { User } from '../user.material';
 
 describe('UserListComponent', () => {
   let component: UserListComponent;
@@ -51,7 +53,7 @@ describe('UserListComponent', () => {
   });
 
   it('should detect removable users', () => {
-    component.project = new Project('1', 'test project', 'lorem ipsum', ['2', '3'], ['123', '234', '345'], '123');
+    component.project = createProject();
     expect(component).toBeTruthy();
 
     expect(component.canRemove('123')).toBeFalse();
@@ -61,12 +63,13 @@ describe('UserListComponent', () => {
 
   it('should remove user correctly', () => {
     const removeUserSpy = spyOn(projectService, 'removeUser').and.callThrough();
-    component.project = new Project('1', 'test project', 'lorem ipsum', ['2', '3'], ['123', '234', '345'], '123');
+
+    component.project = createProject();
     expect(component).toBeTruthy();
 
-    component.onRemoveUserClicked('234');
+    component.onRemoveUserClicked('123');
 
-    expect(removeUserSpy).toHaveBeenCalledWith('1', '234');
+    expect(removeUserSpy).toHaveBeenCalledWith('1', '123');
   });
 
   it('should show error on error', () => {
@@ -74,12 +77,20 @@ describe('UserListComponent', () => {
     const removeUserSpy = spyOn(projectService, 'removeUser').and.returnValue(throwError('test error'));
     const errorServiceSpy = spyOn(errorService, 'addError').and.callThrough();
 
-    component.project = new Project('1', 'test project', 'lorem ipsum', ['2', '3'], ['123', '234', '345'], '123');
+    component.project = createProject();
     expect(component).toBeTruthy();
 
-    component.onRemoveUserClicked('234');
+    component.onRemoveUserClicked('123');
 
-    expect(removeUserSpy).toHaveBeenCalledWith('1', '234');
+    expect(removeUserSpy).toHaveBeenCalledWith('1', '123');
     expect(errorServiceSpy).toHaveBeenCalled();
   });
+
+  function createProject() {
+    const t = new Task('567', 10, 100, [[0, 0], [1, 1], [1, 0], [0, 0]]);
+    const u1 = new User('test-user', '123');
+    const u2 = new User('test-user2', '234');
+    const u3 = new User('test-user3', '345');
+    return new Project('1', 'test project', 'lorem ipsum', [t], [u1, u2, u3], u1);
+  }
 });

@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectService } from '../project.service';
 import { TaskService } from '../../task/task.service';
 import { Project } from '../project.material';
-import { Task } from '../../task/task.material';
 import { CurrentUserService } from '../../user/current-user.service';
 import { UserService } from '../../user/user.service';
 
@@ -14,7 +13,6 @@ import { UserService } from '../../user/user.service';
 })
 export class ProjectComponent implements OnInit {
   public project: Project;
-  public tasks: Task[];
 
   constructor(
     private router: Router,
@@ -28,8 +26,7 @@ export class ProjectComponent implements OnInit {
 
   ngOnInit(): void {
     this.project = this.route.snapshot.data.project;
-    this.tasks = this.route.snapshot.data.tasks;
-    this.taskService.selectTask(this.tasks[0]);
+    this.taskService.selectTask(this.project.tasks[0]);
 
     this.projectService.projectChanged.subscribe(p => {
       this.project = p;

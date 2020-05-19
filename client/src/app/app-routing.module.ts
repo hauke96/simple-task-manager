@@ -19,7 +19,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     resolve: {
       project: ProjectResolver,
-      tasks: AllTasksResolver
+      // tasks: AllTasksResolver
     }
   },
   {path: 'new-project', component: ProjectCreationComponent, canActivate: [AuthGuard]},
