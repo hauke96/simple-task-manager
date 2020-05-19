@@ -222,45 +222,6 @@ func RemoveUser(id, requestingUser, userToRemove string) (*Project, error) {
 	return project, nil
 }
 
-// VerifyOwnership checks whether all given tasks are part of projects where the
-// given user is a member of. In other words: This function checks if the user
-// has the permission to change each task.
-// TODO remove when API v1 has been removed
-func VerifyOwnership(user string, taskIds []string) (bool, error) {
-	// Only look at projects the user is part of. We then need less checks below
-	userProjects, err := GetProjects(user)
-	if err != nil {
-		return false, errors.Wrap(err, "could not get projects to verify ownership")
-	}
-
-	for _, taskId := range taskIds {
-		found := false
-
-		for _, project := range userProjects {
-			for _, t := range project.TaskIDs {
-				found = t == taskId
-
-				if found {
-					break
-				}
-			}
-
-			if found {
-				break
-			}
-		}
-
-		// We went through all projects the given user is member of and we didn't
-		// find a match. The user is therefore not allowed to view the current
-		// task and we can abort here.
-		if !found {
-			return false, nil
-		}
-	}
-
-	return true, nil
-}
-
 func DeleteProject(projectId, potentialOwner string) error {
 	err := permission.VerifyOwnership(projectId, potentialOwner)
 	if err != nil {
