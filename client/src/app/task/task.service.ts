@@ -2,7 +2,7 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { Task } from './task.material';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
-import { from, Observable, throwError } from 'rxjs';
+import { from, Observable, of, throwError } from 'rxjs';
 import { concatMap, flatMap, map, tap } from 'rxjs/operators';
 import { Polygon } from 'ol/geom';
 import { Extent } from 'ol/extent';
@@ -115,6 +115,10 @@ export class TaskService {
   // Fills the "assignedUserName" of the task with the actual user name.
   public addUserNames(tasks: Task[]): Observable<Task[]> {
     const userIDs = tasks.filter(t => !!t.assignedUser).map(t => t.assignedUser);
+
+    if (!!userIDs || userIDs.length === 0) {
+      return of(tasks);
+    }
 
     return this.userService.getUsersFromIds(userIDs)
       .pipe(
