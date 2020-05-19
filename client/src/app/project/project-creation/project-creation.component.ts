@@ -144,6 +144,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
 
   public onSaveButtonClicked() {
     const polygons: Polygon[] = this.vectorSource.getFeatures().map(f => {
+      f = f.clone(); // otherwise we would change the polygons on the map
       let polygon = (f.getGeometry() as Polygon);
 
       // Even though we transformed the coordinates after their creation from EPSG:4326 into EPSG:3857, the OSM- and overall Geo-World works
