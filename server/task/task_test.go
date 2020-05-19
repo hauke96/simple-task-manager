@@ -4,20 +4,21 @@ import (
 	"fmt"
 	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/permission"
+	testHelper "github.com/hauke96/simple-task-manager/server/test"
 	"testing"
 
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 )
 
-func prepare() {
+func TestMain(m *testing.M) {
+	testHelper.InitWithDummyData()
+
 	sigolo.LogLevel = sigolo.LOG_DEBUG
 	Init()
 	permission.Init()
 }
 
 func TestGetTasks(t *testing.T) {
-	prepare()
-
 	ids := []string{"2", "3"}
 
 	tasks, err := GetTasks(ids, "Clara")
@@ -58,8 +59,6 @@ func TestGetTasks(t *testing.T) {
 }
 
 func TestAddTasks(t *testing.T) {
-	prepare()
-
 	rawTask := &Task{
 		ProcessPoints:    5,
 		MaxProcessPoints: 250,
@@ -84,8 +83,6 @@ func TestAddTasks(t *testing.T) {
 }
 
 func TestAssignUser(t *testing.T) {
-	prepare()
-
 	task, err := AssignUser("2", "assigned-user")
 	if err != nil {
 		t.Errorf("Error: %s\n", err.Error())
@@ -113,8 +110,6 @@ func TestAssignUser(t *testing.T) {
 }
 
 func TestAssignUserTwice(t *testing.T) {
-	prepare()
-
 	_, err := AssignUser("4", "foo-bar")
 	if err != nil {
 		t.Errorf("Error: %s\n", err.Error())
@@ -129,7 +124,6 @@ func TestAssignUserTwice(t *testing.T) {
 }
 
 func TestUnassignUser(t *testing.T) {
-	prepare()
 	AssignUser("2", "assigned-user")
 
 	task, err := UnassignUser("2", "assigned-user")
@@ -159,8 +153,6 @@ func TestUnassignUser(t *testing.T) {
 }
 
 func TestSetProcessPoints(t *testing.T) {
-	prepare()
-
 	// Test Increase number
 	task, err := SetProcessPoints("3", 70, "Maria")
 	if err != nil {
@@ -215,8 +207,6 @@ func TestSetProcessPoints(t *testing.T) {
 }
 
 func TestDelete(t *testing.T) {
-	prepare()
-
 	// tasks of project 2
 	taskIds := []string{"6", "7"}
 

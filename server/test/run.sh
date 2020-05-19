@@ -28,7 +28,6 @@ then
 	echo "Stop and remove container 'stm-db'"
 	docker stop stm-db
 	docker rm -f stm-db
-	wait
 fi
 
 echo "Start new 'stm-db' container"
@@ -42,17 +41,13 @@ cd server/database
 ./init-db.sh
 
 echo "Fill database with dummy data"
-# Switch from "./server/database" into "./server/test"
-cd ../test
-psql -h localhost -U postgres -f dump.sql stm
-
-# Go into ./server folder
+# Switch from "./server/database" into "./server" folder
 cd ..
 echo "Execute tests"
 echo
 
 # go test github.com/hauke96/simple-task-manager/server/permission -coverprofile=coverage.out -v ./... -args -with-db true | tee test.log
-go test -coverprofile=coverage.out -v ./... | tee test.log
+go test -p 1 -coverprofile=coverage.out -v ./... | tee test.log
 
 # Show failed functions with file and line number. This makes it a bit easier to find them.
 echo

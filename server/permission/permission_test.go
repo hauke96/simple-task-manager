@@ -3,23 +3,26 @@ package permission
 import (
 	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/config"
+	testHelper "github.com/hauke96/simple-task-manager/server/test"
 	"testing"
 
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 )
 
-func prepare() {
+func TestMain(m *testing.M) {
+	testHelper.InitWithDummyData()
+
 	config.Conf = &config.Config{
 		Store: "postgres",
 	}
 
 	sigolo.LogLevel = sigolo.LOG_DEBUG
 	Init()
+
+	m.Run()
 }
 
 func TestVerifyOwnership(t *testing.T) {
-	prepare()
-
 	err := VerifyOwnership("1", "Peter")
 	if err != nil {
 		t.Errorf("This should work: %s", err.Error())
