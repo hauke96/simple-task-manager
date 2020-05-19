@@ -306,6 +306,23 @@ func TestRemoveUser(t *testing.T) {
 		return
 	}
 
+	tasks, err := task.GetTasks(p.TaskIDs, "Peter")
+	if err != nil {
+		t.Errorf("Getting tasks should still work")
+		t.Fail()
+		return
+	}
+
+	// Check that the user to remove has been unassigned
+	for _, task := range tasks {
+		if task.AssignedUser == userToRemove {
+			t.Errorf("Task '%s' still has user '%s' assigned", task.Id, userToRemove)
+			t.Fail()
+			return
+		}
+	}
+
+	// Not existing project
 	p, err = RemoveUser("2284527", "Peter", userToRemove)
 	if err == nil {
 		t.Error("This should not work: The project does not exist")
@@ -313,9 +330,10 @@ func TestRemoveUser(t *testing.T) {
 		return
 	}
 
+	// Not owning user requesting removal
 	p, err = RemoveUser("1", "Not-Owning-User", userToRemove)
 	if err == nil {
-		t.Error("This should not work: A non-owner user should be removed")
+		t.Error("This should not work: A non-owner user requests removal")
 		t.Fail()
 		return
 	}
