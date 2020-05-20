@@ -22,20 +22,20 @@ type Project struct {
 	DoneProcessPoints  int      `json:"doneProcessPoints"`  // Sum of all process points that have been set
 }
 
-type store interface {
+type projectStore interface {
 	init(db *sql.DB)
-	getProjects(user string) ([]*Project, error)
-	getProject(id string) (*Project, error)
+	getProjects(userId string) ([]*Project, error)
+	getProject(projectId string) (*Project, error)
 	areTasksUsed(taskIds []string) (bool, error)
-	addProject(draft *Project, user string) (*Project, error)
-	addUser(userToAdd string, id string, owner string) (*Project, error)
-	removeUser(id string, userToRemove string) (*Project, error)
-	delete(id string) error
-	getTasks(id string, user string) ([]*task.Task, error)
+	addProject(draft *Project) (*Project, error)
+	addUser(projectId string, userIdToAdd string) (*Project, error)
+	removeUser(projectId string, userIdToRemove string) (*Project, error)
+	delete(projectId string) error
+	getTasks(projectId string, user string) ([]*task.Task, error)
 }
 
 var (
-	projectStore         store
+	store                projectStore
 	maxDescriptionLength = 10000
 )
 
@@ -43,18 +43,18 @@ func Init() {
 	db, err := sql.Open("postgres", "user=postgres password=geheim dbname=stm sslmode=disable")
 	sigolo.FatalCheck(err)
 
-	projectStore = &storePg{}
-	projectStore.init(db)
+	store = &storePg{}
+	store.init(db)
 }
 
-func GetProjects(user string) ([]*Project, error) {
-	projects, err := projectStore.getProjects(user)
+func GetProjects(userId string) ([]*Project, error) {
+	projects, err := store.getProjects(userId)
 	if err != nil {
 		return nil, err
 	}
 
 	for _, p := range projects {
-		err = addProcessPointData(p, user)
+		err = addProcessPointData(p, userId)
 		if err != nil {
 			return nil, err
 		}
@@ -63,8 +63,8 @@ func GetProjects(user string) ([]*Project, error) {
 	return projects, nil
 }
 
-// AddProject adds the project, as requested by user "user".
-func AddProject(project *Project, user string) (*Project, error) {
+// AddProject adds the project, as requested by user "userId".
+func AddProject(project *Project) (*Project, error) {
 	if project.Id != "" {
 		return nil, errors.New("Id not empty")
 	}
@@ -90,7 +90,7 @@ func AddProject(project *Project, user string) (*Project, error) {
 		return nil, errors.New("No tasks have been specified")
 	}
 
-	tasksAlreadyUsed, err := projectStore.areTasksUsed(project.TaskIDs)
+	tasksAlreadyUsed, err := store.areTasksUsed(project.TaskIDs)
 	if err != nil {
 		return nil, errors.Wrap(err, "error checking whether given tasks are already used")
 	}
@@ -102,21 +102,21 @@ func AddProject(project *Project, user string) (*Project, error) {
 		return nil, errors.New(fmt.Sprintf("Description too long. Maximum allowed are %d characters.", maxDescriptionLength))
 	}
 
-	return projectStore.addProject(project, user)
+	return store.addProject(project)
 }
 
-func GetProject(id string, potentialMember string) (*Project, error) {
-	err := permission.VerifyMembershipProject(id, potentialMember)
+func GetProject(projectId string, potentialMemberId string) (*Project, error) {
+	err := permission.VerifyMembershipProject(projectId, potentialMemberId)
 	if err != nil {
 		return nil, errors.Wrap(err, "user membership verification failed")
 	}
 
-	project, err := projectStore.getProject(id)
+	project, err := store.getProject(projectId)
 	if err != nil {
 		return nil, errors.Wrap(err, "getting project failed")
 	}
 
-	err = addProcessPointData(project, potentialMember)
+	err = addProcessPointData(project, potentialMemberId)
 	if err != nil {
 		return nil, err
 	}
@@ -124,8 +124,8 @@ func GetProject(id string, potentialMember string) (*Project, error) {
 	return project, nil
 }
 
-func addProcessPointData(project *Project, potentialMember string) error {
-	tasks, err := GetTasks(project.Id, potentialMember)
+func addProcessPointData(project *Project, potentialMemberId string) error {
+	tasks, err := GetTasks(project.Id, potentialMemberId)
 	if err != nil {
 		return errors.Wrap(err, "getting tasks of project failed")
 	}
@@ -138,83 +138,83 @@ func addProcessPointData(project *Project, potentialMember string) error {
 	return nil
 }
 
-func AddUser(user, id, potentialOwner string) (*Project, error) {
-	err := permission.VerifyOwnership(id, potentialOwner)
+func AddUser(projectId, userId, potentialOwnerId string) (*Project, error) {
+	err := permission.VerifyOwnership(projectId, potentialOwnerId)
 	if err != nil {
-		return nil, errors.Wrap(err, "user ownership verification failed")
+		return nil, errors.Wrap(err, "userId ownership verification failed")
 	}
 
-	p, err := projectStore.getProject(id)
+	p, err := store.getProject(projectId)
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to get project to add user")
+		return nil, errors.Wrap(err, "unable to get project to add userId")
 	}
 
-	// Check if user is already in project. If so, just do nothing and return
+	// Check if userId is already in project. If so, just do nothing and return
 	for _, u := range p.Users {
-		if u == user {
+		if u == userId {
 			return p, errors.New("User already added")
 		}
 	}
 
-	return projectStore.addUser(user, id, potentialOwner)
+	return store.addUser(projectId, userId)
 }
 
-func LeaveProject(id string, potentialMember string) (*Project, error) {
+func LeaveProject(projectId string, potentialMemberId string) (*Project, error) {
 	// Only the owner can delete a project but cannot not leave it
-	err := permission.VerifyOwnership(id, potentialMember)
+	err := permission.VerifyOwnership(projectId, potentialMemberId)
 	if err == nil {
 		return nil, errors.New("the given user is the owner and therefore cannot leave the project")
 	}
 
-	err = permission.VerifyMembershipProject(id, potentialMember)
+	err = permission.VerifyMembershipProject(projectId, potentialMemberId)
 	if err != nil {
 		return nil, errors.Wrap(err, "user membership verification failed")
 	}
 
-	return projectStore.removeUser(id, potentialMember)
+	return store.removeUser(projectId, potentialMemberId)
 }
 
-func RemoveUser(id, requestingUser, userToRemove string) (*Project, error) {
+func RemoveUser(projectId, requestingUserId, userIdToRemove string) (*Project, error) {
 	// Both users have to be member of the project
-	err := permission.VerifyMembershipProject(id, requestingUser)
+	err := permission.VerifyMembershipProject(projectId, requestingUserId)
 	if err != nil {
 		return nil, errors.Wrap(err, "membership verification of requesting user failed")
 	}
 
-	err = permission.VerifyMembershipProject(id, userToRemove)
+	err = permission.VerifyMembershipProject(projectId, userIdToRemove)
 	if err != nil {
 		return nil, errors.Wrap(err, "membership verification of user to remove failed")
 	}
 
 	// It's not possible to remove the owner
-	err = permission.VerifyOwnership(id, userToRemove)
+	err = permission.VerifyOwnership(projectId, userIdToRemove)
 	if err == nil {
 		return nil, errors.New("not allowed to remove owner")
 	}
 
-	err = permission.VerifyOwnership(id, requestingUser)
+	err = permission.VerifyOwnership(projectId, requestingUserId)
 	requestingUserIsOwner := err == nil
 
 	// When a user tries to remove a different user, only the owner is allowed to do that
-	if requestingUser != userToRemove && !requestingUserIsOwner {
-		return nil, fmt.Errorf("non-owner user '%s' is not allowed to remove another user", requestingUser)
+	if requestingUserId != userIdToRemove && !requestingUserIsOwner {
+		return nil, fmt.Errorf("non-owner user '%s' is not allowed to remove another user", requestingUserId)
 	}
 
-	project, err := projectStore.removeUser(id, userToRemove)
+	project, err := store.removeUser(projectId, userIdToRemove)
 	if err != nil {
 		return nil, err
 	}
 
 	// Unassign removed user from all tasks
 	for _, t := range project.TaskIDs {
-		err := permission.VerifyAssignment(t, userToRemove)
+		err := permission.VerifyAssignment(t, userIdToRemove)
 
 		// err != nil means: The user is assigned to the task 't'
 		if err == nil {
-			_, err := task.UnassignUser(t, userToRemove)
+			_, err := task.UnassignUser(t, userIdToRemove)
 
 			if err != nil {
-				return nil, errors.Wrap(err, fmt.Sprintf("Unable to unassign user '%s' from task '%s'", userToRemove, t))
+				return nil, errors.Wrap(err, fmt.Sprintf("Unable to unassign user '%s' from task '%s'", userIdToRemove, t))
 			}
 		}
 	}
@@ -222,22 +222,22 @@ func RemoveUser(id, requestingUser, userToRemove string) (*Project, error) {
 	return project, nil
 }
 
-func DeleteProject(projectId, potentialOwner string) error {
-	err := permission.VerifyOwnership(projectId, potentialOwner)
+func DeleteProject(projectId, potentialOwnerId string) error {
+	err := permission.VerifyOwnership(projectId, potentialOwnerId)
 	if err != nil {
 		return errors.Wrap(err, "ownership verification failed")
 	}
 
-	project, err := projectStore.getProject(projectId)
+	project, err := store.getProject(projectId)
 	if err != nil {
 		return errors.Wrap(err, "unable to read project before removal")
 	}
 
 	// First delete the tasks, due to ownership check which won't work, when there's no project anymore.
-	task.Delete(project.TaskIDs, potentialOwner)
+	task.Delete(project.TaskIDs, potentialOwnerId)
 
 	// Then remove the project
-	err = projectStore.delete(projectId)
+	err = store.delete(projectId)
 	if err != nil {
 		return errors.Wrap(err, "could not remove project")
 	}
@@ -246,11 +246,11 @@ func DeleteProject(projectId, potentialOwner string) error {
 }
 
 // TODO move into task package, pass task IDs as parameter and use the permission service to check the permissions on those tasks
-func GetTasks(projectId string, user string) ([]*task.Task, error) {
-	err := permission.VerifyMembershipProject(projectId, user)
+func GetTasks(projectId string, userId string) ([]*task.Task, error) {
+	err := permission.VerifyMembershipProject(projectId, userId)
 	if err != nil {
 		return nil, errors.Wrap(err, "membership verification failed")
 	}
 
-	return projectStore.getTasks(projectId, user)
+	return store.getTasks(projectId, userId)
 }

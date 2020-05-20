@@ -16,7 +16,7 @@ export class UserService {
   ) {
   }
 
-  public getUsersFromIds(userIds: string[]): Observable<User[]> {
+  public getUsersByIds(userIds: string[]): Observable<User[]> {
     const url = environment.osm_api_url + '/users?users=' + userIds.join(',');
 
     // TODO handle case of removed account: Here a comma separated list of users will return a 404 when one UID doesn't exist anymore
@@ -27,7 +27,7 @@ export class UserService {
     );
   }
 
-  public getUserId(userName: string): Observable<User> {
+  public getUserByName(userName: string): Observable<User> {
     const changesetUrl = environment.osm_api_url + '/changesets?display_name=' + userName;
     const notesUrl = environment.osm_api_url + '/notes/search?display_name=' + userName;
 

@@ -48,7 +48,7 @@ export class TaskDetailsComponent implements OnInit {
       return;
     }
 
-    this.userService.getUsersFromIds([this.task.assignedUser]).subscribe(
+    this.userService.getUsersByIds([this.task.assignedUser]).subscribe(
       (users: User[]) => {
         this.assignedUserName = users[0].name;
       },
@@ -61,7 +61,7 @@ export class TaskDetailsComponent implements OnInit {
 
   public onAssignButtonClicked() {
     // TODO do we need the user ID here?
-    this.taskService.assign(this.task.id, this.currentUserService.getUserId())
+    this.taskService.assign(this.task.id)
       .subscribe(
         () => {
         },

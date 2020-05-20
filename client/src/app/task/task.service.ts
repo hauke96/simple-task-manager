@@ -38,32 +38,32 @@ export class TaskService {
       .pipe(flatMap(tasks => this.addUserNames(tasks)));
   }
 
-  public setProcessPoints(id: string, newProcessPoints: number): Observable<Task> {
-    if (id !== this.selectedTask.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
-      return throwError('Task with id \'' + id + '\' not selected');
+  public setProcessPoints(taskId: string, newProcessPoints: number): Observable<Task> {
+    if (taskId !== this.selectedTask.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
+      return throwError('Task with id \'' + taskId + '\' not selected');
     }
 
-    return this.http.post<Task>(environment.url_task_processPoints.replace('{id}', id) + '?process_points=' + newProcessPoints, '')
+    return this.http.post<Task>(environment.url_task_processPoints.replace('{id}', taskId) + '?process_points=' + newProcessPoints, '')
       .pipe(flatMap(task => this.addUserName(task)))
       .pipe(tap(t => this.selectedTaskChanged.emit(t)));
   }
 
-  public assign(id: string, user: string): Observable<Task> {
-    if (id !== this.selectedTask.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
-      return throwError('Task with id \'' + id + '\' not selected');
+  public assign(taskId: string): Observable<Task> {
+    if (taskId !== this.selectedTask.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
+      return throwError('Task with id \'' + taskId + '\' not selected');
     }
 
-    return this.http.post<Task>(environment.url_task_assignedUser.replace('{id}', id), '')
+    return this.http.post<Task>(environment.url_task_assignedUser.replace('{id}', taskId), '')
       .pipe(flatMap(task => this.addUserName(task)))
       .pipe(tap(t => this.selectedTaskChanged.emit(t)));
   }
 
-  public unassign(id: string): Observable<Task> {
-    if (id !== this.selectedTask.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
-      return throwError('Task with id \'' + id + '\' not selected');
+  public unassign(taskId: string): Observable<Task> {
+    if (taskId !== this.selectedTask.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
+      return throwError('Task with id \'' + taskId + '\' not selected');
     }
 
-    return this.http.delete<Task>(environment.url_task_assignedUser.replace('{id}', id))
+    return this.http.delete<Task>(environment.url_task_assignedUser.replace('{id}', taskId))
       .pipe(tap(t => this.selectedTaskChanged.emit(t)));
   }
 
@@ -120,7 +120,7 @@ export class TaskService {
       return of(tasks);
     }
 
-    return this.userService.getUsersFromIds(userIDs)
+    return this.userService.getUsersByIds(userIDs)
       .pipe(
         map((users: User[]) => {
           for (const t of tasks) {

@@ -94,7 +94,7 @@ describe('TaskService', () => {
       of(new Task('id123', 10, 100, [[0, 0], [100, 100], [200, 0], [0, 0]], userToAssign))
     );
 
-    service.assign('id123', userToAssign)
+    service.assign('id123')
       .subscribe(
         t => expect(t.assignedUser).toEqual(userToAssign),
         e => fail(e));
@@ -107,7 +107,7 @@ describe('TaskService', () => {
 
     service.selectTask(task);
 
-    service.assign('id123', userToAssign)
+    service.assign('id123')
       .subscribe(
         t => fail('Other task was selected'),
         () => expect(spy).not.toHaveBeenCalled());

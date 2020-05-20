@@ -23,10 +23,10 @@ export class UserInvitationComponent implements OnInit {
   }
 
   public onInvitationButtonClicked() {
-    this.userService.getUserId(this.userName).subscribe(
+    this.userService.getUserByName(this.userName).subscribe(
       user => {
         console.log(user);
-        this.projectService.inviteUser(user.uid, this.projectId)
+        this.projectService.inviteUser(this.projectId, user.uid)
           .subscribe(p => {
           }, err => {
             console.log(err);

@@ -136,7 +136,7 @@ func TestAddAndGetProject(t *testing.T) {
 		Owner:   user,
 	}
 
-	newProject, err := AddProject(&p, user)
+	newProject, err := AddProject(&p)
 	if err != nil {
 		t.Errorf("Adding should work: %s", err.Error())
 		t.Fail()
@@ -179,7 +179,7 @@ func TestAddProjectWithUsedTasks(t *testing.T) {
 		Owner:   user,
 	}
 
-	_, err := AddProject(&p, user)
+	_, err := AddProject(&p)
 	if err == nil {
 		t.Errorf("The tasks are already used. This should not work.")
 		t.Fail()
@@ -190,7 +190,7 @@ func TestAddProjectWithUsedTasks(t *testing.T) {
 func TestAddUser(t *testing.T) {
 	newUser := "new user"
 
-	p, err := AddUser(newUser, "1", "Peter")
+	p, err := AddUser("1", newUser, "Peter")
 	if err != nil {
 		t.Errorf("This should work: %s", err.Error())
 		t.Fail()
@@ -210,14 +210,14 @@ func TestAddUser(t *testing.T) {
 		return
 	}
 
-	p, err = AddUser(newUser, "2284527", "Peter")
+	p, err = AddUser("2284527", newUser, "Peter")
 	if err == nil {
 		t.Error("This should not work: The project does not exist")
 		t.Fail()
 		return
 	}
 
-	p, err = AddUser(newUser, "1", "Not-Owning-User")
+	p, err = AddUser("1", newUser, "Not-Owning-User")
 	if err == nil {
 		t.Error("This should not work: A non-owner user tries to add a user")
 		t.Fail()
@@ -228,7 +228,7 @@ func TestAddUser(t *testing.T) {
 func TestAddUserTwice(t *testing.T) {
 	newUser := "another-new-user"
 
-	_, err := AddUser(newUser, "1", "Peter")
+	_, err := AddUser("1", newUser, "Peter")
 	if err != nil {
 		t.Errorf("This should work: %s", err.Error())
 		t.Fail()
@@ -236,7 +236,7 @@ func TestAddUserTwice(t *testing.T) {
 	}
 
 	// Add second time, this should now work
-	_, err = AddUser(newUser, "1", "Peter")
+	_, err = AddUser("1", newUser, "Peter")
 	if err == nil {
 		t.Error("Adding a user twice should not work")
 		t.Fail()

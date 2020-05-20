@@ -39,7 +39,7 @@ describe('UserInvitationComponent', () => {
 
   it('should call project service correctly', () => {
     const inviteUserSpy = spyOn(projectService, 'inviteUser').and.callThrough();
-    spyOn(userService, 'getUserId').and.returnValue(of(new User('test-user', '123')));
+    spyOn(userService, 'getUserByName').and.returnValue(of(new User('test-user', '123')));
 
     component.userName = 'test-user';
     component.projectId = '1';
@@ -53,7 +53,7 @@ describe('UserInvitationComponent', () => {
   it('should show error on error', () => {
     const inviteUserSpy = spyOn(projectService, 'inviteUser').and.returnValue(throwError('test error'));
     const errorServiceSpy = spyOn(errorService, 'addError').and.callThrough();
-    spyOn(userService, 'getUserId').and.returnValue(of(new User('test-user', '123')));
+    spyOn(userService, 'getUserByName').and.returnValue(of(new User('test-user', '123')));
 
     component.userName = 'test-user';
     component.projectId = '1';

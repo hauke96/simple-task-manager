@@ -32,12 +32,12 @@ func (s *storePg) init(db *sql.DB) {
 	s.table = "projects"
 }
 
-func (s *storePg) getProjects(user string) ([]*Project, error) {
+func (s *storePg) getProjects(userId string) ([]*Project, error) {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE $1=ANY(users)", s.table)
 
-	util.LogQuery(query, user)
+	util.LogQuery(query, userId)
 
-	rows, err := s.db.Query(query, user)
+	rows, err := s.db.Query(query, userId)
 	if err != nil {
 		return nil, errors.Wrap(err, "error executing query")
 	}
@@ -55,9 +55,9 @@ func (s *storePg) getProjects(user string) ([]*Project, error) {
 	return projects, nil
 }
 
-func (s *storePg) getProject(id string) (*Project, error) {
+func (s *storePg) getProject(projectId string) (*Project, error) {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE id=$1", s.table)
-	return execQuery(s.db, query, id)
+	return execQuery(s.db, query, projectId)
 }
 
 // areTasksUsed checks whether any of the given tasks is already part of a project. Returns false and an error in case
@@ -86,46 +86,57 @@ func (s *storePg) areTasksUsed(taskIds []string) (bool, error) {
 	return count != 0, nil
 }
 
-func (s *storePg) addProject(draft *Project, user string) (*Project, error) {
+// Adds the given project draft and assigns an ID to the project
+func (s *storePg) addProject(draft *Project) (*Project, error) {
 	query := fmt.Sprintf("INSERT INTO %s (name, task_ids, description, users, owner) VALUES($1, $2, $3, $4, $5) RETURNING *", s.table)
 
 	return execQuery(s.db, query, draft.Name, pq.Array(draft.TaskIDs), draft.Description, pq.Array(draft.Users), draft.Owner)
 }
 
-func (s *storePg) addUser(userToAdd string, id string, owner string) (*Project, error) {
-	originalProject, err := s.getProject(id)
+func (s *storePg) addUser(projectId string, userIdToAdd string) (*Project, error) {
+	originalProject, err := s.getProject(projectId)
 	if err != nil {
-		return nil, errors.Wrapf(err, "error getting project with ID '%s'", id)
+		return nil, errors.Wrapf(err, "error getting project with ID '%s'", projectId)
 	}
 
-	newUsers := append(originalProject.Users, userToAdd)
+	newUsers := append(originalProject.Users, userIdToAdd)
 
 	query := fmt.Sprintf("UPDATE %s SET users=$1 WHERE id=$2 RETURNING *", s.table)
-	return execQuery(s.db, query, pq.Array(newUsers), id)
+	return execQuery(s.db, query, pq.Array(newUsers), projectId)
 }
 
-func (s *storePg) removeUser(id string, userToRemove string) (*Project, error) {
-	originalProject, err := s.getProject(id)
+func (s *storePg) removeUser(projectId string, userIdToRemove string) (*Project, error) {
+	originalProject, err := s.getProject(projectId)
 	if err != nil {
-		return nil, errors.Wrapf(err, "error getting project with ID '%s'", id)
+		return nil, errors.Wrapf(err, "error getting project with ID '%s'", projectId)
 	}
 
 	remainingUsers := make([]string, 0)
 	for _, u := range originalProject.Users {
-		if u != userToRemove {
+		if u != userIdToRemove {
 			remainingUsers = append(remainingUsers, u)
 		}
 	}
 
 	query := fmt.Sprintf("UPDATE %s SET users=$1 WHERE id=$2 RETURNING *", s.table)
-	return execQuery(s.db, query, pq.Array(remainingUsers), id)
+	return execQuery(s.db, query, pq.Array(remainingUsers), projectId)
 }
 
-func (s *storePg) delete(id string) error {
+func (s *storePg) delete(projectId string) error {
 	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", s.table)
 
-	_, err := s.db.Exec(query, id)
+	_, err := s.db.Exec(query, projectId)
 	return err
+}
+
+// getTasks will get the tasks for the given projectId and also checks the ownership of the given user.
+func (s *storePg) getTasks(projectId string, userId string) ([]*task.Task, error) {
+	p, err := s.getProject(projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	return task.GetTasks(p.TaskIDs, userId)
 }
 
 // execQuery executed the given query, turns the result into a Project object and closes the query.
@@ -175,14 +186,4 @@ func rowToProject(rows *sql.Rows) (*Project, error) {
 	result.NeedsAssignment = needsAssignment
 
 	return &result, nil
-}
-
-// getTasks will get the tasks for the given projectId and also checks the ownership of the given user.
-func (s *storePg) getTasks(projectId string, user string) ([]*task.Task, error) {
-	p, err := s.getProject(projectId)
-	if err != nil {
-		return nil, err
-	}
-
-	return task.GetTasks(p.TaskIDs, user)
 }

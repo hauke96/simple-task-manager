@@ -57,7 +57,7 @@ func addProject_v2_2(w http.ResponseWriter, r *http.Request, token *auth.Token) 
 		return
 	}
 
-	updatedProject, err := project.AddProject(&draftProject, token.UID)
+	updatedProject, err := project.AddProject(&draftProject)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -156,7 +156,7 @@ func addUserToProject_v2_2(w http.ResponseWriter, r *http.Request, token *auth.T
 		return
 	}
 
-	updatedProject, err := project.AddUser(userToAdd, projectId, token.UID)
+	updatedProject, err := project.AddUser(projectId, userToAdd, token.UID)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return

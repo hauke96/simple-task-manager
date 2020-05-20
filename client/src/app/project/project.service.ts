@@ -27,8 +27,8 @@ export class ProjectService {
       .pipe(flatMap(dtos => this.toProjects(dtos)));
   }
 
-  public getProject(id: string): Observable<Project> {
-    return this.http.get<ProjectDto>(environment.url_projects_by_id.replace('{id}', id))
+  public getProject(projectId: string): Observable<Project> {
+    return this.http.get<ProjectDto>(environment.url_projects_by_id.replace('{id}', projectId))
       .pipe(flatMap(dto => this.toProject(dto)));
   }
 
@@ -51,21 +51,21 @@ export class ProjectService {
       );
   }
 
-  public inviteUser(user: string, id: string): Observable<Project> {
-    return this.http.post<ProjectDto>(environment.url_projects_users.replace('{id}', id) + '?uid=' + user, '')
+  public inviteUser(projectId: string, userId: string): Observable<Project> {
+    return this.http.post<ProjectDto>(environment.url_projects_users.replace('{id}', projectId) + '?uid=' + userId, '')
       .pipe(
         flatMap(dto => this.toProject(dto)),
         tap(p => this.projectChanged.emit(p))
       );
   }
 
-  public deleteProject(id: string): Observable<any> {
-    return this.http.delete(environment.url_projects + '/' + id);
+  public deleteProject(projectId: string): Observable<any> {
+    return this.http.delete(environment.url_projects + '/' + projectId);
   }
 
   // Gets the tasks of the given project
-  public getTasks(id: string): Observable<Task[]> {
-    return this.http.get<Task[]>(environment.url_projects + '/' + id + '/tasks')
+  public getTasks(projectId: string): Observable<Task[]> {
+    return this.http.get<Task[]>(environment.url_projects + '/' + projectId + '/tasks')
       .pipe(
         flatMap(tasks => {
           return this.taskService.addUserNames(tasks);
@@ -73,8 +73,8 @@ export class ProjectService {
       );
   }
 
-  public removeUser(id: string, user: string): Observable<Project> {
-    return this.http.delete<ProjectDto>(environment.url_projects_users.replace('{id}', id) + '/' + user)
+  public removeUser(projectId: string, userId: string): Observable<Project> {
+    return this.http.delete<ProjectDto>(environment.url_projects_users.replace('{id}', projectId) + '/' + userId)
       .pipe(
         flatMap(dto => this.toProject(dto)),
         tap(p => this.projectChanged.emit(p))
@@ -92,7 +92,7 @@ export class ProjectService {
     let userIDs = [].concat.apply([], projectUserIDs); // array of strings
     userIDs = [...new Set(userIDs)]; // array of strings without duplicates
 
-    return this.userService.getUsersFromIds(userIDs)
+    return this.userService.getUsersByIds(userIDs)
       .pipe(
         map((allUsers: User[]) => {
           const projects: Observable<Project>[] = [];
