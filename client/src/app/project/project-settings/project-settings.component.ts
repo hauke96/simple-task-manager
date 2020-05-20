@@ -3,6 +3,7 @@ import { ProjectService } from '../project.service';
 import { Router } from '@angular/router';
 import { CurrentUserService } from '../../user/current-user.service';
 import { ErrorService } from '../../common/error.service';
+import { User } from '../../user/user.material';
 
 @Component({
   selector: 'app-project-settings',
@@ -11,7 +12,7 @@ import { ErrorService } from '../../common/error.service';
 })
 export class ProjectSettingsComponent implements OnInit {
   @Input() projectId: string;
-  @Input() projectOwner: string;
+  @Input() projectOwner: User;
 
   public requestConfirmation: boolean;
 
@@ -32,7 +33,7 @@ export class ProjectSettingsComponent implements OnInit {
   }
 
   public get isOwner(): boolean {
-    return this.currentUserService.getUserId() === this.projectOwner;
+    return this.currentUserService.getUserId() === this.projectOwner.uid;
   }
 
   public onDeleteButtonClicked() {
