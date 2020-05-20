@@ -2,15 +2,21 @@
 	<div *ngIf="!requestConfirmation">
 		<button (click)="onDeleteButtonClicked()" class="space-right">Delete Project</button>
 	</div>
+
+	<div *ngIf="requestConfirmation">
+		<span class="space-right">Really delete Project?</span>
+		<button (click)="onNoButtonClicked()" class="space-right">No</button>
+		<button (click)="onYesButtonClicked()">Yes</button>
+	</div>
 </div>
 <div *ngIf="!isOwner">
 	<div *ngIf="!requestConfirmation">
 	<button (click)="onLeaveProjectClicked()">Leave project</button>
 	</div>
-</div>
 
-<div *ngIf="requestConfirmation">
-	<span class="space-right">Really delete Project?</span>
-	<button (click)="onNoButtonClicked()" class="space-right">No</button>
-	<button (click)="onYesButtonClicked()">Yes</button>
+	<div *ngIf="requestConfirmation">
+		<span class="space-right">Really leave Project?</span>
+		<button (click)="onNoButtonClicked()" class="space-right">No</button>
+		<button (click)="onYesButtonClicked()">Yes</button>
+	</div>
 </div>
