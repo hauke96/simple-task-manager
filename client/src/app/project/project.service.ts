@@ -88,6 +88,10 @@ export class ProjectService {
 
   // Gets user names and turns the DTOs into Projects
   private toProjects(dtos: ProjectDto[]): Observable<Project[]> {
+    if (!dtos || dtos.length === 0) {
+      return of([]);
+    }
+
     const projectUserIDs = dtos.map(p => [p.owner, ...p.users]); // array of arrays
     let userIDs = [].concat.apply([], projectUserIDs); // array of strings
     userIDs = [...new Set(userIDs)]; // array of strings without duplicates
