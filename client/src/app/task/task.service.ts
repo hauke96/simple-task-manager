@@ -114,9 +114,9 @@ export class TaskService {
 
   // Fills the "assignedUserName" of the task with the actual user name.
   public addUserNames(tasks: Task[]): Observable<Task[]> {
-    const userIDs = tasks.filter(t => !!t.assignedUser).map(t => t.assignedUser);
+    const userIDs = tasks.filter(t => !!t.assignedUser && t.assignedUser !== '').map(t => t.assignedUser);
 
-    if (!!userIDs || userIDs.length === 0) {
+    if (!userIDs || userIDs.length === 0) {
       return of(tasks);
     }
 
