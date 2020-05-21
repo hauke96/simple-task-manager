@@ -81,6 +81,10 @@ export class ProjectService {
       );
   }
 
+  public leaveProject(projectId: string): Observable<void> {
+    return this.http.delete<void>(environment.url_projects_users.replace('{id}', projectId));
+  }
+
   // Gets user names and turns the DTO into a Project
   private toProject(dto: ProjectDto): Observable<Project> {
     return this.toProjects([dto]).pipe(map(p => p[0]));

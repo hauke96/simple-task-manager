@@ -64,6 +64,10 @@ Deletes the project with the given ID. The requesting user (specified by the tok
 
 Adds the user with id `{uid}` to the project. The requesting user (specified by the token) must be **owner** of the project.
 
+##### DELETE `/v2.2/projects/{id}/users`
+
+Removes the requesting user (specified by the token) from the project.
+
 ##### DELETE `/v2.2/projects/{id}/users/{uid}`
 
 Removes the user with the id `{uid}` from the project. The requesting user (specified by the token) must either be the **owner** of the project or must be removing himself.

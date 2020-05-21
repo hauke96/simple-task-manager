@@ -21,6 +21,7 @@ func Init_v2_2(router *mux.Router) (*mux.Router, string) {
 	r.HandleFunc("/projects/{id}", authenticatedHandler(getProject_v2_2)).Methods(http.MethodGet)
 	r.HandleFunc("/projects/{id}", authenticatedHandler(deleteProjects_v2_2)).Methods(http.MethodDelete)
 	r.HandleFunc("/projects/{id}/users", authenticatedHandler(addUserToProject_v2_2)).Methods(http.MethodPost)
+	r.HandleFunc("/projects/{id}/users", authenticatedHandler(leaveProject_v2_2)).Methods(http.MethodDelete)
 	r.HandleFunc("/projects/{id}/users/{uid}", authenticatedHandler(removeUser_v2_2)).Methods(http.MethodDelete)
 	r.HandleFunc("/projects/{id}/tasks", authenticatedHandler(getProjectTasks_v2_2)).Methods(http.MethodGet)
 
@@ -83,6 +84,21 @@ func getProject_v2_2(w http.ResponseWriter, r *http.Request, token *auth.Token) 
 
 	encoder := json.NewEncoder(w)
 	encoder.Encode(project)
+}
+
+func leaveProject_v2_2(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+	vars := mux.Vars(r)
+	projectId, ok := vars["id"]
+	if !ok {
+		util.ResponseBadRequest(w, "query parameter 'id' not set")
+		return
+	}
+
+	_, err := project.RemoveUser(projectId, token.UID, token.UID)
+	if err != nil {
+		util.ResponseInternalError(w, err.Error())
+		return
+	}
 }
 
 func removeUser_v2_2(w http.ResponseWriter, r *http.Request, token *auth.Token) {
