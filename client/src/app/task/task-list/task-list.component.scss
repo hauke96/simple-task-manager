@@ -1,5 +1,14 @@
 @import "../../../styles";
 
+:host {
+	margin-top: $space-base;
+}
+
+.list-container {
+	overflow-y: auto;
+	height: 100%;
+}
+
 .list-item {
 	display: flex;
 	flex-direction: row;

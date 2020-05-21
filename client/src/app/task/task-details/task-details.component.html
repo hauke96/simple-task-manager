@@ -1,9 +1,8 @@
-<!-- Assign row -->
 <div class="assign-container">
-	<p>Task: {{task?.id}}</p>
+	<h2>Task {{task?.id}}</h2>
 	<div class="assign-button-container" *ngIf="needUserAssignment">
 		<button *ngIf="!task?.assignedUser" (click)="onAssignButtonClicked()">Assign me</button>
-		<p *ngIf="!!task?.assignedUser && task?.assignedUser !== currentUserId">Assigned to: {{assignedUserName}}</p>
+		<span *ngIf="!!task?.assignedUser && task?.assignedUser !== currentUserId">Assigned to: {{assignedUserName}}</span>
 		<button *ngIf="task?.assignedUser === currentUserId" (click)="onUnassignButtonClicked()">Unassign</button>
 	</div>
 </div>

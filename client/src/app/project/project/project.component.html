@@ -11,12 +11,10 @@
 			<div class="description-text">{{project?.description}}</div>
 		</div>
 		<app-tabs [tabs]="['Tasks', 'Users', 'Settings']" #tabs>
-			<div *ngIf="tabs.tabIndex === 0">
+			<div *ngIf="tabs.tabIndex === 0" class="task-tab">
 				<div class="tab-container">
-					<h2>Tasks</h2>
-					<app-task-list *ngIf="project.tasks" [tasks]="project.tasks"></app-task-list>
-					<h2>Task Details</h2>
 					<app-task-details [needUserAssignment]="project?.needsAssignment" [projectId]="project?.id"></app-task-details>
+					<app-task-list *ngIf="project.tasks" [tasks]="project.tasks" class="task-list"></app-task-list>
 				</div>
 			</div>
 			<div *ngIf="tabs.tabIndex === 1">
