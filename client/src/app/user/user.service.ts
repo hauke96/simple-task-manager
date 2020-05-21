@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { User } from './user.material';
 
@@ -9,7 +9,7 @@ import { User } from './user.material';
   providedIn: 'root'
 })
 export class UserService {
-  // TODO Add a cache for the names
+  public cache: Map<string, User> = new Map<string, User>();
 
   constructor(
     private http: HttpClient
@@ -17,17 +17,29 @@ export class UserService {
   }
 
   public getUsersByIds(userIds: string[]): Observable<User[]> {
-    const url = environment.osm_api_url + '/users?users=' + userIds.join(',');
+    const [cachedUsers, uncachedUsers] = this.getFromCacheById(userIds);
+    if (uncachedUsers.length === 0) {
+      return of(cachedUsers);
+    }
+
+    const url = environment.osm_api_url + '/users?users=' + uncachedUsers.join(',');
 
     // TODO handle case of removed account: Here a comma separated list of users will return a 404 when one UID doesn't exist anymore
     return this.http.get(url, {responseType: 'text'}).pipe(
       map(result => {
-        return this.extractUserFromXmlAttributes(result, 'user', 'display_name', 'id');
+        const loadedUsers = this.extractUserFromXmlAttributes(result, 'user', 'display_name', 'id');
+        loadedUsers.forEach(u => this.cache.set(u.uid, u));
+        return cachedUsers.concat(loadedUsers);
       })
     );
   }
 
   public getUserByName(userName: string): Observable<User> {
+    const cachedUser = this.getFromCacheByName(userName);
+    if (!!cachedUser) {
+      return of(cachedUser);
+    }
+
     const changesetUrl = environment.osm_api_url + '/changesets?display_name=' + userName;
     const notesUrl = environment.osm_api_url + '/notes/search?display_name=' + userName;
 
@@ -96,5 +108,32 @@ export class UserService {
       }
     }
     return null;
+  }
+
+  public getFromCacheById(userIds: string[]): [User[], string[]] {
+    const cachedUsers: User[] = [];
+    const uncachedUsers: string[] = [];
+
+    for (const u of userIds) {
+      const user = this.cache.get(u);
+      if (!!user) {
+        console.log('Cache hit for user \'' + u + '\'');
+        cachedUsers.push(user);
+      } else {
+        console.log('Cache miss for user \'' + u + '\'');
+        uncachedUsers.push(u);
+      }
+    }
+
+    return [cachedUsers, uncachedUsers];
+  }
+
+  public getFromCacheByName(userName: string): User {
+    for (const u of this.cache.values()) {
+      if (u.name === userName) {
+        return u;
+      }
+    }
+    return undefined;
   }
 }
