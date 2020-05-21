@@ -47,7 +47,7 @@ describe('UserInvitationComponent', () => {
     component.onInvitationButtonClicked();
 
     expect(component).toBeTruthy();
-    expect(inviteUserSpy).toHaveBeenCalledWith('123', '1');
+    expect(inviteUserSpy).toHaveBeenCalledWith('1', '123');
   });
 
   it('should show error on error', () => {
@@ -61,7 +61,7 @@ describe('UserInvitationComponent', () => {
     component.onInvitationButtonClicked();
 
     expect(component).toBeTruthy();
-    expect(inviteUserSpy).toHaveBeenCalledWith('123', '1');
+    expect(inviteUserSpy).toHaveBeenCalledWith('1', '123');
     expect(errorServiceSpy).toHaveBeenCalled();
   });
 });

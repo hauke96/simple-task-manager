@@ -33,8 +33,8 @@ describe('TaskDetailsComponent', () => {
     task = new Task('t-42', 10, 100, [[0, 0], [1, 1], [1, 0], [0, 0]]);
 
     taskService = TestBed.inject(TaskService);
-    spyOn(taskService, 'assign').and.callFake((id: string, user: string) => {
-      task.assignedUser = user;
+    spyOn(taskService, 'assign').and.callFake((id: string) => {
+      task.assignedUser = testUserId;
       taskService.selectedTaskChanged.emit(task);
       return of(task);
     });
@@ -62,6 +62,7 @@ describe('TaskDetailsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
   it('should assign and update task', () => {
     component.task = task;
     component.onAssignButtonClicked();
@@ -69,6 +70,7 @@ describe('TaskDetailsComponent', () => {
     fixture.detectChanges();
     expect(component.task.assignedUser).toEqual(testUserId);
   });
+
   it('should unassign and update task', () => {
     task.assignedUser = testUserId;
 
@@ -78,6 +80,7 @@ describe('TaskDetailsComponent', () => {
     fixture.detectChanges();
     expect(component.task.assignedUser).toEqual('');
   });
+
   it('should set process points', () => {
     component.task = task;
     component.newProcessPoints = 50;
