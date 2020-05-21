@@ -24,9 +24,21 @@ Once the region is fully mapped, the user finishes it by setting the process poi
 The owner of a project is also able to invite others to a project.
 When one user works on a task, no other user is able to also update the process of that task.
 
+# Yet another tasking manager?
+*(aka: What's wrong with the HOT Tasking Manager?)*
+
+I personally don't like the HOT Tasking Manager that much for several reasons (not that intuitive UI, iD integration, automatically getting unassigned from a task after some time, etc.).
+
+Alternatives are e.g. the MapCraft tasking manager, which is very old and doesn't even compile anymore when you clone the repo.
+Setting up MapCraft is therefore not possible anymore (if you don't want to spend hours and hours on old PHP code with broken dependencies).
+
+So yes, basically this is another tasking manager, however, this is not a clone of an existing one.
+
 # Documentation
 
-Technical documentation (setup, deployment, development, etc.) can be found in the `server` and `client` folder but the main documentation is in the `doc` folder.
+Development information can be found in the `client` and `server` folder.
+
+Additional technical documentation (setup, deployment, api, security, development, etc.) can be found in the `doc` folder.
 
 # Contribute
 
