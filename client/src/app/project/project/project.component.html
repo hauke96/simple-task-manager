@@ -15,6 +15,8 @@
 				<div class="tab-container">
 					<h2>Tasks</h2>
 					<app-task-list *ngIf="project.tasks" [tasks]="project.tasks"></app-task-list>
+					<h2>Task Details</h2>
+					<app-task-details [needUserAssignment]="project?.needsAssignment" [projectId]="project?.id"></app-task-details>
 				</div>
 			</div>
 			<div *ngIf="tabs.tabIndex === 1">
@@ -33,11 +35,6 @@
 				</div>
 			</div>
 		</app-tabs>
-
-		<div class="task-details-container">
-			<h1>Task Details</h1>
-			<app-task-details [needUserAssignment]="project?.needsAssignment" [projectId]="project?.id"></app-task-details>
-		</div>
 	</div>
 	<div class="map-container">
 		<h2>Map</h2>
