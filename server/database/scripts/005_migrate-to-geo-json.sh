@@ -64,5 +64,5 @@ fi
 
 echo "Migration DONE"
 
-#echo "Remove '$OUTPUT_FILE'"
-#rm $OUTPUT_FILE
+echo "Remove '$OUTPUT_FILE'"
+rm $OUTPUT_FILE
