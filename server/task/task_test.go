@@ -64,7 +64,7 @@ func TestAddTasks(t *testing.T) {
 	rawTask := &Task{
 		ProcessPoints:    5,
 		MaxProcessPoints: 250,
-		Geometry:         [][]float64{{1.5, 10}},
+		Geometry:         "{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[0,0],[1,0]]},\"properties\":null}",
 		AssignedUser:     "Mark",
 	}
 
@@ -89,7 +89,7 @@ func TestAddTasksInvalidProcessPoints(t *testing.T) {
 	rawTask := &Task{
 		ProcessPoints:    0,
 		MaxProcessPoints: 0,
-		Geometry:         [][]float64{{1.5, 10}},
+		Geometry:         "{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[0,0],[1,0]]},\"properties\":null}",
 		AssignedUser:     "Mark",
 	}
 
