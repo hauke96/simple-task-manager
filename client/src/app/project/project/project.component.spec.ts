@@ -4,7 +4,7 @@ import { ProjectComponent } from './project.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ActivatedRoute } from '@angular/router';
-import { Task } from '../../task/task.material';
+import { Task, TestTaskGeometry } from '../../task/task.material';
 import { User } from '../../user/user.material';
 import { Project } from '../project.material';
 
@@ -13,7 +13,7 @@ describe('ProjectComponent', () => {
   let fixture: ComponentFixture<ProjectComponent>;
 
   beforeEach(async(() => {
-    const task = new Task('567', 10, 100, [[0, 0], [1, 1], [1, 0], [0, 0]]);
+    const task = new Task('567', 10, 100, TestTaskGeometry);
 
     TestBed.configureTestingModule({
       declarations: [ProjectComponent],
@@ -42,7 +42,7 @@ describe('ProjectComponent', () => {
   });
 
   function createProject() {
-    const t = new Task('567', 10, 100, [[0, 0], [1, 1], [1, 0], [0, 0]]);
+    const t = new Task('567', 10, 100, TestTaskGeometry);
     const u1 = new User('test-user', '123');
     const u2 = new User('test-user2', '234');
     const u3 = new User('test-user3', '345');

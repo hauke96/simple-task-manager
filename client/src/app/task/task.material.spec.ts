@@ -1,10 +1,10 @@
-import { Task } from './task.material';
+import { Task, TestTaskGeometry } from './task.material';
 
 describe('Task', () => {
   it('should create an instance without assigned User', () => {
-    expect(new Task('t-0', 0, 100, [[0, 0], [1, 1], [2, 2]])).toBeTruthy();
+    expect(new Task('t-0', 0, 100, TestTaskGeometry)).toBeTruthy();
   });
   it('should create an instance', () => {
-    expect(new Task('t-0', 0, 100, [[0, 0], [1, 1], [2, 2]], 'peter')).toBeTruthy();
+    expect(new Task('t-0', 0, 100, TestTaskGeometry, 'peter')).toBeTruthy();
   });
 });

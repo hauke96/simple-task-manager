@@ -5,9 +5,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TaskService } from '../task/task.service';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
-import { Task } from '../task/task.material';
-import { User } from '../user/user.material';
-import { Project } from './project.material';
+import { Task, TestTaskGeometry } from '../task/task.material';
 
 describe('ProjectService', () => {
   let service: ProjectService;
@@ -28,10 +26,10 @@ describe('ProjectService', () => {
   });
 
   it('should create tasks when creating project', () => {
-    const geometries: [number, number][][] = [
-      [[0, 0], [1, 1], [2, 0], [0, 0]],
-      [[0, 0], [1, 1], [2, 0], [3, 4], [0, 0]],
-      [[10, 0], [11, 1], [12, 0], [10, 0]]
+    const geometries: string[] = [
+      TestTaskGeometry,
+      TestTaskGeometry,
+      TestTaskGeometry
     ];
 
     const tasks = [
@@ -40,7 +38,7 @@ describe('ProjectService', () => {
       new Task('3', 0, 100, geometries[2])
     ];
 
-    spyOn(taskService, 'createNewTasks').and.callFake((geom: [number, number][][], maxProcessPoints: number) => {
+    spyOn(taskService, 'createNewTasks').and.callFake((geom: string[], maxProcessPoints: number) => {
       return of(tasks);
     });
 

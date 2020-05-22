@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TaskDetailsComponent } from './task-details.component';
 import { CurrentUserService } from '../../user/current-user.service';
 import { TaskService } from '../task.service';
-import { Task } from '../task.material';
+import { Task, TestTaskGeometry } from '../task.material';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
@@ -30,7 +30,7 @@ describe('TaskDetailsComponent', () => {
     })
       .compileComponents();
 
-    task = new Task('t-42', 10, 100, [[0, 0], [1, 1], [1, 0], [0, 0]]);
+    task = new Task('t-42', 10, 100, TestTaskGeometry);
 
     taskService = TestBed.inject(TaskService);
     spyOn(taskService, 'assign').and.callFake((id: string) => {

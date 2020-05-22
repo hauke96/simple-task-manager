@@ -100,8 +100,6 @@ export class TaskService {
     const taskPolygon = taskFeature.getGeometry() as Polygon;
     const coordinates: Coordinate[] = taskPolygon.getCoordinates()[0];
 
-    // TODO testen
-
     let osm = '<osm version="0.6" generator="simple-task-manager">';
 
     for (let i = 0; i < coordinates.length; i++) {

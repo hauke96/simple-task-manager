@@ -10,7 +10,7 @@ import { throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { ErrorService } from '../../common/error.service';
 import { MockRouter } from '../../common/mock-router';
-import { Task } from '../../task/task.material';
+import { Task, TestTaskGeometry } from '../../task/task.material';
 import { User } from '../user.material';
 
 describe('UserListComponent', () => {
@@ -87,7 +87,7 @@ describe('UserListComponent', () => {
   });
 
   function createProject() {
-    const t = new Task('567', 10, 100, [[0, 0], [1, 1], [1, 0], [0, 0]]);
+    const t = new Task('567', 10, 100, TestTaskGeometry);
     const u1 = new User('test-user', '123');
     const u2 = new User('test-user2', '234');
     const u3 = new User('test-user3', '345');

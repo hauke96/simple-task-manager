@@ -136,10 +136,9 @@ describe('ProjectSettingsComponent', () => {
   //
 
   it('should leave project on yes button', () => {
-    spyOn(projectService, 'removeUser').and.callFake((id: string, user: string) => {
+    spyOn(projectService, 'leaveProject').and.callFake((id: string) => {
       expect(id).toEqual('1');
-      expect(user).toEqual('123');
-      return of({} as Project);
+      return of({});
     });
     spyOn(routerMock, 'navigate').and.callThrough();
     component.projectId = '1';
@@ -154,9 +153,8 @@ describe('ProjectSettingsComponent', () => {
   });
 
   it('should not navigate on error when leaving project', () => {
-    spyOn(projectService, 'removeUser').and.callFake((id: string, user: string) => {
+    spyOn(projectService, 'leaveProject').and.callFake((id: string) => {
       expect(id).toEqual('1');
-      expect(user).toEqual('123');
       return throwError('Test-error');
     });
     spyOn(routerMock, 'navigate').and.callThrough();

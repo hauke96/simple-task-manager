@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { TaskService } from './task.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Task } from './task.material';
+import { Task, TestTaskGeometry } from './task.material';
 import { Extent } from 'ol/extent';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
@@ -25,7 +25,7 @@ describe('TaskService', () => {
 
   it('should set selected task correctly', () => {
     const spy = spyOn(service.selectedTaskChanged, 'emit');
-    const task = new Task('id123', 10, 100, [[0, 0], [100, 100], [200, 0], [0, 0]]);
+    const task = new Task('id123', 10, 100, TestTaskGeometry);
 
     expect(service.getSelectedTask()).toBeFalsy();
 
@@ -36,7 +36,7 @@ describe('TaskService', () => {
   });
 
   it('should call server on create new task', () => {
-    const geometry = '[[0, 0], [100, 100], [200, 0], [0, 0]]';
+    const geometry = TestTaskGeometry;
     const maxProcessPoints = 100;
 
     spyOn(httpClient, 'post').and.returnValue(
@@ -59,11 +59,11 @@ describe('TaskService', () => {
 
   it('should call server to set process points', () => {
     const newProcessPoints = 50;
-    const task = new Task('id123', 10, 100, [[0, 0], [100, 100], [200, 0], [0, 0]]);
+    const task = new Task('id123', 10, 100, TestTaskGeometry);
     service.selectTask(task);
 
     spyOn(httpClient, 'post').and.returnValue(
-      of(new Task('id123', newProcessPoints, 100, [[0, 0], [100, 100], [200, 0], [0, 0]]))
+      of(new Task('id123', newProcessPoints, 100, TestTaskGeometry))
     );
 
     service.setProcessPoints('id123', newProcessPoints)
@@ -74,7 +74,7 @@ describe('TaskService', () => {
 
   it('should cancel setting process points when other task selected', () => {
     const newProcessPoints = 50;
-    const task = new Task('different-task', 10, 100, [[0, 0], [100, 100], [200, 0], [0, 0]]);
+    const task = new Task('different-task', 10, 100, TestTaskGeometry);
     service.selectTask(task);
 
     const spy = spyOn(httpClient, 'post');
@@ -86,12 +86,12 @@ describe('TaskService', () => {
   });
 
   it('should call server on assign', () => {
-    const task = new Task('id123', 10, 100, [[0, 0], [100, 100], [200, 0], [0, 0]]);
+    const task = new Task('id123', 10, 100, TestTaskGeometry);
     const userToAssign = 'mapper-dave';
     service.selectTask(task);
 
     spyOn(httpClient, 'post').and.returnValue(
-      of(new Task('id123', 10, 100, [[0, 0], [100, 100], [200, 0], [0, 0]], userToAssign))
+      of(new Task('id123', 10, 100, TestTaskGeometry, userToAssign))
     );
 
     service.assign('id123')
@@ -101,7 +101,7 @@ describe('TaskService', () => {
   });
 
   it('should abort assign when other task selected', () => {
-    const task = new Task('different-id', 10, 100, [[0, 0], [100, 100], [200, 0], [0, 0]]);
+    const task = new Task('different-id', 10, 100, TestTaskGeometry);
     const userToAssign = 'mapper-dave';
     const spy = spyOn(httpClient, 'post');
 
@@ -115,11 +115,11 @@ describe('TaskService', () => {
 
   it('should call server on unassign', () => {
     const userToUnassign = 'mapper-dave';
-    const task = new Task('id123', 10, 100, [[0, 0], [100, 100], [200, 0], [0, 0]], userToUnassign);
+    const task = new Task('id123', 10, 100, TestTaskGeometry, userToUnassign);
     service.selectTask(task);
 
     spyOn(httpClient, 'post').and.returnValue(
-      of(new Task('id123', 10, 100, [[0, 0], [100, 100], [200, 0], [0, 0]]))
+      of(new Task('id123', 10, 100, TestTaskGeometry))
     );
 
     service.unassign('id123')
@@ -130,7 +130,7 @@ describe('TaskService', () => {
 
   it('should abort unassign when other task selected', () => {
     const userToUnassign = 'mapper-dave';
-    const task = new Task('different-id', 10, 100, [[0, 0], [100, 100], [200, 0], [0, 0]], userToUnassign);
+    const task = new Task('different-id', 10, 100, TestTaskGeometry, userToUnassign);
     const spy = spyOn(httpClient, 'post');
 
     service.selectTask(task);
@@ -142,21 +142,21 @@ describe('TaskService', () => {
   });
 
   it('should calculate the extent correctly', () => {
-    const task = new Task('id123', 10, 100, [[0, 0], [100, 100], [200, 0], [0, 0]]);
+    const task = new Task('id123', 10, 100, TestTaskGeometry);
 
     const extent: Extent = service.getExtent(task);
 
     expect(extent[0]).toEqual(0);
     expect(extent[1]).toEqual(0);
-    expect(extent[2]).toEqual(200);
-    expect(extent[3]).toEqual(100);
+    expect(extent[2]).toEqual(100);
+    expect(extent[3]).toEqual(200);
   });
 
   it('should generate a correct OSM format string', () => {
     const expectedResult = '<osm version="0.6" generator="simple-task-manager">' +
       '<node id=\'-1\' action=\'modify\' visible=\'true\' lat=\'0\' lon=\'0\' />' +
-      '<node id=\'-2\' action=\'modify\' visible=\'true\' lat=\'2\' lon=\'1\' />' +
-      '<node id=\'-3\' action=\'modify\' visible=\'true\' lat=\'0\' lon=\'2\' />' +
+      '<node id=\'-2\' action=\'modify\' visible=\'true\' lat=\'100\' lon=\'100\' />' +
+      '<node id=\'-3\' action=\'modify\' visible=\'true\' lat=\'200\' lon=\'100\' />' +
       '<way id=\'-4\' action=\'modify\' visible=\'true\'>' +
       '<nd ref=\'-1\' />' +
       '<nd ref=\'-2\' />' +
@@ -164,7 +164,7 @@ describe('TaskService', () => {
       '<nd ref=\'-1\' />' +
       '</way></osm>';
 
-    const task = new Task('id123', 10, 100, [[0, 0], [1, 2], [2, 0]]);
+    const task = new Task('id123', 10, 100, TestTaskGeometry);
 
     const osmString = service.getGeometryAsOsm(task);
 

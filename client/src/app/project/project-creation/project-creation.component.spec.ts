@@ -10,7 +10,7 @@ import { ProjectService } from '../project.service';
 import { Project } from '../project.material';
 import { Feature } from 'ol';
 import { MockRouter } from '../../common/mock-router';
-import { Task } from '../../task/task.material';
+import { Task, TestTaskGeometry } from '../../task/task.material';
 import { User } from '../../user/user.material';
 
 describe('ProjectCreationComponent', () => {
@@ -140,7 +140,7 @@ describe('ProjectCreationComponent', () => {
     const description = 'lorem ipsum';
     const maxProcessPoints = 100;
     const name = 'test project';
-    let p = new Polygon([[[0, 0]]]);
+    const p = new Polygon([[[0, 0]]]);
     const feature = new Feature(p);
 
     component.projectDescription = description;
@@ -154,7 +154,7 @@ describe('ProjectCreationComponent', () => {
   });
 
   function createProject() {
-    const t = new Task('567', 10, 100, [[0, 0], [1, 1], [1, 0], [0, 0]]);
+    const t = new Task('567', 10, 100, TestTaskGeometry);
     const u1 = new User('test-user', '123');
     const u2 = new User('test-user2', '234');
     const u3 = new User('test-user3', '345');

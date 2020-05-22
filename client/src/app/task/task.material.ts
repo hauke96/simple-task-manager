@@ -9,3 +9,5 @@ export class Task {
   ) {
   }
 }
+
+export const TestTaskGeometry = '{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[0, 0], [100, 100], [100, 200]]]},"properties":null}';
