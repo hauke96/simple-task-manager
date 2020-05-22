@@ -4,13 +4,12 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"github.com/hauke96/sigolo"
-	"github.com/hauke96/simple-task-manager/server/task"
-	"io/ioutil"
-	"net/http"
-
 	"github.com/hauke96/simple-task-manager/server/auth"
 	"github.com/hauke96/simple-task-manager/server/project"
+	"github.com/hauke96/simple-task-manager/server/task"
 	"github.com/hauke96/simple-task-manager/server/util"
+	"io/ioutil"
+	"net/http"
 )
 
 func Init_v2_2(router *mux.Router) (*mux.Router, string) {
@@ -266,6 +265,8 @@ func addTask_v2_2(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 		util.ResponseInternalError(w, err.Error())
 		return
 	}
+
+	// TODO check for correct GeoJson format
 
 	updatedTasks, err := task.AddTasks(tasks)
 	if err != nil {

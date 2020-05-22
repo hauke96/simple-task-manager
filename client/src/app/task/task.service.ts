@@ -8,6 +8,8 @@ import { Polygon } from 'ol/geom';
 import { Extent } from 'ol/extent';
 import { User } from '../user/user.material';
 import { UserService } from '../user/user.service';
+import GeoJSON from 'ol/format/GeoJSON';
+import { Coordinate } from 'ol/coordinate';
 
 @Injectable({
   providedIn: 'root'
@@ -32,8 +34,11 @@ export class TaskService {
     return this.selectedTask;
   }
 
-  public createNewTasks(geometries: [number, number][][], maxProcessPoints: number): Observable<Task[]> {
-    const draftTasks = geometries.map(g => new Task('', 0, maxProcessPoints, g));
+  public createNewTasks(geometries: string[], maxProcessPoints: number): Observable<Task[]> {
+    const draftTasks = geometries.map(g => {
+      console.log(g);
+      return new Task('', 0, maxProcessPoints, g);
+    });
     return this.http.post<Task[]>(environment.url_tasks, JSON.stringify(draftTasks))
       .pipe(flatMap(tasks => this.addUserNames(tasks)));
   }
@@ -86,22 +91,29 @@ export class TaskService {
   }
 
   public getExtent(task: Task): Extent {
-    return new Polygon([task.geometry]).getExtent();
+    return new GeoJSON().readFeature(task.geometry).getGeometry().getExtent();
   }
 
   public getGeometryAsOsm(task: Task): string {
+    const format = new GeoJSON();
+    const taskFeature = format.readFeature(task.geometry);
+    const taskPolygon = taskFeature.getGeometry() as Polygon;
+    const coordinates: Coordinate[] = taskPolygon.getCoordinates()[0];
+
+    // TODO testen
+
     let osm = '<osm version="0.6" generator="simple-task-manager">';
 
-    for (let i = 0; i < task.geometry.length; i++) {
-      const lat = task.geometry[i][1];
-      const lon = task.geometry[i][0];
+    for (let i = 0; i < coordinates.length; i++) {
+      const lat = coordinates[i][1];
+      const lon = coordinates[i][0];
 
       osm += `<node id='-${(i + 1)}' action='modify' visible='true' lat='${lat}' lon='${lon}' />`;
     }
 
-    osm += `<way id='-${task.geometry.length + 1}' action='modify' visible='true'>`;
+    osm += `<way id='-${coordinates.length + 1}' action='modify' visible='true'>`;
 
-    for (let i = 0; i < task.geometry.length; i++) {
+    for (let i = 0; i < coordinates.length; i++) {
       osm += `<nd ref='-${(i + 1)}' />`;
     }
 

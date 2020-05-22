@@ -10,11 +10,11 @@ import (
 )
 
 type Task struct {
-	Id               string      `json:"id"`
-	ProcessPoints    int         `json:"processPoints"`
-	MaxProcessPoints int         `json:"maxProcessPoints"`
-	Geometry         [][]float64 `json:"geometry"`
-	AssignedUser     string      `json:"assignedUser"`
+	Id               string `json:"id"`
+	ProcessPoints    int    `json:"processPoints"`
+	MaxProcessPoints int    `json:"maxProcessPoints"`
+	Geometry         string `json:"geometry"`
+	AssignedUser     string `json:"assignedUser"`
 }
 
 type taskStore interface {

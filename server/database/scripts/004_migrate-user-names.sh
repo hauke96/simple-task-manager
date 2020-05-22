@@ -1,7 +1,7 @@
 #!/bin/bash
 
 typeset -Ag UID_CACHE
-OUTPUT_FILE="migrate-user-names.sql"
+OUTPUT_FILE=".tmp.migrate-user-names.sql"
 #URL="https://master.apis.dev.openstreetmap.org"
 URL="https://www.openstreetmap.org"
 

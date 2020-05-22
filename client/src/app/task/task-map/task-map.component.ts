@@ -2,15 +2,16 @@ import { AfterViewInit, Component, Input } from '@angular/core';
 import { TaskService } from '../task.service';
 import { CurrentUserService } from '../../user/current-user.service';
 import { Task } from '../task.material';
-import { Feature, Map, View } from 'ol';
+import { Map, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import { OSM } from 'ol/source';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import { Attribution, defaults as defaultControls, ScaleLine } from 'ol/control';
-import { Polygon } from 'ol/geom';
 import { Fill, Stroke, Style, Text } from 'ol/style';
 import { ProcessPointColorService } from '../../common/process-point-color.service';
+import GeoJSON from 'ol/format/GeoJSON';
+import { Polygon } from 'ol/geom';
 
 @Component({
   selector: 'app-task-map',
@@ -145,14 +146,11 @@ export class TaskMapComponent implements AfterViewInit {
   }
 
   private showTaskPolygon(task: Task) {
-    let geometry = new Polygon([task.geometry]);
-
-    // transform from lat/long into WSG84 to show on map
-    geometry = geometry.clone().transform('EPSG:4326', 'EPSG:3857') as Polygon;
-
-    // create the map feature and set the task-id to select the task when the
-    // polygon has been clicked
-    const feature = new Feature(geometry);
+    console.log('task: ' + task.id);
+    console.log(task.geometry);
+    console.log();
+    const feature = new GeoJSON().readFeature(task.geometry);
+    feature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
     feature.set('task_id', task.id);
 
     this.vectorSource.addFeature(feature);

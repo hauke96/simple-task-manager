@@ -2,9 +2,7 @@ package task
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
-	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/lib/pq"
 	"github.com/pkg/errors"
@@ -107,14 +105,8 @@ func (s *storePg) addTasks(newTasks []*Task) ([]*Task, error) {
 }
 
 func (s *storePg) addTask(task *Task) (string, error) {
-	geometryBytes, err := json.Marshal(task.Geometry)
-	if err != nil {
-		sigolo.Error("Cannot parse geometry:\n%v", task.Geometry)
-		return "", errors.Wrapf(err, "unable to marshal geometry of task '%s'", task.Id)
-	}
-
 	query := fmt.Sprintf("INSERT INTO %s(process_points, max_process_points, geometry, assigned_user) VALUES($1, $2, $3, $4) RETURNING *;", s.table)
-	t, err := execQuery(s.db, query, task.ProcessPoints, task.MaxProcessPoints, string(geometryBytes), task.AssignedUser)
+	t, err := execQuery(s.db, query, task.ProcessPoints, task.MaxProcessPoints, task.Geometry, task.AssignedUser)
 
 	if err == nil && t != nil {
 		return t.Id, nil
@@ -183,13 +175,7 @@ func rowToTask(rows *sql.Rows) (*Task, error) {
 	result.ProcessPoints = task.processPoints
 	result.MaxProcessPoints = task.maxProcessPoints
 	result.AssignedUser = task.assignedUser
-
-	var g [][]float64
-	err = json.Unmarshal([]byte(task.geometry), &g)
-	if err != nil {
-		return nil, err
-	}
-	result.Geometry = g
+	result.Geometry = task.geometry
 
 	return &result, err
 }

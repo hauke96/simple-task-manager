@@ -36,7 +36,7 @@ describe('TaskService', () => {
   });
 
   it('should call server on create new task', () => {
-    const geometry: [number, number][] = [[0, 0], [100, 100], [200, 0], [0, 0]];
+    const geometry = '[[0, 0], [100, 100], [200, 0], [0, 0]]';
     const maxProcessPoints = 100;
 
     spyOn(httpClient, 'post').and.returnValue(

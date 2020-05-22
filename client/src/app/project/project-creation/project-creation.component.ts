@@ -16,6 +16,7 @@ import { CurrentUserService } from '../../user/current-user.service';
 import Snap from 'ol/interaction/Snap';
 import Modify from 'ol/interaction/Modify';
 import Select, { SelectEvent } from 'ol/interaction/Select';
+import GeoJSON from 'ol/format/GeoJSON';
 
 @Component({
   selector: 'app-project-creation',
@@ -161,7 +162,15 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   }
 
   public createProject(name: string, maxProcessPoints: number, projectDescription: string, polygons: Polygon[]) {
-    const geometries = polygons.map(p => p.getCoordinates()[0]) as [number, number][][];
+    const format = new GeoJSON();
+    // We want features to attach attributes and to not be bound to one single Polygon.
+    // Furthermore the escaping in the string breaks the format as the "\" character is actually transmitted as "\" character
+    const geometries: string[] = [];
+    for (const polygon of polygons) {
+      let s = format.writeFeature(new Feature(polygon));
+      geometries.push(s);
+    }
+
     const owner = this.currentUserService.getUserId();
     this.projectService.createNewProject(name, maxProcessPoints, projectDescription, geometries, [owner], owner)
       .subscribe(project => {

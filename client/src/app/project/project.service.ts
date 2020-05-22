@@ -36,7 +36,7 @@ export class ProjectService {
     name: string,
     maxProcessPoints: number,
     projectDescription: string,
-    geometries: [number, number][][],
+    geometries: string[],
     users: string[],
     owner: string
   ): Observable<Project> {
