@@ -5,6 +5,9 @@ server/coverage.out
 server/go.sum
 server/test.log
 
+# Migration files
+server/database/.tmp.*
+
 # IDE stuff
 **.idea
 
