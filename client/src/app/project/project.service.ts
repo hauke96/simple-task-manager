@@ -67,7 +67,7 @@ export class ProjectService {
   public getTasks(projectId: string): Observable<Task[]> {
     return this.http.get<Task[]>(environment.url_projects + '/' + projectId + '/tasks')
       .pipe(
-        flatMap(tasks => {
+        flatMap((tasks: Task[]) => {
           return this.taskService.addUserNames(tasks);
         })
       );
@@ -86,12 +86,12 @@ export class ProjectService {
   }
 
   // Gets user names and turns the DTO into a Project
-  private toProject(dto: ProjectDto): Observable<Project> {
+  public toProject(dto: ProjectDto): Observable<Project> {
     return this.toProjects([dto]).pipe(map(p => p[0]));
   }
 
   // Gets user names and turns the DTOs into Projects
-  private toProjects(dtos: ProjectDto[]): Observable<Project[]> {
+  public toProjects(dtos: ProjectDto[]): Observable<Project[]> {
     if (!dtos || dtos.length === 0) {
       return of([]);
     }
