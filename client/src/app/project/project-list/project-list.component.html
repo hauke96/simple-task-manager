@@ -8,7 +8,7 @@
 				<div class="color-bar" [style.background-color]="getProcessPointColor(p)" [style.border-color]="getProcessPointColor(p)" [style.width]="getProcessPointWidth(p)"></div>
 			</div>
 			<div class="admin-label">
-				<span class="light-label" *ngIf="p.owner === currentUser">*</span>
+				<span class="light-label" *ngIf="p.owner.uid === currentUserId">*</span>
 			</div>
 		</div>
 	</div>

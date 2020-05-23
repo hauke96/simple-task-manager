@@ -50,7 +50,7 @@ export class ShapeDivideComponent implements OnInit {
         grid = triangleGrid(extent, this.gridCellSize, options);
         break;
       default:
-        const e = `Unknown shape type ${this.gridCellShape}`
+        const e = `Unknown shape type ${this.gridCellShape}`;
         console.error(e);
         this.errorService.addError(e);
         return;

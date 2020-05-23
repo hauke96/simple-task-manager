@@ -3,52 +3,25 @@ package project
 import (
 	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/permission"
+	testHelper "github.com/hauke96/simple-task-manager/server/test"
 	"testing"
 
 	"github.com/hauke96/simple-task-manager/server/task"
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 )
 
-func prepare() {
+func TestMain(m *testing.M) {
+	testHelper.InitWithDummyData()
+
 	sigolo.LogLevel = sigolo.LOG_DEBUG
 	Init()
 	permission.Init()
 	task.Init()
-}
 
-func TestVerifyOwnership(t *testing.T) {
-	prepare()
-
-	// Test ownership of tasks of project 1
-	b, err := VerifyOwnership("Peter", []string{"1"})
-	if err != nil {
-		t.Errorf("Verification of ownership should work: %s", err.Error())
-		t.Fail()
-		return
-	}
-	if !b {
-		t.Errorf("Peter in deed owns task 1")
-		t.Fail()
-		return
-	}
-
-	// Test ownership of tasks of project 2
-	b, err = VerifyOwnership("Peter", []string{"2", "3", "4"})
-	if err != nil {
-		t.Errorf("Verification of ownership should work: %s", err.Error())
-		t.Fail()
-		return
-	}
-	if b { // expect false
-		t.Errorf("Petern does not own tasks 2, 3 and 4")
-		t.Fail()
-		return
-	}
+	m.Run()
 }
 
 func TestGetProjects(t *testing.T) {
-	prepare()
-
 	// For Maria (being part of project 1 and 2)
 	userProjects, err := GetProjects("Maria")
 	if err != nil {
@@ -87,8 +60,6 @@ func TestGetProjects(t *testing.T) {
 }
 
 func TestGetTasks(t *testing.T) {
-	prepare()
-
 	tasks, err := GetTasks("1", "Peter")
 	if err != nil {
 		t.Errorf("Get should work: %s", err.Error())
@@ -157,8 +128,6 @@ func TestGetTasks(t *testing.T) {
 }
 
 func TestAddAndGetProject(t *testing.T) {
-	prepare()
-
 	user := "Jack"
 	p := Project{
 		Name:    "Test name",
@@ -167,7 +136,7 @@ func TestAddAndGetProject(t *testing.T) {
 		Owner:   user,
 	}
 
-	newProject, err := AddProject(&p, user)
+	newProject, err := AddProject(&p)
 	if err != nil {
 		t.Errorf("Adding should work: %s", err.Error())
 		t.Fail()
@@ -202,8 +171,6 @@ func TestAddAndGetProject(t *testing.T) {
 }
 
 func TestAddProjectWithUsedTasks(t *testing.T) {
-	prepare()
-
 	user := "Jen"
 	p := Project{
 		Name:    "Test name",
@@ -212,7 +179,7 @@ func TestAddProjectWithUsedTasks(t *testing.T) {
 		Owner:   user,
 	}
 
-	_, err := AddProject(&p, user)
+	_, err := AddProject(&p)
 	if err == nil {
 		t.Errorf("The tasks are already used. This should not work.")
 		t.Fail()
@@ -221,11 +188,9 @@ func TestAddProjectWithUsedTasks(t *testing.T) {
 }
 
 func TestAddUser(t *testing.T) {
-	prepare()
-
 	newUser := "new user"
 
-	p, err := AddUser(newUser, "1", "Peter")
+	p, err := AddUser("1", newUser, "Peter")
 	if err != nil {
 		t.Errorf("This should work: %s", err.Error())
 		t.Fail()
@@ -245,14 +210,14 @@ func TestAddUser(t *testing.T) {
 		return
 	}
 
-	p, err = AddUser(newUser, "2284527", "Peter")
+	p, err = AddUser("2284527", newUser, "Peter")
 	if err == nil {
 		t.Error("This should not work: The project does not exist")
 		t.Fail()
 		return
 	}
 
-	p, err = AddUser(newUser, "1", "Not-Owning-User")
+	p, err = AddUser("1", newUser, "Not-Owning-User")
 	if err == nil {
 		t.Error("This should not work: A non-owner user tries to add a user")
 		t.Fail()
@@ -261,11 +226,9 @@ func TestAddUser(t *testing.T) {
 }
 
 func TestAddUserTwice(t *testing.T) {
-	prepare()
-
 	newUser := "another-new-user"
 
-	_, err := AddUser(newUser, "1", "Peter")
+	_, err := AddUser("1", newUser, "Peter")
 	if err != nil {
 		t.Errorf("This should work: %s", err.Error())
 		t.Fail()
@@ -273,7 +236,7 @@ func TestAddUserTwice(t *testing.T) {
 	}
 
 	// Add second time, this should now work
-	_, err = AddUser(newUser, "1", "Peter")
+	_, err = AddUser("1", newUser, "Peter")
 	if err == nil {
 		t.Error("Adding a user twice should not work")
 		t.Fail()
@@ -282,8 +245,6 @@ func TestAddUserTwice(t *testing.T) {
 }
 
 func TestRemoveUser(t *testing.T) {
-	prepare()
-
 	userToRemove := "Maria"
 
 	p, err := RemoveUser("1", "Peter", userToRemove)
@@ -306,6 +267,23 @@ func TestRemoveUser(t *testing.T) {
 		return
 	}
 
+	tasks, err := task.GetTasks(p.TaskIDs, "Peter")
+	if err != nil {
+		t.Errorf("Getting tasks should still work")
+		t.Fail()
+		return
+	}
+
+	// Check that the user to remove has been unassigned
+	for _, task := range tasks {
+		if task.AssignedUser == userToRemove {
+			t.Errorf("Task '%s' still has user '%s' assigned", task.Id, userToRemove)
+			t.Fail()
+			return
+		}
+	}
+
+	// Not existing project
 	p, err = RemoveUser("2284527", "Peter", userToRemove)
 	if err == nil {
 		t.Error("This should not work: The project does not exist")
@@ -313,17 +291,16 @@ func TestRemoveUser(t *testing.T) {
 		return
 	}
 
+	// Not owning user requesting removal
 	p, err = RemoveUser("1", "Not-Owning-User", userToRemove)
 	if err == nil {
-		t.Error("This should not work: A non-owner user should be removed")
+		t.Error("This should not work: A non-owner user requests removal")
 		t.Fail()
 		return
 	}
 }
 
 func TestRemoveNonOwnerUser(t *testing.T) {
-	prepare()
-
 	userToRemove := "Carl"
 
 	// Carl is not owner and removes himself, which is ok
@@ -349,8 +326,6 @@ func TestRemoveNonOwnerUser(t *testing.T) {
 }
 
 func TestRemoveArbitraryUserNotAllowed(t *testing.T) {
-	prepare()
-
 	userToRemove := "Anna"
 
 	// Michael is not member of the project and should not be allowed to remove anyone
@@ -393,8 +368,6 @@ func TestRemoveArbitraryUserNotAllowed(t *testing.T) {
 }
 
 func TestRemoveUserTwice(t *testing.T) {
-	prepare()
-
 	_, err := RemoveUser("2", "Maria", "John")
 	if err != nil {
 		t.Error("This should work: ", err)
@@ -412,8 +385,6 @@ func TestRemoveUserTwice(t *testing.T) {
 }
 
 func TestLeaveProject(t *testing.T) {
-	prepare()
-
 	userToRemove := "Anna"
 
 	p, err := LeaveProject("2", userToRemove)
@@ -467,8 +438,6 @@ func TestLeaveProject(t *testing.T) {
 }
 
 func TestDeleteProject(t *testing.T) {
-	prepare()
-
 	id := "1" // owned by "Peter"
 
 	// Try to remove with now-owning user

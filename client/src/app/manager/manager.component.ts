@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../user/user.service';
+import { CurrentUserService } from '../user/current-user.service';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
+import { UserService } from '../user/user.service';
 
 @Component({
   selector: 'app-manager',
@@ -12,7 +13,7 @@ export class ManagerComponent implements OnInit {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private userService: UserService
+    private currentUserService: CurrentUserService
   ) {
   }
 
@@ -20,7 +21,7 @@ export class ManagerComponent implements OnInit {
   }
 
   public get userName(): string {
-    return this.userService.getUser();
+    return this.currentUserService.getUserName();
   }
 
   public onLogoutClicked() {

@@ -2,9 +2,7 @@ package task
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
-	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/lib/pq"
 	"github.com/pkg/errors"
@@ -81,8 +79,8 @@ func (s *storePg) getTasks(taskIds []string) ([]*Task, error) {
 	return tasks, nil
 }
 
-func (s *storePg) getTask(id string) (*Task, error) {
-	tasks, err := s.getTasks([]string{id})
+func (s *storePg) getTask(taskId string) (*Task, error) {
+	tasks, err := s.getTasks([]string{taskId})
 	if err != nil {
 		return nil, err
 	}
@@ -107,14 +105,8 @@ func (s *storePg) addTasks(newTasks []*Task) ([]*Task, error) {
 }
 
 func (s *storePg) addTask(task *Task) (string, error) {
-	geometryBytes, err := json.Marshal(task.Geometry)
-	if err != nil {
-		sigolo.Error("Cannot parse geometry:\n%v", task.Geometry)
-		return "", errors.Wrapf(err, "unable to marshal geometry of task '%s'", task.Id)
-	}
-
 	query := fmt.Sprintf("INSERT INTO %s(process_points, max_process_points, geometry, assigned_user) VALUES($1, $2, $3, $4) RETURNING *;", s.table)
-	t, err := execQuery(s.db, query, task.ProcessPoints, task.MaxProcessPoints, string(geometryBytes), task.AssignedUser)
+	t, err := execQuery(s.db, query, task.ProcessPoints, task.MaxProcessPoints, task.Geometry, task.AssignedUser)
 
 	if err == nil && t != nil {
 		return t.Id, nil
@@ -123,19 +115,19 @@ func (s *storePg) addTask(task *Task) (string, error) {
 	return "", err
 }
 
-func (s *storePg) assignUser(id, user string) (*Task, error) {
+func (s *storePg) assignUser(taskId, userId string) (*Task, error) {
 	query := fmt.Sprintf("UPDATE %s SET assigned_user=$1 WHERE id=$2 RETURNING *;", s.table)
-	return execQuery(s.db, query, user, id)
+	return execQuery(s.db, query, userId, taskId)
 }
 
-func (s *storePg) unassignUser(id string) (*Task, error) {
+func (s *storePg) unassignUser(taskId string) (*Task, error) {
 	query := fmt.Sprintf("UPDATE %s SET assigned_user='' WHERE id=$1 RETURNING *;", s.table)
-	return execQuery(s.db, query, id)
+	return execQuery(s.db, query, taskId)
 }
 
-func (s *storePg) setProcessPoints(id string, newPoints int) (*Task, error) {
+func (s *storePg) setProcessPoints(taskId string, newPoints int) (*Task, error) {
 	query := fmt.Sprintf("UPDATE %s SET process_points=$1 WHERE id=$2 RETURNING *;", s.table)
-	return execQuery(s.db, query, newPoints, id)
+	return execQuery(s.db, query, newPoints, taskId)
 }
 
 func (s *storePg) delete(taskIds []string) error {
@@ -183,13 +175,7 @@ func rowToTask(rows *sql.Rows) (*Task, error) {
 	result.ProcessPoints = task.processPoints
 	result.MaxProcessPoints = task.maxProcessPoints
 	result.AssignedUser = task.assignedUser
-
-	var g [][]float64
-	err = json.Unmarshal([]byte(task.geometry), &g)
-	if err != nil {
-		return nil, err
-	}
-	result.Geometry = g
+	result.Geometry = task.geometry
 
 	return &result, err
 }

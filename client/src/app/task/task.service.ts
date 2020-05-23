@@ -2,10 +2,14 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { Task } from './task.material';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
-import { from, Observable, throwError } from 'rxjs';
-import { concatMap, tap } from 'rxjs/operators';
+import { from, Observable, of, throwError } from 'rxjs';
+import { concatMap, flatMap, map, tap } from 'rxjs/operators';
 import { Polygon } from 'ol/geom';
 import { Extent } from 'ol/extent';
+import { User } from '../user/user.material';
+import { UserService } from '../user/user.service';
+import GeoJSON from 'ol/format/GeoJSON';
+import { Coordinate } from 'ol/coordinate';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +19,10 @@ export class TaskService {
 
   private selectedTask: Task;
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private userService: UserService
+  ) {
   }
 
   public selectTask(task: Task) {
@@ -27,35 +34,40 @@ export class TaskService {
     return this.selectedTask;
   }
 
-  public createNewTasks(geometries: [number, number][][], maxProcessPoints: number): Observable<Task[]> {
-    const tasks = geometries.map(g => new Task('', 0, maxProcessPoints, g));
-    return this.http.post<Task[]>(environment.url_tasks, JSON.stringify(tasks));
+  public createNewTasks(geometries: string[], maxProcessPoints: number): Observable<Task[]> {
+    const draftTasks = geometries.map(g => {
+      return new Task('', 0, maxProcessPoints, g);
+    });
+    return this.http.post<Task[]>(environment.url_tasks, JSON.stringify(draftTasks))
+      .pipe(flatMap(tasks => this.addUserNames(tasks)));
   }
 
-  public setProcessPoints(id: string, newProcessPoints: number): Observable<Task> {
-    if (id !== this.selectedTask.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
-      return throwError('Task with id \'' + id + '\' not selected');
+  public setProcessPoints(taskId: string, newProcessPoints: number): Observable<Task> {
+    if (taskId !== this.selectedTask.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
+      return throwError('Task with id \'' + taskId + '\' not selected');
     }
 
-    return this.http.post<Task>(environment.url_task_processPoints.replace('{id}', id) + '?process_points=' + newProcessPoints, '')
+    return this.http.post<Task>(environment.url_task_processPoints.replace('{id}', taskId) + '?process_points=' + newProcessPoints, '')
+      .pipe(flatMap(task => this.addUserName(task)))
       .pipe(tap(t => this.selectedTaskChanged.emit(t)));
   }
 
-  public assign(id: string, user: string): Observable<Task> {
-    if (id !== this.selectedTask.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
-      return throwError('Task with id \'' + id + '\' not selected');
+  public assign(taskId: string): Observable<Task> {
+    if (taskId !== this.selectedTask.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
+      return throwError('Task with id \'' + taskId + '\' not selected');
     }
 
-    return this.http.post<Task>(environment.url_task_assignedUser.replace('{id}', id), '')
+    return this.http.post<Task>(environment.url_task_assignedUser.replace('{id}', taskId), '')
+      .pipe(flatMap(task => this.addUserName(task)))
       .pipe(tap(t => this.selectedTaskChanged.emit(t)));
   }
 
-  public unassign(id: string): Observable<Task> {
-    if (id !== this.selectedTask.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
-      return throwError('Task with id \'' + id + '\' not selected');
+  public unassign(taskId: string): Observable<Task> {
+    if (taskId !== this.selectedTask.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
+      return throwError('Task with id \'' + taskId + '\' not selected');
     }
 
-    return this.http.delete<Task>(environment.url_task_assignedUser.replace('{id}', id))
+    return this.http.delete<Task>(environment.url_task_assignedUser.replace('{id}', taskId))
       .pipe(tap(t => this.selectedTaskChanged.emit(t)));
   }
 
@@ -71,29 +83,33 @@ export class TaskService {
     ])
       .pipe(
         concatMap(url => {
-          console.log('Call: ' + url);
           return this.http.get(url, {responseType: 'text'});
         })
       );
   }
 
   public getExtent(task: Task): Extent {
-    return new Polygon([task.geometry]).getExtent();
+    return new GeoJSON().readFeature(task.geometry).getGeometry().getExtent();
   }
 
   public getGeometryAsOsm(task: Task): string {
+    const format = new GeoJSON();
+    const taskFeature = format.readFeature(task.geometry);
+    const taskPolygon = taskFeature.getGeometry() as Polygon;
+    const coordinates: Coordinate[] = taskPolygon.getCoordinates()[0];
+
     let osm = '<osm version="0.6" generator="simple-task-manager">';
 
-    for (let i = 0; i < task.geometry.length; i++) {
-      const lat = task.geometry[i][1];
-      const lon = task.geometry[i][0];
+    for (let i = 0; i < coordinates.length; i++) {
+      const lat = coordinates[i][1];
+      const lon = coordinates[i][0];
 
       osm += `<node id='-${(i + 1)}' action='modify' visible='true' lat='${lat}' lon='${lon}' />`;
     }
 
-    osm += `<way id='-${task.geometry.length + 1}' action='modify' visible='true'>`;
+    osm += `<way id='-${coordinates.length + 1}' action='modify' visible='true'>`;
 
-    for (let i = 0; i < task.geometry.length; i++) {
+    for (let i = 0; i < coordinates.length; i++) {
       osm += `<nd ref='-${(i + 1)}' />`;
     }
 
@@ -102,5 +118,31 @@ export class TaskService {
     osm += '</way></osm>';
 
     return osm;
+  }
+
+  // Fills the "assignedUserName" of the task with the actual user name.
+  public addUserNames(tasks: Task[]): Observable<Task[]> {
+    const userIDs = tasks.filter(t => !!t.assignedUser && t.assignedUser !== '').map(t => t.assignedUser);
+
+    if (!userIDs || userIDs.length === 0) {
+      return of(tasks);
+    }
+
+    return this.userService.getUsersByIds(userIDs)
+      .pipe(
+        map((users: User[]) => {
+          for (const t of tasks) {
+            const user = users.find(u => t.assignedUser === u.uid);
+            if (!!user) {
+              t.assignedUserName = user.name;
+            }
+          }
+          return tasks;
+        })
+      );
+  }
+
+  public addUserName(task: Task): Observable<Task> {
+    return this.addUserNames([task]).pipe(map(t => t[0]));
   }
 }

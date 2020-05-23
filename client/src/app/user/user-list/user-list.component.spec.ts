@@ -4,18 +4,20 @@ import { UserListComponent } from './user-list.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
 import { ProjectService } from '../../project/project.service';
-import { UserService } from '../user.service';
+import { CurrentUserService } from '../current-user.service';
 import { Project } from '../../project/project.material';
 import { throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { ErrorService } from '../../common/error.service';
 import { MockRouter } from '../../common/mock-router';
+import { Task, TestTaskGeometry } from '../../task/task.material';
+import { User } from '../user.material';
 
 describe('UserListComponent', () => {
   let component: UserListComponent;
   let fixture: ComponentFixture<UserListComponent>;
   let projectService: ProjectService;
-  let userService: UserService;
+  let currentUserService: CurrentUserService;
   let errorService: ErrorService;
   let routerMock: MockRouter;
 
@@ -37,11 +39,11 @@ describe('UserListComponent', () => {
       .compileComponents();
 
     projectService = TestBed.inject(ProjectService);
-    userService = TestBed.inject(UserService);
+    currentUserService = TestBed.inject(CurrentUserService);
     errorService = TestBed.inject(ErrorService);
     routerMock = TestBed.inject(Router);
 
-    spyOn(userService, 'getUser').and.returnValue('test-user');
+    spyOn(currentUserService, 'getUserId').and.returnValue('123');
   }));
 
   beforeEach(() => {
@@ -51,22 +53,23 @@ describe('UserListComponent', () => {
   });
 
   it('should detect removable users', () => {
-    component.project = new Project('1', 'test project', 'lorem ipsum', ['2', '3'], ['test-user', 'user-a', 'user-b'], 'test-user');
+    component.project = createProject();
     expect(component).toBeTruthy();
 
-    expect(component.canRemove('test-user')).toBeFalse();
-    expect(component.canRemove('user-a')).toBeTrue();
-    expect(component.canRemove('user-b')).toBeTrue();
+    expect(component.canRemove('123')).toBeFalse();
+    expect(component.canRemove('234')).toBeTrue();
+    expect(component.canRemove('345')).toBeTrue();
   });
 
   it('should remove user correctly', () => {
     const removeUserSpy = spyOn(projectService, 'removeUser').and.callThrough();
-    component.project = new Project('1', 'test project', 'lorem ipsum', ['2', '3'], ['test-user', 'user-a', 'user-b'], 'test-user');
+
+    component.project = createProject();
     expect(component).toBeTruthy();
 
-    component.onRemoveUserClicked('user-a');
+    component.onRemoveUserClicked('123');
 
-    expect(removeUserSpy).toHaveBeenCalledWith('1', 'user-a');
+    expect(removeUserSpy).toHaveBeenCalledWith('1', '123');
   });
 
   it('should show error on error', () => {
@@ -74,12 +77,20 @@ describe('UserListComponent', () => {
     const removeUserSpy = spyOn(projectService, 'removeUser').and.returnValue(throwError('test error'));
     const errorServiceSpy = spyOn(errorService, 'addError').and.callThrough();
 
-    component.project = new Project('1', 'test project', 'lorem ipsum', ['2', '3'], ['test-user', 'user-a', 'user-b'], 'test-user');
+    component.project = createProject();
     expect(component).toBeTruthy();
 
-    component.onRemoveUserClicked('user-a');
+    component.onRemoveUserClicked('123');
 
-    expect(removeUserSpy).toHaveBeenCalledWith('1', 'user-a');
+    expect(removeUserSpy).toHaveBeenCalledWith('1', '123');
     expect(errorServiceSpy).toHaveBeenCalled();
   });
+
+  function createProject() {
+    const t = new Task('567', 10, 100, TestTaskGeometry);
+    const u1 = new User('test-user', '123');
+    const u2 = new User('test-user2', '234');
+    const u3 = new User('test-user3', '345');
+    return new Project('1', 'test project', 'lorem ipsum', [t], [u1, u2, u3], u1);
+  }
 });

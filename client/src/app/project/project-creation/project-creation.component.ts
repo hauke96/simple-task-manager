@@ -12,10 +12,11 @@ import { Fill, Stroke, Style } from 'ol/style';
 import { Draw } from 'ol/interaction';
 import { ErrorService } from '../../common/error.service';
 import GeometryType from 'ol/geom/GeometryType';
-import { UserService } from '../../user/user.service';
+import { CurrentUserService } from '../../user/current-user.service';
 import Snap from 'ol/interaction/Snap';
 import Modify from 'ol/interaction/Modify';
 import Select, { SelectEvent } from 'ol/interaction/Select';
+import GeoJSON from 'ol/format/GeoJSON';
 
 @Component({
   selector: 'app-project-creation',
@@ -44,7 +45,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   constructor(
     private projectService: ProjectService,
     private errorService: ErrorService,
-    private userService: UserService,
+    private currentUserService: CurrentUserService,
     private router: Router
   ) {
   }
@@ -144,6 +145,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
 
   public onSaveButtonClicked() {
     const polygons: Polygon[] = this.vectorSource.getFeatures().map(f => {
+      f = f.clone(); // otherwise we would change the polygons on the map
       let polygon = (f.getGeometry() as Polygon);
 
       // Even though we transformed the coordinates after their creation from EPSG:4326 into EPSG:3857, the OSM- and overall Geo-World works
@@ -160,12 +162,21 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   }
 
   public createProject(name: string, maxProcessPoints: number, projectDescription: string, polygons: Polygon[]) {
-    const geometries = polygons.map(p => p.getCoordinates()[0]) as [number, number][][];
-    const owner = this.userService.getUser();
+    const format = new GeoJSON();
+    // We want features to attach attributes and to not be bound to one single Polygon.
+    // Furthermore the escaping in the string breaks the format as the "\" character is actually transmitted as "\" character
+    const geometries: string[] = [];
+    for (const polygon of polygons) {
+      let s = format.writeFeature(new Feature(polygon));
+      geometries.push(s);
+    }
+
+    const owner = this.currentUserService.getUserId();
     this.projectService.createNewProject(name, maxProcessPoints, projectDescription, geometries, [owner], owner)
       .subscribe(project => {
         this.router.navigate(['/manager']);
       }, e => {
+        console.error(e);
         this.errorService.addError('Could not create project');
       });
   }

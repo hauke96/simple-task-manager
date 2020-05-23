@@ -1,6 +1,6 @@
-<div *ngFor="let u of project?.users" class="list-item">
+<div *ngFor="let u of users" class="list-item">
 	<div class="item-content">
-		{{u}}
-		<button class="remove-button" *ngIf="canRemove(u)" (click)="onRemoveUserClicked(u)"> Remove</button>
+		{{u.name}}
+		<button class="remove-button" *ngIf="canRemove(u.uid)" (click)="onRemoveUserClicked(u.uid)"> Remove</button>
 	</div>
 </div>

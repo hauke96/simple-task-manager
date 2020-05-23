@@ -24,32 +24,24 @@ Once the region is fully mapped, the user finishes it by setting the process poi
 The owner of a project is also able to invite others to a project.
 When one user works on a task, no other user is able to also update the process of that task.
 
-# Development
+# Yet another tasking manager?
+*(aka: What's wrong with the HOT Tasking Manager?)*
 
-Development takes place on the `dev` branch or on separate feature branches.
-The `master` branch only contains released versions.
+I personally don't like the HOT Tasking Manager that much for several reasons (not that intuitive UI, iD integration, automatically getting unassigned from a task after some time, etc.).
 
-## Client
+Alternatives are e.g. the MapCraft tasking manager, which is very old and doesn't even compile anymore when you clone the repo.
+Setting up MapCraft is therefore not possible anymore (if you don't want to spend hours and hours on old PHP code with broken dependencies).
 
-The client is an Angular based web application and can be found in the `client/` folder.
-The `README.md` in this folder gives you further instruction on the setup, running, building, etc.
+So yes, basically this is another tasking manager, however, this is not a clone of an existing one.
 
-## Server
+# Documentation
 
-The server is written in go (aka golang) and can be found in the `server/` folder.
-The `README.md` there also gives you instructions on setup, running, building, etc.
+Development information can be found in the `client` and `server` folder.
 
-## Deployment
-
-The `docker-compose.yml` creates three docker container for the client, server and the database.
-Because the container build and test themselves, starting everything probably takes a few minutes.
-
-To increase build time, there's an own [base image for the client](https://hub.docker.com/r/simpletaskmanager/stm-client-base).
-
-During development I recommend to manually start the client and server (see according `README.md` files) and just use the docker container for the database.
+Additional technical documentation (setup, deployment, api, security, development, etc.) can be found in the `doc` folder.
 
 # Contribute
 
-Currently there are no guidelines. Feel free to create issues or a pull request.
+Currently there are no real guidelines. Feel free to create issues or a pull request.
 
-**Keep in mind:** Development takes place on the `dev` branch or on separate feature branches.
+**Keep in mind:** Take a look at `doc/development/README.md` before you start coding ;)

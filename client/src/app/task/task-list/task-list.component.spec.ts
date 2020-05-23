@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TaskListComponent } from './task-list.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Task } from '../task.material';
+import { Task, TestTaskGeometry } from '../task.material';
 import { TaskService } from '../task.service';
 
 describe('TaskListComponent', () => {
@@ -35,8 +35,8 @@ describe('TaskListComponent', () => {
     const eventSpy = spyOn(taskService.selectedTaskChanged, 'emit').and.callThrough();
 
     const tasks: Task[] = [];
-    tasks.push(new Task('42', 10, 100, [[0, 0], [1, 1], [1, 0], [0, 0]]));
-    tasks.push(new Task('43', 55, 100, [[0, 0], [1, 1], [1, 0], [0, 0]]));
+    tasks.push(new Task('42', 10, 100, TestTaskGeometry));
+    tasks.push(new Task('43', 55, 100, TestTaskGeometry));
     component.tasks = tasks;
 
     component.onListItemClicked('42');

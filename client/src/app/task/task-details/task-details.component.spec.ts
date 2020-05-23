@@ -1,9 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TaskDetailsComponent } from './task-details.component';
-import { UserService } from '../../user/user.service';
+import { CurrentUserService } from '../../user/current-user.service';
 import { TaskService } from '../task.service';
-import { Task } from '../task.material';
+import { Task, TestTaskGeometry } from '../task.material';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
@@ -12,9 +12,9 @@ describe('TaskDetailsComponent', () => {
   let component: TaskDetailsComponent;
   let fixture: ComponentFixture<TaskDetailsComponent>;
   let taskService: TaskService;
-  let userService: UserService;
+  let currentUserService: CurrentUserService;
   let task: Task;
-  const testUserName = 'test-user';
+  const testUserId = '123';
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -24,17 +24,17 @@ describe('TaskDetailsComponent', () => {
         FormsModule
       ],
       providers: [
-        UserService,
+        CurrentUserService,
         TaskService,
       ]
     })
       .compileComponents();
 
-    task = new Task('t-42', 10, 100, [[0, 0], [1, 1], [1, 0], [0, 0]]);
+    task = new Task('t-42', 10, 100, TestTaskGeometry);
 
     taskService = TestBed.inject(TaskService);
-    spyOn(taskService, 'assign').and.callFake((id: string, user: string) => {
-      task.assignedUser = user;
+    spyOn(taskService, 'assign').and.callFake((id: string) => {
+      task.assignedUser = testUserId;
       taskService.selectedTaskChanged.emit(task);
       return of(task);
     });
@@ -49,8 +49,8 @@ describe('TaskDetailsComponent', () => {
       return of(task);
     });
 
-    userService = TestBed.inject(UserService);
-    spyOn(userService, 'getUser').and.returnValue(testUserName);
+    currentUserService = TestBed.inject(CurrentUserService);
+    spyOn(currentUserService, 'getUserId').and.returnValue(testUserId);
   }));
 
   beforeEach(() => {
@@ -62,15 +62,17 @@ describe('TaskDetailsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
   it('should assign and update task', () => {
     component.task = task;
     component.onAssignButtonClicked();
 
     fixture.detectChanges();
-    expect(component.task.assignedUser).toEqual(testUserName);
+    expect(component.task.assignedUser).toEqual(testUserId);
   });
+
   it('should unassign and update task', () => {
-    task.assignedUser = testUserName;
+    task.assignedUser = testUserId;
 
     component.task = task;
     component.onUnassignButtonClicked();
@@ -78,6 +80,7 @@ describe('TaskDetailsComponent', () => {
     fixture.detectChanges();
     expect(component.task.assignedUser).toEqual('');
   });
+
   it('should set process points', () => {
     component.task = task;
     component.newProcessPoints = 50;

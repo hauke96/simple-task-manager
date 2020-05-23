@@ -4,20 +4,23 @@ import (
 	"fmt"
 	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/permission"
+	testHelper "github.com/hauke96/simple-task-manager/server/test"
 	"testing"
 
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 )
 
-func prepare() {
+func TestMain(m *testing.M) {
+	testHelper.InitWithDummyData()
+
 	sigolo.LogLevel = sigolo.LOG_DEBUG
 	Init()
 	permission.Init()
+
+	m.Run()
 }
 
 func TestGetTasks(t *testing.T) {
-	prepare()
-
 	ids := []string{"2", "3"}
 
 	tasks, err := GetTasks(ids, "Clara")
@@ -58,12 +61,10 @@ func TestGetTasks(t *testing.T) {
 }
 
 func TestAddTasks(t *testing.T) {
-	prepare()
-
 	rawTask := &Task{
 		ProcessPoints:    5,
 		MaxProcessPoints: 250,
-		Geometry:         [][]float64{{1.5, 10}},
+		Geometry:         "{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[0,0],[1,0]]},\"properties\":null}",
 		AssignedUser:     "Mark",
 	}
 
@@ -83,9 +84,53 @@ func TestAddTasks(t *testing.T) {
 	}
 }
 
-func TestAssignUser(t *testing.T) {
-	prepare()
+func TestAddTasksInvalidProcessPoints(t *testing.T) {
+	// Max points = 0 is not allowed
+	rawTask := &Task{
+		ProcessPoints:    0,
+		MaxProcessPoints: 0,
+		Geometry:         "{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[0,0],[1,0]]},\"properties\":null}",
+		AssignedUser:     "Mark",
+	}
 
+	_, err := AddTasks([]*Task{rawTask})
+	if err == nil {
+		t.Errorf("Adding task with maxProcessPoints=0 should not be possible")
+		t.Fail()
+	}
+
+	// More points than max is not allowed
+	rawTask.ProcessPoints = 20
+	rawTask.MaxProcessPoints = 10
+
+	_, err = AddTasks([]*Task{rawTask})
+	if err == nil {
+		t.Errorf("Adding task with more than maxProcessPoints should not be possible")
+		t.Fail()
+	}
+
+	// Negative numbers aren't allowed
+	rawTask.ProcessPoints = 0
+	rawTask.MaxProcessPoints = -5
+
+	_, err = AddTasks([]*Task{rawTask})
+	if err == nil {
+		t.Errorf("Adding task with negative maxProcessPoints should not be possible")
+		t.Fail()
+	}
+
+	// Even negative numbers aren't allowed
+	rawTask.ProcessPoints = -5
+	rawTask.MaxProcessPoints = 10
+
+	_, err = AddTasks([]*Task{rawTask})
+	if err == nil {
+		t.Errorf("Adding task with negative processPoints should not be possible")
+		t.Fail()
+	}
+}
+
+func TestAssignUser(t *testing.T) {
 	task, err := AssignUser("2", "assigned-user")
 	if err != nil {
 		t.Errorf("Error: %s\n", err.Error())
@@ -113,8 +158,6 @@ func TestAssignUser(t *testing.T) {
 }
 
 func TestAssignUserTwice(t *testing.T) {
-	prepare()
-
 	_, err := AssignUser("4", "foo-bar")
 	if err != nil {
 		t.Errorf("Error: %s\n", err.Error())
@@ -129,7 +172,6 @@ func TestAssignUserTwice(t *testing.T) {
 }
 
 func TestUnassignUser(t *testing.T) {
-	prepare()
 	AssignUser("2", "assigned-user")
 
 	task, err := UnassignUser("2", "assigned-user")
@@ -159,8 +201,6 @@ func TestUnassignUser(t *testing.T) {
 }
 
 func TestSetProcessPoints(t *testing.T) {
-	prepare()
-
 	// Test Increase number
 	task, err := SetProcessPoints("3", 70, "Maria")
 	if err != nil {
@@ -215,8 +255,6 @@ func TestSetProcessPoints(t *testing.T) {
 }
 
 func TestDelete(t *testing.T) {
-	prepare()
-
 	// tasks of project 2
 	taskIds := []string{"6", "7"}
 

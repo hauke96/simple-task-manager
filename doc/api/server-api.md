@@ -2,234 +2,109 @@ This file describes the REST-like API provided by the Server.
 
 # Unversioned API Methods
 
+No Authentication needed here.
+
 ##### GET `/info`
 
-* Authenticated? no
-* Query parameters:
-* Body (`POST` only):
-* Description: Generates a simple, text-based info page
-* Response: Info page as text
+Generates a simple, text-based info page.
 
-##### GET `/oauth_login`
+##### GET `/oauth_login?redirect={url}`
 
-* Authenticated? no
-* Query parameters:
-    * `redirect`: The URL of the landing page, which is called after successful authentication.
-* Body (`POST` only):
-* Description: Performs the OAuth authentication.
-* Response: Redirect to OSM Login page with `redirect` and `config` query parameters set.
+Gets OSM login token and therefore redirects to the OSM Login page with `redirect` and `config` query parameters set.
+The `{url}` query parameter is the URL of the Simple-Task-Manager landing page, which is called after successful authentication.
 
-##### GET `/oauth_callback`
+##### GET `/oauth_callback?config={cfg}&redirect={url}`
 
-* Authenticated? no
-* Query parameters:
-    * `config`: The key to the user configuration which was set from `/oauth_login` when redirecting.
-    * `redirect`: The URL of the landing page, which is called after successful authentication.
-* Body (`POST` only):
-* Description: Performs the OAuth authentication
-* Response: Redirect to OSM Login page.
+Performs the OAuth authentication by getting an OSM access token.
+The `{cfg}` parameter value is the key to the user configuration which was set from `/oauth_login` when redirecting.
+The `{url}` parameter value is the URL of the Simple-Task-Manager landing page, where this call redirects to after successful authentication.
+When redirecting to `{url}`, the `token={token}` query parameter is set so that the client can get the token from within the URL.
 
-# v2.1
+# v2.2
 
-Used by application releases:
+### Authentication
 
-* 0.7.0
+**All** API methods have to be authenticated: The `Authorization` header must contain a valid base64 encoded token (without leading "Bearer" or something):
 
-##### Authentication
-For all the following API routes, the `Authentication` header must contain a valid base64 encoded token (without leading "Bearer" or something).
+```
+Authorization: eyJ2...In0=
+```
 
 ### Projects
 
-##### GET  `/v2.1/projects/{id}`
+##### GET  `/v2.2/projects`
 
-Returns the project with the given ID. The requesting user (specified by the token) must be member of the project.
+Gets all projects for the requesting user.
 
-##### DELETE `/v2.1/projects/{id}/users/{user}`
+##### POST  `/v2.2/projects`
 
-Removes the given user from the project. The requesting user (specified by the token) must be the owner of the project.
+Adds the project as given in the body:
 
-##### DELETE `/v2.1/projects/{id}`
+```json
+{
+  "id":"",
+  "name":"foo",
+  "description":"Lorem ipsum ...",
+  "taskIds":["25"],
+  "users":["1234"],
+  "owner":"1234",
+  "needsAssignment":true
+}
+```
 
-(as in `v2`)
+##### GET  `/v2.2/projects/{id}`
 
-##### GET `/v2.1/projects/{id}/tasks`
+Returns the project with the given ID. The requesting user (specified by the token) must be **member** of the project.
 
-(as in `v2`)
+##### DELETE  `/v2.2/projects/{id}`
 
-##### POST `/v2.1/projects/{id}/users?user={user}`
+Deletes the project with the given ID. The requesting user (specified by the token) must be **owner** of the project.
 
-(as in `v2`)
+##### POST `/v2.2/projects/{id}/users?uid={uid}`
 
-##### GET `/v2.1/projects`
+Adds the user with id `{uid}` to the project. The requesting user (specified by the token) must be **owner** of the project.
 
-(as in `v1` and `v2`)
+##### DELETE `/v2.2/projects/{id}/users`
 
-##### POST `/v2.1/projects`
+Removes the requesting user (specified by the token) from the project.
 
-(as in `v1` and `v2`)
+##### DELETE `/v2.2/projects/{id}/users/{uid}`
 
-### Tasks
+Removes the user with the id `{uid}` from the project. The requesting user (specified by the token) must either be the **owner** of the project or must be removing himself.
 
-##### POST `/v2.1/tasks/{id}/assignedUser`
+##### GET  `/v2.2/projects/{id}/tasks`
 
-(as in `v2`)
-
-##### DELETE `/v2.1/tasks/{id}/assignedUser`
-
-(as in `v2`)
-
-##### POST `/v2.1/tasks/{id}/processPoints?process_points={points}`
-
-(as in `v2`)
-
-##### POST `/v2.1/tasks`
-(as in `v1` and `v2`)
-
-# v2
-
-Used by application releases:
-
-* 0.6.0
-
-##### Authentication
-For all the following API routes, the `Authentication` header must contain a valid base64 encoded token (without leading "Bearer" or something).
-
-### Projects
-
-##### DELETE `/v2/projects/{id}`
-
-Deletes a specific project with id `{id}`. The requesting user (specified by the token) must be the owner of the project.
-
-##### GET `/v2/projects/{id}/tasks`
-
-Gets all tasks of a specific project with id `{id}`. The requesting user (specified by the token) must be part of the project.
-
-##### DELETE `/v2/projects/{id}/users`
-
-The requesting user (specified by the token) leaves the project with the id `{id}`. 
-
-##### POST `/v2/projects/{id}/users?user={user}`
-
-The user `{user}` will be added to the project with the id `{id}`. Only the owner of the project can make this request.
-
-##### GET `/v2/projects`
-(as in v1)
-
-##### POST `/v2/projects`
-(as in v1)
+Gets the tasks of project `{id}`. The requesting user (specified by the token) must be **member** of the project.
 
 ### Tasks
 
-##### POST `/v2/tasks/{id}/assignedUser`
+##### POST `/v2.2/tasks/{id}/assignedUser`
 
-Assigns the requesting user (specified by the token) to the task with id `{id}`. The requesting user has to be part of the project this task belongs to.
+Assigns the requesting user (specified by the token) to the task with id `{id}`. The requesting user (specified by the token) must be **member** of the project.
 
-##### DELETE `/v2/tasks/{id}/assignedUser`
+##### DELETE `/v2.2/tasks/{id}/assignedUser`
 
-Unassigns the requesting user (specified by the token) from the task with id `{id}`. Only the assigned user can unassign itself, you cannot unassign another user.
+Unassigns the requesting user (specified by the token) from the task with id `{id}`. Only the **assigned** user can unassign himself, you cannot unassign other users.
 
-##### POST `/v2/tasks/{id}/processPoints?process_points={points}`
+##### POST `/v2.2/tasks/{id}/processPoints?process_points={points}`
 
-Sets the amount of process points of the task with id `{id}` to `{points}`. Only the currently assigned user can do this request.
+Sets the amount of process points of the task with id `{id}` to `{points}`. Only the currently **assigned** user can do this.
 
-##### POST `/v2/tasks`
-(as in v1)
+##### POST `/v2.2/tasks`
 
-# v1
+Adds the task specified by the body.
 
-Used by application releases:
-
-* 0.5.0
-* 0.5.1
-* 0.5.2
-
-### Projects
-
-##### GET `/v1/projects`
-
-* Authenticated<sup>*</sup>? yes
-* Query parameters: -
-* Body (`POST` only): -
-* Description: Gets all projects for the user making the request.
-* Response: List of projects as JSON.
-
-##### POST `/v1/projects`
- 
-* Authenticated<sup>*</sup>? yes
-* Query parameters: -
-* Body (`POST` only): Project as JSON. This is a draft, the fields `id` and `user` are not evaluated and used, they are set by the server
-* Description: Adds a new project.
-* Response: The new project as JSON.
-
-##### POST `/v1/projects/users`
-
-* Authenticated<sup>*</sup>? yes
-* Query parameters: 
-    * `user`: The user to add to the project.
-    * `project`: The project ID.
-* Body (`POST` only): -
-* Description: Add the given user to the project.
-* Response: The updated Project as JSON.
-
-### Tasks
-
-##### GET `/v1/tasks`
-
-* Authenticated<sup>*</sup>? yes
-* Query parameters:
-    * `task_ids`: A comma separated list of task IDs.
-* Body (`POST` only): -
-* Description: Reads the wanted tasks. A user can only request tasks of projects where the user is invited to.
-* Response: The tasks as JSON.
-
-##### POST `/v1/tasks`
-
-* Authenticated<sup>*</sup>? yes
-* Query parameters: -
-* Body (`POST` only): Task as JSON. This is a draft, the `id` field is not evaluated.
-* Description: Adds a new task.
-* Response: The new task as JSON.
-
-##### POST `/task/assignedUser`
-
-* Authenticated<sup>*</sup>? yes
-* Query parameters:
-    * `id`: The ID of the task the user should be assigned to.
-* Body (`POST` only): -
-* Description: Assigns the user making the request to the task. It'g not possible to assign someone else to a task.
-* Response: The updated task as JSON.
-
-##### DELETE `/task/assignedUser`
-
-* Authenticated<sup>*</sup>? yes
-* Query parameters:
-    * `id`: The ID of the task the user should be unassigned from.
-* Body (`POST` only): -
-* Description: Unassigns the user making the request from the task. It'g not possible to unassign someone else from a task.
-* Response: The updated task as JSON.
-
-##### POST `/task/processPoints`
-
-* Authenticated<sup>*</sup>? yes
-* Query parameters:
-    * `id`: The ID of the task the process points should be set on.
-    * `process_points`: The new amount of process points. Must be within the range of 0 to the maximum amount of process points.
-* Body (`POST` only): -
-* Description: Sets the amount of process points.
-* Response: The updated task as JSON.
-
-<small><sup>*</sup>The `Authentication` Header must contain a valid base64 encoded token (without leading "Bearer" or something).</small>
-
-# Before v1
-
-No versioning was used here. Used by all versions until 0.6.0 and since 0.3.0 (where this server was introduced):
-
-* 0.3.0
-* 0.3.1
-* 0.4.0
-* 0.5.0
-
-Versions 0.1.0 and 0.2.0 had no server.
+```json
+[
+  {
+    "id":"",
+    "processPoints":0,
+    "maxProcessPoints":100,
+    "geometry":[[9.948541687183733,53.56475407369166],[9.942962692432753,53.55843257241423],[9.952232406788223,53.55863650655573],[9.948541687183733,53.56475407369166]]
+  },
+  ...
+]
+```
 
 # Developer information
 

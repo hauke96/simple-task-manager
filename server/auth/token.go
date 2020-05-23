@@ -14,6 +14,7 @@ import (
 type Token struct {
 	ValidUntil int64  `json:"valid_until"`
 	User       string `json:"user"`
+	UID        string `json:"uid"`
 	Secret     string `json:"secret"`
 }
 
@@ -27,13 +28,14 @@ func tokenInit() error {
 	return err
 }
 
-func createTokenString(err error, userName string, validUntil int64) (string, error) {
-	secret := createSecret(userName, validUntil)
+func createTokenString(err error, userName string, userId string, validUntil int64) (string, error) {
+	secret := createSecret(userName, userId, validUntil)
 
 	// Create actual token
 	token := &Token{
 		ValidUntil: validUntil,
 		User:       userName,
+		UID:        userId,
 		Secret:     secret,
 	}
 
@@ -49,8 +51,8 @@ func createTokenString(err error, userName string, validUntil int64) (string, er
 // createSecret builds a new secret string encoded as base64. The idea: Take a
 // secret string, hash it (so disguise the length of this secret) and encrypt it.
 // To have equal length secrets, hash it again.
-func createSecret(user string, validTime int64) string {
-	secretBaseString := fmt.Sprintf("%s\n%d\n", user, validTime)
+func createSecret(user string, uid string, validTime int64) string {
+	secretBaseString := fmt.Sprintf("%s\n%s\n%d\n", user, uid, validTime)
 
 	hash := hmac.New(sha256.New, key)
 	hash.Write([]byte(secretBaseString))
@@ -71,7 +73,7 @@ func verifyToken(encodedToken string) (*Token, error) {
 		return nil, errors.Wrap(err, "error marshalling token object")
 	}
 
-	targetSecret := createSecret(token.User, token.ValidUntil)
+	targetSecret := createSecret(token.User, token.UID, token.ValidUntil)
 
 	if token.Secret != targetSecret {
 		return nil, errors.New("Secret not valid")

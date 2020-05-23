@@ -1,25 +1,25 @@
 import { TestBed } from '@angular/core/testing';
 
 import { AuthService } from './auth.service';
-import { UserService } from '../user/user.service';
+import { CurrentUserService } from '../user/current-user.service';
 import { RouterTestingModule } from '@angular/router/testing';
 import Spy = jasmine.Spy;
 
 describe('AuthService', () => {
-  let userService: UserService;
+  let currentUserService: CurrentUserService;
   let service: AuthService;
   let logoutSpy: Spy;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        UserService
+        CurrentUserService
       ],
       imports: [
         RouterTestingModule.withRoutes([])
       ]
     });
-    userService = TestBed.inject(UserService);
+    currentUserService = TestBed.inject(CurrentUserService);
 
     service = TestBed.inject(AuthService);
 
@@ -54,12 +54,13 @@ describe('AuthService', () => {
   });
 
   it('constructor should set user name correctly', () => {
-    localStorage.setItem('auth_token', 'eyJ2YWxpZF91bnRpbCI6MjU4ODM3MTQ0MywidXNlciI6InRlc3QtdXNlciIsInNlY3JldCI6IjB2VnZCWTRzUVg0K002OW8reExIS0puaGFmSHpDZDZRQ1lody9qczZUdDA9In0K');
+    localStorage.setItem('auth_token', 'eyJ2YWxpZF91bnRpbCI6MjU4ODM3MTQ0MywidXNlciI6InRlc3QtdXNlciIsInVpZCI6IjEyMzQ1Iiwic2VjcmV0IjoiMHZWdkJZNHNRWDQrTTY5byt4TEhLSm5oYWZIekNkNlFDWWh3L2pzNlR0MD0ifQo=');
 
     service.setUserNameFromToken();
 
     expect(logoutSpy).not.toHaveBeenCalled();
-    expect(userService.getUser()).toEqual('test-user'); // Encoded in token
+    expect(currentUserService.getUserName()).toEqual('test-user'); // Encoded in token
+    expect(currentUserService.getUserId()).toEqual('12345'); // Encoded in token
   });
 
   it('constructor should set user name correctly', () => {

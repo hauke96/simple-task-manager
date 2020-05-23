@@ -17,7 +17,10 @@ const routes: Routes = [
     path: 'project/:id',
     component: ProjectComponent,
     canActivate: [AuthGuard],
-    resolve: {project: ProjectResolver, tasks: AllTasksResolver}
+    resolve: {
+      project: ProjectResolver,
+      // tasks: AllTasksResolver
+    }
   },
   {path: 'new-project', component: ProjectCreationComponent, canActivate: [AuthGuard]},
   {path: 'oauth-landing', component: OauthLandingComponent},

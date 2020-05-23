@@ -7,4 +7,5 @@ type Osm struct {
 
 type OsmUser struct {
 	DisplayName string `xml:"display_name,attr"`
+	UserId string `xml:"id,attr"`
 }

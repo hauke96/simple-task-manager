@@ -1,10 +1,11 @@
 {
   "name": "simple-task-manager",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "scripts": {
     "ng": "ng",
     "dev": "ng serve --watch",
-    "build": "ng build --prod",
+    "build": "ng build",
+    "build-prod": "ng build --prod",
     "test": "ng test --browsers=FirefoxHeadless --code-coverage",
     "docker-test": "ng test --watch=false --browsers=ChromeHeadlessNoSandbox",
     "lint": "ng lint",

@@ -1,16 +1,17 @@
 import { AfterViewInit, Component, Input } from '@angular/core';
 import { TaskService } from '../task.service';
-import { UserService } from '../../user/user.service';
+import { CurrentUserService } from '../../user/current-user.service';
 import { Task } from '../task.material';
-import { Feature, Map, View } from 'ol';
+import { Map, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import { OSM } from 'ol/source';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import { Attribution, defaults as defaultControls, ScaleLine } from 'ol/control';
-import { Polygon } from 'ol/geom';
 import { Fill, Stroke, Style, Text } from 'ol/style';
 import { ProcessPointColorService } from '../../common/process-point-color.service';
+import GeoJSON from 'ol/format/GeoJSON';
+import { Polygon } from 'ol/geom';
 
 @Component({
   selector: 'app-task-map',
@@ -26,7 +27,7 @@ export class TaskMapComponent implements AfterViewInit {
 
   constructor(
     private taskService: TaskService,
-    private userService: UserService,
+    private currentUserService: CurrentUserService,
     private processPointColorService: ProcessPointColorService
   ) {
   }
@@ -37,35 +38,41 @@ export class TaskMapComponent implements AfterViewInit {
     const style = (feature, resolution) => {
       const task = this.tasks.find(t => t.id === feature.get('task_id'));
 
+      const hasAssignedUser = !!task.assignedUser && task.assignedUser !== '';
+      const currentUserTask = this.currentUserService.getUserId() === task.assignedUser;
+      const isSelected = this.taskService.getSelectedTask().id === feature.get('task_id');
+      const borderColor = '#009688';
+
       // Convert process point count to color (0 points = red; max points = green)
-      const processPoints = task.processPoints;
-      const maxProcessPoints = task.maxProcessPoints;
+      let fillColor = this.processPointColorService.getProcessPointsColor(task.processPoints, task.maxProcessPoints);
 
-      let fillColor = this.processPointColorService.getProcessPointsColor(processPoints, maxProcessPoints);
-
-      // Border color and fill transparency
-      let borderColor = '#009688b0';
-      let borderWidth = 2;
-      if (this.taskService.getSelectedTask().id === feature.get('task_id')) {
-        borderColor = '#009688';
-        borderWidth = 4;
-        fillColor += '50';
-
-        // Move feature to top so that the border is good visible
-        const tmp = feature.clone();
-        this.vectorSource.removeFeature(feature);
-        this.vectorSource.addFeature(tmp);
+      // Less opaque, when selected
+      if (isSelected) {
+        fillColor += '80';
       } else {
-        fillColor += '30';
+        fillColor += '40';
       }
 
-      // Text (porcess percentage)
-      const labelWeight = this.userService.getUser() === task.assignedUser ? 'bold 10pt' : 'normal 8pt';
+      // Thick border when there's an assigned user
+      let borderWidth = 1;
+      if (hasAssignedUser) {
+        borderWidth = 4;
+      }
+
+      // Text (progress percentage). Bold text on own tasks.
+      const labelWeight = currentUserTask ? 'bold' : 'normal';
       let labelText: string;
       if (task.processPoints === task.maxProcessPoints) {
         labelText = 'DONE';
       } else {
         labelText = Math.floor(100 * task.processPoints / task.maxProcessPoints) + '%';
+      }
+
+      // Add user name
+      if (currentUserTask) {
+        labelText += '\n(you)';
+      } else if (hasAssignedUser) {
+        labelText += '\n(' + task.assignedUserName + ')';
       }
 
       return new Style({
@@ -77,7 +84,7 @@ export class TaskMapComponent implements AfterViewInit {
           color: fillColor
         }),
         text: new Text({
-          font: labelWeight + ' Dejavu Sans, sans-serif',
+          font: labelWeight + ' 10pt Dejavu Sans, sans-serif',
           text: labelText
         })
       });
@@ -139,14 +146,8 @@ export class TaskMapComponent implements AfterViewInit {
   }
 
   private showTaskPolygon(task: Task) {
-    let geometry = new Polygon([task.geometry]);
-
-    // transform from lat/long into WSG84 to show on map
-    geometry = geometry.clone().transform('EPSG:4326', 'EPSG:3857') as Polygon;
-
-    // create the map feature and set the task-id to select the task when the
-    // polygon has been clicked
-    const feature = new Feature(geometry);
+    const feature = new GeoJSON().readFeature(task.geometry);
+    feature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
     feature.set('task_id', task.id);
 
     this.vectorSource.addFeature(feature);

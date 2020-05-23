@@ -1,11 +1,19 @@
-<div *ngFor="let t of tasks" class="list-item" (click)="onListItemClicked(t.id)" [ngClass]="{selected: t.id == selectedTaskId}">
-	<div>
-		{{t.id}} 
-		<span class="process-label">
+<h2>Tasks</h2>
+
+<div class="list-container">
+	<div *ngFor="let t of tasks" class="list-item" (click)="onListItemClicked(t.id)"
+		 [ngClass]="{selected: t.id == selectedTaskId}">
+		<div>
+			{{t.id}}
+			<span class="gray-label">
 			({{t.processPoints}} / {{t.maxProcessPoints}})
 		</span>
-	</div>
-	<span *ngIf="t.processPoints == t.maxProcessPoints" class="done-label">
+		</div>
+		<span *ngIf="t.processPoints == t.maxProcessPoints" class="done-label">
 		Done
 	</span>
+		<span *ngIf="!!t.assignedUserName && !isAssignedToCurrentUser(t)"
+			  class="gray-label">{{t.assignedUserName}}</span>
+		<span *ngIf="isAssignedToCurrentUser(t)" class="gray-label">(you)</span>
+	</div>
 </div>

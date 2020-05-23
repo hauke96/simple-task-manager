@@ -35,23 +35,13 @@
             "scripts": []
           },
           "configurations": {
-		    "hst-stm-test": {
+            "production": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.hst-stm-test.ts"
+                  "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "extractCss": true,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true
-			},
-            "production": {
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
