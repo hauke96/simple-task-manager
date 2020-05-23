@@ -36,7 +36,6 @@ export class TaskService {
 
   public createNewTasks(geometries: string[], maxProcessPoints: number): Observable<Task[]> {
     const draftTasks = geometries.map(g => {
-      console.log(g);
       return new Task('', 0, maxProcessPoints, g);
     });
     return this.http.post<Task[]>(environment.url_tasks, JSON.stringify(draftTasks))
@@ -84,7 +83,6 @@ export class TaskService {
     ])
       .pipe(
         concatMap(url => {
-          console.log('Call: ' + url);
           return this.http.get(url, {responseType: 'text'});
         })
       );

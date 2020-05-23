@@ -117,7 +117,6 @@ export class UserService {
     for (const u of userIds) {
       const user = this.cache.get(u);
       if (!!user) {
-        console.log('Cache hit for user \'' + u + '\'');
         cachedUsers.push(user);
       } else {
         console.log('Cache miss for user \'' + u + '\'');

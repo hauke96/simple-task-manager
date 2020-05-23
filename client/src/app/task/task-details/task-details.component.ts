@@ -60,7 +60,6 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   public onAssignButtonClicked() {
-    // TODO do we need the user ID here?
     this.taskService.assign(this.task.id)
       .subscribe(
         () => {

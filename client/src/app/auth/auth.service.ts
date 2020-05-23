@@ -56,7 +56,6 @@ export class AuthService {
     }).join(',');
 
     const landingUrl = document.location.protocol + '//' + document.location.hostname + ':' + document.location.port + '/oauth-landing';
-    console.log(environment.url_auth + '?+?t=' + new Date().getTime() + '&redirect=' + landingUrl);
     window.open(environment.url_auth + '?+?t=' + new Date().getTime() + '&redirect=' + landingUrl, 'oauth_window', settings);
 
     const localStorageTimer = setInterval(() => this.waitForLocalStorageToken(localStorageTimer, callback), 250);

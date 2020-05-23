@@ -25,15 +25,14 @@ export class UserInvitationComponent implements OnInit {
   public onInvitationButtonClicked() {
     this.userService.getUserByName(this.userName).subscribe(
       user => {
-        console.log(user);
         this.projectService.inviteUser(this.projectId, user.uid)
           .subscribe(p => {
           }, err => {
-            console.log(err);
+            console.error(err);
             this.errorService.addError('Could not invite user \'' + this.userName + '\'');
           });
       }, err => {
-        console.log(err);
+        console.error(err);
         this.errorService.addError('Could not load user ID for user \'' + this.userName + '\'');
       });
   }

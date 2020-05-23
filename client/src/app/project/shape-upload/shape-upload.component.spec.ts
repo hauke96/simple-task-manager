@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ShapeUploadComponent } from './shape-upload.component';
 import { ErrorService } from '../../common/error.service';
+import { Polygon } from 'ol/geom';
 
 const exampleGpxFile = `
 <gpx>
@@ -41,6 +42,8 @@ const exampleGpxFile = `
       <rtept lat="53.55981252502185" lon="9.961295084953308">
       </rtept>
       <rtept lat="53.55967230518426" lon="9.959439028501508">
+      </rtept>
+      <rtept lat="53.55945564954981" lon="9.95498652935028">
       </rtept>
   </rte>
 </gpx>
@@ -84,7 +87,7 @@ const exampleGeoJson = `
     "geometry": {
       "type": "MultiLineString",
       "coordinates": [
-        [[-1e6, -7.5e5], [-1e6, 7.5e5]],
+        [[-1e6, -7.5e5], [-2e6, 0], [-1e6, 7.5e5], [-1e6, -7.5e5]],
         [[1e6, -7.5e5], [1e6, 7.5e5]],
         [[-7.5e5, -1e6], [7.5e5, -1e6]],
         [[-7.5e5, 1e6], [7.5e5, 1e6]]
@@ -106,7 +109,7 @@ const exampleGeoJson = `
       "type": "GeometryCollection",
       "geometries": [{
         "type": "LineString",
-        "coordinates": [[-5e6, -5e6], [0, -5e6]]
+        "coordinates": [[-5e6, -5e6], [-10e6, 0], [-5e6, 5e6], [-5e6, -5e6]]
       }, {
         "type": "Point",
         "coordinates": [4e6, -5e6]
@@ -209,13 +212,21 @@ describe('ShapeUploadComponent', () => {
   it('should read GPX file', () => {
     const features = component.fileToFeatures('example.gpx', exampleGpxFile);
 
+    // two "trk" and one "rte"
     expect(features.length).toEqual(3);
   });
 
   it('should read GeoJson file', () => {
     const features = component.fileToFeatures('example.geojson', exampleGeoJson);
 
-    expect(features.length).toEqual(2);
+    /*
+      - one normal Polygon
+      - one polygon from a MultiLineString
+      - one MultiPolygon
+      - one Polygon from a LineString withing a GeometryCollection
+      - one Polygon from withing a GeometryCollection
+     */
+    expect(features.length).toEqual(5);
   });
 
   it('should read OSM file', () => {

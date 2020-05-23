@@ -146,9 +146,6 @@ export class TaskMapComponent implements AfterViewInit {
   }
 
   private showTaskPolygon(task: Task) {
-    console.log('task: ' + task.id);
-    console.log(task.geometry);
-    console.log();
     const feature = new GeoJSON().readFeature(task.geometry);
     feature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
     feature.set('task_id', task.id);
