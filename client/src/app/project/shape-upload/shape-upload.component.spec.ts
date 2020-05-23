@@ -2,7 +2,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ShapeUploadComponent } from './shape-upload.component';
 import { ErrorService } from '../../common/error.service';
-import { Polygon } from 'ol/geom';
 
 const exampleGpxFile = `
 <gpx>
