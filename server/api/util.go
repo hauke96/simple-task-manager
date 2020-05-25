@@ -24,9 +24,9 @@ func authenticatedHandler(handler func(w http.ResponseWriter, r *http.Request, t
 
 		token, err := auth.VerifyRequest(r)
 		if err != nil {
-			sigolo.Error("Request is not authorized: %s", err.Error())
+			sigolo.Error("No valid authentication found: %s", err.Error())
 			// No further information to caller (which is a potential attacker)
-			util.Response(w, "Not authorized", http.StatusUnauthorized)
+			util.Response(w, "No valid authentication found", http.StatusUnauthorized)
 			return
 		}
 

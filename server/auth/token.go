@@ -23,7 +23,7 @@ var (
 )
 
 func tokenInit() error {
-	bytes, err := getRandomBytes(265)
+	bytes, err := getRandomBytes(256)
 	key = bytes
 	return err
 }
@@ -48,11 +48,10 @@ func createTokenString(err error, userName string, userId string, validUntil int
 	return encodedTokenString, nil
 }
 
-// createSecret builds a new secret string encoded as base64. The idea: Take a
-// secret string, hash it (so disguise the length of this secret) and encrypt it.
-// To have equal length secrets, hash it again.
-func createSecret(user string, uid string, validTime int64) string {
-	secretBaseString := fmt.Sprintf("%s\n%s\n%d\n", user, uid, validTime)
+// createSecret builds a new secret string encoded as base64. This uses HMAC with SHA-256 inside.
+func createSecret(user string, uid string, expirationTime int64) string {
+	// Create base string "<userName><userId><expirationTime>"
+	secretBaseString := fmt.Sprintf("%s\n%s\n%d\n", user, uid, expirationTime)
 
 	hash := hmac.New(sha256.New, key)
 	hash.Write([]byte(secretBaseString))
