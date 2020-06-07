@@ -5,7 +5,6 @@ import hexGrid from '@turf/hex-grid';
 import triangleGrid from '@turf/triangle-grid';
 import { Polygon } from 'ol/geom';
 import { Feature } from 'ol';
-import { Task } from '../../task/task.material';
 import { ErrorService } from '../../common/error.service';
 
 @Component({
