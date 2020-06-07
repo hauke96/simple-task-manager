@@ -16,7 +16,7 @@ import (
 	"github.com/hauke96/sigolo"
 )
 
-var(
+var (
 	supportedApiVersions = make([]string, 0)
 )
 

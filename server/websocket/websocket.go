@@ -29,3 +29,18 @@ func GetWebsocketConnection(w http.ResponseWriter, r *http.Request) {
 
 	connections = append(connections, ws)
 }
+
+func Send(obj interface{}) {
+	for _, c := range connections {
+		err := c.WriteJSON(obj)
+
+		if err != nil {
+			sigolo.Error("Unable to send to websocket, close it. Error: %s", err.Error())
+
+			err := c.Close()
+			if err != nil {
+				sigolo.Error("Wasn't even able to close it: %s", err.Error())
+			}
+		}
+	}
+}
