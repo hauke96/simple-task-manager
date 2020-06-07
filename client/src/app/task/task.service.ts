@@ -29,9 +29,13 @@ export class TaskService {
   ) {
     websocketClient.messageReceived.subscribe(m => {
       if (m.type === WebsocketMessageType.MessageType_TaskUpdated) {
-        console.log('Received updated task:');
-        console.log(m.data as Task);
-        this.taskUpdated.emit(m.data as Task);
+        const task = m.data as Task;
+
+        this.taskUpdated.emit(task);
+
+        if (this.selectedTask.id === task.id) {
+          this.selectedTaskChanged.emit(task);
+        }
       }
     });
   }

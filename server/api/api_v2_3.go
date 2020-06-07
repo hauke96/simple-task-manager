@@ -30,7 +30,7 @@ func Init_v2_3(router *mux.Router) (*mux.Router, string) {
 	r.HandleFunc("/tasks/{id}/processPoints", authenticatedHandler(setProcessPoints_v2_3)).Methods(http.MethodPost)
 	r.HandleFunc("/tasks", authenticatedHandler(addTask_v2_3)).Methods(http.MethodPost)
 
-	r.HandleFunc("/updates", authenticatedHandler(websocket.GetWebsocketConnection))
+	r.HandleFunc("/updates", authenticatedWebsocket(websocket.GetWebsocketConnection))
 
 	return r, "v2.3"
 }

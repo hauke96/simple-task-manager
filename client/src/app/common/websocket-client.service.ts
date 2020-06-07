@@ -10,24 +10,19 @@ export class WebsocketClientService {
   public messageReceived: EventEmitter<WebsocketMessage> = new EventEmitter<WebsocketMessage>();
 
   constructor() {
-    console.log('Create websocket connection to ' + environment.url_updates);
+    this.connect();
+  }
 
+  connect() {
     const ws = new WebSocketSubject<WebsocketMessage[]>({
       url: environment.url_updates,
       protocol: [localStorage.getItem('auth_token')]
     });
 
     ws.subscribe((messages: WebsocketMessage[]) => {
-      console.log('Received raw data');
-      console.log(messages);
       for (const msg of messages) {
         this.messageReceived.emit(msg);
       }
     }, err => console.error(err));
-
-    // const ws: WebSocket = new WebSocket(environment.url_updates);
-    // ws.onmessage = (m: MessageEvent) => {
-    //   console.log(m);
-    // };
   }
 }

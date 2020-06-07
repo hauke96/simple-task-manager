@@ -22,15 +22,29 @@ func authenticatedHandler(handler func(w http.ResponseWriter, r *http.Request, t
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 
-		token, err := auth.VerifyRequest(r)
-		if err != nil {
-			sigolo.Error("No valid authentication found: %s", err.Error())
-			// No further information to caller (which is a potential attacker)
-			util.Response(w, "No valid authentication found", http.StatusUnauthorized)
-			return
-		}
-
-		sigolo.Info("User '%s' called %s on %s", token.User, r.Method, r.URL.Path)
-		handler(w, r, token)
+		verifyAndHandle(r, w, handler)
 	}
+}
+
+func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request, token *auth.Token)) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Add Sec-WebSocket-Protocol value (set by websocket clients) as authorization. Therefore the
+		// "Sec-WebSocket-Protocol" value must contain the token.
+		r.Header.Add("Authorization", r.Header.Get("Sec-WebSocket-Protocol"))
+
+		verifyAndHandle(r, w, handler)
+	}
+}
+
+func verifyAndHandle(r *http.Request, w http.ResponseWriter, handler func(w http.ResponseWriter, r *http.Request, token *auth.Token)) {
+	token, err := auth.VerifyRequest(r)
+	if err != nil {
+		sigolo.Error("No valid authentication found: %s", err.Error())
+		// No further information to caller (which is a potential attacker)
+		util.Response(w, "No valid authentication found", http.StatusUnauthorized)
+		return
+	}
+
+	sigolo.Info("User '%s' called %s on %s", token.User, r.Method, r.URL.Path)
+	handler(w, r, token)
 }

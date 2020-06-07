@@ -1,6 +1,7 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
+import { WebsocketClientService } from '../../common/websocket-client.service';
 
 @Component({
   selector: 'app-auth',
@@ -11,7 +12,8 @@ export class AuthComponent implements OnInit {
   constructor(
     private router: Router,
     private ngZone: NgZone,
-    private authService: AuthService
+    private authService: AuthService,
+    private websocketClientService: WebsocketClientService
   ) {
   }
 
@@ -25,6 +27,9 @@ export class AuthComponent implements OnInit {
     // We need the "ngZone.run" because otherwise the navigation would take place
     // outside the angular context which then causes an error. Using "ngZone.run"
     // executes the passed function within the context which then works perfectly.
-    this.authService.requestLogin(() => this.ngZone.run(() => this.router.navigate(['/manager'])));
+    this.authService.requestLogin(() => this.ngZone.run(() => {
+      this.websocketClientService.connect();
+      this.router.navigate(['/manager']);
+    }));
   }
 }
