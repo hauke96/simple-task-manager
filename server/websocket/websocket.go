@@ -14,7 +14,6 @@ const (
 	MessageType_ProjectDeleted = "project_deleted"
 
 	MessageType_TaskUpdated = "task_updated"
-	MessageType_TaskDeleted = "task_deleted"
 )
 
 type Message struct {

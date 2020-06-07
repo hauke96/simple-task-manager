@@ -208,8 +208,6 @@ func assignUser_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) 
 		return
 	}
 
-	// TODO get project for task
-
 	user := token.UID
 
 	task, err := task.AssignUser(taskId, user)
@@ -218,7 +216,11 @@ func assignUser_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) 
 		return
 	}
 
-	// sendUpdateTask(task, uids)
+	// Send via websockets
+	if sendTaskUpdate(task) != nil {
+		util.ResponseInternalError(w, err.Error())
+		return
+	}
 
 	sigolo.Info("Successfully assigned user '%s' to task '%s'", user, taskId)
 
@@ -234,8 +236,6 @@ func unassignUser_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token
 		return
 	}
 
-	// TODO get project for task
-
 	user := token.UID
 
 	task, err := task.UnassignUser(taskId, user)
@@ -244,7 +244,11 @@ func unassignUser_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token
 		return
 	}
 
-	// sendUpdateTask(task, uids)
+	// Send via websockets
+	if sendTaskUpdate(task) != nil {
+		util.ResponseInternalError(w, err.Error())
+		return
+	}
 
 	sigolo.Info("Successfully unassigned user '%s' from task '%s'", user, taskId)
 
@@ -260,8 +264,6 @@ func setProcessPoints_v2_3(w http.ResponseWriter, r *http.Request, token *auth.T
 		return
 	}
 
-	// TODO get project for task
-
 	processPoints, err := util.GetIntParam("process_points", r)
 	if err != nil {
 		util.ResponseBadRequest(w, err.Error())
@@ -274,7 +276,11 @@ func setProcessPoints_v2_3(w http.ResponseWriter, r *http.Request, token *auth.T
 		return
 	}
 
-	// sendUpdateTask(task, uids)
+	// Send via websockets
+	if sendTaskUpdate(task) != nil {
+		util.ResponseInternalError(w, err.Error())
+		return
+	}
 
 	sigolo.Info("Successfully set process points on task '%s' to %d", taskId, processPoints)
 
@@ -328,4 +334,18 @@ func sendDelete(removedProject *project.Project) {
 		Type: websocket.MessageType_ProjectDeleted,
 		Data: removedProject.Id,
 	}, removedProject.Users...)
+}
+
+func sendTaskUpdate(task *task.Task) error {
+	project, err := project.GetProjectByTask(task.Id)
+	if err != nil {
+		return err
+	}
+
+	websocket.Send(websocket.Message{
+		Type: websocket.MessageType_TaskUpdated,
+		Data: task,
+	}, project.Users...)
+
+	return nil
 }
