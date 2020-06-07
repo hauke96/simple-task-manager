@@ -10,19 +10,30 @@ import { User } from '../user/user.material';
 import { UserService } from '../user/user.service';
 import GeoJSON from 'ol/format/GeoJSON';
 import { Coordinate } from 'ol/coordinate';
+import { WebsocketClientService } from '../common/websocket-client.service';
+import { WebsocketMessageType } from '../common/websocket-message';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TaskService {
   public selectedTaskChanged: EventEmitter<Task> = new EventEmitter();
+  public taskUpdated: EventEmitter<Task> = new EventEmitter();
 
   private selectedTask: Task;
 
   constructor(
     private http: HttpClient,
-    private userService: UserService
+    private userService: UserService,
+    private websocketClient: WebsocketClientService
   ) {
+    websocketClient.messageReceived.subscribe(m => {
+      if (m.type === WebsocketMessageType.MessageType_TaskUpdated) {
+        console.log('Received updated task:');
+        console.log(m.data as Task);
+        this.taskUpdated.emit(m.data as Task);
+      }
+    });
   }
 
   public selectTask(task: Task) {

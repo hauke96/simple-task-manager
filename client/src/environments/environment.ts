@@ -12,5 +12,6 @@ export const environment = {
   url_projects_users: baseUrl + '/' + usedApi + '/projects/{id}/users',
   url_tasks: baseUrl + '/' + usedApi + '/tasks',
   url_task_assignedUser: baseUrl + '/' + usedApi + '/tasks/{id}/assignedUser',
-  url_task_processPoints: baseUrl + '/' + usedApi + '/tasks/{id}/processPoints'
+  url_task_processPoints: baseUrl + '/' + usedApi + '/tasks/{id}/processPoints',
+  url_updates: 'ws://' + document.location.hostname + ':8080' + '/' + usedApi + '/updates'
 };
