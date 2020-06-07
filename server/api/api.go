@@ -10,6 +10,7 @@ import (
 	"github.com/hauke96/simple-task-manager/server/auth"
 	"github.com/hauke96/simple-task-manager/server/config"
 	"github.com/hauke96/simple-task-manager/server/util"
+	"github.com/hauke96/simple-task-manager/server/websocket"
 
 	"github.com/gorilla/mux"
 	"github.com/hauke96/sigolo"
@@ -22,9 +23,12 @@ var(
 func Init() error {
 	// Register routes and print them
 	router := mux.NewRouter()
+
 	router.HandleFunc("/info", getInfo).Methods(http.MethodGet)
 	router.HandleFunc("/oauth_login", auth.OauthLogin).Methods(http.MethodGet)
 	router.HandleFunc("/oauth_callback", auth.OauthCallback).Methods(http.MethodGet)
+	router.HandleFunc("/updates", websocket.GetWebsocketConnection)
+
 	sigolo.Info("Registered general routes:")
 	printRoutes(router)
 
