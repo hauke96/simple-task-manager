@@ -59,6 +59,21 @@ func TestGetProjects(t *testing.T) {
 	}
 }
 
+func TestGetProjectByTask(t *testing.T) {
+	project, err := GetProjectByTask("4")
+	if err != nil {
+		t.Error(err.Error())
+		t.Fail()
+		return
+	}
+
+	if project.Id != "2" {
+		t.Error("Project ID not matching")
+		t.Fail()
+		return
+	}
+}
+
 func TestGetTasks(t *testing.T) {
 	tasks, err := GetTasks("1", "Peter")
 	if err != nil {

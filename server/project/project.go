@@ -26,6 +26,7 @@ type projectStore interface {
 	init(db *sql.DB)
 	getProjects(userId string) ([]*Project, error)
 	getProject(projectId string) (*Project, error)
+	getProjectByTask(taskId string) (*Project, error)
 	areTasksUsed(taskIds []string) (bool, error)
 	addProject(draft *Project) (*Project, error)
 	addUser(projectId string, userIdToAdd string) (*Project, error)
@@ -50,7 +51,7 @@ func Init() {
 func GetProjects(userId string) ([]*Project, error) {
 	projects, err := store.getProjects(userId)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, fmt.Sprintf("Error getting projects for user %s", userId))
 	}
 
 	for _, p := range projects {
@@ -61,6 +62,15 @@ func GetProjects(userId string) ([]*Project, error) {
 	}
 
 	return projects, nil
+}
+
+func GetProjectByTask(taskId string) (*Project, error) {
+	project, err := store.getProjectByTask(taskId)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error getting project with task %s", taskId))
+	}
+
+	return project, nil
 }
 
 // AddProject adds the project, as requested by user "userId".
