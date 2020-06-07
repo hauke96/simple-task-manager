@@ -20,7 +20,12 @@ The `{cfg}` parameter value is the key to the user configuration which was set f
 The `{url}` parameter value is the URL of the Simple-Task-Manager landing page, where this call redirects to after successful authentication.
 When redirecting to `{url}`, the `token={token}` query parameter is set so that the client can get the token from within the URL.
 
-# v2.2
+# v2.3
+
+**New in v2.3**
+* Websockets under `/v2.3/updates`
+
+Everything else is the same as in v2.2.
 
 ### Authentication
 
@@ -30,13 +35,18 @@ When redirecting to `{url}`, the `token={token}` query parameter is set so that 
 Authorization: eyJ2...In0=
 ```
 
+### Updates via websockets
+
+Connect to `/v2.3/updates` and receive updates for the requesting user.
+This endpoint, like all other endpoints below as well, needs a valid token.
+
 ### Projects
 
-##### GET  `/v2.2/projects`
+##### GET  `/v2.3/projects`
 
 Gets all projects for the requesting user.
 
-##### POST  `/v2.2/projects`
+##### POST  `/v2.3/projects`
 
 Adds the project as given in the body:
 
@@ -52,45 +62,45 @@ Adds the project as given in the body:
 }
 ```
 
-##### GET  `/v2.2/projects/{id}`
+##### GET  `/v2.3/projects/{id}`
 
 Returns the project with the given ID. The requesting user (specified by the token) must be **member** of the project.
 
-##### DELETE  `/v2.2/projects/{id}`
+##### DELETE  `/v2.3/projects/{id}`
 
 Deletes the project with the given ID. The requesting user (specified by the token) must be **owner** of the project.
 
-##### POST `/v2.2/projects/{id}/users?uid={uid}`
+##### POST `/v2.3/projects/{id}/users?uid={uid}`
 
 Adds the user with id `{uid}` to the project. The requesting user (specified by the token) must be **owner** of the project.
 
-##### DELETE `/v2.2/projects/{id}/users`
+##### DELETE `/v2.3/projects/{id}/users`
 
 Removes the requesting user (specified by the token) from the project.
 
-##### DELETE `/v2.2/projects/{id}/users/{uid}`
+##### DELETE `/v2.3/projects/{id}/users/{uid}`
 
 Removes the user with the id `{uid}` from the project. The requesting user (specified by the token) must either be the **owner** of the project or must be removing himself.
 
-##### GET  `/v2.2/projects/{id}/tasks`
+##### GET  `/v2.3/projects/{id}/tasks`
 
 Gets the tasks of project `{id}`. The requesting user (specified by the token) must be **member** of the project.
 
 ### Tasks
 
-##### POST `/v2.2/tasks/{id}/assignedUser`
+##### POST `/v2.3/tasks/{id}/assignedUser`
 
 Assigns the requesting user (specified by the token) to the task with id `{id}`. The requesting user (specified by the token) must be **member** of the project.
 
-##### DELETE `/v2.2/tasks/{id}/assignedUser`
+##### DELETE `/v2.3/tasks/{id}/assignedUser`
 
 Unassigns the requesting user (specified by the token) from the task with id `{id}`. Only the **assigned** user can unassign himself, you cannot unassign other users.
 
-##### POST `/v2.2/tasks/{id}/processPoints?process_points={points}`
+##### POST `/v2.3/tasks/{id}/processPoints?process_points={points}`
 
 Sets the amount of process points of the task with id `{id}` to `{points}`. Only the currently **assigned** user can do this.
 
-##### POST `/v2.2/tasks`
+##### POST `/v2.3/tasks`
 
 Adds the task specified by the body.
 

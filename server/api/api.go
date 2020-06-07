@@ -7,13 +7,11 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/gorilla/mux"
+	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/auth"
 	"github.com/hauke96/simple-task-manager/server/config"
 	"github.com/hauke96/simple-task-manager/server/util"
-	"github.com/hauke96/simple-task-manager/server/websocket"
-
-	"github.com/gorilla/mux"
-	"github.com/hauke96/sigolo"
 )
 
 var (
@@ -27,7 +25,6 @@ func Init() error {
 	router.HandleFunc("/info", getInfo).Methods(http.MethodGet)
 	router.HandleFunc("/oauth_login", auth.OauthLogin).Methods(http.MethodGet)
 	router.HandleFunc("/oauth_callback", auth.OauthCallback).Methods(http.MethodGet)
-	router.HandleFunc("/updates", websocket.GetWebsocketConnection)
 
 	sigolo.Info("Registered general routes:")
 	printRoutes(router)
@@ -36,12 +33,13 @@ func Init() error {
 	// API v1
 	// API v2
 	// API v2.1
-
 	// API v2.2
-	router_v2_2, version := Init_v2_2(router)
+
+	// API v2.3
+	router_v2_3, version := Init_v2_3(router)
 	supportedApiVersions = append(supportedApiVersions, version)
 	sigolo.Info("Registered routes for API %s:", version)
-	printRoutes(router_v2_2)
+	printRoutes(router_v2_3)
 
 	router.Methods(http.MethodOptions).HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")

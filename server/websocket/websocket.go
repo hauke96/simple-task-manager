@@ -3,9 +3,25 @@ package websocket
 import (
 	"github.com/gorilla/websocket"
 	"github.com/hauke96/sigolo"
+	"github.com/hauke96/simple-task-manager/server/auth"
 	"github.com/hauke96/simple-task-manager/server/util"
 	"net/http"
 )
+
+const (
+	MessageType_ProjectAdded   = "project_added"
+	MessageType_ProjectUpdated = "project_updated"
+	MessageType_ProjectDeleted = "project_deleted"
+
+	MessageType_TaskUpdated = "task_updated"
+	MessageType_TaskDeleted = "task_deleted"
+)
+
+type Message struct {
+	// One of the "MessageType" strings
+	Type string      `json:"type"`
+	Data interface{} `json:"data"`
+}
 
 var (
 	upgrader = websocket.Upgrader{
@@ -16,10 +32,12 @@ var (
 		// to SEND things and not to RECEIVE things.
 		CheckOrigin: func(r *http.Request) bool { return true },
 	}
-	connections = make([]*websocket.Conn, 0)
+
+	// One user should be able to have multiple open websocket connections
+	connections = make(map[string][]*websocket.Conn, 0)
 )
 
-func GetWebsocketConnection(w http.ResponseWriter, r *http.Request) {
+func GetWebsocketConnection(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		sigolo.Error("Could not upgrade response writer and request to websocket connection")
@@ -27,19 +45,33 @@ func GetWebsocketConnection(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	connections = append(connections, ws)
+	uid := token.UID
+	if connections[uid] == nil {
+		connections[uid] = make([]*websocket.Conn, 0)
+	}
+
+	connections[uid] = append(connections[uid], ws)
 }
 
-func Send(obj interface{}) {
-	for _, c := range connections {
-		err := c.WriteJSON(obj)
+func Send(message Message, uids ...string) {
+	SendAll([]Message{message}, uids...)
+}
 
-		if err != nil {
-			sigolo.Error("Unable to send to websocket, close it. Error: %s", err.Error())
+func SendAll(messages []Message, uids ...string) {
+	for _, uid := range uids {
+		userConnections := connections[uid]
 
-			err := c.Close()
+		for _, c := range userConnections {
+			// Send data as JSON
+			err := c.WriteJSON(messages)
+
 			if err != nil {
-				sigolo.Error("Wasn't even able to close it: %s", err.Error())
+				sigolo.Error("Unable to send to websocket, close it. Error: %s", err.Error())
+
+				err := c.Close()
+				if err != nil {
+					sigolo.Error("Wasn't even able to close it: %s", err.Error())
+				}
 			}
 		}
 	}

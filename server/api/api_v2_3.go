@@ -8,31 +8,34 @@ import (
 	"github.com/hauke96/simple-task-manager/server/project"
 	"github.com/hauke96/simple-task-manager/server/task"
 	"github.com/hauke96/simple-task-manager/server/util"
+	"github.com/hauke96/simple-task-manager/server/websocket"
 	"io/ioutil"
 	"net/http"
 )
 
-func Init_v2_2(router *mux.Router) (*mux.Router, string) {
-	r := router.PathPrefix("/v2.2").Subrouter()
+func Init_v2_3(router *mux.Router) (*mux.Router, string) {
+	r := router.PathPrefix("/v2.3").Subrouter()
 
-	r.HandleFunc("/projects", authenticatedHandler(getProjects_v2_2)).Methods(http.MethodGet)
-	r.HandleFunc("/projects", authenticatedHandler(addProject_v2_2)).Methods(http.MethodPost)
-	r.HandleFunc("/projects/{id}", authenticatedHandler(getProject_v2_2)).Methods(http.MethodGet)
-	r.HandleFunc("/projects/{id}", authenticatedHandler(deleteProjects_v2_2)).Methods(http.MethodDelete)
-	r.HandleFunc("/projects/{id}/users", authenticatedHandler(addUserToProject_v2_2)).Methods(http.MethodPost)
-	r.HandleFunc("/projects/{id}/users", authenticatedHandler(leaveProject_v2_2)).Methods(http.MethodDelete)
-	r.HandleFunc("/projects/{id}/users/{uid}", authenticatedHandler(removeUser_v2_2)).Methods(http.MethodDelete)
-	r.HandleFunc("/projects/{id}/tasks", authenticatedHandler(getProjectTasks_v2_2)).Methods(http.MethodGet)
+	r.HandleFunc("/projects", authenticatedHandler(getProjects_v2_3)).Methods(http.MethodGet)
+	r.HandleFunc("/projects", authenticatedHandler(addProject_v2_3)).Methods(http.MethodPost)
+	r.HandleFunc("/projects/{id}", authenticatedHandler(getProject_v2_3)).Methods(http.MethodGet)
+	r.HandleFunc("/projects/{id}", authenticatedHandler(deleteProjects_v2_3)).Methods(http.MethodDelete)
+	r.HandleFunc("/projects/{id}/users", authenticatedHandler(addUserToProject_v2_3)).Methods(http.MethodPost)
+	r.HandleFunc("/projects/{id}/users", authenticatedHandler(leaveProject_v2_3)).Methods(http.MethodDelete)
+	r.HandleFunc("/projects/{id}/users/{uid}", authenticatedHandler(removeUser_v2_3)).Methods(http.MethodDelete)
+	r.HandleFunc("/projects/{id}/tasks", authenticatedHandler(getProjectTasks_v2_3)).Methods(http.MethodGet)
 
-	r.HandleFunc("/tasks/{id}/assignedUser", authenticatedHandler(assignUser_v2_2)).Methods(http.MethodPost)
-	r.HandleFunc("/tasks/{id}/assignedUser", authenticatedHandler(unassignUser_v2_2)).Methods(http.MethodDelete)
-	r.HandleFunc("/tasks/{id}/processPoints", authenticatedHandler(setProcessPoints_v2_2)).Methods(http.MethodPost)
-	r.HandleFunc("/tasks", authenticatedHandler(addTask_v2_2)).Methods(http.MethodPost)
+	r.HandleFunc("/tasks/{id}/assignedUser", authenticatedHandler(assignUser_v2_3)).Methods(http.MethodPost)
+	r.HandleFunc("/tasks/{id}/assignedUser", authenticatedHandler(unassignUser_v2_3)).Methods(http.MethodDelete)
+	r.HandleFunc("/tasks/{id}/processPoints", authenticatedHandler(setProcessPoints_v2_3)).Methods(http.MethodPost)
+	r.HandleFunc("/tasks", authenticatedHandler(addTask_v2_3)).Methods(http.MethodPost)
 
-	return r, "v2.2"
+	r.HandleFunc("/updates", authenticatedHandler(websocket.GetWebsocketConnection))
+
+	return r, "v2.3"
 }
 
-func getProjects_v2_2(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+func getProjects_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	projects, err := project.GetProjects(token.UID)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
@@ -43,7 +46,7 @@ func getProjects_v2_2(w http.ResponseWriter, r *http.Request, token *auth.Token)
 	encoder.Encode(projects)
 }
 
-func addProject_v2_2(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+func addProject_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		util.ResponseBadRequest(w, err.Error())
@@ -57,17 +60,19 @@ func addProject_v2_2(w http.ResponseWriter, r *http.Request, token *auth.Token) 
 		return
 	}
 
-	updatedProject, err := project.AddProject(&draftProject)
+	addedProject, err := project.AddProject(&draftProject)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
 	}
 
+	sendAdd(addedProject)
+
 	encoder := json.NewEncoder(w)
-	encoder.Encode(updatedProject)
+	encoder.Encode(addedProject)
 }
 
-func getProject_v2_2(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+func getProject_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
@@ -85,7 +90,7 @@ func getProject_v2_2(w http.ResponseWriter, r *http.Request, token *auth.Token) 
 	encoder.Encode(project)
 }
 
-func leaveProject_v2_2(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+func leaveProject_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
@@ -93,14 +98,16 @@ func leaveProject_v2_2(w http.ResponseWriter, r *http.Request, token *auth.Token
 		return
 	}
 
-	_, err := project.RemoveUser(projectId, token.UID, token.UID)
+	updatedProject, err := project.RemoveUser(projectId, token.UID, token.UID)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
 	}
+
+	sendUpdate(updatedProject)
 }
 
-func removeUser_v2_2(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+func removeUser_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
@@ -114,17 +121,19 @@ func removeUser_v2_2(w http.ResponseWriter, r *http.Request, token *auth.Token) 
 		return
 	}
 
-	p, err := project.RemoveUser(projectId, token.UID, user)
+	updatedProject, err := project.RemoveUser(projectId, token.UID, user)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
 	}
 
+	sendUpdate(updatedProject)
+
 	encoder := json.NewEncoder(w)
-	encoder.Encode(p)
+	encoder.Encode(updatedProject)
 }
 
-func deleteProjects_v2_2(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+func deleteProjects_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
@@ -132,14 +141,22 @@ func deleteProjects_v2_2(w http.ResponseWriter, r *http.Request, token *auth.Tok
 		return
 	}
 
-	err := project.DeleteProject(projectId, token.UID)
+	projectToDelete, err := project.GetProject(projectId, token.UID)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
 	}
+
+	err = project.DeleteProject(projectId, token.UID)
+	if err != nil {
+		util.ResponseInternalError(w, err.Error())
+		return
+	}
+
+	sendDelete(projectToDelete)
 }
 
-func getProjectTasks_v2_2(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+func getProjectTasks_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
@@ -157,7 +174,7 @@ func getProjectTasks_v2_2(w http.ResponseWriter, r *http.Request, token *auth.To
 	encoder.Encode(tasks)
 }
 
-func addUserToProject_v2_2(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+func addUserToProject_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	userToAdd, err := util.GetParam("uid", r)
 	if err != nil {
 		util.ResponseBadRequest(w, err.Error())
@@ -177,17 +194,21 @@ func addUserToProject_v2_2(w http.ResponseWriter, r *http.Request, token *auth.T
 		return
 	}
 
+	sendUpdate(updatedProject)
+
 	encoder := json.NewEncoder(w)
 	encoder.Encode(updatedProject)
 }
 
-func assignUser_v2_2(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+func assignUser_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	vars := mux.Vars(r)
 	taskId, ok := vars["id"]
 	if !ok {
 		util.ResponseBadRequest(w, "query parameter 'id' not set")
 		return
 	}
+
+	// TODO get project for task
 
 	user := token.UID
 
@@ -197,19 +218,23 @@ func assignUser_v2_2(w http.ResponseWriter, r *http.Request, token *auth.Token) 
 		return
 	}
 
+	// sendUpdateTask(task, uids)
+
 	sigolo.Info("Successfully assigned user '%s' to task '%s'", user, taskId)
 
 	encoder := json.NewEncoder(w)
 	encoder.Encode(*task)
 }
 
-func unassignUser_v2_2(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+func unassignUser_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	vars := mux.Vars(r)
 	taskId, ok := vars["id"]
 	if !ok {
 		util.ResponseBadRequest(w, "query parameter 'id' not set")
 		return
 	}
+
+	// TODO get project for task
 
 	user := token.UID
 
@@ -219,19 +244,23 @@ func unassignUser_v2_2(w http.ResponseWriter, r *http.Request, token *auth.Token
 		return
 	}
 
+	// sendUpdateTask(task, uids)
+
 	sigolo.Info("Successfully unassigned user '%s' from task '%s'", user, taskId)
 
 	encoder := json.NewEncoder(w)
 	encoder.Encode(*task)
 }
 
-func setProcessPoints_v2_2(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+func setProcessPoints_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	vars := mux.Vars(r)
 	taskId, ok := vars["id"]
 	if !ok {
 		util.ResponseBadRequest(w, "query parameter 'id' not set")
 		return
 	}
+
+	// TODO get project for task
 
 	processPoints, err := util.GetIntParam("process_points", r)
 	if err != nil {
@@ -245,13 +274,15 @@ func setProcessPoints_v2_2(w http.ResponseWriter, r *http.Request, token *auth.T
 		return
 	}
 
+	// sendUpdateTask(task, uids)
+
 	sigolo.Info("Successfully set process points on task '%s' to %d", taskId, processPoints)
 
 	encoder := json.NewEncoder(w)
 	encoder.Encode(*task)
 }
 
-func addTask_v2_2(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+func addTask_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		sigolo.Error("Error reading request body: %s", err.Error())
@@ -276,4 +307,25 @@ func addTask_v2_2(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 
 	encoder := json.NewEncoder(w)
 	encoder.Encode(updatedTasks)
+}
+
+func sendAdd(addedProject *project.Project) {
+	websocket.Send(websocket.Message{
+		Type: websocket.MessageType_ProjectAdded,
+		Data: addedProject,
+	}, addedProject.Users...)
+}
+
+func sendUpdate(updatedProject *project.Project) {
+	websocket.Send(websocket.Message{
+		Type: websocket.MessageType_ProjectUpdated,
+		Data: updatedProject,
+	}, updatedProject.Users...)
+}
+
+func sendDelete(removedProject *project.Project) {
+	websocket.Send(websocket.Message{
+		Type: websocket.MessageType_ProjectDeleted,
+		Data: removedProject.Id,
+	}, removedProject.Users...)
 }
