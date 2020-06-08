@@ -3,6 +3,7 @@ import { CurrentUserService } from '../../user/current-user.service';
 import { Project } from '../project.material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProcessPointColorService } from '../../common/process-point-color.service';
+import { ProjectService } from '../project.service';
 
 @Component({
   selector: 'app-project-list',
@@ -16,12 +17,17 @@ export class ProjectListComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private currentUserService: CurrentUserService,
-    private processPointColorService: ProcessPointColorService
+    private processPointColorService: ProcessPointColorService,
+    private projectService: ProjectService
   ) {
   }
 
   ngOnInit(): void {
     this.projects = this.route.snapshot.data.projects;
+    this.projectService.projectDeleted.subscribe(removedProjectId => {
+      this.projects = this.projects.filter(p => p.id !== removedProjectId);
+    });
+    // TODO proper unsubscription
   }
 
   public get currentUserId(): string {

@@ -8,18 +8,39 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
 import { User } from '../user/user.material';
 import { UserService } from '../user/user.service';
+import { WebsocketClientService } from '../common/websocket-client.service';
+import { WebsocketMessageType } from '../common/websocket-message';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProjectService {
   public projectChanged: EventEmitter<Project> = new EventEmitter();
+  public projectDeleted: EventEmitter<string> = new EventEmitter();
 
   constructor(
     private taskService: TaskService,
     private userService: UserService,
-    private http: HttpClient
+    private http: HttpClient,
+    private websocketClient: WebsocketClientService
   ) {
+    websocketClient.messageReceived.subscribe(m => {
+      if (m.type === WebsocketMessageType.MessageType_ProjectUpdated) {
+        const dto = m.data as ProjectDto;
+
+        this.toProject(dto).subscribe(
+          p => this.projectChanged.emit(p),
+          e => {
+            console.error('Unable to process project update for project ' + dto.id);
+            console.error(e);
+          }
+        );
+      } else if (m.type === WebsocketMessageType.MessageType_ProjectDeleted) {
+        this.projectDeleted.emit(m.data);
+      }
+
+      // TODO project added
+    });
   }
 
   public getProjects(): Observable<Project[]> {

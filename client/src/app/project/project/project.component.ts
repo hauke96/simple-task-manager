@@ -5,6 +5,7 @@ import { TaskService } from '../../task/task.service';
 import { Project } from '../project.material';
 import { CurrentUserService } from '../../user/current-user.service';
 import { UserService } from '../../user/user.service';
+import { ErrorService } from '../../common/error.service';
 
 @Component({
   selector: 'app-project',
@@ -21,6 +22,7 @@ export class ProjectComponent implements OnInit {
     private userService: UserService,
     private taskService: TaskService,
     private currentUserService: CurrentUserService,
+    private errorService: ErrorService
   ) {
   }
 
@@ -31,6 +33,21 @@ export class ProjectComponent implements OnInit {
     this.projectService.projectChanged.subscribe(p => {
       this.project = p;
     });
+    this.projectService.projectDeleted.subscribe(removedProjectId => {
+      if (this.project.id !== removedProjectId) {
+        return;
+      }
+
+      // TODO create a notification service for this or rename&extend the error service
+      if (this.isOwner()) {
+        this.errorService.addError('Project removed successfully');
+      } else {
+        this.errorService.addError('This project has been removed');
+      }
+
+      this.router.navigate(['/manager']);
+    });
+    // TODO handle proper unsubscription
   }
 
   public isOwner(): boolean {
