@@ -10,6 +10,7 @@ import { User } from '../user/user.material';
 import { UserService } from '../user/user.service';
 import { WebsocketClientService } from '../common/websocket-client.service';
 import { WebsocketMessage, WebsocketMessageType } from '../common/websocket-message';
+import { ErrorService } from '../common/error.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,10 +24,14 @@ export class ProjectService {
     private taskService: TaskService,
     private userService: UserService,
     private http: HttpClient,
-    private websocketClient: WebsocketClientService
+    private websocketClient: WebsocketClientService,
+    private errorService: ErrorService
   ) {
     websocketClient.messageReceived.subscribe((m: WebsocketMessage) => {
       this.handleReceivedMessage(m);
+    }, e => {
+      console.error(e);
+      this.errorService.addError('Could not initialize live-updates');
     });
   }
 
