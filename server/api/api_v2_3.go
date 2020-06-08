@@ -217,7 +217,7 @@ func assignUser_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) 
 	}
 
 	// Send via websockets
-	if sendTaskUpdate(task) != nil {
+	if sendTaskUpdate(task, user) != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
 	}
@@ -245,7 +245,7 @@ func unassignUser_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token
 	}
 
 	// Send via websockets
-	if sendTaskUpdate(task) != nil {
+	if sendTaskUpdate(task, user) != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
 	}
@@ -277,7 +277,7 @@ func setProcessPoints_v2_3(w http.ResponseWriter, r *http.Request, token *auth.T
 	}
 
 	// Send via websockets
-	if sendTaskUpdate(task) != nil {
+	if sendTaskUpdate(task, token.UID) != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
 	}
@@ -336,8 +336,8 @@ func sendDelete(removedProject *project.Project) {
 	}, removedProject.Users...)
 }
 
-func sendTaskUpdate(task *task.Task) error {
-	project, err := project.GetProjectByTask(task.Id)
+func sendTaskUpdate(task *task.Task, userId string) error {
+	project, err := project.GetProjectByTask(task.Id, userId)
 	if err != nil {
 		return err
 	}

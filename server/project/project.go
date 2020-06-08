@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/pkg/errors"
-	
+
 	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/permission"
 	"github.com/hauke96/simple-task-manager/server/task"
@@ -64,10 +64,15 @@ func GetProjects(userId string) ([]*Project, error) {
 	return projects, nil
 }
 
-func GetProjectByTask(taskId string) (*Project, error) {
+func GetProjectByTask(taskId string, userId string) (*Project, error) {
 	project, err := store.getProjectByTask(taskId)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error getting project with task %s", taskId))
+	}
+
+	err = addProcessPointData(project, userId)
+	if err != nil {
+		return nil, err
 	}
 
 	return project, nil
