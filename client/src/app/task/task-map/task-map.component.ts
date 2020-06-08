@@ -11,14 +11,14 @@ import { Attribution, defaults as defaultControls, ScaleLine } from 'ol/control'
 import { Fill, Stroke, Style, Text } from 'ol/style';
 import { ProcessPointColorService } from '../../common/process-point-color.service';
 import GeoJSON from 'ol/format/GeoJSON';
-import { Polygon } from 'ol/geom';
+import { Unsubscriber } from '../../common/unsubscriber';
 
 @Component({
   selector: 'app-task-map',
   templateUrl: './task-map.component.html',
   styleUrls: ['./task-map.component.scss']
 })
-export class TaskMapComponent implements AfterViewInit {
+export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
   @Input() tasks: Task[];
 
   private map: Map;
@@ -30,6 +30,7 @@ export class TaskMapComponent implements AfterViewInit {
     private currentUserService: CurrentUserService,
     private processPointColorService: ProcessPointColorService
   ) {
+    super();
   }
 
   ngAfterViewInit(): void {
@@ -138,11 +139,13 @@ export class TaskMapComponent implements AfterViewInit {
       });
     });
 
-    // react to changed selection and update the map style
-    this.taskService.selectedTaskChanged.subscribe((task) => {
-      this.task = task;
-      this.vectorSource.changed();
-    });
+    this.unsubscribeLater(
+      // react to changed selection and update the map style
+      this.taskService.selectedTaskChanged.subscribe((task) => {
+        this.task = task;
+        this.vectorSource.changed();
+      })
+    );
   }
 
   private showTaskPolygon(task: Task) {

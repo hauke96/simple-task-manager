@@ -5,13 +5,14 @@ import { CurrentUserService } from '../../user/current-user.service';
 import { ErrorService } from '../../common/error.service';
 import { User } from '../../user/user.material';
 import { UserService } from '../../user/user.service';
+import { Unsubscriber } from '../../common/unsubscriber';
 
 @Component({
   selector: 'app-task-details',
   templateUrl: './task-details.component.html',
   styleUrls: ['./task-details.component.scss']
 })
-export class TaskDetailsComponent implements OnInit {
+export class TaskDetailsComponent extends Unsubscriber implements OnInit {
   @Input() public projectId: string;
   @Input() public needUserAssignment: boolean;
 
@@ -25,17 +26,20 @@ export class TaskDetailsComponent implements OnInit {
     private userService: UserService,
     private errorService: ErrorService,
   ) {
+    super();
   }
 
   ngOnInit(): void {
     this.task = this.taskService.getSelectedTask();
     this.updateUser();
 
-    this.taskService.selectedTaskChanged.subscribe((task: Task) => {
-      this.task = task;
-      this.newProcessPoints = task.processPoints;
-      this.updateUser();
-    });
+    this.unsubscribeLater(
+      this.taskService.selectedTaskChanged.subscribe((task: Task) => {
+        this.task = task;
+        this.newProcessPoints = task.processPoints;
+        this.updateUser();
+      })
+    );
   }
 
   public get currentUserId(): string {

@@ -6,13 +6,14 @@ import { Project } from '../project.material';
 import { CurrentUserService } from '../../user/current-user.service';
 import { UserService } from '../../user/user.service';
 import { ErrorService } from '../../common/error.service';
+import { Unsubscriber } from '../../common/unsubscriber';
 
 @Component({
   selector: 'app-project',
   templateUrl: './project.component.html',
   styleUrls: ['./project.component.scss']
 })
-export class ProjectComponent implements OnInit {
+export class ProjectComponent extends Unsubscriber implements OnInit {
   public project: Project;
 
   constructor(
@@ -24,30 +25,33 @@ export class ProjectComponent implements OnInit {
     private currentUserService: CurrentUserService,
     private errorService: ErrorService
   ) {
+    super();
   }
 
   ngOnInit(): void {
     this.project = this.route.snapshot.data.project;
     this.taskService.selectTask(this.project.tasks[0]);
 
-    this.projectService.projectChanged.subscribe(p => {
-      this.project = p;
-    });
-    this.projectService.projectDeleted.subscribe(removedProjectId => {
-      if (this.project.id !== removedProjectId) {
-        return;
-      }
+    this.unsubscribeLater(
+      this.projectService.projectChanged.subscribe(p => {
+        this.project = p;
+      }),
+      this.projectService.projectDeleted.subscribe(removedProjectId => {
+        if (this.project.id !== removedProjectId) {
+          return;
+        }
 
-      // TODO create a notification service for this or rename&extend the error service
-      if (this.isOwner()) {
-        this.errorService.addError('Project removed successfully');
-      } else {
-        this.errorService.addError('This project has been removed');
-      }
+        // TODO create a notification service for this or rename&extend the error service
+        if (this.isOwner()) {
+          this.errorService.addError('Project removed successfully');
+        } else {
+          this.errorService.addError('This project has been removed');
+        }
 
-      this.router.navigate(['/manager']);
-    });
-    // TODO handle proper unsubscription
+        this.router.navigate(['/manager']);
+      })
+    );
+
   }
 
   public isOwner(): boolean {
