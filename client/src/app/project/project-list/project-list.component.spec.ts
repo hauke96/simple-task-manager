@@ -6,12 +6,21 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { CurrentUserService } from '../../user/current-user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MockRouter } from '../../common/mock-router';
+import { Task, TestTaskGeometry } from '../../task/task.material';
+import { User } from '../../user/user.material';
+import { Project, ProjectDto } from '../project.material';
+import { WebsocketClientService } from '../../common/websocket-client.service';
+import { WebsocketMessage, WebsocketMessageType } from '../../common/websocket-message';
+import { ProjectService } from '../project.service';
+import { of } from 'rxjs';
 
 describe('ProjectListComponent', () => {
   let component: ProjectListComponent;
   let fixture: ComponentFixture<ProjectListComponent>;
   let routerMock: MockRouter;
   let currentUserService: CurrentUserService;
+  let projectService: ProjectService;
+  let websocketService: WebsocketClientService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -36,6 +45,8 @@ describe('ProjectListComponent', () => {
 
     routerMock = TestBed.inject(Router);
     currentUserService = TestBed.inject(CurrentUserService);
+    projectService = TestBed.inject(ProjectService);
+    websocketService = TestBed.inject(WebsocketClientService);
   }));
 
   beforeEach(() => {
@@ -61,4 +72,58 @@ describe('ProjectListComponent', () => {
 
     expect(component.currentUserId).toEqual('12345');
   });
+
+  it('should add new project to list', () => {
+    component.projects = [createProject()];
+
+    const p = createProject();
+    p.id = '123456';
+    p.name = 'flubby';
+    spyOn(projectService, 'toProject').and.returnValue(of(p));
+
+    // Trigger all needed events
+    websocketService.messageReceived.emit(new WebsocketMessage(
+      WebsocketMessageType.MessageType_ProjectAdded,
+      new ProjectDto(p.id, p.name, p.description, p.tasks.map(t => t.id), p.users.map(u => u.uid), p.owner.uid, p.needsAssignment)
+    ));
+
+    expect(component.projects).toContain(p);
+  });
+
+  it('should update project in list', () => {
+    component.projects = [createProject()];
+
+    const p = createProject();
+    p.name = 'flubby';
+    spyOn(projectService, 'toProject').and.returnValue(of(p));
+
+    // Trigger all needed events
+    websocketService.messageReceived.emit(new WebsocketMessage(
+      WebsocketMessageType.MessageType_ProjectUpdated,
+      new ProjectDto(p.id, p.name, p.description, p.tasks.map(t => t.id), p.users.map(u => u.uid), p.owner.uid, p.needsAssignment)
+    ));
+
+    expect(component.projects[0]).toEqual(p);
+  });
+
+  it('should remove project from list', () => {
+    const p = createProject();
+    component.projects = [p];
+
+    // Trigger all needed events
+    websocketService.messageReceived.emit(new WebsocketMessage(
+      WebsocketMessageType.MessageType_ProjectDeleted,
+      p.id
+    ));
+
+    expect(component.projects.length).toEqual(0);
+  });
+
+  function createProject(): Project {
+    const t = new Task('567', 10, 100, TestTaskGeometry);
+    const u1 = new User('test-user', '123');
+    const u2 = new User('test-user2', '234');
+    const u3 = new User('test-user3', '345');
+    return new Project('1', 'test project', 'lorem ipsum', [t], [u1, u2, u3], u1);
+  }
 });

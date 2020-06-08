@@ -7,12 +7,19 @@ import { Task, TestTaskGeometry } from '../task.material';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
+import { ProjectService } from '../../project/project.service';
+import { Project, ProjectDto } from '../../project/project.material';
+import { User } from '../../user/user.material';
+import { WebsocketMessage, WebsocketMessageType } from '../../common/websocket-message';
+import { WebsocketClientService } from '../../common/websocket-client.service';
 
 describe('TaskDetailsComponent', () => {
   let component: TaskDetailsComponent;
   let fixture: ComponentFixture<TaskDetailsComponent>;
   let taskService: TaskService;
   let currentUserService: CurrentUserService;
+  let projectService: ProjectService;
+  let websocketService: WebsocketClientService;
   let task: Task;
   const testUserId = '123';
 
@@ -26,6 +33,7 @@ describe('TaskDetailsComponent', () => {
       providers: [
         CurrentUserService,
         TaskService,
+        ProjectService
       ]
     })
       .compileComponents();
@@ -51,6 +59,9 @@ describe('TaskDetailsComponent', () => {
 
     currentUserService = TestBed.inject(CurrentUserService);
     spyOn(currentUserService, 'getUserId').and.returnValue(testUserId);
+
+    projectService = TestBed.inject(ProjectService);
+    websocketService = TestBed.inject(WebsocketClientService);
   }));
 
   beforeEach(() => {
@@ -89,4 +100,32 @@ describe('TaskDetailsComponent', () => {
     fixture.detectChanges();
     expect(component.task.processPoints).toEqual(50);
   });
+
+  it('should update tasks on updated project', () => {
+    const p = createProject();
+    const newProcessPoints = 50;
+
+    taskService.selectTask(p.tasks[0]);
+    component.task = p.tasks[0];
+
+    // Change something on the task
+    p.tasks[0] = new Task('567', newProcessPoints, 100, TestTaskGeometry);
+
+    // Trigger update events when project service receives an updated project
+    spyOn(projectService, 'toProject').and.returnValue(of(p));
+    websocketService.messageReceived.emit(new WebsocketMessage(
+      WebsocketMessageType.MessageType_ProjectUpdated,
+      new ProjectDto(p.id, p.name, p.description, p.tasks.map(t => t.id), p.users.map(u => u.uid), p.owner.uid, p.needsAssignment)
+    ));
+
+    expect(component.task.processPoints).toEqual(newProcessPoints);
+  });
+
+  function createProject(): Project {
+    const t = new Task('567', 10, 100, TestTaskGeometry);
+    const u1 = new User('test-user', '123');
+    const u2 = new User('test-user2', '234');
+    const u3 = new User('test-user3', '345');
+    return new Project('1', 'test project', 'lorem ipsum', [t], [u1, u2, u3], u1);
+  }
 });
