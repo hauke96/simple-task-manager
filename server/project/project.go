@@ -56,7 +56,7 @@ func GetProjects(userId string) ([]*Project, error) {
 	for _, p := range projects {
 		err = addProcessPointData(p, userId)
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, fmt.Sprintf("Unable to add process point data to project %s", p.Id))
 		}
 	}
 
@@ -71,7 +71,7 @@ func GetProjectByTask(taskId string, userId string) (*Project, error) {
 
 	err = addProcessPointData(project, userId)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, fmt.Sprintf("Unable to add process point data to project %s", project.Id))
 	}
 
 	return project, nil
@@ -144,7 +144,7 @@ func GetProject(projectId string, potentialMemberId string) (*Project, error) {
 
 	err = addProcessPointData(project, potentialMemberId)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, fmt.Sprintf("Unable to add process point data to project %s", project.Id))
 	}
 
 	return project, nil
