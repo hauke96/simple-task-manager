@@ -3,11 +3,10 @@ package project
 import (
 	"database/sql"
 	"fmt"
-	"github.com/pkg/errors"
-
 	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/permission"
 	"github.com/hauke96/simple-task-manager/server/task"
+	"github.com/pkg/errors"
 )
 
 type Project struct {
@@ -79,33 +78,33 @@ func GetProjectByTask(taskId string, userId string) (*Project, error) {
 }
 
 // AddProject adds the project, as requested by user "userId".
-func AddProject(project *Project) (*Project, error) {
-	if project.Id != "" {
+func AddProject(projectDraft *Project) (*Project, error) {
+	if projectDraft.Id != "" {
 		return nil, errors.New("Id not empty")
 	}
 
-	if project.Owner == "" {
+	if projectDraft.Owner == "" {
 		return nil, errors.New("Owner must be set")
 	}
 
 	usersContainOwner := false
-	for _, u := range project.Users {
-		usersContainOwner = usersContainOwner || (u == project.Owner)
+	for _, u := range projectDraft.Users {
+		usersContainOwner = usersContainOwner || (u == projectDraft.Owner)
 	}
 
 	if !usersContainOwner {
 		return nil, errors.New("Owner must be within users list")
 	}
 
-	if project.Name == "" {
+	if projectDraft.Name == "" {
 		return nil, errors.New("Project must have a title")
 	}
 
-	if len(project.TaskIDs) == 0 {
+	if len(projectDraft.TaskIDs) == 0 {
 		return nil, errors.New("No tasks have been specified")
 	}
 
-	tasksAlreadyUsed, err := store.areTasksUsed(project.TaskIDs)
+	tasksAlreadyUsed, err := store.areTasksUsed(projectDraft.TaskIDs)
 	if err != nil {
 		return nil, errors.Wrap(err, "error checking whether given tasks are already used")
 	}
@@ -113,11 +112,23 @@ func AddProject(project *Project) (*Project, error) {
 		return nil, errors.New("The given tasks are already used in other Projects")
 	}
 
-	if len(project.Description) > maxDescriptionLength {
+	if len(projectDraft.Description) > maxDescriptionLength {
 		return nil, errors.New(fmt.Sprintf("Description too long. Maximum allowed are %d characters.", maxDescriptionLength))
 	}
 
-	return store.addProject(project)
+	// Actually add project and fill it with process point data
+
+	project,err := store.addProject(projectDraft)
+	if err != nil {
+		return nil, errors.Wrap(err, "Unable to add projectDraft to store")
+	}
+
+	err = addProcessPointData(project, project.Owner)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Unable to add process point data to project %s", project.Id))
+	}
+
+	return project, nil
 }
 
 func GetProject(projectId string, potentialMemberId string) (*Project, error) {
