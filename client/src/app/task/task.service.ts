@@ -33,7 +33,7 @@ export class TaskService {
 
         this.taskUpdated.emit(task);
 
-        if (this.selectedTask.id === task.id) {
+        if (this.selectedTask && this.selectedTask.id === task.id) {
           this.selectedTaskChanged.emit(task);
         }
       }

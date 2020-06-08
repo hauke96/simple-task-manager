@@ -38,6 +38,7 @@ export class ProjectListComponent implements OnInit {
     this.projectService.projectDeleted.subscribe((removedProjectId: string) => {
       this.projects = this.projects.filter(p => p.id !== removedProjectId);
     });
+
     // TODO proper unsubscription
   }
 

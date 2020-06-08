@@ -45,7 +45,6 @@ export class ProjectService {
           }
         );
         break;
-        break;
       case WebsocketMessageType.MessageType_ProjectUpdated:
         const updateDto = m.data as ProjectDto;
 
