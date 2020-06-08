@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthComponent } from './auth/auth/auth.component';
+import { LoginComponent } from './auth/login/login.component';
 import { AuthGuard } from './auth/auth.guard';
 import { OauthLandingComponent } from './auth/oauth-landing/oauth-landing.component';
 import { ManagerComponent } from './manager/manager.component';
@@ -10,7 +10,7 @@ import { AllProjectsResolver } from './project/all-projects.resolver';
 import { ProjectResolver } from './project/project.resolver';
 
 const routes: Routes = [
-  {path: '', component: AuthComponent},
+  {path: '', component: LoginComponent},
   {path: 'manager', component: ManagerComponent, canActivate: [AuthGuard], resolve: {projects: AllProjectsResolver}},
   {
     path: 'project/:id',

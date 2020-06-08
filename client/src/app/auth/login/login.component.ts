@@ -4,11 +4,11 @@ import { AuthService } from '../auth.service';
 import { WebsocketClientService } from '../../common/websocket-client.service';
 
 @Component({
-  selector: 'app-auth',
-  templateUrl: './auth.component.html',
-  styleUrls: ['./auth.component.scss']
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss']
 })
-export class AuthComponent implements OnInit {
+export class LoginComponent implements OnInit {
   constructor(
     private router: Router,
     private ngZone: NgZone,
