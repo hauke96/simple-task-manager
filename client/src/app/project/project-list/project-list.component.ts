@@ -24,7 +24,18 @@ export class ProjectListComponent implements OnInit {
 
   ngOnInit(): void {
     this.projects = this.route.snapshot.data.projects;
-    this.projectService.projectDeleted.subscribe(removedProjectId => {
+
+    this.projectService.projectAdded.subscribe((p: Project) => {
+      this.projects.push(p);
+    });
+    this.projectService.projectChanged.subscribe((p: Project) => {
+      for (let i = 0; i < this.projects.length; i++) {
+        if (this.projects[i].id === p.id) {
+          this.projects[i] = p;
+        }
+      }
+    });
+    this.projectService.projectDeleted.subscribe((removedProjectId: string) => {
       this.projects = this.projects.filter(p => p.id !== removedProjectId);
     });
     // TODO proper unsubscription

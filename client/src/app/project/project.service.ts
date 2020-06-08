@@ -9,12 +9,13 @@ import { environment } from './../../environments/environment';
 import { User } from '../user/user.material';
 import { UserService } from '../user/user.service';
 import { WebsocketClientService } from '../common/websocket-client.service';
-import { WebsocketMessageType } from '../common/websocket-message';
+import { WebsocketMessage, WebsocketMessageType } from '../common/websocket-message';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProjectService {
+  public projectAdded: EventEmitter<Project> = new EventEmitter();
   public projectChanged: EventEmitter<Project> = new EventEmitter();
   public projectDeleted: EventEmitter<string> = new EventEmitter();
 
@@ -24,23 +25,44 @@ export class ProjectService {
     private http: HttpClient,
     private websocketClient: WebsocketClientService
   ) {
-    websocketClient.messageReceived.subscribe(m => {
-      if (m.type === WebsocketMessageType.MessageType_ProjectUpdated) {
-        const dto = m.data as ProjectDto;
+    websocketClient.messageReceived.subscribe((m: WebsocketMessage) => {
+      this.handleReceivedMessage(m);
+    });
+  }
 
-        this.toProject(dto).subscribe(
-          p => this.projectChanged.emit(p),
+  private handleReceivedMessage(m: WebsocketMessage) {
+    switch (m.type) {
+      case WebsocketMessageType.MessageType_ProjectAdded:
+        const addDto = m.data as ProjectDto;
+
+        this.toProject(addDto).subscribe(
+          p => {
+            this.projectAdded.emit(p);
+          },
           e => {
-            console.error('Unable to process project update for project ' + dto.id);
+            console.error('Unable to process ' + m.type + ' event for project ' + addDto.id);
             console.error(e);
           }
         );
-      } else if (m.type === WebsocketMessageType.MessageType_ProjectDeleted) {
-        this.projectDeleted.emit(m.data);
-      }
+        break;
+        break;
+      case WebsocketMessageType.MessageType_ProjectUpdated:
+        const updateDto = m.data as ProjectDto;
 
-      // TODO project added
-    });
+        this.toProject(updateDto).subscribe(
+          p => {
+            this.projectChanged.emit(p);
+          },
+          e => {
+            console.error('Unable to process ' + m.type + ' event for project ' + updateDto.id);
+            console.error(e);
+          }
+        );
+        break;
+      case WebsocketMessageType.MessageType_ProjectDeleted:
+        this.projectDeleted.emit(m.data);
+        break;
+    }
   }
 
   public getProjects(): Observable<Project[]> {
