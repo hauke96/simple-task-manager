@@ -50,6 +50,7 @@ export class ProjectService {
 
         this.toProject(updateDto).subscribe(
           p => {
+            this.taskService.updateTasks(p.tasks);
             this.projectChanged.emit(p);
           },
           e => {

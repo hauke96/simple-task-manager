@@ -18,11 +18,13 @@ export class TaskListComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.taskService.taskUpdated.subscribe((task) => {
-      for (const i in this.tasks) {
-        if (this.tasks[i].id === task.id) {
-          this.tasks[i] = task;
-          break;
+    this.taskService.tasksUpdated.subscribe((updatedTasks: Task[]) => {
+      for (const updatedTask of updatedTasks) { // through tasks
+        for (const i in this.tasks) { // through indices
+          if (this.tasks[i].id === updatedTask.id) {
+            this.tasks[i] = updatedTask;
+            break;
+          }
         }
       }
     });
