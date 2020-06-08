@@ -38,7 +38,26 @@ Authorization: eyJ2...In0=
 ### Updates via websockets
 
 Connect to `/v2.3/updates` and receive updates for the requesting user.
+
+#### Authentication
+
 This endpoint, like all other endpoints below as well, needs a valid token.
+The token must be set in the `Sec-WebSocket-Protocol` header (not the `Authorization` header like in normal REST calls).
+
+#### Data protocol
+
+Every update is packed into a message of the following format:
+```json
+{
+  "type": <type>,
+  "data": <data>
+}
+```
+
+* `<type>` is either `project_added`, `project_updated` or `project_deleted` as specified by the `MessageType_...` variables from the `websocket/websocket.go` file
+* `<data>` is the payload data sent to the client
+  * For `project_added` and `project_updated` its a whole project without tasks
+  * For `project_deleted` it's just the project ID of the deleted project
 
 ### Projects
 
