@@ -26,6 +26,7 @@ export class TaskService {
   ) {
   }
 
+  // Publishes the tasks via the tasksUpdated event. This is usually called from the project service when a project has been updated.
   public updateTasks(tasks: Task[]) {
     this.tasksUpdated.emit(tasks);
 

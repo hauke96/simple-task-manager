@@ -50,6 +50,7 @@ export class ProjectService {
 
         this.toProject(updateDto).subscribe(
           p => {
+            // Also call the task service to send task-updates to the components.
             this.taskService.updateTasks(p.tasks);
             this.projectChanged.emit(p);
           },
