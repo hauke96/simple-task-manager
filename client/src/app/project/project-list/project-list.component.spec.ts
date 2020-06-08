@@ -64,7 +64,7 @@ describe('ProjectListComponent', () => {
 
     component.onProjectListItemClicked('123');
 
-    expect(spy).toHaveBeenCalledWith(['/project', '123']);
+    expect(spy).toHaveBeenCalled();
   });
 
   it('should get current user correctly', () => {
