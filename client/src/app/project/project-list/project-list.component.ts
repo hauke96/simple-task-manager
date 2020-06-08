@@ -49,7 +49,9 @@ export class ProjectListComponent extends Unsubscriber implements OnInit {
   }
 
   public onProjectListItemClicked(id: string) {
-    this.router.navigate(['/project', id]);
+    const project = this.projects.filter(p => p.id === id)[0];
+    console.log(project);
+    this.router.navigate(['/project', id], {state: {project}});
   }
 
   getProcessPointColor(project: Project) {
