@@ -3,10 +3,10 @@ package project
 import (
 	"database/sql"
 	"fmt"
+	"github.com/pkg/errors"
+	
 	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/permission"
-	"github.com/pkg/errors"
-
 	"github.com/hauke96/simple-task-manager/server/task"
 )
 

@@ -343,8 +343,8 @@ func sendTaskUpdate(task *task.Task) error {
 	}
 
 	websocket.Send(websocket.Message{
-		Type: websocket.MessageType_TaskUpdated,
-		Data: task,
+		Type: websocket.MessageType_ProjectUpdated,
+		Data: project,
 	}, project.Users...)
 
 	return nil
