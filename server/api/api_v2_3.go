@@ -11,6 +11,7 @@ import (
 	"github.com/hauke96/simple-task-manager/server/websocket"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 func Init_v2_3(router *mux.Router) (*mux.Router, string) {
@@ -20,6 +21,8 @@ func Init_v2_3(router *mux.Router) (*mux.Router, string) {
 	r.HandleFunc("/projects", authenticatedHandler(addProject_v2_3)).Methods(http.MethodPost)
 	r.HandleFunc("/projects/{id}", authenticatedHandler(getProject_v2_3)).Methods(http.MethodGet)
 	r.HandleFunc("/projects/{id}", authenticatedHandler(deleteProjects_v2_3)).Methods(http.MethodDelete)
+	r.HandleFunc("/projects/{id}/name", authenticatedHandler(updateProjectName_v2_3)).Methods(http.MethodPut)
+	r.HandleFunc("/projects/{id}/description", authenticatedHandler(updateProjectDescription_v2_3)).Methods(http.MethodPut)
 	r.HandleFunc("/projects/{id}/users", authenticatedHandler(addUserToProject_v2_3)).Methods(http.MethodPost)
 	r.HandleFunc("/projects/{id}/users", authenticatedHandler(leaveProject_v2_3)).Methods(http.MethodDelete)
 	r.HandleFunc("/projects/{id}/users/{uid}", authenticatedHandler(removeUser_v2_3)).Methods(http.MethodDelete)
@@ -154,6 +157,62 @@ func deleteProjects_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Tok
 	}
 
 	sendDelete(projectToDelete)
+}
+
+func updateProjectName_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+	vars := mux.Vars(r)
+	projectId, ok := vars["id"]
+	if !ok {
+		util.ResponseBadRequest(w, "query parameter 'id' not set")
+		return
+	}
+
+	bodyBytes, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		sigolo.Error("Error reading request body: %s", err.Error())
+		util.ResponseBadRequest(w, err.Error())
+		return
+	}
+
+	lines := strings.Split(string(bodyBytes), "\n")
+
+	updatedProject, err := project.UpdateName(projectId, lines[0], token.UID)
+	if err != nil {
+		util.ResponseInternalError(w, err.Error())
+		return
+	}
+
+	sendUpdate(updatedProject)
+
+	encoder := json.NewEncoder(w)
+	encoder.Encode(updatedProject)
+}
+
+func updateProjectDescription_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+	vars := mux.Vars(r)
+	projectId, ok := vars["id"]
+	if !ok {
+		util.ResponseBadRequest(w, "query parameter 'id' not set")
+		return
+	}
+
+	bodyBytes, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		sigolo.Error("Error reading request body: %s", err.Error())
+		util.ResponseBadRequest(w, err.Error())
+		return
+	}
+
+	updatedProject, err := project.UpdateDescription(projectId, string(bodyBytes), token.UID)
+	if err != nil {
+		util.ResponseInternalError(w, err.Error())
+		return
+	}
+
+	sendUpdate(updatedProject)
+
+	encoder := json.NewEncoder(w)
+	encoder.Encode(updatedProject)
 }
 
 func getProjectTasks_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {

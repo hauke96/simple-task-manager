@@ -10,18 +10,18 @@ import (
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 )
 
-func TestMain(m *testing.M) {
+func setup() {
 	testHelper.InitWithDummyData()
 
 	sigolo.LogLevel = sigolo.LOG_DEBUG
 	Init()
 	permission.Init()
 	task.Init()
-
-	m.Run()
 }
 
 func TestGetProjects(t *testing.T) {
+	setup()
+
 	// For Maria (being part of project 1 and 2)
 	userProjects, err := GetProjects("Maria")
 	if err != nil {
@@ -60,7 +60,9 @@ func TestGetProjects(t *testing.T) {
 }
 
 func TestGetProjectByTask(t *testing.T) {
-	project, err := GetProjectByTask("4")
+	setup()
+
+	project, err := GetProjectByTask("4", "John")
 	if err != nil {
 		t.Error(err.Error())
 		t.Fail()
@@ -75,6 +77,8 @@ func TestGetProjectByTask(t *testing.T) {
 }
 
 func TestGetTasks(t *testing.T) {
+	setup()
+
 	tasks, err := GetTasks("1", "Peter")
 	if err != nil {
 		t.Errorf("Get should work: %s", err.Error())
@@ -143,10 +147,12 @@ func TestGetTasks(t *testing.T) {
 }
 
 func TestAddAndGetProject(t *testing.T) {
+	setup()
+
 	user := "Jack"
 	p := Project{
 		Name:    "Test name",
-		TaskIDs: []string{"11"},
+		TaskIDs: []string{"8"},
 		Users:   []string{user, "user2"},
 		Owner:   user,
 	}
@@ -186,6 +192,8 @@ func TestAddAndGetProject(t *testing.T) {
 }
 
 func TestAddProjectWithUsedTasks(t *testing.T) {
+	setup()
+
 	user := "Jen"
 	p := Project{
 		Name:    "Test name",
@@ -203,6 +211,8 @@ func TestAddProjectWithUsedTasks(t *testing.T) {
 }
 
 func TestAddUser(t *testing.T) {
+	setup()
+
 	newUser := "new user"
 
 	p, err := AddUser("1", newUser, "Peter")
@@ -241,6 +251,8 @@ func TestAddUser(t *testing.T) {
 }
 
 func TestAddUserTwice(t *testing.T) {
+	setup()
+
 	newUser := "another-new-user"
 
 	_, err := AddUser("1", newUser, "Peter")
@@ -260,6 +272,8 @@ func TestAddUserTwice(t *testing.T) {
 }
 
 func TestRemoveUser(t *testing.T) {
+	setup()
+
 	userToRemove := "Maria"
 
 	p, err := RemoveUser("1", "Peter", userToRemove)
@@ -316,6 +330,8 @@ func TestRemoveUser(t *testing.T) {
 }
 
 func TestRemoveNonOwnerUser(t *testing.T) {
+	setup()
+
 	userToRemove := "Carl"
 
 	// Carl is not owner and removes himself, which is ok
@@ -341,6 +357,8 @@ func TestRemoveNonOwnerUser(t *testing.T) {
 }
 
 func TestRemoveArbitraryUserNotAllowed(t *testing.T) {
+	setup()
+
 	userToRemove := "Anna"
 
 	// Michael is not member of the project and should not be allowed to remove anyone
@@ -383,6 +401,8 @@ func TestRemoveArbitraryUserNotAllowed(t *testing.T) {
 }
 
 func TestRemoveUserTwice(t *testing.T) {
+	setup()
+
 	_, err := RemoveUser("2", "Maria", "John")
 	if err != nil {
 		t.Error("This should work: ", err)
@@ -400,6 +420,8 @@ func TestRemoveUserTwice(t *testing.T) {
 }
 
 func TestLeaveProject(t *testing.T) {
+	setup()
+
 	userToRemove := "Anna"
 
 	p, err := LeaveProject("2", userToRemove)
@@ -453,6 +475,8 @@ func TestLeaveProject(t *testing.T) {
 }
 
 func TestDeleteProject(t *testing.T) {
+	setup()
+
 	id := "1" // owned by "Peter"
 
 	// Try to remove with now-owning user
@@ -507,6 +531,82 @@ func TestDeleteProject(t *testing.T) {
 	err = DeleteProject("45356475", "Peter")
 	if err == nil {
 		t.Error("This project does not exist, this should not work")
+		t.Fail()
+		return
+	}
+}
+
+func TestUpdateName(t *testing.T) {
+	setup()
+
+	oldProject, err := GetProject("1", "Peter")
+	if err != nil {
+		t.Errorf("Error updating name wasn't expected: %s", err)
+		t.Fail()
+		return
+	}
+
+	newName := "flubby dubby"
+	project, err := UpdateName("1", newName, "Peter")
+	if err != nil {
+		t.Errorf("Error updating name wasn't expected: %s", err)
+		t.Fail()
+		return
+	}
+	if project.Name != newName {
+		t.Errorf("New name doesn't match with expected one: %s != %s", oldProject.Name, newName)
+		t.Fail()
+		return
+	}
+
+	// With newline
+
+	newNewlineName := "foo\nbar\nwhatever"
+	project, err = UpdateName("1", newNewlineName, "Peter")
+	if err != nil {
+		t.Errorf("Error updating name wasn't expected: %s", err)
+		t.Fail()
+		return
+	}
+	if project.Name != "foo" {
+		t.Errorf("New name doesn't match with expected one: %s != foo", oldProject.Name)
+		t.Fail()
+		return
+	}
+
+	// With non-owner (Maria)
+
+	project, err = UpdateName("1", "skfgkf", "Maria")
+	if err == nil {
+		t.Error("Updating name should not be possible for non-owner user Maria")
+		t.Fail()
+		return
+	}
+}
+
+func TestUpdateDescription(t *testing.T) {
+	setup()
+
+	oldProject, _ := GetProject("1", "Peter")
+
+	newDescription := "flubby dubby\n foo bar"
+	project, err := UpdateDescription("1", newDescription, "Peter")
+	if err != nil {
+		t.Errorf("Error updating description wasn't expected: %s", err)
+		t.Fail()
+		return
+	}
+	if project.Description != newDescription {
+		t.Errorf("New description doesn't match with expected one: %s != %s", oldProject.Name, newDescription)
+		t.Fail()
+		return
+	}
+
+	// With non-owner (Maria)
+
+	project, err = UpdateDescription("1", "skfgkf", "Maria")
+	if err == nil {
+		t.Error("Updating description should not be possible for non-owner user Maria")
 		t.Fail()
 		return
 	}

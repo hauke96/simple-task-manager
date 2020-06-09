@@ -32,6 +32,8 @@ type projectStore interface {
 	removeUser(projectId string, userIdToRemove string) (*Project, error)
 	delete(projectId string) error
 	getTasks(projectId string, user string) ([]*task.Task, error)
+	updateName(projectId string, newName string) (*Project, error)
+	updateDescription(projectId string, newDescription string) (*Project, error)
 }
 
 var (
@@ -279,4 +281,22 @@ func GetTasks(projectId string, userId string) ([]*task.Task, error) {
 	}
 
 	return store.getTasks(projectId, userId)
+}
+
+func UpdateName(projectId string, newName string, requestingUserId string) (*Project, error) {
+	err := permission.VerifyOwnership(projectId, requestingUserId)
+	if err != nil {
+		return nil, errors.Wrap(err, "membership verification of requesting user failed")
+	}
+
+	return store.updateName(projectId, newName)
+}
+
+func UpdateDescription(projectId string, newDescription string, requestingUserId string) (*Project, error) {
+	err := permission.VerifyOwnership(projectId, requestingUserId)
+	if err != nil {
+		return nil, errors.Wrap(err, "membership verification of requesting user failed")
+	}
+
+	return store.updateDescription(projectId, newDescription)
 }

@@ -75,8 +75,7 @@ func TestAddTasks(t *testing.T) {
 	}
 
 	validTaskWithId := addedTasks[0]
-	if validTaskWithId.Id != "8" ||
-		validTaskWithId.AssignedUser != "Mark" ||
+	if validTaskWithId.AssignedUser != "Mark" ||
 		validTaskWithId.MaxProcessPoints != 250 ||
 		validTaskWithId.ProcessPoints != 5 {
 		t.Errorf("Added task does not match\n")

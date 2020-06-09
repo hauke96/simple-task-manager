@@ -9,6 +9,8 @@ import (
 
 // Load dummy data into the database.
 func InitWithDummyData() {
+	sigolo.Info("Add database dummy data")
+
 	db, err := sql.Open("postgres", "user=postgres password=geheim dbname=stm sslmode=disable")
 	if err != nil {
 		sigolo.Fatal("Unable to connect to database: %s", err.Error())
@@ -25,4 +27,6 @@ func InitWithDummyData() {
 	if err != nil {
 		sigolo.Fatal("Unable to execute dump.sql: %s", err.Error())
 	}
+
+	sigolo.Info("Adding dummy data completed")
 }

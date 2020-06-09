@@ -143,6 +143,15 @@ func (s *storePg) getTasks(projectId string, userId string) ([]*task.Task, error
 
 	return task.GetTasks(p.TaskIDs, userId)
 }
+func (s *storePg) updateName(projectId string, newName string) (*Project, error) {
+	query := fmt.Sprintf("UPDATE %s SET name=$1 WHERE id=$2 RETURNING *", s.table)
+	return execQuery(s.db, query, newName, projectId)
+}
+
+func (s *storePg) updateDescription(projectId string, newDescription string) (*Project, error) {
+	query := fmt.Sprintf("UPDATE %s SET description=$1 WHERE id=$2 RETURNING *", s.table)
+	return execQuery(s.db, query, newDescription, projectId)
+}
 
 // execQuery executed the given query, turns the result into a Project object and closes the query.
 func execQuery(db *sql.DB, query string, params ...interface{}) (*Project, error) {
