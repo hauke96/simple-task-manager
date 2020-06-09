@@ -44,9 +44,9 @@ func Init() error {
 	router.Methods(http.MethodOptions).HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Headers", "Authorization")
-		w.Header().Set("Access-Control-Allow-Methods", "GET,POST,DELETE")
+		w.Header().Set("Access-Control-Allow-Methods", "GET,POST,DELETE,PUT")
 		w.Header().Set("Access-Control-Allow-Request-Headers", "Authorization")
-		w.Header().Set("Access-Control-Allow-Request-Methods", "GET,POST,DELETE")
+		w.Header().Set("Access-Control-Allow-Request-Methods", "GET,POST,DELETE,PUT")
 	})
 
 	var err error
