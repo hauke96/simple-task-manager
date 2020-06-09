@@ -7,6 +7,7 @@ import (
 	"github.com/hauke96/simple-task-manager/server/permission"
 	"github.com/hauke96/simple-task-manager/server/task"
 	"github.com/pkg/errors"
+	"strings"
 )
 
 type Project struct {
@@ -120,7 +121,7 @@ func AddProject(projectDraft *Project) (*Project, error) {
 
 	// Actually add project and fill it with process point data
 
-	project,err := store.addProject(projectDraft)
+	project, err := store.addProject(projectDraft)
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to add projectDraft to store")
 	}
@@ -289,6 +290,13 @@ func UpdateName(projectId string, newName string, requestingUserId string) (*Pro
 		return nil, errors.Wrap(err, "membership verification of requesting user failed")
 	}
 
+	lines := strings.Split(newName, "\n")
+	newName = lines[0]
+
+	if len(strings.TrimSpace(newName)) == 0 {
+		return nil, errors.New("No name specified")
+	}
+
 	return store.updateName(projectId, newName)
 }
 
@@ -296,6 +304,10 @@ func UpdateDescription(projectId string, newDescription string, requestingUserId
 	err := permission.VerifyOwnership(projectId, requestingUserId)
 	if err != nil {
 		return nil, errors.Wrap(err, "membership verification of requesting user failed")
+	}
+
+	if len(strings.TrimSpace(newDescription)) == 0 {
+		return nil, errors.New("No description specified")
 	}
 
 	return store.updateDescription(projectId, newDescription)

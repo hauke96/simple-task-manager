@@ -11,7 +11,6 @@ import (
 	"github.com/hauke96/simple-task-manager/server/websocket"
 	"io/ioutil"
 	"net/http"
-	"strings"
 )
 
 func Init_v2_3(router *mux.Router) (*mux.Router, string) {
@@ -174,9 +173,7 @@ func updateProjectName_v2_3(w http.ResponseWriter, r *http.Request, token *auth.
 		return
 	}
 
-	lines := strings.Split(string(bodyBytes), "\n")
-
-	updatedProject, err := project.UpdateName(projectId, lines[0], token.UID)
+	updatedProject, err := project.UpdateName(projectId,string(bodyBytes), token.UID)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return

@@ -576,9 +576,18 @@ func TestUpdateName(t *testing.T) {
 
 	// With non-owner (Maria)
 
-	project, err = UpdateName("1", "skfgkf", "Maria")
+	_, err = UpdateName("1", "skfgkf", "Maria")
 	if err == nil {
 		t.Error("Updating name should not be possible for non-owner user Maria")
+		t.Fail()
+		return
+	}
+
+	// Empty name
+
+	_, err = UpdateName("1", "  ", "Peter")
+	if err == nil {
+		t.Error("Updating name should not be possible with empty name")
 		t.Fail()
 		return
 	}
@@ -604,9 +613,18 @@ func TestUpdateDescription(t *testing.T) {
 
 	// With non-owner (Maria)
 
-	project, err = UpdateDescription("1", "skfgkf", "Maria")
+	_, err = UpdateDescription("1", "skfgkf", "Maria")
 	if err == nil {
 		t.Error("Updating description should not be possible for non-owner user Maria")
+		t.Fail()
+		return
+	}
+
+	// Empty description
+
+	_, err = UpdateDescription("1", "  ", "Peter")
+	if err == nil {
+		t.Error("Updating description should not be possible with empty description")
 		t.Fail()
 		return
 	}
