@@ -130,6 +130,22 @@ export class ProjectService {
       );
   }
 
+  public updateName(projectId: string, newName: string) {
+    return this.http.put<ProjectDto>(environment.url_projects_name.replace('{id}', projectId), newName)
+      .pipe(
+        flatMap(dto => this.toProject(dto)),
+        tap(p => this.projectChanged.emit(p))
+      );
+  }
+
+  public updateDescription(projectId: string, newDescription: string) {
+    return this.http.put<ProjectDto>(environment.url_projects_description.replace('{id}', projectId), newDescription)
+      .pipe(
+        flatMap(dto => this.toProject(dto)),
+        tap(p => this.projectChanged.emit(p))
+      );
+  }
+
   public leaveProject(projectId: string): Observable<any> {
     return this.http.delete(environment.url_projects_users.replace('{id}', projectId));
   }
