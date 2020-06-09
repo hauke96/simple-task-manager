@@ -98,7 +98,7 @@ export class ProjectSettingsComponent implements OnInit {
         }
       );
     }
-    if (this.projectDescription !== this.projectDescription) {
+    if (this.projectDescription !== this.newProjectDescription) {
       this.projectService.updateDescription(this.projectId, this.newProjectDescription).subscribe(
         () => {
         },
