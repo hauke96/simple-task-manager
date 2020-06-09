@@ -19,9 +19,9 @@ export class ProjectResolver implements Resolve<Project> {
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Project> {
     // When the project is already set via the router state (e.g. when the user clicked on a project in the project list), then use that
     // project and prevent additional server calls
-    const project = this.router.getCurrentNavigation().extras.state.project;
-    if (!!project) {
-      return of(project);
+    const navigationState = this.router.getCurrentNavigation().extras.state;
+    if (navigationState && navigationState.project) {
+      return of(navigationState.project);
     }
 
     return this.projectService.getProject(route.paramMap.get('id')).pipe(
