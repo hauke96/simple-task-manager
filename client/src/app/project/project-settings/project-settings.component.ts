@@ -13,6 +13,11 @@ import { User } from '../../user/user.material';
 export class ProjectSettingsComponent implements OnInit {
   @Input() projectId: string;
   @Input() projectOwner: User;
+  @Input() projectName: string;
+  @Input() projectDescription: string;
+
+  public newProjectName: string;
+  public newProjectDescription: string;
 
   public requestConfirmation: boolean;
 
@@ -30,6 +35,8 @@ export class ProjectSettingsComponent implements OnInit {
     // The owner cannot leave but only delete a project.
     // A normal member cannot delete a project but leave it.
     this.action = this.isOwner ? 'delete' : 'leave';
+    this.newProjectName = this.projectName;
+    this.newProjectDescription = this.projectDescription;
   }
 
   public get isOwner(): boolean {
@@ -78,5 +85,28 @@ export class ProjectSettingsComponent implements OnInit {
         this.errorService.addError('Could not leave project');
         this.requestConfirmation = false;
       });
+  }
+
+  onSaveButtonClicked() {
+    if (this.projectName !== this.newProjectName) {
+      this.projectService.updateName(this.projectId, this.newProjectName).subscribe(
+        () => {
+        },
+        e => {
+          console.error(e);
+          this.errorService.addError('Unable to update name');
+        }
+      );
+    }
+    if (this.projectDescription !== this.projectDescription) {
+      this.projectService.updateDescription(this.projectId, this.newProjectDescription).subscribe(
+        () => {
+        },
+        e => {
+          console.error(e);
+          this.errorService.addError('Unable to update description');
+        }
+      );
+    }
   }
 }

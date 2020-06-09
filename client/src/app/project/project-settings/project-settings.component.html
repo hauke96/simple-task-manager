@@ -20,3 +20,22 @@
 		<button (click)="onYesButtonClicked()">Yes</button>
 	</div>
 </div>
+
+<div class="hline"></div>
+
+
+<div class="project-properties-container">
+	<form #creationForm="ngForm">
+		<h2>Properties:</h2>
+		<div class="form-entry">
+			<span class="input-field-label">Name:</span>
+			<input class="name-input" [(ngModel)]="newProjectName" required name="nameField">
+		</div>
+		<div class="form-entry">
+			<p>Description:</p>
+			<textarea name="description-text-area" class="description-text-area" [(ngModel)]="newProjectDescription"></textarea>
+		</div>
+	</form>
+</div>
+
+<button (click)="onSaveButtonClicked()">Speichern</button>
