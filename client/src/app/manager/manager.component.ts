@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CurrentUserService } from '../user/current-user.service';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
-import { UserService } from '../user/user.service';
 
 @Component({
   selector: 'app-manager',
