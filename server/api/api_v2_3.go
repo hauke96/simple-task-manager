@@ -78,7 +78,7 @@ func getProject_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) 
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
-		util.ResponseBadRequest(w, "query parameter 'id' not set")
+		util.ResponseBadRequest(w, "url segment 'id' not set")
 		return
 	}
 
@@ -96,7 +96,7 @@ func leaveProject_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
-		util.ResponseBadRequest(w, "query parameter 'id' not set")
+		util.ResponseBadRequest(w, "url segment 'id' not set")
 		return
 	}
 
@@ -113,13 +113,13 @@ func removeUser_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) 
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
-		util.ResponseBadRequest(w, "query parameter 'id' not set")
+		util.ResponseBadRequest(w, "url segment 'id' not set")
 		return
 	}
 
 	user, ok := vars["uid"]
 	if !ok {
-		util.ResponseBadRequest(w, "query parameter 'user' not set")
+		util.ResponseBadRequest(w, "url segment 'user' not set")
 		return
 	}
 
@@ -139,7 +139,7 @@ func deleteProjects_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Tok
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
-		util.ResponseBadRequest(w, "query parameter 'id' not set")
+		util.ResponseBadRequest(w, "url segment 'id' not set")
 		return
 	}
 
@@ -162,7 +162,7 @@ func updateProjectName_v2_3(w http.ResponseWriter, r *http.Request, token *auth.
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
-		util.ResponseBadRequest(w, "query parameter 'id' not set")
+		util.ResponseBadRequest(w, "url segment 'id' not set")
 		return
 	}
 
@@ -189,7 +189,7 @@ func updateProjectDescription_v2_3(w http.ResponseWriter, r *http.Request, token
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
-		util.ResponseBadRequest(w, "query parameter 'id' not set")
+		util.ResponseBadRequest(w, "url segment 'id' not set")
 		return
 	}
 
@@ -216,7 +216,7 @@ func getProjectTasks_v2_3(w http.ResponseWriter, r *http.Request, token *auth.To
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
-		util.ResponseBadRequest(w, "query parameter 'id' not set")
+		util.ResponseBadRequest(w, "url segment 'id' not set")
 		return
 	}
 
@@ -240,7 +240,7 @@ func addUserToProject_v2_3(w http.ResponseWriter, r *http.Request, token *auth.T
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
-		util.ResponseBadRequest(w, "query parameter 'id' not set")
+		util.ResponseBadRequest(w, "url segment 'id' not set")
 		return
 	}
 
@@ -260,7 +260,7 @@ func assignUser_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) 
 	vars := mux.Vars(r)
 	taskId, ok := vars["id"]
 	if !ok {
-		util.ResponseBadRequest(w, "query parameter 'id' not set")
+		util.ResponseBadRequest(w, "url segment 'id' not set")
 		return
 	}
 
@@ -288,7 +288,7 @@ func unassignUser_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token
 	vars := mux.Vars(r)
 	taskId, ok := vars["id"]
 	if !ok {
-		util.ResponseBadRequest(w, "query parameter 'id' not set")
+		util.ResponseBadRequest(w, "url segment 'id' not set")
 		return
 	}
 
@@ -316,7 +316,7 @@ func setProcessPoints_v2_3(w http.ResponseWriter, r *http.Request, token *auth.T
 	vars := mux.Vars(r)
 	taskId, ok := vars["id"]
 	if !ok {
-		util.ResponseBadRequest(w, "query parameter 'id' not set")
+		util.ResponseBadRequest(w, "url segment 'id' not set")
 		return
 	}
 
