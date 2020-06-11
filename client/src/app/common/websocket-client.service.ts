@@ -15,8 +15,7 @@ export class WebsocketClientService {
 
   connect() {
     const ws = new WebSocketSubject<WebsocketMessage[]>({
-      url: environment.url_updates,
-      protocol: [localStorage.getItem('auth_token')]
+      url: environment.url_updates + '?token=' + encodeURIComponent(localStorage.getItem('auth_token'))
     });
 
     ws.subscribe((messages: WebsocketMessage[]) => {

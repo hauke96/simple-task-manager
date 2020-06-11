@@ -28,9 +28,17 @@ func authenticatedHandler(handler func(w http.ResponseWriter, r *http.Request, t
 
 func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request, token *auth.Token)) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Add Sec-WebSocket-Protocol value (set by websocket clients) as authorization. Therefore the
-		// "Sec-WebSocket-Protocol" value must contain the token.
-		r.Header.Add("Authorization", r.Header.Get("Sec-WebSocket-Protocol"))
+		query := r.URL.Query()
+
+		t := query.Get("token")
+		if t == "" {
+			util.ResponseBadRequest(w, "query parameter 'token' not set")
+			return
+		}
+		query.Del("token")
+
+		// Add token query param value (set by websocket clients) as authorization so that verifyAndHandle can check it.
+		r.Header.Add("Authorization", t)
 
 		verifyAndHandle(r, w, handler)
 	}
