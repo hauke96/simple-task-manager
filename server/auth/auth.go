@@ -91,6 +91,8 @@ func OauthLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	sigolo.Debug("Redirect to URL: %s", url)
+
 	configs[configKey] = userConfig
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
