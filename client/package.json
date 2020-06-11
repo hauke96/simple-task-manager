@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "dev": "ng serve --watch",
+    "dev-local": "ng serve --watch -c local",
     "build": "ng build",
     "build-prod": "ng build --prod",
     "test": "ng test --browsers=FirefoxHeadless --code-coverage",

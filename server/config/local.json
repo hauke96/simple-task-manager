@@ -1,0 +1,6 @@
+{
+	"server-url": "http://localhost",
+	"port": 8080,
+	"osm-base-url": "http://localhost:9000",
+	"debug-logging": true
+}
