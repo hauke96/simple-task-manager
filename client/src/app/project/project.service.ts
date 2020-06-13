@@ -100,12 +100,8 @@ export class ProjectService {
       );
   }
 
-  public inviteUser(projectId: string, userId: string): Observable<Project> {
-    return this.http.post<ProjectDto>(environment.url_projects_users.replace('{id}', projectId) + '?uid=' + userId, '')
-      .pipe(
-        flatMap(dto => this.toProject(dto)),
-        tap(p => this.projectChanged.emit(p))
-      );
+  public inviteUser(projectId: string, userId: string): Observable<void> {
+    return this.http.post<void>(environment.url_projects_users.replace('{id}', projectId) + '?uid=' + userId, '');
   }
 
   public deleteProject(projectId: string): Observable<any> {

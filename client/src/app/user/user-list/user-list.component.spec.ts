@@ -3,7 +3,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UserListComponent } from './user-list.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
-import { ProjectService } from '../../project/project.service';
 import { CurrentUserService } from '../current-user.service';
 import { Router } from '@angular/router';
 import { MockRouter } from '../../common/mock-router';
@@ -22,7 +21,6 @@ describe('UserListComponent', () => {
         FormsModule
       ],
       providers: [
-        ProjectService,
         {
           provide: Router,
           useClass: MockRouter
@@ -53,7 +51,7 @@ describe('UserListComponent', () => {
   });
 
   it('should remove user correctly', () => {
-    const removeUserSpy = spyOn(component.onUserRemove, 'emit').and.callThrough();
+    const removeUserSpy = spyOn(component.userRemoved, 'emit').and.callThrough();
 
     component.ownerUid = '123';
     expect(component).toBeTruthy();

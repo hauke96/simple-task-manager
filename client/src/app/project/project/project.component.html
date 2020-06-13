@@ -21,11 +21,13 @@
 			<div *ngIf="tabs.tabIndex === 1">
 				<div class="tab-container">
 					<h2>Users</h2>
-					<app-user-invitation *ngIf="isOwner()" class="tab-container-item"
-										 [projectId]="project?.id"></app-user-invitation>
+					<app-user-invitation *ngIf="isOwner()"
+										 class="tab-container-item"
+										 (userInvited)="onUserInvited($event)">
+					</app-user-invitation>
 					<app-user-list [users]="project?.users"
 								   [ownerUid]="project.owner.uid"
-								   (onUserRemove)="onUserRemove($event)">
+								   (userRemoved)="onUserRemoved($event)">
 					</app-user-list>
 				</div>
 			</div>

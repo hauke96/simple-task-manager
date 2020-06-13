@@ -1,7 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ProjectService } from '../../project/project.service';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ErrorService } from '../../common/error.service';
 import { UserService } from '../user.service';
+import { User } from '../user.material';
 
 @Component({
   selector: 'app-user-invitation',
@@ -9,12 +9,11 @@ import { UserService } from '../user.service';
   styleUrls: ['./user-invitation.component.scss']
 })
 export class UserInvitationComponent implements OnInit {
-  @Input() public projectId: string;
+  @Output() public userInvited: EventEmitter<User> = new EventEmitter<User>();
 
   public userName: string;
 
   constructor(
-    private projectService: ProjectService,
     private userService: UserService,
     private errorService: ErrorService
   ) {
@@ -26,12 +25,7 @@ export class UserInvitationComponent implements OnInit {
   public onInvitationButtonClicked() {
     this.userService.getUserByName(this.userName).subscribe(
       user => {
-        this.projectService.inviteUser(this.projectId, user.uid)
-          .subscribe(p => {
-          }, err => {
-            console.error(err);
-            this.errorService.addError('Could not invite user \'' + this.userName + '\'');
-          });
+        this.userInvited.emit(user);
       }, err => {
         console.error(err);
         this.errorService.addError('Could not load user ID for user \'' + this.userName + '\'');

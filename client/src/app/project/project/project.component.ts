@@ -7,6 +7,7 @@ import { CurrentUserService } from '../../user/current-user.service';
 import { UserService } from '../../user/user.service';
 import { ErrorService } from '../../common/error.service';
 import { Unsubscriber } from '../../common/unsubscriber';
+import { User } from '../../user/user.material';
 
 @Component({
   selector: 'app-project',
@@ -53,12 +54,21 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
     );
   }
 
-  public onUserRemove(userIdToRemove: string) {
+  public onUserRemoved(userIdToRemove: string) {
     this.projectService.removeUser(this.project.id, userIdToRemove)
       .subscribe(() => {
       }, err => {
         console.error(err);
         this.errorService.addError('Could not remove user');
+      });
+  }
+
+  public onUserInvited(user: User) {
+    this.projectService.inviteUser(this.project.id, user.uid)
+      .subscribe(() => {
+      }, err => {
+        console.error(err);
+        this.errorService.addError('Could not invite user \'' + user.name + '\'');
       });
   }
 

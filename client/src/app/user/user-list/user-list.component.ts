@@ -11,7 +11,7 @@ export class UserListComponent implements OnInit {
   @Input() users: User[];
   @Input() ownerUid: string;
 
-  @Output() onUserRemove: EventEmitter<string> = new EventEmitter<string>();
+  @Output() public userRemoved: EventEmitter<string> = new EventEmitter<string>();
 
   constructor(
     private currentUserService: CurrentUserService
@@ -22,7 +22,7 @@ export class UserListComponent implements OnInit {
   }
 
   public onRemoveUserClicked(user: string) {
-    this.onUserRemove.emit(user);
+    this.userRemoved.emit(user);
   }
 
   public canRemove(user: string): boolean {

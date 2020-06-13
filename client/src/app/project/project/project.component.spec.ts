@@ -108,9 +108,19 @@ describe('ProjectComponent', () => {
     const errorServiceSpy = spyOn(errorService, 'addError').and.callThrough();
 
     component.project = createProject();
-    component.onUserRemove('123');
+    component.onUserRemoved('123');
 
     expect(removeUserSpy).toHaveBeenCalledWith('1', '123');
+    expect(errorServiceSpy).toHaveBeenCalled();
+  });
+
+  it('should show error message on error inviting user', () => {
+    const inviteUserSpy = spyOn(projectService, 'inviteUser').and.returnValue(throwError('test error'));
+    const errorServiceSpy = spyOn(errorService, 'addError').and.callThrough();
+
+    component.onUserInvited(new User('foo bar', '222'));
+
+    expect(inviteUserSpy).toHaveBeenCalledWith('1', '222');
     expect(errorServiceSpy).toHaveBeenCalled();
   });
 

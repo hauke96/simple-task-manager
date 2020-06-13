@@ -122,11 +122,6 @@ describe('ProjectService', () => {
 
     const dto = new ProjectDto('123', 'Project 123', 'foo', ['7', '8', '9'], ['1', '2'], '2', true);
     spyOn(httpClient, 'post').and.returnValue(of(dto));
-
-    service.inviteUser('123', '2').subscribe((newProject: Project) => {
-      expect(newProject).toBeTruthy();
-      expect(newProject.users).toContain(users[1]);
-    }, e => fail(e));
   });
 
   it('should return tasks with user names', () => {
