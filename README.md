@@ -42,6 +42,6 @@ Additional technical documentation (deployment, api, security, architecture, etc
 
 # Contribute
 
-Currently there are no real guidelines. Feel free to create issues or a pull request.
+Currently there are no real guidelines. Feel free to create an **issue** or **pull request**.
 
-**Keep in mind:** Take a look at `doc/development/README.md` before you start coding ;)
+**Wanna start coding?** Take a look at `doc/development/README.md` on how to get started.

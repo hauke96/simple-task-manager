@@ -1,6 +1,18 @@
 Development takes place on the `dev` branch (small, independent things) or on separate feature branches (whole features, not all commit have to run).
 The `master` branch only contains released versions as separate commit that are tagged.
 
+# Getting started
+
+0. Install `git`, `node`, `npm`, `go` and `docker` plus IDE of your choice for the development with Typescript/Angular and golang.
+1. Clone this repo
+2. Client: See `/client/README.md`
+    1. Go through the section "Setup environment"
+    2. Take a look at the sections "Run Client" and "Run Tests"
+3. Server: See `/server/README.md`
+    1. Go through the section "Setup environment"
+    2. Take a look at the sections "Run Server" and "Run Tests"
+4. Read section "Git workflow and conventions" of this document
+
 # Git workflow and conventions
 
 All of this is heavily inspired by the branching model *git flow*.

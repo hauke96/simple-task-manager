@@ -7,10 +7,10 @@ The server is written in go (aka golang) so you need to install go and setup you
 ## Requirements
 
 * Installed and working **go compiler** (1.12 or newer to have module support)
-* For the database either of the following: 
-    * Installed and working **docker** setup (for the database)
+* For the database do **one** of the following: 
+    * Installed and working **docker** daemon (for the database)
     * Installed and working **PostgreSQL** server (9.6 and newer should work)
-* And of course an **IDE** of your choice (I can recommend *WebStorm*, *LiteIDE* as pure open-source IDE and of course *vim* for the hard-core devs)
+* And of course an working **IDE** setup of your choice (I can recommend *GoLand* as fancy-pants, *LiteIDE* as pure open-source and of course *vim* as hard-core IDE)
 
 ## Dependencies
 
@@ -72,17 +72,17 @@ To perform a login (even a login of your locally running application), you'll ne
 
 You can export these variables each time you start a new terminal or just put it into a file of your choice (e.g. `.bashrc`) to load then e.g. after your system booted.
 
-### Start the server
+## Setup finished :)
+
+Now you can start database, server (s. below) and client (see according README for that) and access the STM application under `localhost:4200`.
+Everything should work now and if not, don't hesitate to raise an issue :)
+
+# Run server
 
 After these variables are visible, start the server:
 
 * `cd server`
 * `go run .`
-
-## Setup finished :)
-
-Now you can start database, server and client (see according README for that) and access the STM application under `localhost:4200`.
-Everything should work now and if not, don't hesitate to raise an issue :)
 
 # Run Tests
 

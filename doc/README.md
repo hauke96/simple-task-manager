@@ -12,6 +12,12 @@ Here you'll find some documentation about the simple task manager. This is order
 * technical in-depth description of the authentication and authorization process
 * token creation, handling and validation
 
+### development
+
+* Steps to get started
+* Git workflow
+* Overview over client, server, docker and further links
+
 ### operation
 * HTTPS
     * create SSL certificates
