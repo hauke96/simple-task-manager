@@ -60,10 +60,17 @@ You need the tools `createdb` and `psql`. Both are -- for ubuntu users -- availa
 
 ## Setup the Login
 
-The local config of the server uses the [development API of OSM](https://master.apis.dev.openstreetmap.org).
-So you need to have an account there and also need to register your local application the to get the OAuth credentials. 
+There are two approaches:
 
-### OSM OAuth credentials
+1. OSM dev-API with a real account
+2. Local fake-Server emulating the OSM API
+
+### With OSM dev-API
+
+The default config of the server uses the [development API of OSM](https://master.apis.dev.openstreetmap.org).
+So you need to have an account there and also need to register your local application the to get the OAuth credentials.
+
+#### OSM OAuth credentials
 
 To perform a login (even a login of your locally running application), you'll need OAuth credentials (so the OAuth consumer-key and -secret) within environment variables:
 
@@ -71,6 +78,16 @@ To perform a login (even a login of your locally running application), you'll ne
 * `export OAUTH_SECRET="fgg1...kl09"`
 
 You can export these variables each time you start a new terminal or just put it into a file of your choice (e.g. `.bashrc`) to load then e.g. after your system booted.
+
+### Local Auth-Server
+
+There's also a pure local config.
+This makes use of a very simple [OAuth-Dummy server](https://github.com/hauke96/osm-oauth1a-dummy).
+Just clone the repo and start this auth server with `go run .`.
+
+Notice: You have to use the `local.config` file to use the local server, so using `go run . -c config/local.json` to start the server works fine.
+
+Using this approach makes you independent of the OSM server and of an internet connection in general.
 
 ## Setup finished :)
 
