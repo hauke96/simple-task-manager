@@ -51,7 +51,15 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
         this.router.navigate(['/manager']);
       })
     );
+  }
 
+  public onUserRemove(userIdToRemove: string) {
+    this.projectService.removeUser(this.project.id, userIdToRemove)
+      .subscribe(() => {
+      }, err => {
+        console.error(err);
+        this.errorService.addError('Could not remove user');
+      });
   }
 
   public isOwner(): boolean {

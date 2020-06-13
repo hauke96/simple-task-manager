@@ -10,6 +10,7 @@ import { UserService } from '../user.service';
 })
 export class UserInvitationComponent implements OnInit {
   @Input() public projectId: string;
+
   public userName: string;
 
   constructor(

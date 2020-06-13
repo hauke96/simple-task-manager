@@ -7,11 +7,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Task, TestTaskGeometry } from '../../task/task.material';
 import { User } from '../../user/user.material';
 import { Project, ProjectDto } from '../project.material';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { WebsocketMessage, WebsocketMessageType } from '../../common/websocket-message';
 import { ProjectService } from '../project.service';
 import { WebsocketClientService } from '../../common/websocket-client.service';
 import { MockRouter } from '../../common/mock-router';
+import { ErrorService } from '../../common/error.service';
 
 describe('ProjectComponent', () => {
   let component: ProjectComponent;
@@ -19,10 +20,9 @@ describe('ProjectComponent', () => {
   let projectService: ProjectService;
   let websocketService: WebsocketClientService;
   let routerMock: MockRouter;
+  let errorService: ErrorService;
 
   beforeEach(async(() => {
-    const task = new Task('567', 10, 100, TestTaskGeometry);
-
     TestBed.configureTestingModule({
       declarations: [ProjectComponent],
       imports: [
@@ -45,6 +45,7 @@ describe('ProjectComponent', () => {
     projectService = TestBed.inject(ProjectService);
     routerMock = TestBed.inject(Router);
     websocketService = TestBed.inject(WebsocketClientService);
+    errorService = TestBed.inject(ErrorService);
   }));
 
   beforeEach(() => {
@@ -99,6 +100,18 @@ describe('ProjectComponent', () => {
     ));
 
     expect(spyRouter).not.toHaveBeenCalled();
+  });
+
+  it('should show error message on error during user removal', () => {
+    spyOn(routerMock, 'navigate').and.callThrough();
+    const removeUserSpy = spyOn(projectService, 'removeUser').and.returnValue(throwError('test error'));
+    const errorServiceSpy = spyOn(errorService, 'addError').and.callThrough();
+
+    component.project = createProject();
+    component.onUserRemove('123');
+
+    expect(removeUserSpy).toHaveBeenCalledWith('1', '123');
+    expect(errorServiceSpy).toHaveBeenCalled();
   });
 
   function createProject() {

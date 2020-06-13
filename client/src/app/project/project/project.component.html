@@ -23,7 +23,10 @@
 					<h2>Users</h2>
 					<app-user-invitation *ngIf="isOwner()" class="tab-container-item"
 										 [projectId]="project?.id"></app-user-invitation>
-					<app-user-list [project]="project" [users]="project?.users"></app-user-list>
+					<app-user-list [users]="project?.users"
+								   [ownerUid]="project.owner.uid"
+								   (onUserRemove)="onUserRemove($event)">
+					</app-user-list>
 				</div>
 			</div>
 			<div *ngIf="tabs.tabIndex === 2">
