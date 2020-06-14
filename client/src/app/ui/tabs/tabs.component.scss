@@ -30,4 +30,5 @@ button.selected:hover,
 	display: flex;
 	flex-direction: column;
 	overflow: auto;
+	flex-grow: 1;
 }

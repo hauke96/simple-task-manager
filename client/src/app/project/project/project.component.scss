@@ -30,6 +30,8 @@
 
 .task-list-details-container {
 	width: 35%;
+	min-width: 377px; // smallest width where the button don't switch to a new row and destroy the layout
+	max-width: 450px;
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
@@ -49,6 +51,8 @@
 
 .task-list {
 	overflow-y: hidden;
+	display: flex;
+	flex-direction: column;
 }
 
 .map-container {
@@ -76,4 +80,18 @@
 
 app-tabs {
 	margin-top: $space-large;
+	flex-grow: 1;
+}
+
+.user-tab {
+	display: flex;
+	flex-direction: column;
+	min-height: 0px; // important for scrolling (for whatever reason, s. above)
+	height: 100%; // To enable scrolling within the tab containers
+}
+
+.user-list {
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
 }

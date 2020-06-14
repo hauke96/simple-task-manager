@@ -18,7 +18,7 @@
 					<app-task-list *ngIf="project.tasks" [tasks]="project.tasks" class="task-list"></app-task-list>
 				</div>
 			</div>
-			<div *ngIf="tabs.tabIndex === 1">
+			<div *ngIf="tabs.tabIndex === 1" class="user-tab">
 				<div class="tab-container">
 					<h2>Users</h2>
 					<app-user-invitation *ngIf="isOwner()"
@@ -28,7 +28,8 @@
 					</app-user-invitation>
 					<app-user-list [users]="project?.users"
 								   [ownerUid]="project.owner.uid"
-								   (userRemoved)="onUserRemoved($event)">
+								   (userRemoved)="onUserRemoved($event)"
+								   class="user-list">
 					</app-user-list>
 				</div>
 			</div>
