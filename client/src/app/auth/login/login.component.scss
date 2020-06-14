@@ -21,8 +21,8 @@
 .login-button {
 	padding: $space-large;
 	margin: $space-huge;
-	border-top: 1px solid $light-gray;
-	border-bottom: 1px solid $light-gray;
+	border-top: 1px solid $color-gray-light;
+	border-bottom: 1px solid $color-gray-light;
 }
 
 .notice {
@@ -45,7 +45,7 @@
 
 .notice-bar {
 	width: 1px;
-	background-color: $gray-mid;
+	background-color: $color-gray-mid;
 	margin-left: 15px;
 	margin-right: 15px;
 	margin-top: -20px;

@@ -42,7 +42,7 @@ h2 {
 // ==============
 
 body {
-	color: $very-dark-gray;
+	color: $color-gray-very-dark;
 	margin: 0px;
 	height: 100vh;
 }
@@ -84,8 +84,8 @@ button::-moz-focus-inner { // remove dotted line in Firefox
 }
 
 button:disabled {
-	background-color: $very-light-gray;
-	border-color: $light-gray;
+	background-color: $color-gray-very-light;
+	border-color: $color-gray-light;
 }
 
 a {
@@ -147,7 +147,7 @@ li:before {
 	display: block;
 	float: left;
 	width: $space-large;
-	color: $gray-mid;
+	color: $color-gray-mid;
 }
 
 li {
@@ -182,6 +182,6 @@ textarea.ng-invalid:not(form)  {
 }
 
 .hline {
-	border-bottom: 1px solid $light-gray;
+	border-bottom: 1px solid $color-gray-light;
 	margin: $space-large $space-base;
 }
