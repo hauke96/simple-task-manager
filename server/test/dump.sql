@@ -35,7 +35,7 @@ INSERT INTO tasks(id, process_points, max_process_points, geometry, assigned_use
 --
 -- Raw tasks
 --
-INSERT INTO tasks(id, process_points, max_process_points, geometry, assigned_user) VALUES (8, 0, 100, '{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[9.951631591968885,53.563785517845105],[9.935667083912245,53.55022340710764],[10.00639157121693,53.53675896834966],[10.013773010425917,53.570921724776724],[9.951631591968885,53.563785517845105]]]},"properties":null}', '');
+INSERT INTO tasks(id, process_points, max_process_points, geometry, assigned_user) VALUES (8, 5, 100, '{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[9.951631591968885,53.563785517845105],[9.935667083912245,53.55022340710764],[10.00639157121693,53.53675896834966],[10.013773010425917,53.570921724776724],[9.951631591968885,53.563785517845105]]]},"properties":null}', '');
 
 --
 -- Reset sequences for primary keys

@@ -39,6 +39,16 @@ func TestGetProjects(t *testing.T) {
 		t.Fail()
 		return
 	}
+	if userProjects[0].TotalProcessPoints != 10 || userProjects[0].DoneProcessPoints != 0 {
+		t.Errorf("Process points on project not set correctly")
+		t.Fail()
+		return
+	}
+	if userProjects[1].TotalProcessPoints != 308 || userProjects[1].DoneProcessPoints != 154 {
+		t.Errorf("Process points on project not set correctly")
+		t.Fail()
+		return
+	}
 
 	// For Peter (being part of only project 1)
 	userProjects, err = GetProjects("Peter")
@@ -57,6 +67,11 @@ func TestGetProjects(t *testing.T) {
 		t.Fail()
 		return
 	}
+	if userProjects[0].TotalProcessPoints != 10 || userProjects[0].DoneProcessPoints != 0 {
+		t.Errorf("Process points on project not set correctly")
+		t.Fail()
+		return
+	}
 }
 
 func TestGetProjectByTask(t *testing.T) {
@@ -71,6 +86,11 @@ func TestGetProjectByTask(t *testing.T) {
 
 	if project.Id != "2" {
 		t.Error("Project ID not matching")
+		t.Fail()
+		return
+	}
+	if project.TotalProcessPoints != 308 || project.DoneProcessPoints != 154 {
+		t.Errorf("Process points on project not set correctly")
 		t.Fail()
 		return
 	}
@@ -189,6 +209,11 @@ func TestAddAndGetProject(t *testing.T) {
 		t.Fail()
 		return
 	}
+	if newProject.TotalProcessPoints != 100 || newProject.DoneProcessPoints != 5 {
+		t.Errorf("Process points on project not set correctly")
+		t.Fail()
+		return
+	}
 }
 
 func TestAddProjectWithUsedTasks(t *testing.T) {
@@ -231,6 +256,11 @@ func TestAddUser(t *testing.T) {
 	}
 	if !containsUser {
 		t.Error("Project should contain new user")
+		t.Fail()
+		return
+	}
+	if p.TotalProcessPoints != 10 || p.DoneProcessPoints != 0 {
+		t.Errorf("Process points on project not set correctly")
 		t.Fail()
 		return
 	}
@@ -292,6 +322,11 @@ func TestRemoveUser(t *testing.T) {
 	}
 	if containsUser {
 		t.Error("Project should not contain user anymore")
+		t.Fail()
+		return
+	}
+	if p.TotalProcessPoints != 10 || p.DoneProcessPoints != 0 {
+		t.Errorf("Process points on project not set correctly")
 		t.Fail()
 		return
 	}
@@ -443,7 +478,13 @@ func TestLeaveProject(t *testing.T) {
 		t.Fail()
 		return
 	}
+	if p.TotalProcessPoints != 308 || p.DoneProcessPoints != 154 {
+		t.Errorf("Process points on project not set correctly")
+		t.Fail()
+		return
+	}
 
+	// Owner should not be allowed to leave
 	p, err = LeaveProject("2", "Maria")
 	if err == nil {
 		t.Error("This should not work: The owner is not allowed to leave")
@@ -451,6 +492,7 @@ func TestLeaveProject(t *testing.T) {
 		return
 	}
 
+	// Invalid project id
 	p, err = LeaveProject("2284527", "Peter")
 	if err == nil {
 		t.Error("This should not work: The project does not exist")
@@ -458,6 +500,7 @@ func TestLeaveProject(t *testing.T) {
 		return
 	}
 
+	// Not existing user wants to leave
 	p, err = LeaveProject("1", "Not-Existing-User")
 	if err == nil {
 		t.Error("This should not work: A non-existing user should be removed")
@@ -558,6 +601,11 @@ func TestUpdateName(t *testing.T) {
 		t.Fail()
 		return
 	}
+	if project.TotalProcessPoints != 10 || project.DoneProcessPoints != 0 {
+		t.Errorf("Process points on project not set correctly")
+		t.Fail()
+		return
+	}
 
 	// With newline
 
@@ -607,6 +655,11 @@ func TestUpdateDescription(t *testing.T) {
 	}
 	if project.Description != newDescription {
 		t.Errorf("New description doesn't match with expected one: %s != %s", oldProject.Name, newDescription)
+		t.Fail()
+		return
+	}
+	if project.TotalProcessPoints != 10 || project.DoneProcessPoints != 0 {
+		t.Errorf("Process points on project not set correctly")
 		t.Fail()
 		return
 	}
