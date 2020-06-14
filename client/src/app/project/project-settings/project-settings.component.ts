@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { CurrentUserService } from '../../user/current-user.service';
 import { NotificationService } from '../../common/notification.service';
 import { User } from '../../user/user.material';
+import { forkJoin, Observable } from 'rxjs';
+import { Project } from '../project.material';
 
 @Component({
   selector: 'app-project-settings',
@@ -87,25 +89,23 @@ export class ProjectSettingsComponent implements OnInit {
   }
 
   onSaveButtonClicked() {
+    const calls: Observable<Project>[] = [];
+
     if (this.projectName !== this.newProjectName) {
-      this.projectService.updateName(this.projectId, this.newProjectName).subscribe(
-        () => {
-        },
-        e => {
-          console.error(e);
-          this.notificationService.addError('Unable to update name');
-        }
-      );
+      calls.push(this.projectService.updateName(this.projectId, this.newProjectName));
     }
     if (this.projectDescription !== this.newProjectDescription) {
-      this.projectService.updateDescription(this.projectId, this.newProjectDescription).subscribe(
-        () => {
-        },
-        e => {
-          console.error(e);
-          this.notificationService.addError('Unable to update description');
-        }
-      );
+      calls.push(this.projectService.updateDescription(this.projectId, this.newProjectDescription));
     }
+
+    forkJoin(calls).subscribe(
+      () => {
+        this.notificationService.addInfo('Successfully updated project');
+      },
+      e => {
+        console.error(e);
+        this.notificationService.addError('Unable to update project title and/or description');
+      }
+    );
   }
 }
