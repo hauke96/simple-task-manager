@@ -19,7 +19,7 @@ export class ProjectService {
   public projectAdded: EventEmitter<Project> = new EventEmitter();
   public projectChanged: EventEmitter<Project> = new EventEmitter();
   public projectDeleted: EventEmitter<string> = new EventEmitter();
-  public projectLeft: EventEmitter<void> = new EventEmitter();
+  public projectUserRemoved: EventEmitter<void> = new EventEmitter();
 
   constructor(
     private taskService: TaskService,
@@ -66,8 +66,8 @@ export class ProjectService {
           }
         );
         break;
-      case WebsocketMessageType.MessageType_ProjectUserLeft:
-        this.projectLeft.emit();
+      case WebsocketMessageType.MessageType_ProjectUserRemoved:
+        this.projectUserRemoved.emit(m.data);
         break;
       case WebsocketMessageType.MessageType_ProjectDeleted:
         this.projectDeleted.emit(m.data);

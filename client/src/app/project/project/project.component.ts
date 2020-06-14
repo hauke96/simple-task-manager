@@ -51,7 +51,11 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
 
         this.router.navigate(['/manager']);
       }),
-      this.projectService.projectLeft.subscribe(() => {
+      this.projectService.projectUserRemoved.subscribe(projectId => {
+        if (this.project.id !== projectId) {
+          return;
+        }
+
         this.router.navigate(['/manager']);
       })
     );
