@@ -5,7 +5,7 @@ import hexGrid from '@turf/hex-grid';
 import triangleGrid from '@turf/triangle-grid';
 import { Polygon } from 'ol/geom';
 import { Feature } from 'ol';
-import { ErrorService } from '../../common/error.service';
+import { NotificationService } from '../../common/notification.service';
 
 @Component({
   selector: 'app-shape-divide',
@@ -21,7 +21,7 @@ export class ShapeDivideComponent implements OnInit {
   @Output() public shapesCreated: EventEmitter<Feature[]> = new EventEmitter();
 
   constructor(
-    private errorService: ErrorService
+    private notificationService: NotificationService
   ) { }
 
   ngOnInit(): void {
@@ -51,7 +51,7 @@ export class ShapeDivideComponent implements OnInit {
       default:
         const e = `Unknown shape type ${this.gridCellShape}`;
         console.error(e);
-        this.errorService.addError(e);
+        this.notificationService.addError(e);
         return;
     }
 

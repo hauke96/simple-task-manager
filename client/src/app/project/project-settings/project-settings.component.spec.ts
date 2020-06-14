@@ -103,7 +103,6 @@ describe('ProjectSettingsComponent', () => {
       expect(id).toEqual('1');
       return of({});
     });
-    spyOn(routerMock, 'navigate').and.callThrough();
     component.projectId = '1';
     // @ts-ignore
     component.action = 'delete';
@@ -111,7 +110,6 @@ describe('ProjectSettingsComponent', () => {
 
     component.onYesButtonClicked();
 
-    expect(routerMock.navigate).toHaveBeenCalledWith(['/manager']);
     expect(component.requestConfirmation).toEqual(false);
   });
 
@@ -120,7 +118,6 @@ describe('ProjectSettingsComponent', () => {
       expect(id).toEqual('1');
       return throwError('Test-error');
     });
-    spyOn(routerMock, 'navigate').and.callThrough();
     component.projectId = '1';
     // @ts-ignore
     component.action = 'delete';
@@ -128,7 +125,6 @@ describe('ProjectSettingsComponent', () => {
 
     component.onYesButtonClicked();
 
-    expect(routerMock.navigate).not.toHaveBeenCalled();
     expect(component.requestConfirmation).toEqual(false);
   });
 

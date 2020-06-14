@@ -10,7 +10,7 @@ import { Attribution, defaults as defaultControls, ScaleLine } from 'ol/control'
 import { Polygon } from 'ol/geom';
 import { Fill, Stroke, Style } from 'ol/style';
 import { Draw } from 'ol/interaction';
-import { ErrorService } from '../../common/error.service';
+import { NotificationService } from '../../common/notification.service';
 import GeometryType from 'ol/geom/GeometryType';
 import { CurrentUserService } from '../../user/current-user.service';
 import Snap from 'ol/interaction/Snap';
@@ -44,7 +44,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
 
   constructor(
     private projectService: ProjectService,
-    private errorService: ErrorService,
+    private notificationService: NotificationService,
     private currentUserService: CurrentUserService,
     private router: Router
   ) {
@@ -177,7 +177,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
         this.router.navigate(['/manager']);
       }, e => {
         console.error(e);
-        this.errorService.addError('Could not create project');
+        this.notificationService.addError('Could not create project');
       });
   }
 

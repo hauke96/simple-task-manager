@@ -16,6 +16,10 @@ $gray-mid: #9e9e9e; // #400
 $very-dark-gray: #424242; // #900
 
 // Others:
-$color-warn: #ef5350; // #400 red
-$color-warn-dark: #d32f2f; // #700 red
-$color-warn-very-light-transparent: #ffcdd2c0; // #100 red
+$color-error: #ef5350; // #400 red
+$color-error-dark: #d32f2f; // #700 red
+$color-error-very-light-transparent: #ffcdd2c0; // #100 red
+
+$color-warn: #ffca28; // #400 orange
+$color-warn-dark: #ff6f00; // #700 orange
+$color-warn-very-light-transparent: #ffecb3c0; // #100 orange

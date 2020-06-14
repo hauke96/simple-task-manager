@@ -173,7 +173,7 @@ textarea:focus {
 
 input.ng-invalid:not(form),
 textarea.ng-invalid:not(form)  {
-	border: 1px solid $color-warn;
+	border: 1px solid $color-error;
 }
 
 .input-field-label {

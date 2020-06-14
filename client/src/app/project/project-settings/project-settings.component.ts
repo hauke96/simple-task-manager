@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ProjectService } from '../project.service';
 import { Router } from '@angular/router';
 import { CurrentUserService } from '../../user/current-user.service';
-import { ErrorService } from '../../common/error.service';
+import { NotificationService } from '../../common/notification.service';
 import { User } from '../../user/user.material';
 
 @Component({
@@ -26,7 +26,7 @@ export class ProjectSettingsComponent implements OnInit {
   constructor(
     private projectService: ProjectService,
     private currentUserService: CurrentUserService,
-    private errorService: ErrorService,
+    private notificationService: NotificationService,
     private router: Router
   ) {
   }
@@ -69,7 +69,7 @@ export class ProjectSettingsComponent implements OnInit {
         this.requestConfirmation = false;
       }, err => {
         console.error(err);
-        this.errorService.addError('Could not delete project');
+        this.notificationService.addError('Could not delete project');
         this.requestConfirmation = false;
       });
   }
@@ -81,7 +81,7 @@ export class ProjectSettingsComponent implements OnInit {
         this.router.navigate(['/manager']);
       }, err => {
         console.error(err);
-        this.errorService.addError('Could not leave project');
+        this.notificationService.addError('Could not leave project');
         this.requestConfirmation = false;
       });
   }
@@ -93,7 +93,7 @@ export class ProjectSettingsComponent implements OnInit {
         },
         e => {
           console.error(e);
-          this.errorService.addError('Unable to update name');
+          this.notificationService.addError('Unable to update name');
         }
       );
     }
@@ -103,7 +103,7 @@ export class ProjectSettingsComponent implements OnInit {
         },
         e => {
           console.error(e);
-          this.errorService.addError('Unable to update description');
+          this.notificationService.addError('Unable to update description');
         }
       );
     }

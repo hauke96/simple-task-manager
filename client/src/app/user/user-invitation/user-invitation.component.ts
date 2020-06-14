@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ErrorService } from '../../common/error.service';
+import { NotificationService } from '../../common/notification.service';
 import { UserService } from '../user.service';
 import { User } from '../user.material';
 
@@ -15,7 +15,7 @@ export class UserInvitationComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private errorService: ErrorService
+    private notificationService: NotificationService
   ) {
   }
 
@@ -28,7 +28,7 @@ export class UserInvitationComponent implements OnInit {
         this.userInvited.emit(user);
       }, err => {
         console.error(err);
-        this.errorService.addError('Could not load user ID for user \'' + this.userName + '\'');
+        this.notificationService.addError('Could not load user ID for user \'' + this.userName + '\'');
       });
   }
 }

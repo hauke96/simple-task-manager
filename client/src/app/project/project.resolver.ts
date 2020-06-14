@@ -5,13 +5,13 @@ import { ProjectService } from './project.service';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ErrorService } from '../common/error.service';
+import { NotificationService } from '../common/notification.service';
 
 @Injectable({providedIn: 'root'})
 export class ProjectResolver implements Resolve<Project> {
   constructor(
     private projectService: ProjectService,
-    private errorService: ErrorService,
+    private notificationService: NotificationService,
     private router: Router
   ) {
   }
@@ -26,7 +26,7 @@ export class ProjectResolver implements Resolve<Project> {
 
     return this.projectService.getProject(route.paramMap.get('id')).pipe(
       catchError((e: HttpErrorResponse) => {
-        this.errorService.addError('Could not load project \'' + route.paramMap.get('id') + '\'');
+        this.notificationService.addError('Could not load project \'' + route.paramMap.get('id') + '\'');
         throw e;
       })
     );

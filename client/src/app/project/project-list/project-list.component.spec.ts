@@ -14,7 +14,7 @@ import { WebsocketMessage, WebsocketMessageType } from '../../common/websocket-m
 import { ProjectService } from '../project.service';
 import { of } from 'rxjs';
 
-fdescribe('ProjectListComponent', () => {
+describe('ProjectListComponent', () => {
   let component: ProjectListComponent;
   let fixture: ComponentFixture<ProjectListComponent>;
   let routerMock: MockRouter;

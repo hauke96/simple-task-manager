@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { CurrentUserService } from '../user/current-user.service';
 import { Router } from '@angular/router';
-import { ErrorService } from '../common/error.service';
+import { NotificationService } from '../common/notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,7 @@ export class AuthService {
   constructor(
     private currentUserService: CurrentUserService,
     private router: Router,
-    private errorService: ErrorService
+    private notificationService: NotificationService
   ) {
     // if already logged in, then get the user name and store it locally in the user service
     if (this.isAuthenticated()) {
@@ -29,7 +29,7 @@ export class AuthService {
       this.currentUserService.setUser(token.user, token.uid);
     } catch (e) {
       console.error(e);
-      this.errorService.addError('Unable to get user name from token');
+      this.notificationService.addError('Unable to get user name from token');
       this.logout();
     }
   }

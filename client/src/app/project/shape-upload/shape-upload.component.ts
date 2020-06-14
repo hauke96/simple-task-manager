@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { ErrorService } from '../../common/error.service';
+import { NotificationService } from '../../common/notification.service';
 import { Feature } from 'ol';
 import { GeoJSON, GPX } from 'ol/format';
 import GeometryType from 'ol/geom/GeometryType';
@@ -16,7 +16,7 @@ export class ShapeUploadComponent implements OnInit {
   @Output() public featuresUploaded = new EventEmitter<Feature[]>();
 
   constructor(
-    private errorService: ErrorService
+    private notificationService: NotificationService
   ) {
   }
 
@@ -34,12 +34,12 @@ export class ShapeUploadComponent implements OnInit {
         const features = this.fileToFeatures(file.name, evt.target.result);
         this.featuresUploaded.emit(features);
       } catch (e) {
-        this.errorService.addError(e);
+        this.notificationService.addError(e);
       }
     };
     reader.onerror = (evt) => {
       console.error(evt);
-      this.errorService.addError('Could not upload file \'${evt.target.files[0]}\'');
+      this.notificationService.addError('Could not upload file \'${evt.target.files[0]}\'');
     };
   }
 

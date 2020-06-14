@@ -1,11 +1,21 @@
 <div class="notification-container">
-	<div *ngIf="isLoading" class="loading-container">
-		<span class="loading-text">Loading ...</span>
+	<div *ngIf="isLoading" class="text-box-container">
+		<span class="text-box">Loading ...</span>
 		<div class="loader simple-circle"></div>
 	</div>
+
 	<div *ngIf="hasError" class="error-container">
 		<span class="error-text">ERROR: </span>
 		<span>{{currentErrorText}}</span>
-		<button class="error-close-button" (click)="onCloseErrorButtonClicked()">OK</button>
+		<button class="notification-close-button" (click)="onCloseErrorButtonClicked()">OK</button>
+	</div>
+	<div *ngIf="hasWarning" class="warning-container">
+		<span class="warn-text">Warning: </span>
+		<span>{{currentWarningText}}</span>
+		<button class="notification-close-button" (click)="onCloseWarningButtonClicked()">OK</button>
+	</div>
+	<div *ngIf="hasInfo" class="text-box-container">
+		<span>{{currentInfoText}}</span>
+		<button class="notification-close-button" (click)="onCloseInfoButtonClicked()">OK</button>
 	</div>
 </div>

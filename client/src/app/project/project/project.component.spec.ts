@@ -12,7 +12,7 @@ import { WebsocketMessage, WebsocketMessageType } from '../../common/websocket-m
 import { ProjectService } from '../project.service';
 import { WebsocketClientService } from '../../common/websocket-client.service';
 import { MockRouter } from '../../common/mock-router';
-import { ErrorService } from '../../common/error.service';
+import { NotificationService } from '../../common/notification.service';
 
 describe('ProjectComponent', () => {
   let component: ProjectComponent;
@@ -20,7 +20,7 @@ describe('ProjectComponent', () => {
   let projectService: ProjectService;
   let websocketService: WebsocketClientService;
   let routerMock: MockRouter;
-  let errorService: ErrorService;
+  let notificationService: NotificationService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -45,7 +45,7 @@ describe('ProjectComponent', () => {
     projectService = TestBed.inject(ProjectService);
     routerMock = TestBed.inject(Router);
     websocketService = TestBed.inject(WebsocketClientService);
-    errorService = TestBed.inject(ErrorService);
+    notificationService = TestBed.inject(NotificationService);
   }));
 
   beforeEach(() => {
@@ -105,23 +105,23 @@ describe('ProjectComponent', () => {
   it('should show error message on error during user removal', () => {
     spyOn(routerMock, 'navigate').and.callThrough();
     const removeUserSpy = spyOn(projectService, 'removeUser').and.returnValue(throwError('test error'));
-    const errorServiceSpy = spyOn(errorService, 'addError').and.callThrough();
+    const notificationServiceSpy = spyOn(notificationService, 'addError').and.callThrough();
 
     component.project = createProject();
     component.onUserRemoved('123');
 
     expect(removeUserSpy).toHaveBeenCalledWith('1', '123');
-    expect(errorServiceSpy).toHaveBeenCalled();
+    expect(notificationServiceSpy).toHaveBeenCalled();
   });
 
   it('should show error message on error inviting user', () => {
     const inviteUserSpy = spyOn(projectService, 'inviteUser').and.returnValue(throwError('test error'));
-    const errorServiceSpy = spyOn(errorService, 'addError').and.callThrough();
+    const notificationServiceSpy = spyOn(notificationService, 'addError').and.callThrough();
 
     component.onUserInvited(new User('foo bar', '222'));
 
     expect(inviteUserSpy).toHaveBeenCalledWith('1', '222');
-    expect(errorServiceSpy).toHaveBeenCalled();
+    expect(notificationServiceSpy).toHaveBeenCalled();
   });
 
   function createProject() {

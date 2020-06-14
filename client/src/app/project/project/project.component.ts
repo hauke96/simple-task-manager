@@ -5,7 +5,7 @@ import { TaskService } from '../../task/task.service';
 import { Project } from '../project.material';
 import { CurrentUserService } from '../../user/current-user.service';
 import { UserService } from '../../user/user.service';
-import { ErrorService } from '../../common/error.service';
+import { NotificationService } from '../../common/notification.service';
 import { Unsubscriber } from '../../common/unsubscriber';
 import { User } from '../../user/user.material';
 
@@ -24,7 +24,7 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
     private userService: UserService,
     private taskService: TaskService,
     private currentUserService: CurrentUserService,
-    private errorService: ErrorService
+    private notificationService: NotificationService
   ) {
     super();
   }
@@ -44,9 +44,9 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
 
         // TODO create a notification service for this or rename&extend the error service
         if (this.isOwner()) {
-          this.errorService.addError('Project removed successfully');
+          this.notificationService.addError('Project removed successfully');
         } else {
-          this.errorService.addError('This project has been removed');
+          this.notificationService.addError('This project has been removed');
         }
 
         this.router.navigate(['/manager']);
@@ -66,7 +66,7 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
       .subscribe(() => {
       }, err => {
         console.error(err);
-        this.errorService.addError('Could not remove user');
+        this.notificationService.addError('Could not remove user');
       });
   }
 
@@ -75,7 +75,7 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
       .subscribe(() => {
       }, err => {
         console.error(err);
-        this.errorService.addError('Could not invite user \'' + user.name + '\'');
+        this.notificationService.addError('Could not invite user \'' + user.name + '\'');
       });
   }
 

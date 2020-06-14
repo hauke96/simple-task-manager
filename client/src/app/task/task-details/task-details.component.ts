@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { TaskService } from '../task.service';
 import { Task } from '../task.material';
 import { CurrentUserService } from '../../user/current-user.service';
-import { ErrorService } from '../../common/error.service';
+import { NotificationService } from '../../common/notification.service';
 import { User } from '../../user/user.material';
 import { UserService } from '../../user/user.service';
 import { Unsubscriber } from '../../common/unsubscriber';
@@ -24,7 +24,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
     private taskService: TaskService,
     private currentUserService: CurrentUserService,
     private userService: UserService,
-    private errorService: ErrorService,
+    private notificationService: NotificationService,
   ) {
     super();
   }
@@ -58,7 +58,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
       },
       e => {
         console.error(e);
-        this.errorService.addError('Unable to load assigned user');
+        this.notificationService.addError('Unable to load assigned user');
       }
     );
   }
@@ -70,7 +70,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
         },
         e => {
           console.error(e);
-          this.errorService.addError('Could not assign user');
+          this.notificationService.addError('Could not assign user');
         });
   }
 
@@ -81,7 +81,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
         },
         e => {
           console.error(e);
-          this.errorService.addError('Could not unassign user');
+          this.notificationService.addError('Could not unassign user');
         });
   }
 
@@ -92,7 +92,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
         },
         e => {
           console.error(e);
-          this.errorService.addError('Could not set process points');
+          this.notificationService.addError('Could not set process points');
         });
   }
 
@@ -101,7 +101,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
       .subscribe(() => {
         },
         err => {
-          this.errorService.addError('Unable to open JOSM. Is it running?');
+          this.notificationService.addError('Unable to open JOSM. Is it running?');
         });
   }
 }

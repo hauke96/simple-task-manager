@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UserInvitationComponent } from './user-invitation.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
-import { ErrorService } from '../../common/error.service';
+import { NotificationService } from '../../common/notification.service';
 import { of, throwError } from 'rxjs';
 import { UserService } from '../user.service';
 import { User } from '../user.material';
@@ -11,7 +11,7 @@ import { User } from '../user.material';
 describe('UserInvitationComponent', () => {
   let component: UserInvitationComponent;
   let fixture: ComponentFixture<UserInvitationComponent>;
-  let errorService: ErrorService;
+  let notificationService: NotificationService;
   let userService: UserService;
 
   beforeEach(async(() => {
@@ -24,7 +24,7 @@ describe('UserInvitationComponent', () => {
     })
       .compileComponents();
 
-    errorService = TestBed.inject(ErrorService);
+    notificationService = TestBed.inject(NotificationService);
     userService = TestBed.inject(UserService);
   }));
 
@@ -53,7 +53,7 @@ describe('UserInvitationComponent', () => {
 
   it('should show error message on user service error', () => {
     const inviteUserSpy = spyOn(component.userInvited, 'emit').and.callThrough();
-    const errorSpy = spyOn(errorService, 'addError').and.callThrough();
+    const errorSpy = spyOn(notificationService, 'addError').and.callThrough();
     spyOn(userService, 'getUserByName').and.returnValue(throwError('BOOM!'));
 
     component.userName = 'test-user';

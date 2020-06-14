@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ShapeUploadComponent } from './shape-upload.component';
-import { ErrorService } from '../../common/error.service';
+import { NotificationService } from '../../common/notification.service';
 
 const exampleGpxFile = `
 <gpx>
@@ -187,7 +187,7 @@ const exampleOsm = `<?xml version='1.0' encoding='UTF-8'?>
 describe('ShapeUploadComponent', () => {
   let component: ShapeUploadComponent;
   let fixture: ComponentFixture<ShapeUploadComponent>;
-  let errorService: ErrorService;
+  let notificationService: NotificationService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -195,7 +195,7 @@ describe('ShapeUploadComponent', () => {
     })
       .compileComponents();
 
-    errorService = TestBed.inject(ErrorService);
+    notificationService = TestBed.inject(NotificationService);
   }));
 
   beforeEach(() => {
