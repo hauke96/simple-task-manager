@@ -7,15 +7,25 @@
 	<div *ngIf="hasError" class="error-container">
 		<span class="error-text">ERROR: </span>
 		<span>{{currentErrorText}}</span>
-		<button class="notification-close-button" (click)="onCloseErrorButtonClicked()">OK</button>
+		<div class="close-button-container">
+			<span *ngIf="remainingErrors> 1" class="remaining-notifications-label">{{ remainingErrors - 1 }} more errors</span>
+			<button (click)="onCloseErrorButtonClicked()">OK</button>
+		</div>
 	</div>
 	<div *ngIf="hasWarning" class="warning-container">
 		<span class="warn-text">Warning: </span>
 		<span>{{currentWarningText}}</span>
-		<button class="notification-close-button" (click)="onCloseWarningButtonClicked()">OK</button>
+		<div class="close-button-container">
+			<span *ngIf="remainingWarning > 1" class="remaining-notifications-label">{{ remainingWarning - 1 }} more warnings</span>
+			<button (click)="onCloseWarningButtonClicked()">OK</button>
+		</div>
 	</div>
 	<div *ngIf="hasInfo" class="text-box-container">
 		<span>{{currentInfoText}}</span>
-		<button class="notification-close-button" (click)="onCloseInfoButtonClicked()">OK</button>
+		<button class="close-button-container" (click)="onCloseInfoButtonClicked()">OK</button>
+		<div class="close-button-container">
+			<span *ngIf="remainingInfo > 1" class="remaining-notifications-label">{{ remainingInfo - 1 }} more notifications</span>
+			<button (click)="onCloseInfoButtonClicked()">OK</button>
+		</div>
 	</div>
 </div>

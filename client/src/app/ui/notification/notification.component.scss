@@ -45,9 +45,13 @@
 	color: $color-warn-dark;
 }
 
-.notification-close-button {
+.close-button-container {
 	position: absolute;
 	right: $space-large;
+}
+
+.remaining-notifications-label {
+	margin-right: $space-large;
 }
 
 @keyframes circle-loader {

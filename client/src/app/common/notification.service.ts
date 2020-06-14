@@ -22,6 +22,10 @@ export class NotificationService {
     return this.errorMessages.length !== 0;
   }
 
+  public remainingErrors() {
+    return this.errorMessages.length;
+  }
+
   // Returns the oldest message
   public getError(): string {
     return this.errorMessages[0];
@@ -44,6 +48,10 @@ export class NotificationService {
     return this.infoMessages.length !== 0;
   }
 
+  public remainingInfo() {
+    return this.infoMessages.length;
+  }
+
   // Returns the oldest message
   public getInfo(): string {
     return this.infoMessages[0];
@@ -64,6 +72,10 @@ export class NotificationService {
 
   public hasWarning(): boolean {
     return this.warningMessages.length !== 0;
+  }
+
+  public remainingWarning() {
+    return this.warningMessages.length;
   }
 
   // Returns the oldest message
