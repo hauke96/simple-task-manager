@@ -14,7 +14,7 @@ import { WebsocketMessage, WebsocketMessageType } from '../../common/websocket-m
 import { ProjectService } from '../project.service';
 import { of } from 'rxjs';
 
-describe('ProjectListComponent', () => {
+fdescribe('ProjectListComponent', () => {
   let component: ProjectListComponent;
   let fixture: ComponentFixture<ProjectListComponent>;
   let routerMock: MockRouter;
@@ -84,6 +84,27 @@ describe('ProjectListComponent', () => {
     // Trigger all needed events
     websocketService.messageReceived.emit(new WebsocketMessage(
       WebsocketMessageType.MessageType_ProjectAdded,
+      new ProjectDto(p.id, p.name, p.description, p.tasks.map(t => t.id), p.users.map(u => u.uid), p.owner.uid, p.needsAssignment)
+    ));
+
+    expect(component.projects).toContain(p);
+  });
+
+  it('should add project to list when added', () => {
+    component.projects = [createProject()];
+
+    const p = createProject();
+    p.id = component.projects[0].id;
+    p.owner = component.projects[0].owner;
+    p.tasks = component.projects[0].tasks;
+    p.name = component.projects[0].name;
+    p.users = component.projects[0].users;
+    p.users.push(new User('Foo', '1234'));
+    spyOn(projectService, 'toProject').and.returnValue(of(p));
+
+    // Trigger all needed events
+    websocketService.messageReceived.emit(new WebsocketMessage(
+      WebsocketMessageType.MessageType_ProjectUpdated,
       new ProjectDto(p.id, p.name, p.description, p.tasks.map(t => t.id), p.users.map(u => u.uid), p.owner.uid, p.needsAssignment)
     ));
 
