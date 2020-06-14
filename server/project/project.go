@@ -185,22 +185,21 @@ func AddUser(projectId, userId, potentialOwnerId string) (*Project, error) {
 		}
 	}
 
-	return store.addUser(projectId, userId)
+	project, err := store.addUser(projectId, userId)
+	if err != nil {
+		return nil, errors.Wrap(err, "getting project failed")
+	}
+
+	err = addProcessPointData(project, potentialOwnerId)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Unable to add process point data to project %s", project.Id))
+	}
+
+	return project, nil
 }
 
 func LeaveProject(projectId string, potentialMemberId string) (*Project, error) {
-	// Only the owner can delete a project but cannot not leave it
-	err := permission.VerifyOwnership(projectId, potentialMemberId)
-	if err == nil {
-		return nil, errors.New("the given user is the owner and therefore cannot leave the project")
-	}
-
-	err = permission.VerifyMembershipProject(projectId, potentialMemberId)
-	if err != nil {
-		return nil, errors.Wrap(err, "user membership verification failed")
-	}
-
-	return store.removeUser(projectId, potentialMemberId)
+	return RemoveUser(projectId, potentialMemberId, potentialMemberId)
 }
 
 func RemoveUser(projectId, requestingUserId, userIdToRemove string) (*Project, error) {
@@ -246,6 +245,13 @@ func RemoveUser(projectId, requestingUserId, userIdToRemove string) (*Project, e
 				return nil, errors.Wrap(err, fmt.Sprintf("Unable to unassign user '%s' from task '%s'", userIdToRemove, t))
 			}
 		}
+	}
+
+	// It could happen that someone removes him-/herself, so that we just removed requestingUserId from the project.
+	// Therefore the owner is used here.
+	err = addProcessPointData(project, project.Owner)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Unable to add process point data to project %s", project.Id))
 	}
 
 	return project, nil
@@ -297,7 +303,17 @@ func UpdateName(projectId string, newName string, requestingUserId string) (*Pro
 		return nil, errors.New("No name specified")
 	}
 
-	return store.updateName(projectId, newName)
+	project, err := store.updateName(projectId, newName)
+	if err != nil {
+		return nil, errors.Wrap(err, "getting project failed")
+	}
+
+	err = addProcessPointData(project, requestingUserId)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Unable to add process point data to project %s", project.Id))
+	}
+
+	return project, nil
 }
 
 func UpdateDescription(projectId string, newDescription string, requestingUserId string) (*Project, error) {
@@ -310,5 +326,15 @@ func UpdateDescription(projectId string, newDescription string, requestingUserId
 		return nil, errors.New("No description specified")
 	}
 
-	return store.updateDescription(projectId, newDescription)
+	project, err := store.updateDescription(projectId, newDescription)
+	if err != nil {
+		return nil, errors.Wrap(err, "getting project failed")
+	}
+
+	err = addProcessPointData(project, requestingUserId)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Unable to add process point data to project %s", project.Id))
+	}
+
+	return project, nil
 }

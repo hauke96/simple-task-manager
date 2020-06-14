@@ -173,7 +173,7 @@ func updateProjectName_v2_3(w http.ResponseWriter, r *http.Request, token *auth.
 		return
 	}
 
-	updatedProject, err := project.UpdateName(projectId,string(bodyBytes), token.UID)
+	updatedProject, err := project.UpdateName(projectId, string(bodyBytes), token.UID)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -408,6 +408,8 @@ func sendTaskUpdate(task *task.Task, userId string) error {
 	if err != nil {
 		return err
 	}
+
+	sigolo.Info("Send: %#v", project)
 
 	websocket.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectUpdated,
