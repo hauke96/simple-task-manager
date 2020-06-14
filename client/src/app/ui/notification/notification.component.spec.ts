@@ -91,7 +91,22 @@ describe('NotificationComponent', () => {
 
     notificationService.addInfo('some info');
     expect(notificationService.hasInfo()).toEqual(true);
-    component.onCloseInfoButtonClicked()
+    component.onCloseInfoButtonClicked();
     expect(notificationService.hasInfo()).toEqual(false);
+  });
+
+  it('should get the amount of notifications correctly', () => {
+    notificationService.addError('e1');
+    notificationService.addError('e2');
+    notificationService.addError('e3');
+
+    notificationService.addWarning('w1');
+    notificationService.addWarning('w2');
+
+    notificationService.addInfo('i1');
+
+    expect(component.remainingErrors).toEqual(3);
+    expect(component.remainingWarning).toEqual(2);
+    expect(component.remainingInfo).toEqual(1);
   });
 });
