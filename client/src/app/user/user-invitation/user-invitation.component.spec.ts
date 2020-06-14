@@ -31,6 +31,7 @@ describe('UserInvitationComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(UserInvitationComponent);
     component = fixture.componentInstance;
+    component.users = [];
     fixture.detectChanges();
   });
 
@@ -63,4 +64,19 @@ describe('UserInvitationComponent', () => {
     expect(inviteUserSpy).not.toHaveBeenCalled();
     expect(errorSpy).toHaveBeenCalled();
   });
+
+  it('should so nothing when adding user twice', () => {
+    const inviteUserSpy = spyOn(component.userInvited, 'emit').and.callThrough();
+    const userServiceSpy = spyOn(userService, 'getUserByName').and.callFake(user => {
+      component.users.push(new User(user, user));
+      return of(undefined);
+    });
+
+    component.enteredUserName = 'test-user';
+    component.onInvitationButtonClicked();
+    component.onInvitationButtonClicked();
+
+    expect(userServiceSpy).toHaveBeenCalledTimes(1);
+    expect(inviteUserSpy).toHaveBeenCalledTimes(1);
+  })
 });
