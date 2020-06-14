@@ -30,7 +30,7 @@
 
 		<h2>Create shapes:</h2>
 		<!-- Different shape creation methods: Divide, Upload -->
-		<app-tabs [tabs]="['Draw', 'Upload', 'Remove']" #tabs (tabSelected)="onTabSelected($event)">
+		<app-tabs [tabs]="['Draw', 'Upload', 'Overpass', 'Remove']" #tabs (tabSelected)="onTabSelected($event)">
 			<div *ngIf="tabs.tabIndex === 0">
 				<div class="tab-container">
 					<app-shape-divide [gridCellShape]="gridCellShape"
@@ -46,6 +46,11 @@
 				</div>
 			</div>
 			<div *ngIf="tabs.tabIndex === 2">
+				<div class="tab-container">
+					TODO
+				</div>
+			</div>
+			<div *ngIf="tabs.tabIndex === 3">
 				<div class="tab-container">
 					<span>Click on a polygon to delete it.</span>
 				</div>
