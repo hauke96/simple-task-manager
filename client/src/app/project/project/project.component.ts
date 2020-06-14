@@ -50,6 +50,9 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
         }
 
         this.router.navigate(['/manager']);
+      }),
+      this.projectService.projectLeft.subscribe(() => {
+        this.router.navigate(['/manager']);
       })
     );
   }

@@ -67,7 +67,6 @@ export class ProjectSettingsComponent implements OnInit {
     this.projectService.deleteProject(this.projectId)
       .subscribe(() => {
         this.requestConfirmation = false;
-        this.router.navigate(['/manager']);
       }, err => {
         console.error(err);
         this.errorService.addError('Could not delete project');

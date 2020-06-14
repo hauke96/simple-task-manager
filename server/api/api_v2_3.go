@@ -106,7 +106,7 @@ func leaveProject_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token
 		return
 	}
 
-	sendUpdate(updatedProject)
+	sendUserLeft(updatedProject, token.UID)
 }
 
 func removeUser_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
@@ -129,7 +129,7 @@ func removeUser_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) 
 		return
 	}
 
-	sendUpdate(updatedProject)
+	sendUserLeft(updatedProject, user)
 
 	encoder := json.NewEncoder(w)
 	encoder.Encode(updatedProject)
@@ -383,6 +383,16 @@ func sendUpdate(updatedProject *project.Project) {
 		Type: websocket.MessageType_ProjectUpdated,
 		Data: updatedProject,
 	}, updatedProject.Users...)
+}
+
+func sendUserLeft(updatedProject *project.Project, removedUser string) {
+	websocket.Send(websocket.Message{
+		Type: websocket.MessageType_ProjectUpdated,
+		Data: updatedProject,
+	}, updatedProject.Users...)
+	websocket.Send(websocket.Message{
+		Type: websocket.MessageType_ProjectUserLeft,
+	}, removedUser)
 }
 
 func sendDelete(removedProject *project.Project) {

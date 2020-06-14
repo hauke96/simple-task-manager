@@ -19,6 +19,7 @@ export class ProjectService {
   public projectAdded: EventEmitter<Project> = new EventEmitter();
   public projectChanged: EventEmitter<Project> = new EventEmitter();
   public projectDeleted: EventEmitter<string> = new EventEmitter();
+  public projectLeft: EventEmitter<void> = new EventEmitter();
 
   constructor(
     private taskService: TaskService,
@@ -64,6 +65,9 @@ export class ProjectService {
             console.error(e);
           }
         );
+        break;
+      case WebsocketMessageType.MessageType_ProjectUserLeft:
+        this.projectLeft.emit();
         break;
       case WebsocketMessageType.MessageType_ProjectDeleted:
         this.projectDeleted.emit(m.data);
