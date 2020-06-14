@@ -22,80 +22,23 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
   @Input() tasks: Task[];
 
   private map: Map;
-  private task: Task;
+  task: Task;
   private vectorSource: VectorSource;
 
   constructor(
     private taskService: TaskService,
-    private currentUserService: CurrentUserService,
+      private currentUserService: CurrentUserService,
     private processPointColorService: ProcessPointColorService
   ) {
     super();
   }
 
   ngAfterViewInit(): void {
-    // this style function will choose between default colors and colors for
-    // selected features
-    const style = (feature, resolution) => {
-      const task = this.tasks.find(t => t.id === feature.get('task_id'));
-
-      const hasAssignedUser = !!task.assignedUser && task.assignedUser !== '';
-      const currentUserTask = this.currentUserService.getUserId() === task.assignedUser;
-      const isSelected = this.taskService.getSelectedTask().id === feature.get('task_id');
-      const borderColor = '#009688';
-
-      // Convert process point count to color (0 points = red; max points = green)
-      let fillColor = this.processPointColorService.getProcessPointsColor(task.processPoints, task.maxProcessPoints);
-
-      // Less opaque, when selected
-      if (isSelected) {
-        fillColor += '80';
-      } else {
-        fillColor += '40';
-      }
-
-      // Thick border when there's an assigned user
-      let borderWidth = 1;
-      if (hasAssignedUser) {
-        borderWidth = 4;
-      }
-
-      // Text (progress percentage). Bold text on own tasks.
-      const labelWeight = currentUserTask ? 'bold' : 'normal';
-      let labelText: string;
-      if (task.processPoints === task.maxProcessPoints) {
-        labelText = 'DONE';
-      } else {
-        labelText = Math.floor(100 * task.processPoints / task.maxProcessPoints) + '%';
-      }
-
-      // Add user name
-      if (currentUserTask) {
-        labelText += '\n(you)';
-      } else if (hasAssignedUser) {
-        labelText += '\n(' + task.assignedUserName + ')';
-      }
-
-      return new Style({
-        stroke: new Stroke({
-          color: borderColor,
-          width: borderWidth,
-        }),
-        fill: new Fill({
-          color: fillColor
-        }),
-        text: new Text({
-          font: labelWeight + ' 10pt Dejavu Sans, sans-serif',
-          text: labelText
-        })
-      });
-    };
-
     // this vector source contains all the task geometries
     this.vectorSource = new VectorSource();
     const vectorLayer = new VectorLayer({
       source: this.vectorSource,
-      style
+      style: (f, r) => this.getStyle(f)
     });
 
     this.map = new Map({
@@ -146,6 +89,61 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
         this.vectorSource.changed();
       })
     );
+  }
+
+  public getStyle(feature) {
+    const task = this.tasks.find(t => t.id === feature.get('task_id'));
+
+    const hasAssignedUser = !!task.assignedUser && task.assignedUser !== '';
+    const currentUserTask = this.currentUserService.getUserId() === task.assignedUser;
+    const isSelected = this.task && this.task.id === feature.get('task_id');
+    const borderColor = '#009688';
+
+    // Convert process point count to color (0 points = red; max points = green)
+    let fillColor = this.processPointColorService.getProcessPointsColor(task.processPoints, task.maxProcessPoints);
+
+    // Less opaque, when selected
+    if (isSelected) {
+      fillColor += '80';
+    } else {
+      fillColor += '40';
+    }
+
+    // Thick border when there's an assigned user
+    let borderWidth = 1;
+    if (hasAssignedUser) {
+      borderWidth = 4;
+    }
+
+    // Text (progress percentage). Bold text on own tasks.
+    const labelWeight = currentUserTask ? 'bold' : 'normal';
+    let labelText: string;
+    if (task.processPoints === task.maxProcessPoints) {
+      labelText = 'DONE';
+    } else {
+      labelText = Math.floor(100 * task.processPoints / task.maxProcessPoints) + '%';
+    }
+
+    // Add user name
+    if (currentUserTask) {
+      labelText += '\n(you)';
+    } else if (hasAssignedUser) {
+      labelText += '\n(' + task.assignedUserName + ')';
+    }
+
+    return new Style({
+      stroke: new Stroke({
+        color: borderColor,
+        width: borderWidth,
+      }),
+      fill: new Fill({
+        color: fillColor
+      }),
+      text: new Text({
+        font: labelWeight + ' 10pt Dejavu Sans, sans-serif',
+        text: labelText
+      })
+    });
   }
 
   private showTaskPolygon(task: Task) {

@@ -4,11 +4,14 @@ import { TaskMapComponent } from './task-map.component';
 import { Task, TestTaskGeometry } from '../task.material';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TaskService } from '../task.service';
+import { Feature } from 'ol';
+import { CurrentUserService } from '../../user/current-user.service';
 
 describe('TaskMapComponent', () => {
   let component: TaskMapComponent;
   let fixture: ComponentFixture<TaskMapComponent>;
   let taskService: TaskService;
+  let currentUserService: CurrentUserService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -18,6 +21,7 @@ describe('TaskMapComponent', () => {
       .compileComponents();
 
     taskService = TestBed.inject(TaskService);
+    currentUserService = TestBed.inject(CurrentUserService);
   }));
 
   beforeEach(() => {
@@ -25,8 +29,10 @@ describe('TaskMapComponent', () => {
     component = fixture.componentInstance;
 
     component.tasks = [
-      new Task('t-0', 0, 100, TestTaskGeometry),
-      new Task('t-1', 0, 100, TestTaskGeometry)
+      new Task('1', 0, 100, TestTaskGeometry),
+      new Task('2', 10, 100, TestTaskGeometry),
+      new Task('3', 50, 100, TestTaskGeometry),
+      new Task('4', 100, 100, TestTaskGeometry),
     ];
 
     fixture.detectChanges();
@@ -44,4 +50,39 @@ describe('TaskMapComponent', () => {
     // @ts-ignore
     expect(component.task).toEqual(task);
   });
+
+  it('should create fillColor correctly', () => {
+    checkStyle(0, '#ff000040', 1);
+    checkStyle(1, '#ff330040', 1);
+    checkStyle(2, '#ffff0040', 1);
+    checkStyle(3, '#00ff0040', 1);
+  });
+
+  it('should create selected color correctly', () => {
+    checkStyle(0, '#ff000080', 1, true);
+    checkStyle(1, '#ff330080', 1, true);
+    checkStyle(2, '#ffff0080', 1, true);
+    checkStyle(3, '#00ff0080', 1, true);
+  });
+
+  it('should create assigned color correctly', () => {
+    spyOn(currentUserService, 'getUserId').and.returnValue('123');
+    component.tasks.forEach(t => t.assignedUser = '123');
+
+    checkStyle(0, '#ff000080', 4, true);
+    checkStyle(1, '#ff330040', 4);
+    checkStyle(2, '#ffff0080', 4, true);
+    checkStyle(3, '#00ff0040', 4);
+  });
+
+  function checkStyle(taskIndex: number, expectedColor: string, expectedBorderWidth: number, select: boolean = false) {
+    if (select) {
+      component.task = component.tasks[taskIndex];
+    }
+    const f = new Feature({task_id: component.tasks[taskIndex].id});
+    const s = component.getStyle(f);
+    expect(s.getFill().getColor()).toEqual(expectedColor);
+    expect(s.getStroke().getColor()).toEqual('#009688');
+    expect(s.getStroke().getWidth()).toEqual(expectedBorderWidth);
+  }
 });
