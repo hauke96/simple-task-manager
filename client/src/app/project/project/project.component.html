@@ -23,7 +23,8 @@
 					<h2>Users</h2>
 					<app-user-invitation *ngIf="isOwner()"
 										 class="tab-container-item"
-										 (userInvited)="onUserInvited($event)">
+										 (userInvited)="onUserInvited($event)"
+										 [users]="project.users">
 					</app-user-invitation>
 					<app-user-list [users]="project?.users"
 								   [ownerUid]="project.owner.uid"

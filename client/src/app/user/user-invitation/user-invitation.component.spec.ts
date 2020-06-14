@@ -44,7 +44,7 @@ describe('UserInvitationComponent', () => {
     const inviteUserSpy = spyOn(component.userInvited, 'emit').and.callThrough();
     spyOn(userService, 'getUserByName').and.returnValue(of(user));
 
-    component.userName = 'test-user';
+    component.enteredUserName = 'test-user';
 
     component.onInvitationButtonClicked();
 
@@ -56,7 +56,7 @@ describe('UserInvitationComponent', () => {
     const errorSpy = spyOn(notificationService, 'addError').and.callThrough();
     spyOn(userService, 'getUserByName').and.returnValue(throwError('BOOM!'));
 
-    component.userName = 'test-user';
+    component.enteredUserName = 'test-user';
 
     component.onInvitationButtonClicked();
 

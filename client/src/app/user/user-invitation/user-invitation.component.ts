@@ -9,9 +9,11 @@ import { User } from '../user.material';
   styleUrls: ['./user-invitation.component.scss']
 })
 export class UserInvitationComponent implements OnInit {
+  @Input() public users: User[];
+
   @Output() public userInvited: EventEmitter<User> = new EventEmitter<User>();
 
-  public userName: string;
+  public enteredUserName: string;
 
   constructor(
     private userService: UserService,
@@ -23,12 +25,17 @@ export class UserInvitationComponent implements OnInit {
   }
 
   public onInvitationButtonClicked() {
-    this.userService.getUserByName(this.userName).subscribe(
+    if (this.users.map(u => u.name).includes(this.enteredUserName)) {
+      this.notificationService.addWarning('User ' + this.enteredUserName + ' is already a member of this project');
+      return;
+    }
+
+    this.userService.getUserByName(this.enteredUserName).subscribe(
       user => {
         this.userInvited.emit(user);
       }, err => {
         console.error(err);
-        this.notificationService.addError('Could not load user ID for user \'' + this.userName + '\'');
+        this.notificationService.addError('Could not load user ID for user \'' + this.enteredUserName + '\'');
       });
   }
 }

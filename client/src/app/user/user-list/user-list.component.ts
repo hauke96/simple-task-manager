@@ -8,8 +8,8 @@ import { User } from '../user.material';
   styleUrls: ['./user-list.component.scss']
 })
 export class UserListComponent implements OnInit {
-  @Input() users: User[];
-  @Input() ownerUid: string;
+  @Input() public users: User[];
+  @Input() public ownerUid: string;
 
   @Output() public userRemoved: EventEmitter<string> = new EventEmitter<string>();
 
