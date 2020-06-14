@@ -32,10 +32,19 @@ export class ProjectListComponent extends Unsubscriber implements OnInit {
         this.projects.push(p);
       }),
       this.projectService.projectChanged.subscribe((p: Project) => {
+        let index = -1;
+
         for (let i = 0; i < this.projects.length; i++) {
           if (this.projects[i].id === p.id) {
-            this.projects[i] = p;
+            index = i;
+            break;
           }
+        }
+
+        if (index !== -1) {
+          this.projects[index] = p;
+        } else {
+          this.projects.push(p);
         }
       }),
       this.projectService.projectDeleted.subscribe((removedProjectId: string) => {
