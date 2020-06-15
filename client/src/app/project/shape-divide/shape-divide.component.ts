@@ -22,7 +22,8 @@ export class ShapeDivideComponent implements OnInit {
 
   constructor(
     private notificationService: NotificationService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
   }

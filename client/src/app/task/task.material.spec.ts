@@ -1,4 +1,4 @@
-import { Task, TestTaskFeature, TestTaskGeometry } from './task.material';
+import { Task, TestTaskFeature } from './task.material';
 
 describe('Task', () => {
   it('should create an instance without assigned User', () => {
