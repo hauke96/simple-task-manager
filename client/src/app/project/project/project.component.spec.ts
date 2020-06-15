@@ -4,7 +4,7 @@ import { ProjectComponent } from './project.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Task, TestTaskGeometry } from '../../task/task.material';
+import { Task, TestTaskFeature, TestTaskGeometry } from '../../task/task.material';
 import { User } from '../../user/user.material';
 import { Project, ProjectDto } from '../project.material';
 import { of, throwError } from 'rxjs';
@@ -125,7 +125,7 @@ describe('ProjectComponent', () => {
   });
 
   function createProject() {
-    const t = new Task('567', 10, 100, TestTaskGeometry);
+    const t = new Task('567', undefined, 10, 100, TestTaskFeature);
     const u1 = new User('test-user', '123');
     const u2 = new User('test-user2', '234');
     const u3 = new User('test-user3', '345');

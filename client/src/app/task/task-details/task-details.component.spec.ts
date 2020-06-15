@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TaskDetailsComponent } from './task-details.component';
 import { CurrentUserService } from '../../user/current-user.service';
 import { TaskService } from '../task.service';
-import { Task, TestTaskGeometry } from '../task.material';
+import { Task, TestTaskFeature, TestTaskGeometry } from '../task.material';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
@@ -107,6 +107,6 @@ describe('TaskDetailsComponent', () => {
   });
 
   function createTask(processPoints: number, id: string = '123'): Task {
-    return new Task(id, processPoints, 100, TestTaskGeometry);
+    return new Task(id, undefined, processPoints, 100, TestTaskFeature);
   }
 });

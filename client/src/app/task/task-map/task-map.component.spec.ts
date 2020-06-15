@@ -1,11 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TaskMapComponent } from './task-map.component';
-import { Task, TestTaskGeometry } from '../task.material';
+import { Task } from '../task.material';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TaskService } from '../task.service';
 import { Feature } from 'ol';
 import { CurrentUserService } from '../../user/current-user.service';
+import { Polygon } from 'ol/geom';
 
 describe('TaskMapComponent', () => {
   let component: TaskMapComponent;
@@ -29,11 +30,13 @@ describe('TaskMapComponent', () => {
     component = fixture.componentInstance;
 
     component.tasks = [
-      new Task('1', 0, 100, TestTaskGeometry),
-      new Task('2', 10, 100, TestTaskGeometry),
-      new Task('3', 50, 100, TestTaskGeometry),
-      new Task('4', 100, 100, TestTaskGeometry),
+      new Task('1', undefined, 0, 100, getFeature()),
+      new Task('2', undefined, 10, 100, getFeature()),
+      new Task('3', undefined, 50, 100, getFeature()),
+      new Task('4', undefined, 100, 100, getFeature()),
     ];
+
+    component.ngAfterViewInit();
 
     fixture.detectChanges();
   });
@@ -43,7 +46,7 @@ describe('TaskMapComponent', () => {
   });
 
   it('should update the task on change', () => {
-    const task = new Task('id123', 10, 100, TestTaskGeometry, 'miriam');
+    const task = new Task('id123', undefined, 10, 100, getFeature(), 'miriam');
 
     taskService.selectTask(task);
 
@@ -84,5 +87,9 @@ describe('TaskMapComponent', () => {
     expect(s.getFill().getColor()).toEqual(expectedColor);
     expect(s.getStroke().getColor()).toEqual('#009688');
     expect(s.getStroke().getWidth()).toEqual(expectedBorderWidth);
+  }
+
+  function getFeature(): Feature {
+    return new Feature(new Polygon([[[0, 0], [1, 1], [1, 2]]]));
   }
 });

@@ -1,4 +1,5 @@
 import { Feature } from 'ol';
+import { Polygon } from 'ol/geom';
 
 export class TaskDto {
   constructor(
@@ -26,4 +27,5 @@ export class Task {
   }
 }
 
-export const TestTaskGeometry = '{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[0, 0], [100, 100], [100, 200]]]},"properties":null}';
+export const TestTaskFeature = new Feature(new Polygon([[[0, 0], [1, 1], [1, 2]]]));
+export const TestTaskGeometry = '{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[0, 0], [1, 1], [1, 2]]]},"properties":null}';

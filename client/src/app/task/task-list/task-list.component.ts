@@ -21,7 +21,7 @@ export class TaskListComponent extends Unsubscriber implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.unsubscribeLater(
-        this.taskService.tasksUpdated.subscribe((updatedTasks: Task[]) => {
+      this.taskService.tasksUpdated.subscribe((updatedTasks: Task[]) => {
         for (const updatedTask of updatedTasks) { // through tasks
           for (const i in this.tasks) { // through indices
             if (this.tasks[i].id === updatedTask.id) {
@@ -44,5 +44,9 @@ export class TaskListComponent extends Unsubscriber implements AfterViewInit {
 
   public onListItemClicked(id: string) {
     this.taskService.selectTask(this.tasks.find(t => t.id === id));
+  }
+
+  public taskTitle(task: Task): string {
+    return !task.name ? task.id : task.name;
   }
 }

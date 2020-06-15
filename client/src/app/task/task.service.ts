@@ -117,12 +117,12 @@ export class TaskService {
   }
 
   public getExtent(task: Task): Extent {
-    return new GeoJSON().readFeature(task.geometry).getGeometry().getExtent();
+    return task.geometry.getGeometry().getExtent();
   }
 
   public getGeometryAsOsm(task: Task): string {
     const format = new GeoJSON();
-    const taskFeature = format.readFeature(task.geometry);
+    const taskFeature = task.geometry;
     const taskPolygon = taskFeature.getGeometry() as Polygon;
     const coordinates: Coordinate[] = taskPolygon.getCoordinates()[0];
 

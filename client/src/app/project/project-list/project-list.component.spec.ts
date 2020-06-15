@@ -6,7 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { CurrentUserService } from '../../user/current-user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MockRouter } from '../../common/mock-router';
-import { Task, TestTaskGeometry } from '../../task/task.material';
+import { Task, TestTaskFeature, TestTaskGeometry } from '../../task/task.material';
 import { User } from '../../user/user.material';
 import { Project, ProjectDto } from '../project.material';
 import { WebsocketClientService } from '../../common/websocket-client.service';
@@ -141,7 +141,7 @@ describe('ProjectListComponent', () => {
   });
 
   function createProject(): Project {
-    const t = new Task('567', 10, 100, TestTaskGeometry);
+    const t = new Task('567', undefined, 10, 100, TestTaskFeature);
     const u1 = new User('test-user', '123');
     const u2 = new User('test-user2', '234');
     const u3 = new User('test-user3', '345');

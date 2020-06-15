@@ -5,7 +5,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TaskService } from '../task/task.service';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
-import { Task, TestTaskGeometry } from '../task/task.material';
+import { Task, TestTaskFeature, TestTaskGeometry } from '../task/task.material';
 import { UserService } from '../user/user.service';
 import { User } from '../user/user.material';
 import { Project, ProjectDto } from './project.material';
@@ -32,9 +32,9 @@ describe('ProjectService', () => {
 
   it('should create tasks when creating project', () => {
     const tasks = [
-      new Task('1', 0, 100, TestTaskGeometry),
-      new Task('2', 0, 100, TestTaskGeometry),
-      new Task('3', 0, 100, TestTaskGeometry)
+      new Task('1', 'name1', 0, 100, TestTaskFeature),
+      new Task('2', 'name2', 0, 100, TestTaskFeature),
+      new Task('3', undefined, 0, 100, TestTaskFeature)
     ];
 
     spyOn(taskService, 'createNewTasks').and.callFake((geom: string[], maxProcessPoints: number) => {
@@ -220,9 +220,9 @@ describe('ProjectService', () => {
     });
 
     const tasks = [
-      new Task('7', 0, 100, TestTaskGeometry, '2'),
-      new Task('8', 0, 100, TestTaskGeometry, '1'),
-      new Task('9', 0, 100, TestTaskGeometry)
+      new Task('7', undefined, 0, 100, TestTaskFeature, '2'),
+      new Task('8', undefined, 0, 100, TestTaskFeature, '1'),
+      new Task('9', undefined, 0, 100, TestTaskFeature)
     ];
 
     return {users, tasks};

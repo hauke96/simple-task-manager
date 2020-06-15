@@ -10,7 +10,6 @@ import VectorSource from 'ol/source/Vector';
 import { Attribution, defaults as defaultControls, ScaleLine } from 'ol/control';
 import { Fill, Stroke, Style, Text } from 'ol/style';
 import { ProcessPointColorService } from '../../common/process-point-color.service';
-import GeoJSON from 'ol/format/GeoJSON';
 import { Unsubscriber } from '../../common/unsubscriber';
 
 @Component({
@@ -27,7 +26,7 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
 
   constructor(
     private taskService: TaskService,
-      private currentUserService: CurrentUserService,
+    private currentUserService: CurrentUserService,
     private processPointColorService: ProcessPointColorService
   ) {
     super();
@@ -147,7 +146,7 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
   }
 
   private showTaskPolygon(task: Task) {
-    const feature = new GeoJSON().readFeature(task.geometry);
+    const feature = task.geometry;
     feature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
     feature.set('task_id', task.id);
 
