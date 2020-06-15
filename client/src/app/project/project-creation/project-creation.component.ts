@@ -144,7 +144,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   }
 
   public onSaveButtonClicked() {
-    const polygons: Polygon[] = this.vectorSource.getFeatures().map(f => {
+    const features: Feature[] = this.vectorSource.getFeatures().map(f => {
       f = f.clone(); // otherwise we would change the polygons on the map
       let polygon = (f.getGeometry() as Polygon);
 
@@ -152,23 +152,20 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       // with lat/lon values, so we transform it back.
       polygon = polygon.transform('EPSG:3857', 'EPSG:4326') as Polygon;
 
-      // The openlayers "Polygon" Class can contain multiple rings. Because the
-      // user just draws things, there only exist polygons having only one ring.
-      // Therefore we take the first and only ring as our task geometry.
-      return polygon;
+      f.setGeometry(polygon);
+      return f;
     });
 
-    this.createProject(this.newProjectName, this.newMaxProcessPoints, this.projectDescription, polygons);
+    this.createProject(this.newProjectName, this.newMaxProcessPoints, this.projectDescription, features);
   }
 
-  public createProject(name: string, maxProcessPoints: number, projectDescription: string, polygons: Polygon[]) {
+  public createProject(name: string, maxProcessPoints: number, projectDescription: string, features: Feature[]) {
     const format = new GeoJSON();
     // We want features to attach attributes and to not be bound to one single Polygon.
     // Furthermore the escaping in the string breaks the format as the "\" character is actually transmitted as "\" character
     const geometries: string[] = [];
-    for (const polygon of polygons) {
-      let s = format.writeFeature(new Feature(polygon));
-      geometries.push(s);
+    for (const feature of features) {
+      geometries.push(format.writeFeature(feature));
     }
 
     const owner = this.currentUserService.getUserId();
