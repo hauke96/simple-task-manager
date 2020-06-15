@@ -174,7 +174,7 @@ export class TaskService {
     return this.addUserNames([task]).pipe(map(t => t[0]));
   }
 
-  private toTask(dto: TaskDto): Task {
+  public toTask(dto: TaskDto): Task {
     const feature = (this.format.readFeature(dto.geometry) as Feature);
 
     return new Task(

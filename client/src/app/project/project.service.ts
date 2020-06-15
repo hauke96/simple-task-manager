@@ -2,7 +2,7 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from 'rxjs';
 import { flatMap, map, mergeMap, tap } from 'rxjs/operators';
 import { Project, ProjectDto } from './project.material';
-import { Task } from './../task/task.material';
+import { Task, TaskDto } from './../task/task.material';
 import { TaskService } from './../task/task.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
@@ -114,8 +114,9 @@ export class ProjectService {
 
   // Gets the tasks of the given project
   public getTasks(projectId: string): Observable<Task[]> {
-    return this.http.get<Task[]>(environment.url_projects + '/' + projectId + '/tasks')
+    return this.http.get<TaskDto[]>(environment.url_projects + '/' + projectId + '/tasks')
       .pipe(
+        map(dtos => dtos.map(dto => this.taskService.toTask(dto))),
         flatMap((tasks: Task[]) => {
           return this.taskService.addUserNames(tasks);
         })

@@ -28,7 +28,6 @@ export class ShapeRemoteComponent implements OnInit {
       data => {
         try {
           const features = (new OSMXML().readFeatures(data) as Feature[]);
-          console.log(features);
           this.featuresLoaded.emit(features);
         } catch (e) {
           console.log(data);
