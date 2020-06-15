@@ -7,6 +7,7 @@
 }
 
 button {
+	position: relative; // needed to set z-Index on hover
 	background-color: white;
 	margin-right: -1px; // get rid of douple sized border between two buttons
 }
@@ -14,6 +15,9 @@ button.selected:hover,
 .selected {
 	border-bottom: 2px solid $color-mid;
 	background-color: $color-very-light;
+}
+button:hover {
+	z-index: 1000;
 }
 
 .tab-list {
