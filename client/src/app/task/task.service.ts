@@ -1,5 +1,5 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { Task } from './task.material';
+import { Task, TaskDto } from './task.material';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
 import { from, Observable, of, throwError } from 'rxjs';
@@ -10,6 +10,8 @@ import { User } from '../user/user.material';
 import { UserService } from '../user/user.service';
 import GeoJSON from 'ol/format/GeoJSON';
 import { Coordinate } from 'ol/coordinate';
+import FeatureFormat from 'ol/format/Feature';
+import { Feature } from 'ol';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +21,7 @@ export class TaskService {
   public tasksUpdated: EventEmitter<Task[]> = new EventEmitter();
 
   private selectedTask: Task;
+  private format: FeatureFormat = new GeoJSON();
 
   constructor(
     private http: HttpClient,
@@ -49,10 +52,13 @@ export class TaskService {
 
   public createNewTasks(geometries: string[], maxProcessPoints: number): Observable<Task[]> {
     const draftTasks = geometries.map(g => {
-      return new Task('', 0, maxProcessPoints, g);
+      return new TaskDto('', 0, maxProcessPoints, g);
     });
-    return this.http.post<Task[]>(environment.url_tasks, JSON.stringify(draftTasks))
-      .pipe(flatMap(tasks => this.addUserNames(tasks)));
+    return this.http.post<TaskDto[]>(environment.url_tasks, JSON.stringify(draftTasks))
+      .pipe(
+        map(dtos => dtos.map(dto => this.toTask(dto))),
+        tap(tasks => tasks.forEach(t => this.selectedTaskChanged.emit(t)))
+      );
   }
 
   public setProcessPoints(taskId: string, newProcessPoints: number): Observable<Task> {
@@ -60,9 +66,12 @@ export class TaskService {
       return throwError('Task with id \'' + taskId + '\' not selected');
     }
 
-    return this.http.post<Task>(environment.url_task_processPoints.replace('{id}', taskId) + '?process_points=' + newProcessPoints, '')
-      .pipe(flatMap(task => this.addUserName(task)))
-      .pipe(tap(t => this.selectedTaskChanged.emit(t)));
+    return this.http.post<TaskDto>(environment.url_task_processPoints.replace('{id}', taskId) + '?process_points=' + newProcessPoints, '')
+      .pipe(
+        map(dto => this.toTask(dto)),
+        flatMap(task => this.addUserName(task)),
+        tap(t => this.selectedTaskChanged.emit(t))
+      );
   }
 
   public assign(taskId: string): Observable<Task> {
@@ -70,9 +79,12 @@ export class TaskService {
       return throwError('Task with id \'' + taskId + '\' not selected');
     }
 
-    return this.http.post<Task>(environment.url_task_assignedUser.replace('{id}', taskId), '')
-      .pipe(flatMap(task => this.addUserName(task)))
-      .pipe(tap(t => this.selectedTaskChanged.emit(t)));
+    return this.http.post<TaskDto>(environment.url_task_assignedUser.replace('{id}', taskId), '')
+      .pipe(
+        map(dto => this.toTask(dto)),
+        flatMap(task => this.addUserName(task)),
+        tap(t => this.selectedTaskChanged.emit(t))
+      );
   }
 
   public unassign(taskId: string): Observable<Task> {
@@ -80,8 +92,11 @@ export class TaskService {
       return throwError('Task with id \'' + taskId + '\' not selected');
     }
 
-    return this.http.delete<Task>(environment.url_task_assignedUser.replace('{id}', taskId))
-      .pipe(tap(t => this.selectedTaskChanged.emit(t)));
+    return this.http.delete<TaskDto>(environment.url_task_assignedUser.replace('{id}', taskId))
+      .pipe(
+        map(dto => this.toTask(dto)),
+        tap(t => this.selectedTaskChanged.emit(t))
+      );
   }
 
   public openInJosm(task: Task, projectId: string) {
@@ -157,5 +172,19 @@ export class TaskService {
 
   public addUserName(task: Task): Observable<Task> {
     return this.addUserNames([task]).pipe(map(t => t[0]));
+  }
+
+  private toTask(dto: TaskDto): Task {
+    const feature = (this.format.readFeature(dto.geometry) as Feature);
+
+    return new Task(
+      dto.id,
+      feature.get('name'),
+      dto.processPoints,
+      dto.maxProcessPoints,
+      feature,
+      dto.assignedUser,
+      dto.assignedUserName
+    );
   }
 }
