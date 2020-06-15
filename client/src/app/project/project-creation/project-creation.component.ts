@@ -190,6 +190,11 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
 
     this.vectorSource.refresh(); // clears the source
     features.forEach(f => this.vectorSource.addFeature(f));
+
+    this.map.getView().fit(this.vectorSource.getExtent(), {
+      size: this.map.getSize(),
+      padding: [25, 25, 25, 25] // in pixels
+    });
   }
 
   // This function expects the geometry to be in the EPSG:4326 projection.
