@@ -97,7 +97,7 @@ export class ProjectService {
     return this.taskService.createNewTasks(geometries, maxProcessPoints)
       .pipe(
         flatMap(tasks => {
-          const p = new ProjectDto('', name, projectDescription, users, owner);
+          const p = new ProjectDto('', name, projectDescription, tasks.map(t => t.id), users, owner);
           return this.http.post<ProjectDto>(environment.url_projects, JSON.stringify(p))
             .pipe(flatMap(dto => this.toProject(dto)));
         })
