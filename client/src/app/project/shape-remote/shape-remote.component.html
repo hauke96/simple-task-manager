@@ -1,0 +1,11 @@
+<p>URL to OSM-XML:</p>
+<input class="url-input" [(ngModel)]="queryUrl">
+<button (click)="onLoadButtonClicked()">Load</button>
+
+<p>Loading data from Overpass:</p>
+<ol>
+	<li>Create your query</li>
+	<li>Click on "Export"</li>
+	<li>Copy the link after "raw data directly from" (right click and "copy link")</li>
+	<li>Paste this URL in here</li>
+</ol>

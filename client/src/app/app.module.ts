@@ -27,6 +27,7 @@ import { ShapeDivideComponent } from './project/shape-divide/shape-divide.compon
 import { ShapeUploadComponent } from './project/shape-upload/shape-upload.component';
 import { MaxValidatorDirective } from './ui/max-validator.directive';
 import { MinValidatorDirective } from './ui/min-validator.directive';
+import { ShapeRemoteComponent } from './project/shape-remote/shape-remote.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import { MinValidatorDirective } from './ui/min-validator.directive';
     ShapeDivideComponent,
     ShapeUploadComponent,
     MaxValidatorDirective,
-    MinValidatorDirective
+    MinValidatorDirective,
+    ShapeRemoteComponent
   ],
   imports: [
     BrowserModule,

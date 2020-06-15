@@ -207,11 +207,12 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
         this.selectInteraction.setActive(false);
         break;
       case 1: // Tab: Upload
+      case 2: // Tab: Remote
         this.drawInteraction.setActive(false);
         this.modifyInteraction.setActive(true);
         this.selectInteraction.setActive(false);
         break;
-      case 2:
+      case 3: // Tab: Remove
         this.drawInteraction.setActive(false);
         this.modifyInteraction.setActive(false);
         this.selectInteraction.setActive(true);

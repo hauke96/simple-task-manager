@@ -15,7 +15,7 @@ export class LoggedInInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     // JOSM-Remote-Control or OSM-API
-    if (request.url.startsWith('http://localhost:8111') || request.url.startsWith(environment.osm_api_url)) {
+    if (!request.url.startsWith(environment.base_url)) {
       return next.handle(request);
     }
 

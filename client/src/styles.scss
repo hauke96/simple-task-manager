@@ -142,7 +142,7 @@ ul {
 	text-indent: -$space-large;
 }
 
-li:before {
+ul > li:before {
 	content: "–";
 	display: block;
 	float: left;
