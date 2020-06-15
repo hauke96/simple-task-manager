@@ -167,7 +167,8 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     // Furthermore the escaping in the string breaks the format as the "\" character is actually transmitted as "\" character
     const geometries: string[] = [];
     for (const polygon of polygons) {
-      geometries.push(format.writeFeature(new Feature(polygon)));
+      let s = format.writeFeature(new Feature(polygon));
+      geometries.push(s);
     }
 
     const owner = this.currentUserService.getUserId();
