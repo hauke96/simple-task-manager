@@ -88,21 +88,27 @@ describe('ProjectCreationComponent', () => {
 
     // @ts-ignore
     const spySource = spyOn(component.vectorSource, 'addFeature');
+    // @ts-ignore
+    const spyView = spyOn(component.map.getView(), 'fit');
 
     component.onShapesCreated(features);
 
     expect(spySource).toHaveBeenCalledTimes(2);
+    expect(spyView).toHaveBeenCalled();
   });
 
   it('should add uploaded shape correctly', () => {
     const vectorSourceClearSpy = spyOn(component.vectorSource, 'clear').and.callThrough();
     const vectorSourceAddSpy = spyOn(component.vectorSource, 'addFeature').and.callThrough();
+    // @ts-ignore
+    const spyView = spyOn(component.map.getView(), 'fit');
 
     const feature = new Feature(new Polygon([[[0, 0]]]));
     component.onShapesUploaded([feature]);
 
     expect(vectorSourceClearSpy).toHaveBeenCalled();
     expect(vectorSourceAddSpy).toHaveBeenCalledWith(feature);
+    expect(spyView).toHaveBeenCalled();
   });
 
   it('should set interaction for "Draw" tab', () => {
@@ -121,8 +127,16 @@ describe('ProjectCreationComponent', () => {
     expect(component.selectInteraction.getActive()).toEqual(false);
   });
 
-  it('should set interaction for "Delete" tab', () => {
+  it('should set interaction for "Remote" tab', () => {
     component.onTabSelected(2);
+
+    expect(component.drawInteraction.getActive()).toEqual(false);
+    expect(component.modifyInteraction.getActive()).toEqual(true);
+    expect(component.selectInteraction.getActive()).toEqual(false);
+  });
+
+  it('should set interaction for "Delete" tab', () => {
+    component.onTabSelected(3);
 
     expect(component.drawInteraction.getActive()).toEqual(false);
     expect(component.modifyInteraction.getActive()).toEqual(false);

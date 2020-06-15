@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ShapeRemoteComponent } from './shape-remote.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('ShapeRemoteComponent', () => {
   let component: ShapeRemoteComponent;
@@ -8,9 +9,12 @@ describe('ShapeRemoteComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ShapeRemoteComponent ]
+      declarations: [ShapeRemoteComponent],
+      imports: [
+        HttpClientTestingModule
+      ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
