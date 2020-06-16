@@ -39,7 +39,7 @@ export class TaskListComponent extends Unsubscriber implements AfterViewInit {
   }
 
   public isAssignedToCurrentUser(task: Task): boolean {
-    return task.assignedUser === this.currentUserService.getUserId();
+    return !!task.assignedUser && task.assignedUser.uid === this.currentUserService.getUserId();
   }
 
   public onListItemClicked(id: string) {

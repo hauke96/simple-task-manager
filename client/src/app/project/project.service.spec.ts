@@ -220,8 +220,8 @@ describe('ProjectService', () => {
     });
 
     const tasks = [
-      new Task('7', undefined, 0, 100, TestTaskFeature, '2'),
-      new Task('8', undefined, 0, 100, TestTaskFeature, '1'),
+      new Task('7', undefined, 0, 100, TestTaskFeature, new User('bar', '2')),
+      new Task('8', undefined, 0, 100, TestTaskFeature, new User('foo', '1')),
       new Task('9', undefined, 0, 100, TestTaskFeature)
     ];
 

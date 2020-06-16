@@ -7,6 +7,7 @@ import { TaskService } from '../task.service';
 import { Feature } from 'ol';
 import { CurrentUserService } from '../../user/current-user.service';
 import { Polygon } from 'ol/geom';
+import { User } from '../../user/user.material';
 
 describe('TaskMapComponent', () => {
   let component: TaskMapComponent;
@@ -46,7 +47,7 @@ describe('TaskMapComponent', () => {
   });
 
   it('should update the task on change', () => {
-    const task = new Task('id123', undefined, 10, 100, getFeature(), 'miriam');
+    const task = new Task('id123', undefined, 10, 100, getFeature(), new User('Miriam', '14'));
 
     taskService.selectTask(task);
 
@@ -70,7 +71,7 @@ describe('TaskMapComponent', () => {
 
   it('should create assigned color correctly', () => {
     spyOn(currentUserService, 'getUserId').and.returnValue('123');
-    component.tasks.forEach(t => t.assignedUser = '123');
+    component.tasks.forEach(t => t.assignedUser = new User('foo-' + t.id, '123'));
 
     checkStyle(0, '#ff000080', 4, true);
     checkStyle(1, '#ff330040', 4);

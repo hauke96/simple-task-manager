@@ -93,8 +93,8 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
   public getStyle(feature) {
     const task = this.tasks.find(t => t.id === feature.get('task_id'));
 
-    const hasAssignedUser = !!task.assignedUser && task.assignedUser !== '';
-    const currentUserTask = this.currentUserService.getUserId() === task.assignedUser;
+    const hasAssignedUser = !!task.assignedUser && task.assignedUser.uid !== '';
+    const currentUserTask = task.assignedUser && this.currentUserService.getUserId() === task.assignedUser.uid;
     const isSelected = this.task && this.task.id === feature.get('task_id');
     const borderColor = '#009688';
 
@@ -127,7 +127,7 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
     if (currentUserTask) {
       labelText += '\n(you)';
     } else if (hasAssignedUser) {
-      labelText += '\n(' + task.assignedUserName + ')';
+      labelText += '\n(' + task.assignedUser.name + ')';
     }
 
     return new Style({

@@ -1,6 +1,6 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from 'rxjs';
-import { flatMap, map, mergeMap, tap } from 'rxjs/operators';
+import { concatMap, flatMap, map, mergeAll, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { Project, ProjectDto } from './project.material';
 import { Task, TaskDto } from './../task/task.material';
 import { TaskService } from './../task/task.service';
@@ -116,10 +116,8 @@ export class ProjectService {
   public getTasks(projectId: string): Observable<Task[]> {
     return this.http.get<TaskDto[]>(environment.url_projects + '/' + projectId + '/tasks')
       .pipe(
-        map(dtos => dtos.map(dto => this.taskService.toTask(dto))),
-        flatMap((tasks: Task[]) => {
-          return this.taskService.addUserNames(tasks);
-        })
+        flatMap((tasks: TaskDto[]) => this.taskService.addUserNames(tasks)),
+        map(dtos => dtos.map(dto => this.taskService.toTask(dto)))
       );
   }
 

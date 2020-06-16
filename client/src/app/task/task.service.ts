@@ -56,6 +56,7 @@ export class TaskService {
     });
     return this.http.post<TaskDto[]>(environment.url_tasks, JSON.stringify(draftTasks))
       .pipe(
+        flatMap((tasks: TaskDto[]) => this.addUserNames(tasks)),
         map(dtos => dtos.map(dto => this.toTask(dto))),
         tap(tasks => tasks.forEach(t => this.selectedTaskChanged.emit(t)))
       );
@@ -68,8 +69,8 @@ export class TaskService {
 
     return this.http.post<TaskDto>(environment.url_task_processPoints.replace('{id}', taskId) + '?process_points=' + newProcessPoints, '')
       .pipe(
-        map(dto => this.toTask(dto)),
         flatMap(task => this.addUserName(task)),
+        map(dto => this.toTask(dto)),
         tap(t => this.selectedTaskChanged.emit(t))
       );
   }
@@ -81,8 +82,8 @@ export class TaskService {
 
     return this.http.post<TaskDto>(environment.url_task_assignedUser.replace('{id}', taskId), '')
       .pipe(
-        map(dto => this.toTask(dto)),
         flatMap(task => this.addUserName(task)),
+        map(dto => this.toTask(dto)),
         tap(t => this.selectedTaskChanged.emit(t))
       );
   }
@@ -149,8 +150,8 @@ export class TaskService {
   }
 
   // Fills the "assignedUserName" of the task with the actual user name.
-  public addUserNames(tasks: Task[]): Observable<Task[]> {
-    const userIDs = tasks.filter(t => !!t.assignedUser && t.assignedUser !== '').map(t => t.assignedUser);
+  public addUserNames(tasks: TaskDto[]): Observable<TaskDto[]> {
+    const userIDs = tasks.filter(t => !!t.assignedUser).map(t => t.assignedUser);
 
     if (!userIDs || userIDs.length === 0) {
       return of(tasks);
@@ -170,12 +171,14 @@ export class TaskService {
       );
   }
 
-  public addUserName(task: Task): Observable<Task> {
+  public addUserName(task: TaskDto): Observable<TaskDto> {
     return this.addUserNames([task]).pipe(map(t => t[0]));
   }
 
   public toTask(dto: TaskDto): Task {
     const feature = (this.format.readFeature(dto.geometry) as Feature);
+
+    const assignedUser = dto.assignedUser ? new User(dto.assignedUserName, dto.assignedUser) : undefined;
 
     return new Task(
       dto.id,
@@ -183,8 +186,7 @@ export class TaskService {
       dto.processPoints,
       dto.maxProcessPoints,
       feature,
-      dto.assignedUser,
-      dto.assignedUserName
+      assignedUser
     );
   }
 }

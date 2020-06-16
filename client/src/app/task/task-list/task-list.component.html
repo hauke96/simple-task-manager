@@ -12,8 +12,8 @@
 		<span *ngIf="t.processPoints == t.maxProcessPoints" class="done-label">
 		Done
 	</span>
-		<span *ngIf="!!t.assignedUserName && !isAssignedToCurrentUser(t)"
-			  class="gray-label">{{t.assignedUserName}}</span>
+		<span *ngIf="!!t.assignedUser && !isAssignedToCurrentUser(t)"
+			  class="gray-label">{{t.assignedUser.name}}</span>
 		<span *ngIf="isAssignedToCurrentUser(t)" class="gray-label">(you)</span>
 	</div>
 </div>

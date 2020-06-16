@@ -5,6 +5,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Task, TestTaskFeature, TestTaskGeometry } from '../task.material';
 import { TaskService } from '../task.service';
 import { CurrentUserService } from '../../user/current-user.service';
+import { User } from '../../user/user.material';
 
 describe('TaskListComponent', () => {
   let component: TaskListComponent;
@@ -67,7 +68,7 @@ describe('TaskListComponent', () => {
 
     // Actually update some tasks
     const t1 = new Task('1', undefined, 100, 100, TestTaskFeature);
-    const t4 = new Task('4', undefined, 50, 100, TestTaskFeature, '123');
+    const t4 = new Task('4', undefined, 50, 100, TestTaskFeature, new User('bar', '123'));
     taskService.tasksUpdated.emit([t1, t4]);
 
     expect(component.tasks[0]).toEqual(t1);
@@ -78,7 +79,7 @@ describe('TaskListComponent', () => {
     currentUserService.setUser('Mr. Answer', '42');
 
     expect(component.isAssignedToCurrentUser(new Task('1', undefined, 10, 100, TestTaskFeature))).toEqual(false);
-    expect(component.isAssignedToCurrentUser(new Task('2', undefined, 10, 100, TestTaskFeature, '1'))).toEqual(false);
-    expect(component.isAssignedToCurrentUser(new Task('3', undefined, 10, 100, TestTaskFeature, '42'))).toEqual(true);
+    expect(component.isAssignedToCurrentUser(new Task('2', undefined, 10, 100, TestTaskFeature, new User('foo', '1')))).toEqual(false);
+    expect(component.isAssignedToCurrentUser(new Task('3', undefined, 10, 100, TestTaskFeature, new User('Mr. Answer', '42')))).toEqual(true);
   });
 });

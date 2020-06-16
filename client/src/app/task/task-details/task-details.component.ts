@@ -47,12 +47,12 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
   }
 
   private updateUser() {
-    if (!this.task || !this.task.assignedUser) {
+    if (!this.task || !this.task.assignedUser || !this.task.assignedUser.uid) {
       this.assignedUserName = undefined;
       return;
     }
 
-    this.userService.getUsersByIds([this.task.assignedUser]).subscribe(
+    this.userService.getUsersByIds([this.task.assignedUser.uid]).subscribe(
       (users: User[]) => {
         this.assignedUserName = users[0].name;
       },

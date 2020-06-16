@@ -1,5 +1,6 @@
 import { Feature } from 'ol';
 import { Polygon } from 'ol/geom';
+import { User } from '../user/user.material';
 
 export class TaskDto {
   constructor(
@@ -21,8 +22,7 @@ export class Task {
     public maxProcessPoints: number,
     public geometry: Feature,
     // TODO instead store an actual User object
-    public assignedUser?: string,
-    public assignedUserName?: string
+    public assignedUser?: User
   ) {
   }
 }
