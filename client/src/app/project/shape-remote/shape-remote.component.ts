@@ -33,8 +33,9 @@ export class ShapeRemoteComponent implements OnInit {
           features = [].concat(...features.map(f => this.geometryService.toUsableTaskFeature(f)));
           this.featuresLoaded.emit(features);
         } catch (e) {
-          console.log(data);
           console.error('Error parsing loaded OSM-XML');
+          console.log(data);
+          console.error(e);
           this.notificationService.addError('Error parsing loaded OSM data');
         }
       }, e => {
