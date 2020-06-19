@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Feature } from 'ol';
 import OSMXML from 'ol/format/OSMXML';
 import { NotificationService } from '../../common/notification.service';
+import { GeometryService } from '../../common/geometry.service';
 
 @Component({
   selector: 'app-shape-remote',
@@ -16,7 +17,8 @@ export class ShapeRemoteComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private geometryService: GeometryService
   ) {
   }
 
@@ -27,7 +29,8 @@ export class ShapeRemoteComponent implements OnInit {
     this.http.get(this.queryUrl, {responseType: 'text', headers: {ContentType: 'text/xml'}}).subscribe(
       data => {
         try {
-          const features = (new OSMXML().readFeatures(data) as Feature[]);
+          let features = (new OSMXML().readFeatures(data) as Feature[]);
+          features = [].concat(...features.map(f => this.geometryService.toUsableTaskFeature(f)));
           this.featuresLoaded.emit(features);
         } catch (e) {
           console.log(data);
