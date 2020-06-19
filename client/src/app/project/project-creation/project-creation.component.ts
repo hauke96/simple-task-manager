@@ -180,6 +180,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
 
   // This function expects the geometry to be in the EPSG:4326 projection.
   public onShapesCreated(features: Feature[]) {
+    console.log(features.map(f => f.getProperties()));
     // Transform geometries into the correct projection
     features.forEach(f => {
       f.getGeometry().transform('EPSG:4326', 'EPSG:3857');
