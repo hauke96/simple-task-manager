@@ -14,6 +14,10 @@ export class GeometryService {
   // Some editors (like JOSM) dont create a "Polygon" feature for a closed ring but a "LineString" feature. This, however, is not usable for
   // tasks where we need Polygons or MultiPolygons.
   public toUsableTaskFeature(feature: Feature): Feature[] {
+    if (!feature) {
+      return [];
+    }
+
     const expandedGeometries = this.expandToPolygonLike(feature.getGeometry());
 
     return expandedGeometries.map((geom: Geometry) => {
