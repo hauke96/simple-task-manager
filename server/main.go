@@ -4,14 +4,12 @@ import (
 	"fmt"
 	"github.com/hauke96/kingpin"
 	"github.com/hauke96/sigolo"
-	"github.com/hauke96/simple-task-manager/server/permission"
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 	"os"
 
 	"github.com/hauke96/simple-task-manager/server/api"
 	"github.com/hauke96/simple-task-manager/server/auth"
 	"github.com/hauke96/simple-task-manager/server/config"
-	"github.com/hauke96/simple-task-manager/server/task"
 	"github.com/hauke96/simple-task-manager/server/util"
 )
 
@@ -49,8 +47,6 @@ func main() {
 	configureLogging()
 
 	// Init of Config, Services, Storages, etc.
-	permission.Init()
-	task.Init()
 	auth.Init()
 	sigolo.Info("Initializes services, storages, etc.")
 

@@ -265,7 +265,7 @@ func assignUser_v2_3(w http.ResponseWriter, r *http.Request, context *Context) {
 
 	user := context.token.UID
 
-	task, err := task.AssignUser(taskId, user)
+	task, err := context.taskService.AssignUser(taskId, user)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -293,7 +293,7 @@ func unassignUser_v2_3(w http.ResponseWriter, r *http.Request, context *Context)
 
 	user := context.token.UID
 
-	task, err := task.UnassignUser(taskId, user)
+	task, err := context.taskService.UnassignUser(taskId, user)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -325,7 +325,7 @@ func setProcessPoints_v2_3(w http.ResponseWriter, r *http.Request, context *Cont
 		return
 	}
 
-	task, err := task.SetProcessPoints(taskId, processPoints, context.token.UID)
+	task, err := context.taskService.SetProcessPoints(taskId, processPoints, context.token.UID)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -360,7 +360,7 @@ func addTask_v2_3(w http.ResponseWriter, r *http.Request, context *Context) {
 
 	// TODO check for correct GeoJson format
 
-	updatedTasks, err := task.AddTasks(tasks)
+	updatedTasks, err := context.taskService.AddTasks(tasks)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return

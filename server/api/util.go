@@ -5,7 +5,9 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/database"
+	"github.com/hauke96/simple-task-manager/server/permission"
 	"github.com/hauke96/simple-task-manager/server/project"
+	"github.com/hauke96/simple-task-manager/server/task"
 	"github.com/pkg/errors"
 	"net/http"
 
@@ -17,6 +19,7 @@ type Context struct {
 	token          *auth.Token
 	transaction    *sql.Tx
 	projectService *project.ProjectService
+	taskService    *task.TaskService
 }
 
 func printRoutes(router *mux.Router) {
@@ -32,23 +35,7 @@ func authenticatedTransactionHandler(handler func(w http.ResponseWriter, r *http
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 
-		token, err := auth.VerifyRequest(r)
-		if err != nil {
-			sigolo.Error("No valid authentication found: %s", err)
-			// No further information to caller (which is a potential attacker)
-			util.Response(w, "No valid authentication found", http.StatusUnauthorized)
-			return
-		}
-
-		context, err := createContext(token)
-		if err != nil {
-			sigolo.Error("Unable to get transaction: %s", err)
-			// No further information to caller (which is a potential attacker)
-			util.Response(w, "Unable to get transaction", http.StatusUnauthorized)
-			return
-		}
-
-		handler(w, r, context)
+		prepareAndHandle(w, r, handler)
 	}
 }
 
@@ -66,36 +53,43 @@ func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request,
 		// Add token query param value (set by websocket clients) as authorization so that verifyRequest can check it.
 		r.Header.Add("Authorization", t)
 
-		token, err := auth.VerifyRequest(r)
-		if err != nil {
-			sigolo.Error("No valid authentication found: %s", err)
-			// No further information to caller (which is a potential attacker)
-			util.Response(w, "No valid authentication found", http.StatusUnauthorized)
-			return
-		}
-
-		context, err := createContext(token)
-		if err != nil {
-			sigolo.Error("Unable to get transaction: %s", err)
-			// No further information to caller (which is a potential attacker)
-			util.Response(w, "Unable to get transaction", http.StatusUnauthorized)
-			return
-		}
-
-		// TODO defer recover from panic and rollback transaction
-
-		// Call actual logic
-		handler(w, r, context)
-		// TODO Use (own?) response instead of ResponseWriter and capture error here
-
-		// Commit transaction
-		err = context.transaction.Commit()
-		if err != nil {
-			sigolo.Error("Unable to commit transaction: %s", err.Error())
-			panic(err)
-		}
-		sigolo.Debug("Committed transaction")
+		prepareAndHandle(w, r, handler)
 	}
+}
+
+// prepareAndHandle gets and verifies the token from the request, creates the context, starts a transaction, manages
+// commit/rollback, calls the handler and also does error handling. When this function returns, everything should have a
+// valid state: The response as well as the transaction (database).
+func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(w http.ResponseWriter, r *http.Request, context *Context)) {
+	token, err := auth.VerifyRequest(r)
+	if err != nil {
+		sigolo.Error("No valid authentication found: %s", err)
+		// No further information to caller (which is a potential attacker)
+		util.Response(w, "No valid authentication found", http.StatusUnauthorized)
+		return
+	}
+
+	context, err := createContext(token)
+	if err != nil {
+		sigolo.Error("Unable to get transaction: %s", err)
+		// No further information to caller (which is a potential attacker)
+		util.Response(w, "Unable to get transaction", http.StatusUnauthorized)
+		return
+	}
+
+	// TODO defer recover from panic and rollback transaction
+
+	// Call actual logic
+	handler(w, r, context)
+	// TODO Use (own?) response instead of ResponseWriter and capture error here
+
+	// Commit transaction
+	err = context.transaction.Commit()
+	if err != nil {
+		sigolo.Error("Unable to commit transaction: %s", err.Error())
+		panic(err)
+	}
+	sigolo.Debug("Committed transaction")
 }
 
 func createContext(token *auth.Token) (*Context, error) {
@@ -108,8 +102,9 @@ func createContext(token *auth.Token) (*Context, error) {
 	}
 	context.transaction = tx
 
-	// TODO create services
-	context.projectService = project.Init(tx)
+	permissionService := permission.Init(tx)
+	context.taskService = task.Init(tx, permissionService)
+	context.projectService = project.Init(tx, context.taskService, permissionService)
 
 	return context, nil
 }

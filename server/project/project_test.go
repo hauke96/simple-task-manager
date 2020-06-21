@@ -14,7 +14,7 @@ func setup() {
 	testHelper.InitWithDummyData()
 
 	sigolo.LogLevel = sigolo.LOG_DEBUG
-	Init()
+	Init(nil)
 	permission.Init()
 	task.Init()
 }

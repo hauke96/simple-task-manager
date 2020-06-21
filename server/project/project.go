@@ -22,20 +22,25 @@ type Project struct {
 }
 
 type ProjectService struct {
-	store                *storePg
-	// TODO add task service
-	// TODO add permission service
+	store             *storePg
+	permissionService *permission.PermissionService
+	taskService       *task.TaskService
 }
 
 var (
 	maxDescriptionLength = 10000
 )
 
-func Init(tx *sql.Tx) *ProjectService {
+func Init(tx *sql.Tx, taskService *task.TaskService, permissionService *permission.PermissionService) *ProjectService {
+	// TODO put this into store file
 	store := &storePg{}
 	store.init(tx)
 
-	return &ProjectService{store: store}
+	return &ProjectService{
+		store:             store,
+		permissionService: permissionService,
+		taskService:       taskService,
+	}
 }
 
 func (s *ProjectService) GetProjects(userId string) ([]*Project, error) {
@@ -54,7 +59,7 @@ func (s *ProjectService) GetProjects(userId string) ([]*Project, error) {
 	return projects, nil
 }
 
-func (s *ProjectService)  GetProjectByTask(taskId string, userId string) (*Project, error) {
+func (s *ProjectService) GetProjectByTask(taskId string, userId string) (*Project, error) {
 	project, err := s.store.getProjectByTask(taskId)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error getting project with task %s", taskId))
@@ -69,7 +74,7 @@ func (s *ProjectService)  GetProjectByTask(taskId string, userId string) (*Proje
 }
 
 // AddProject adds the project, as requested by user "userId".
-func (s *ProjectService)  AddProject(projectDraft *Project) (*Project, error) {
+func (s *ProjectService) AddProject(projectDraft *Project) (*Project, error) {
 	if projectDraft.Id != "" {
 		return nil, errors.New("Id not empty")
 	}
@@ -122,8 +127,8 @@ func (s *ProjectService)  AddProject(projectDraft *Project) (*Project, error) {
 	return project, nil
 }
 
-func (s *ProjectService)  GetProject(projectId string, potentialMemberId string) (*Project, error) {
-	err := permission.VerifyMembershipProject(projectId, potentialMemberId)
+func (s *ProjectService) GetProject(projectId string, potentialMemberId string) (*Project, error) {
+	err := s.permissionService.VerifyMembershipProject(projectId, potentialMemberId)
 	if err != nil {
 		return nil, errors.Wrap(err, "user membership verification failed")
 	}
@@ -141,7 +146,8 @@ func (s *ProjectService)  GetProject(projectId string, potentialMemberId string)
 	return project, nil
 }
 
-func (s *ProjectService)  addProcessPointData(project *Project, potentialMemberId string) error {
+// TODO rename to something with metadata
+func (s *ProjectService) addProcessPointData(project *Project, potentialMemberId string) error {
 	tasks, err := s.GetTasks(project.Id, potentialMemberId)
 	if err != nil {
 		return errors.Wrap(err, "getting tasks of project failed")
@@ -152,11 +158,19 @@ func (s *ProjectService)  addProcessPointData(project *Project, potentialMemberI
 		project.DoneProcessPoints += t.ProcessPoints
 		project.TotalProcessPoints += t.MaxProcessPoints
 	}
+
+
+	needsAssignment, err := s.permissionService.AssignmentInProjectNeeded(project.Id)
+	if err != nil {
+		return errors.Wrap(err, fmt.Sprintf("unable to get assignment requirement for project %s", project.Id))
+	}
+	project.NeedsAssignment = needsAssignment
+
 	return nil
 }
 
-func (s *ProjectService)  AddUser(projectId, userId, potentialOwnerId string) (*Project, error) {
-	err := permission.VerifyOwnership(projectId, potentialOwnerId)
+func (s *ProjectService) AddUser(projectId, userId, potentialOwnerId string) (*Project, error) {
+	err := s.permissionService.VerifyOwnership(projectId, potentialOwnerId)
 	if err != nil {
 		return nil, errors.Wrap(err, "userId ownership verification failed")
 	}
@@ -186,29 +200,29 @@ func (s *ProjectService)  AddUser(projectId, userId, potentialOwnerId string) (*
 	return project, nil
 }
 
-func (s *ProjectService)  LeaveProject(projectId string, potentialMemberId string) (*Project, error) {
+func (s *ProjectService) LeaveProject(projectId string, potentialMemberId string) (*Project, error) {
 	return s.RemoveUser(projectId, potentialMemberId, potentialMemberId)
 }
 
-func (s *ProjectService)  RemoveUser(projectId, requestingUserId, userIdToRemove string) (*Project, error) {
+func (s *ProjectService) RemoveUser(projectId, requestingUserId, userIdToRemove string) (*Project, error) {
 	// Both users have to be member of the project
-	err := permission.VerifyMembershipProject(projectId, requestingUserId)
+	err := s.permissionService.VerifyMembershipProject(projectId, requestingUserId)
 	if err != nil {
 		return nil, errors.Wrap(err, "membership verification of requesting user failed")
 	}
 
-	err = permission.VerifyMembershipProject(projectId, userIdToRemove)
+	err = s.permissionService.VerifyMembershipProject(projectId, userIdToRemove)
 	if err != nil {
 		return nil, errors.Wrap(err, "membership verification of user to remove failed")
 	}
 
 	// It's not possible to remove the owner
-	err = permission.VerifyOwnership(projectId, userIdToRemove)
+	err = s.permissionService.VerifyOwnership(projectId, userIdToRemove)
 	if err == nil {
 		return nil, errors.New("not allowed to remove owner")
 	}
 
-	err = permission.VerifyOwnership(projectId, requestingUserId)
+	err = s.permissionService.VerifyOwnership(projectId, requestingUserId)
 	requestingUserIsOwner := err == nil
 
 	// When a user tries to remove a different user, only the owner is allowed to do that
@@ -223,11 +237,11 @@ func (s *ProjectService)  RemoveUser(projectId, requestingUserId, userIdToRemove
 
 	// Unassign removed user from all tasks
 	for _, t := range project.TaskIDs {
-		err := permission.VerifyAssignment(t, userIdToRemove)
+		err := s.permissionService.VerifyAssignment(t, userIdToRemove)
 
 		// err != nil means: The user is assigned to the task 't'
 		if err == nil {
-			_, err := task.UnassignUser(t, userIdToRemove)
+			_, err := s.taskService.UnassignUser(t, userIdToRemove)
 
 			if err != nil {
 				return nil, errors.Wrap(err, fmt.Sprintf("Unable to unassign user '%s' from task '%s'", userIdToRemove, t))
@@ -245,8 +259,8 @@ func (s *ProjectService)  RemoveUser(projectId, requestingUserId, userIdToRemove
 	return project, nil
 }
 
-func (s *ProjectService)  DeleteProject(projectId, potentialOwnerId string) error {
-	err := permission.VerifyOwnership(projectId, potentialOwnerId)
+func (s *ProjectService) DeleteProject(projectId, potentialOwnerId string) error {
+	err := s.permissionService.VerifyOwnership(projectId, potentialOwnerId)
 	if err != nil {
 		return errors.Wrap(err, "ownership verification failed")
 	}
@@ -257,7 +271,7 @@ func (s *ProjectService)  DeleteProject(projectId, potentialOwnerId string) erro
 	}
 
 	// First delete the tasks, due to ownership check which won't work, when there's no project anymore.
-	task.Delete(project.TaskIDs, potentialOwnerId)
+	s.taskService.Delete(project.TaskIDs, potentialOwnerId)
 
 	// Then remove the project
 	err = s.store.delete(projectId)
@@ -269,17 +283,17 @@ func (s *ProjectService)  DeleteProject(projectId, potentialOwnerId string) erro
 }
 
 // TODO move into task package, pass task IDs as parameter and use the permission service to check the permissions on those tasks
-func (s *ProjectService)  GetTasks(projectId string, userId string) ([]*task.Task, error) {
-	err := permission.VerifyMembershipProject(projectId, userId)
+func (s *ProjectService) GetTasks(projectId string, userId string) ([]*task.Task, error) {
+	err := s.permissionService.VerifyMembershipProject(projectId, userId)
 	if err != nil {
 		return nil, errors.Wrap(err, "membership verification failed")
 	}
 
-	return s.store.getTasks(projectId, userId)
+	return s.store.getTasks(projectId, userId, s.taskService)
 }
 
-func (s *ProjectService)  UpdateName(projectId string, newName string, requestingUserId string) (*Project, error) {
-	err := permission.VerifyOwnership(projectId, requestingUserId)
+func (s *ProjectService) UpdateName(projectId string, newName string, requestingUserId string) (*Project, error) {
+	err := s.permissionService.VerifyOwnership(projectId, requestingUserId)
 	if err != nil {
 		return nil, errors.Wrap(err, "membership verification of requesting user failed")
 	}
@@ -304,8 +318,8 @@ func (s *ProjectService)  UpdateName(projectId string, newName string, requestin
 	return project, nil
 }
 
-func (s *ProjectService)  UpdateDescription(projectId string, newDescription string, requestingUserId string) (*Project, error) {
-	err := permission.VerifyOwnership(projectId, requestingUserId)
+func (s *ProjectService) UpdateDescription(projectId string, newDescription string, requestingUserId string) (*Project, error) {
+	err := s.permissionService.VerifyOwnership(projectId, requestingUserId)
 	if err != nil {
 		return nil, errors.Wrap(err, "membership verification of requesting user failed")
 	}

@@ -3,7 +3,6 @@ package project
 import (
 	"database/sql"
 	"fmt"
-	"github.com/hauke96/simple-task-manager/server/permission"
 	"github.com/hauke96/simple-task-manager/server/task"
 	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/lib/pq"
@@ -44,7 +43,7 @@ func (s *storePg) getProjects(userId string) ([]*Project, error) {
 
 	projects := make([]*Project, 0)
 	for rows.Next() {
-		project, err := rowToProject(rows)
+		project, err := s.rowToProject(rows)
 		if err != nil {
 			return nil, errors.Wrap(err, "error converting row into project")
 		}
@@ -57,12 +56,12 @@ func (s *storePg) getProjects(userId string) ([]*Project, error) {
 
 func (s *storePg) getProject(projectId string) (*Project, error) {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE id=$1", s.table)
-	return execQuery(s.tx, query, projectId)
+	return s.execQuery(s.tx, query, projectId)
 }
 
 func (s *storePg) getProjectByTask(taskId string) (*Project, error) {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE $1=ANY(task_ids)", s.table)
-	return execQuery(s.tx, query, taskId)
+	return s.execQuery(s.tx, query, taskId)
 }
 
 // areTasksUsed checks whether any of the given tasks is already part of a project. Returns false and an error in case
@@ -95,7 +94,7 @@ func (s *storePg) areTasksUsed(taskIds []string) (bool, error) {
 func (s *storePg) addProject(draft *Project) (*Project, error) {
 	query := fmt.Sprintf("INSERT INTO %s (name, task_ids, description, users, owner) VALUES($1, $2, $3, $4, $5) RETURNING *", s.table)
 
-	return execQuery(s.tx, query, draft.Name, pq.Array(draft.TaskIDs), draft.Description, pq.Array(draft.Users), draft.Owner)
+	return s.execQuery(s.tx, query, draft.Name, pq.Array(draft.TaskIDs), draft.Description, pq.Array(draft.Users), draft.Owner)
 }
 
 func (s *storePg) addUser(projectId string, userIdToAdd string) (*Project, error) {
@@ -107,7 +106,7 @@ func (s *storePg) addUser(projectId string, userIdToAdd string) (*Project, error
 	newUsers := append(originalProject.Users, userIdToAdd)
 
 	query := fmt.Sprintf("UPDATE %s SET users=$1 WHERE id=$2 RETURNING *", s.table)
-	return execQuery(s.tx, query, pq.Array(newUsers), projectId)
+	return s.execQuery(s.tx, query, pq.Array(newUsers), projectId)
 }
 
 func (s *storePg) removeUser(projectId string, userIdToRemove string) (*Project, error) {
@@ -124,7 +123,7 @@ func (s *storePg) removeUser(projectId string, userIdToRemove string) (*Project,
 	}
 
 	query := fmt.Sprintf("UPDATE %s SET users=$1 WHERE id=$2 RETURNING *", s.table)
-	return execQuery(s.tx, query, pq.Array(remainingUsers), projectId)
+	return s.execQuery(s.tx, query, pq.Array(remainingUsers), projectId)
 }
 
 func (s *storePg) delete(projectId string) error {
@@ -135,26 +134,27 @@ func (s *storePg) delete(projectId string) error {
 }
 
 // getTasks will get the tasks for the given projectId and also checks the ownership of the given user.
-func (s *storePg) getTasks(projectId string, userId string) ([]*task.Task, error) {
+func (s *storePg) getTasks(projectId string, userId string, taskService *task.TaskService) ([]*task.Task, error) {
 	p, err := s.getProject(projectId)
 	if err != nil {
 		return nil, err
 	}
 
-	return task.GetTasks(p.TaskIDs, userId)
+	// TODO IMPORTANT: I hope all of your red lights are flashing because this is currently really bad: A store using a service? Nope nope nope. There's already a TODO in the function calling this function.
+	return taskService.GetTasks(p.TaskIDs, userId)
 }
 func (s *storePg) updateName(projectId string, newName string) (*Project, error) {
 	query := fmt.Sprintf("UPDATE %s SET name=$1 WHERE id=$2 RETURNING *", s.table)
-	return execQuery(s.tx, query, newName, projectId)
+	return s.execQuery(s.tx, query, newName, projectId)
 }
 
 func (s *storePg) updateDescription(projectId string, newDescription string) (*Project, error) {
 	query := fmt.Sprintf("UPDATE %s SET description=$1 WHERE id=$2 RETURNING *", s.table)
-	return execQuery(s.tx, query, newDescription, projectId)
+	return s.execQuery(s.tx, query, newDescription, projectId)
 }
 
 // execQuery executed the given query, turns the result into a Project object and closes the query.
-func execQuery(tx *sql.Tx, query string, params ...interface{}) (*Project, error) {
+func (s *storePg) execQuery(tx *sql.Tx, query string, params ...interface{}) (*Project, error) {
 	util.LogQuery(query, params...)
 	rows, err := tx.Query(query, params...)
 	if err != nil {
@@ -167,7 +167,7 @@ func execQuery(tx *sql.Tx, query string, params ...interface{}) (*Project, error
 		return nil, errors.New("there is no next row or an error happened")
 	}
 
-	p, err := rowToProject(rows)
+	p, err := s.rowToProject(rows)
 
 	if p == nil && err == nil {
 		return nil, errors.New(fmt.Sprintf("Project does not exist"))
@@ -177,7 +177,7 @@ func execQuery(tx *sql.Tx, query string, params ...interface{}) (*Project, error
 }
 
 // rowToProject turns the current row into a Project object. This does not close the row.
-func rowToProject(rows *sql.Rows) (*Project, error) {
+func (s *storePg) rowToProject(rows *sql.Rows) (*Project, error) {
 	var p projectRow
 	err := rows.Scan(&p.id, &p.name, &p.owner, &p.description, pq.Array(&p.taskIds), pq.Array(&p.users))
 	if err != nil {
@@ -192,12 +192,6 @@ func rowToProject(rows *sql.Rows) (*Project, error) {
 	result.Owner = p.owner
 	result.Description = p.description
 	result.TaskIDs = p.taskIds
-
-	needsAssignment, err := permission.AssignmentInProjectNeeded(result.Id)
-	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("unable to get assignment requirement for newly read project %s", result.Id))
-	}
-	result.NeedsAssignment = needsAssignment
 
 	return &result, nil
 }
