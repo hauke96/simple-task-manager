@@ -3,7 +3,6 @@ package project
 import (
 	"database/sql"
 	"fmt"
-	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/permission"
 	"github.com/hauke96/simple-task-manager/server/task"
 	"github.com/pkg/errors"
@@ -32,13 +31,9 @@ var (
 	maxDescriptionLength = 10000
 )
 
-func Init() *ProjectService {
-	// TODO receive transaction as parameter
-	db, err := sql.Open("postgres", "user=postgres password=geheim dbname=stm sslmode=disable")
-	sigolo.FatalCheck(err)
-
+func Init(tx *sql.Tx) *ProjectService {
 	store := &storePg{}
-	store.init(db)
+	store.init(tx)
 
 	return &ProjectService{store: store}
 }

@@ -1,9 +1,12 @@
 package api
 
 import (
+	"database/sql"
 	"github.com/gorilla/mux"
 	"github.com/hauke96/sigolo"
+	"github.com/hauke96/simple-task-manager/server/database"
 	"github.com/hauke96/simple-task-manager/server/project"
+	"github.com/pkg/errors"
 	"net/http"
 
 	"github.com/hauke96/simple-task-manager/server/auth"
@@ -12,6 +15,7 @@ import (
 
 type Context struct {
 	token *auth.Token
+	transaction *sql.Tx
 	projectService *project.ProjectService
 }
 
@@ -36,7 +40,13 @@ func authenticatedTransactionHandler(handler func(w http.ResponseWriter, r *http
 			return
 		}
 
-		context := createContext(token)
+		context, err := createContext(token)
+		if err != nil {
+			sigolo.Error( "Unable to get transaction: %s", err)
+			// No further information to caller (which is a potential attacker)
+			util.Response(w, "Unable to get transaction", http.StatusUnauthorized)
+			return
+		}
 
 		handler(w, r, context)
 	}
@@ -64,20 +74,30 @@ func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request,
 			return
 		}
 
-		context := createContext(token)
+		context, err := createContext(token)
+		if err != nil {
+			sigolo.Error( "Unable to get transaction: %s", err)
+			// No further information to caller (which is a potential attacker)
+			util.Response(w, "Unable to get transaction", http.StatusUnauthorized)
+			return
+		}
 
 		handler(w, r, context)
 	}
 }
 
-func createContext(token *auth.Token) *Context {
+func createContext(token *auth.Token) (*Context, error) {
 	context := &Context{}
 	context.token = token
 
-	// TODO start transaction
+	tx,err := database.GetTransaction()
+	if err != nil {
+		return nil, errors.Wrap(err, "error getting transaction")
+	}
+	context.transaction = tx
 
 	// TODO create services
-	context.projectService = project.Init()
+	context.projectService = project.Init(tx)
 
-	return context
+	return context, nil
 }

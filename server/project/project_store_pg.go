@@ -23,12 +23,12 @@ type projectRow struct {
 }
 
 type storePg struct {
-	db    *sql.DB
+	db    *sql.Tx
 	table string
 }
 
-func (s *storePg) init(db *sql.DB) {
-	s.db = db
+func (s *storePg) init(tx *sql.Tx) {
+	s.db = tx
 	s.table = "projects"
 }
 
@@ -154,7 +154,7 @@ func (s *storePg) updateDescription(projectId string, newDescription string) (*P
 }
 
 // execQuery executed the given query, turns the result into a Project object and closes the query.
-func execQuery(db *sql.DB, query string, params ...interface{}) (*Project, error) {
+func execQuery(db *sql.Tx, query string, params ...interface{}) (*Project, error) {
 	util.LogQuery(query, params...)
 	rows, err := db.Query(query, params...)
 	if err != nil {

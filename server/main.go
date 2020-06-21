@@ -11,7 +11,6 @@ import (
 	"github.com/hauke96/simple-task-manager/server/api"
 	"github.com/hauke96/simple-task-manager/server/auth"
 	"github.com/hauke96/simple-task-manager/server/config"
-	"github.com/hauke96/simple-task-manager/server/project"
 	"github.com/hauke96/simple-task-manager/server/task"
 	"github.com/hauke96/simple-task-manager/server/util"
 )
@@ -51,7 +50,6 @@ func main() {
 
 	// Init of Config, Services, Storages, etc.
 	permission.Init()
-	project.Init()
 	task.Init()
 	auth.Init()
 	sigolo.Info("Initializes services, storages, etc.")
