@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"github.com/hauke96/sigolo"
+	"github.com/hauke96/simple-task-manager/server/auth"
 	"github.com/hauke96/simple-task-manager/server/project"
 	"github.com/hauke96/simple-task-manager/server/task"
 	"github.com/hauke96/simple-task-manager/server/util"
@@ -370,8 +371,8 @@ func addTask_v2_3(w http.ResponseWriter, r *http.Request, context *Context) {
 	encoder.Encode(updatedTasks)
 }
 
-func getWebsocketConnection(w http.ResponseWriter, r *http.Request, context *Context) {
-	websocket.GetWebsocketConnection(w, r, context.token.UID)
+func getWebsocketConnection(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+	websocket.GetWebsocketConnection(w, r, token.UID)
 }
 
 func sendAdd(addedProject *project.Project) {

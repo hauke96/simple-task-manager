@@ -39,7 +39,7 @@ func authenticatedTransactionHandler(handler func(w http.ResponseWriter, r *http
 	}
 }
 
-func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request, context *Context)) func(http.ResponseWriter, *http.Request) {
+func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request, token *auth.Token)) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		query := r.URL.Query()
 
@@ -53,7 +53,15 @@ func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request,
 		// Add token query param value (set by websocket clients) as authorization so that verifyRequest can check it.
 		r.Header.Add("Authorization", t)
 
-		prepareAndHandle(w, r, handler)
+		token, err := auth.VerifyRequest(r)
+		if err != nil {
+			sigolo.Error("No valid authentication found: %s", err)
+			// No further information to caller (which is a potential attacker)
+			util.Response(w, "No valid authentication found", http.StatusUnauthorized)
+			return
+		}
+
+		handler(w, r, token)
 	}
 }
 
