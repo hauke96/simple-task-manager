@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"github.com/hauke96/sigolo"
-	"github.com/hauke96/simple-task-manager/server/auth"
 	"github.com/hauke96/simple-task-manager/server/project"
 	"github.com/hauke96/simple-task-manager/server/task"
 	"github.com/hauke96/simple-task-manager/server/util"
@@ -16,29 +15,29 @@ import (
 func Init_v2_3(router *mux.Router) (*mux.Router, string) {
 	r := router.PathPrefix("/v2.3").Subrouter()
 
-	r.HandleFunc("/projects", authenticatedHandler(getProjects_v2_3)).Methods(http.MethodGet)
-	r.HandleFunc("/projects", authenticatedHandler(addProject_v2_3)).Methods(http.MethodPost)
-	r.HandleFunc("/projects/{id}", authenticatedHandler(getProject_v2_3)).Methods(http.MethodGet)
-	r.HandleFunc("/projects/{id}", authenticatedHandler(deleteProjects_v2_3)).Methods(http.MethodDelete)
-	r.HandleFunc("/projects/{id}/name", authenticatedHandler(updateProjectName_v2_3)).Methods(http.MethodPut)
-	r.HandleFunc("/projects/{id}/description", authenticatedHandler(updateProjectDescription_v2_3)).Methods(http.MethodPut)
-	r.HandleFunc("/projects/{id}/users", authenticatedHandler(addUserToProject_v2_3)).Methods(http.MethodPost)
-	r.HandleFunc("/projects/{id}/users", authenticatedHandler(leaveProject_v2_3)).Methods(http.MethodDelete)
-	r.HandleFunc("/projects/{id}/users/{uid}", authenticatedHandler(removeUser_v2_3)).Methods(http.MethodDelete)
-	r.HandleFunc("/projects/{id}/tasks", authenticatedHandler(getProjectTasks_v2_3)).Methods(http.MethodGet)
+	r.HandleFunc("/projects", authenticatedTransactionHandler(getProjects_v2_3)).Methods(http.MethodGet)
+	r.HandleFunc("/projects", authenticatedTransactionHandler(addProject_v2_3)).Methods(http.MethodPost)
+	r.HandleFunc("/projects/{id}", authenticatedTransactionHandler(getProject_v2_3)).Methods(http.MethodGet)
+	r.HandleFunc("/projects/{id}", authenticatedTransactionHandler(deleteProjects_v2_3)).Methods(http.MethodDelete)
+	r.HandleFunc("/projects/{id}/name", authenticatedTransactionHandler(updateProjectName_v2_3)).Methods(http.MethodPut)
+	r.HandleFunc("/projects/{id}/description", authenticatedTransactionHandler(updateProjectDescription_v2_3)).Methods(http.MethodPut)
+	r.HandleFunc("/projects/{id}/users", authenticatedTransactionHandler(addUserToProject_v2_3)).Methods(http.MethodPost)
+	r.HandleFunc("/projects/{id}/users", authenticatedTransactionHandler(leaveProject_v2_3)).Methods(http.MethodDelete)
+	r.HandleFunc("/projects/{id}/users/{uid}", authenticatedTransactionHandler(removeUser_v2_3)).Methods(http.MethodDelete)
+	r.HandleFunc("/projects/{id}/tasks", authenticatedTransactionHandler(getProjectTasks_v2_3)).Methods(http.MethodGet)
 
-	r.HandleFunc("/tasks/{id}/assignedUser", authenticatedHandler(assignUser_v2_3)).Methods(http.MethodPost)
-	r.HandleFunc("/tasks/{id}/assignedUser", authenticatedHandler(unassignUser_v2_3)).Methods(http.MethodDelete)
-	r.HandleFunc("/tasks/{id}/processPoints", authenticatedHandler(setProcessPoints_v2_3)).Methods(http.MethodPost)
-	r.HandleFunc("/tasks", authenticatedHandler(addTask_v2_3)).Methods(http.MethodPost)
+	r.HandleFunc("/tasks/{id}/assignedUser", authenticatedTransactionHandler(assignUser_v2_3)).Methods(http.MethodPost)
+	r.HandleFunc("/tasks/{id}/assignedUser", authenticatedTransactionHandler(unassignUser_v2_3)).Methods(http.MethodDelete)
+	r.HandleFunc("/tasks/{id}/processPoints", authenticatedTransactionHandler(setProcessPoints_v2_3)).Methods(http.MethodPost)
+	r.HandleFunc("/tasks", authenticatedTransactionHandler(addTask_v2_3)).Methods(http.MethodPost)
 
-	r.HandleFunc("/updates", authenticatedWebsocket(websocket.GetWebsocketConnection))
+	r.HandleFunc("/updates", authenticatedWebsocket(getWebsocketConnection))
 
 	return r, "v2.3"
 }
 
-func getProjects_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
-	projects, err := project.GetProjects(token.UID)
+func getProjects_v2_3(w http.ResponseWriter, r *http.Request, context *Context) {
+	projects, err := project.GetProjects(context.token.UID)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -48,7 +47,7 @@ func getProjects_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token)
 	encoder.Encode(projects)
 }
 
-func addProject_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+func addProject_v2_3(w http.ResponseWriter, r *http.Request, context *Context) {
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		util.ResponseBadRequest(w, err.Error())
@@ -74,7 +73,7 @@ func addProject_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) 
 	encoder.Encode(addedProject)
 }
 
-func getProject_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+func getProject_v2_3(w http.ResponseWriter, r *http.Request, context *Context) {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
@@ -82,7 +81,7 @@ func getProject_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) 
 		return
 	}
 
-	project, err := project.GetProject(projectId, token.UID)
+	project, err := project.GetProject(projectId, context.token.UID)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -92,7 +91,7 @@ func getProject_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) 
 	encoder.Encode(project)
 }
 
-func leaveProject_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+func leaveProject_v2_3(w http.ResponseWriter, r *http.Request, context *Context) {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
@@ -100,16 +99,16 @@ func leaveProject_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token
 		return
 	}
 
-	updatedProject, err := project.RemoveUser(projectId, token.UID, token.UID)
+	updatedProject, err := project.RemoveUser(projectId, context.token.UID, context.token.UID)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
 	}
 
-	sendUserRemoved(updatedProject, token.UID)
+	sendUserRemoved(updatedProject, context.token.UID)
 }
 
-func removeUser_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+func removeUser_v2_3(w http.ResponseWriter, r *http.Request, context *Context) {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
@@ -123,7 +122,7 @@ func removeUser_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) 
 		return
 	}
 
-	updatedProject, err := project.RemoveUser(projectId, token.UID, user)
+	updatedProject, err := project.RemoveUser(projectId, context.token.UID, user)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -135,7 +134,7 @@ func removeUser_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) 
 	encoder.Encode(updatedProject)
 }
 
-func deleteProjects_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+func deleteProjects_v2_3(w http.ResponseWriter, r *http.Request, context *Context) {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
@@ -143,13 +142,13 @@ func deleteProjects_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Tok
 		return
 	}
 
-	projectToDelete, err := project.GetProject(projectId, token.UID)
+	projectToDelete, err := project.GetProject(projectId, context.token.UID)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
 	}
 
-	err = project.DeleteProject(projectId, token.UID)
+	err = project.DeleteProject(projectId, context.token.UID)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -158,7 +157,7 @@ func deleteProjects_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Tok
 	sendDelete(projectToDelete)
 }
 
-func updateProjectName_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+func updateProjectName_v2_3(w http.ResponseWriter, r *http.Request, context *Context) {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
@@ -173,7 +172,7 @@ func updateProjectName_v2_3(w http.ResponseWriter, r *http.Request, token *auth.
 		return
 	}
 
-	updatedProject, err := project.UpdateName(projectId, string(bodyBytes), token.UID)
+	updatedProject, err := project.UpdateName(projectId, string(bodyBytes), context.token.UID)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -185,7 +184,7 @@ func updateProjectName_v2_3(w http.ResponseWriter, r *http.Request, token *auth.
 	encoder.Encode(updatedProject)
 }
 
-func updateProjectDescription_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+func updateProjectDescription_v2_3(w http.ResponseWriter, r *http.Request, context *Context) {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
@@ -200,7 +199,7 @@ func updateProjectDescription_v2_3(w http.ResponseWriter, r *http.Request, token
 		return
 	}
 
-	updatedProject, err := project.UpdateDescription(projectId, string(bodyBytes), token.UID)
+	updatedProject, err := project.UpdateDescription(projectId, string(bodyBytes), context.token.UID)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -212,7 +211,7 @@ func updateProjectDescription_v2_3(w http.ResponseWriter, r *http.Request, token
 	encoder.Encode(updatedProject)
 }
 
-func getProjectTasks_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+func getProjectTasks_v2_3(w http.ResponseWriter, r *http.Request, context *Context) {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
@@ -220,7 +219,7 @@ func getProjectTasks_v2_3(w http.ResponseWriter, r *http.Request, token *auth.To
 		return
 	}
 
-	tasks, err := project.GetTasks(projectId, token.UID)
+	tasks, err := project.GetTasks(projectId, context.token.UID)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -230,7 +229,7 @@ func getProjectTasks_v2_3(w http.ResponseWriter, r *http.Request, token *auth.To
 	encoder.Encode(tasks)
 }
 
-func addUserToProject_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+func addUserToProject_v2_3(w http.ResponseWriter, r *http.Request, context *Context) {
 	userToAdd, err := util.GetParam("uid", r)
 	if err != nil {
 		util.ResponseBadRequest(w, err.Error())
@@ -244,7 +243,7 @@ func addUserToProject_v2_3(w http.ResponseWriter, r *http.Request, token *auth.T
 		return
 	}
 
-	updatedProject, err := project.AddUser(projectId, userToAdd, token.UID)
+	updatedProject, err := project.AddUser(projectId, userToAdd, context.token.UID)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -256,7 +255,7 @@ func addUserToProject_v2_3(w http.ResponseWriter, r *http.Request, token *auth.T
 	encoder.Encode(updatedProject)
 }
 
-func assignUser_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+func assignUser_v2_3(w http.ResponseWriter, r *http.Request, context *Context) {
 	vars := mux.Vars(r)
 	taskId, ok := vars["id"]
 	if !ok {
@@ -264,7 +263,7 @@ func assignUser_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) 
 		return
 	}
 
-	user := token.UID
+	user := context.token.UID
 
 	task, err := task.AssignUser(taskId, user)
 	if err != nil {
@@ -284,7 +283,7 @@ func assignUser_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) 
 	encoder.Encode(*task)
 }
 
-func unassignUser_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+func unassignUser_v2_3(w http.ResponseWriter, r *http.Request, context *Context) {
 	vars := mux.Vars(r)
 	taskId, ok := vars["id"]
 	if !ok {
@@ -292,7 +291,7 @@ func unassignUser_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token
 		return
 	}
 
-	user := token.UID
+	user := context.token.UID
 
 	task, err := task.UnassignUser(taskId, user)
 	if err != nil {
@@ -312,7 +311,7 @@ func unassignUser_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token
 	encoder.Encode(*task)
 }
 
-func setProcessPoints_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+func setProcessPoints_v2_3(w http.ResponseWriter, r *http.Request, context *Context) {
 	vars := mux.Vars(r)
 	taskId, ok := vars["id"]
 	if !ok {
@@ -326,14 +325,14 @@ func setProcessPoints_v2_3(w http.ResponseWriter, r *http.Request, token *auth.T
 		return
 	}
 
-	task, err := task.SetProcessPoints(taskId, processPoints, token.UID)
+	task, err := task.SetProcessPoints(taskId, processPoints, context.token.UID)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
 	}
 
 	// Send via websockets
-	if sendTaskUpdate(task, token.UID) != nil {
+	if sendTaskUpdate(task, context.token.UID) != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
 	}
@@ -344,7 +343,7 @@ func setProcessPoints_v2_3(w http.ResponseWriter, r *http.Request, token *auth.T
 	encoder.Encode(*task)
 }
 
-func addTask_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+func addTask_v2_3(w http.ResponseWriter, r *http.Request, context *Context) {
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		sigolo.Error("Error reading request body: %s", err.Error())
@@ -369,6 +368,10 @@ func addTask_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 
 	encoder := json.NewEncoder(w)
 	encoder.Encode(updatedTasks)
+}
+
+func getWebsocketConnection(w http.ResponseWriter, r *http.Request, context *Context) {
+	websocket.GetWebsocketConnection(w, r, context.token.UID)
 }
 
 func sendAdd(addedProject *project.Project) {

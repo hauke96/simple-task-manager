@@ -3,7 +3,6 @@ package websocket
 import (
 	"github.com/gorilla/websocket"
 	"github.com/hauke96/sigolo"
-	"github.com/hauke96/simple-task-manager/server/auth"
 	"github.com/hauke96/simple-task-manager/server/util"
 	"net/http"
 )
@@ -35,7 +34,7 @@ var (
 	connections = make(map[string][]*websocket.Conn, 0)
 )
 
-func GetWebsocketConnection(w http.ResponseWriter, r *http.Request, token *auth.Token) {
+func GetWebsocketConnection(w http.ResponseWriter, r *http.Request, uid string) {
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		sigolo.Error("Could not upgrade response writer and request to websocket connection")
@@ -43,7 +42,6 @@ func GetWebsocketConnection(w http.ResponseWriter, r *http.Request, token *auth.
 		return
 	}
 
-	uid := token.UID
 	if connections[uid] == nil {
 		connections[uid] = make([]*websocket.Conn, 0)
 	}
