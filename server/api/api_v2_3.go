@@ -37,7 +37,7 @@ func Init_v2_3(router *mux.Router) (*mux.Router, string) {
 }
 
 func getProjects_v2_3(w http.ResponseWriter, r *http.Request, context *Context) {
-	projects, err := project.GetProjects(context.token.UID)
+	projects, err := context.projectService.GetProjects(context.token.UID)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -61,7 +61,7 @@ func addProject_v2_3(w http.ResponseWriter, r *http.Request, context *Context) {
 		return
 	}
 
-	addedProject, err := project.AddProject(&draftProject)
+	addedProject, err := context.projectService.AddProject(&draftProject)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -81,7 +81,7 @@ func getProject_v2_3(w http.ResponseWriter, r *http.Request, context *Context) {
 		return
 	}
 
-	project, err := project.GetProject(projectId, context.token.UID)
+	project, err := context.projectService.GetProject(projectId, context.token.UID)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -99,7 +99,7 @@ func leaveProject_v2_3(w http.ResponseWriter, r *http.Request, context *Context)
 		return
 	}
 
-	updatedProject, err := project.RemoveUser(projectId, context.token.UID, context.token.UID)
+	updatedProject, err := context.projectService.RemoveUser(projectId, context.token.UID, context.token.UID)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -122,7 +122,7 @@ func removeUser_v2_3(w http.ResponseWriter, r *http.Request, context *Context) {
 		return
 	}
 
-	updatedProject, err := project.RemoveUser(projectId, context.token.UID, user)
+	updatedProject, err := context.projectService.RemoveUser(projectId, context.token.UID, user)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -142,13 +142,13 @@ func deleteProjects_v2_3(w http.ResponseWriter, r *http.Request, context *Contex
 		return
 	}
 
-	projectToDelete, err := project.GetProject(projectId, context.token.UID)
+	projectToDelete, err := context.projectService.GetProject(projectId, context.token.UID)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
 	}
 
-	err = project.DeleteProject(projectId, context.token.UID)
+	err = context.projectService.DeleteProject(projectId, context.token.UID)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -172,7 +172,7 @@ func updateProjectName_v2_3(w http.ResponseWriter, r *http.Request, context *Con
 		return
 	}
 
-	updatedProject, err := project.UpdateName(projectId, string(bodyBytes), context.token.UID)
+	updatedProject, err := context.projectService.UpdateName(projectId, string(bodyBytes), context.token.UID)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -199,7 +199,7 @@ func updateProjectDescription_v2_3(w http.ResponseWriter, r *http.Request, conte
 		return
 	}
 
-	updatedProject, err := project.UpdateDescription(projectId, string(bodyBytes), context.token.UID)
+	updatedProject, err := context.projectService.UpdateDescription(projectId, string(bodyBytes), context.token.UID)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -219,7 +219,7 @@ func getProjectTasks_v2_3(w http.ResponseWriter, r *http.Request, context *Conte
 		return
 	}
 
-	tasks, err := project.GetTasks(projectId, context.token.UID)
+	tasks, err := context.projectService.GetTasks(projectId, context.token.UID)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -243,7 +243,7 @@ func addUserToProject_v2_3(w http.ResponseWriter, r *http.Request, context *Cont
 		return
 	}
 
-	updatedProject, err := project.AddUser(projectId, userToAdd, context.token.UID)
+	updatedProject, err := context.projectService.AddUser(projectId, userToAdd, context.token.UID)
 	if err != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
@@ -272,7 +272,7 @@ func assignUser_v2_3(w http.ResponseWriter, r *http.Request, context *Context) {
 	}
 
 	// Send via websockets
-	if sendTaskUpdate(task, user) != nil {
+	if sendTaskUpdate(task, user, context) != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
 	}
@@ -300,7 +300,7 @@ func unassignUser_v2_3(w http.ResponseWriter, r *http.Request, context *Context)
 	}
 
 	// Send via websockets
-	if sendTaskUpdate(task, user) != nil {
+	if sendTaskUpdate(task, user, context) != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
 	}
@@ -332,7 +332,7 @@ func setProcessPoints_v2_3(w http.ResponseWriter, r *http.Request, context *Cont
 	}
 
 	// Send via websockets
-	if sendTaskUpdate(task, context.token.UID) != nil {
+	if sendTaskUpdate(task, context.token.UID, context) != nil {
 		util.ResponseInternalError(w, err.Error())
 		return
 	}
@@ -406,8 +406,8 @@ func sendDelete(removedProject *project.Project) {
 	}, removedProject.Users...)
 }
 
-func sendTaskUpdate(task *task.Task, userId string) error {
-	project, err := project.GetProjectByTask(task.Id, userId)
+func sendTaskUpdate(task *task.Task, userId string, context *Context) error {
+	project, err := context.projectService.GetProjectByTask(task.Id, userId)
 	if err != nil {
 		return err
 	}

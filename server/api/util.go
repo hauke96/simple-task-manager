@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/gorilla/mux"
 	"github.com/hauke96/sigolo"
+	"github.com/hauke96/simple-task-manager/server/project"
 	"net/http"
 
 	"github.com/hauke96/simple-task-manager/server/auth"
@@ -11,6 +12,7 @@ import (
 
 type Context struct {
 	token *auth.Token
+	projectService *project.ProjectService
 }
 
 func printRoutes(router *mux.Router) {
@@ -75,5 +77,7 @@ func createContext(token *auth.Token) *Context {
 	// TODO start transaction
 
 	// TODO create services
+	context.projectService = project.Init()
+
 	return context
 }
