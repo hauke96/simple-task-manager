@@ -23,12 +23,12 @@ type projectRow struct {
 }
 
 type storePg struct {
-	db    *sql.Tx
+	tx    *sql.Tx
 	table string
 }
 
 func (s *storePg) init(tx *sql.Tx) {
-	s.db = tx
+	s.tx = tx
 	s.table = "projects"
 }
 
@@ -37,7 +37,7 @@ func (s *storePg) getProjects(userId string) ([]*Project, error) {
 
 	util.LogQuery(query, userId)
 
-	rows, err := s.db.Query(query, userId)
+	rows, err := s.tx.Query(query, userId)
 	if err != nil {
 		return nil, errors.Wrap(err, "error executing query")
 	}
@@ -57,12 +57,12 @@ func (s *storePg) getProjects(userId string) ([]*Project, error) {
 
 func (s *storePg) getProject(projectId string) (*Project, error) {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE id=$1", s.table)
-	return execQuery(s.db, query, projectId)
+	return execQuery(s.tx, query, projectId)
 }
 
 func (s *storePg) getProjectByTask(taskId string) (*Project, error) {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE $1=ANY(task_ids)", s.table)
-	return execQuery(s.db, query, taskId)
+	return execQuery(s.tx, query, taskId)
 }
 
 // areTasksUsed checks whether any of the given tasks is already part of a project. Returns false and an error in case
@@ -71,7 +71,7 @@ func (s *storePg) areTasksUsed(taskIds []string) (bool, error) {
 	query := fmt.Sprintf("SELECT COUNT(*) FROM %s WHERE task_ids && $1", s.table)
 
 	util.LogQuery(query, taskIds)
-	rows, err := s.db.Query(query, pq.Array(taskIds))
+	rows, err := s.tx.Query(query, pq.Array(taskIds))
 	if err != nil {
 		return false, errors.Wrap(err, "could not run query")
 	}
@@ -95,7 +95,7 @@ func (s *storePg) areTasksUsed(taskIds []string) (bool, error) {
 func (s *storePg) addProject(draft *Project) (*Project, error) {
 	query := fmt.Sprintf("INSERT INTO %s (name, task_ids, description, users, owner) VALUES($1, $2, $3, $4, $5) RETURNING *", s.table)
 
-	return execQuery(s.db, query, draft.Name, pq.Array(draft.TaskIDs), draft.Description, pq.Array(draft.Users), draft.Owner)
+	return execQuery(s.tx, query, draft.Name, pq.Array(draft.TaskIDs), draft.Description, pq.Array(draft.Users), draft.Owner)
 }
 
 func (s *storePg) addUser(projectId string, userIdToAdd string) (*Project, error) {
@@ -107,7 +107,7 @@ func (s *storePg) addUser(projectId string, userIdToAdd string) (*Project, error
 	newUsers := append(originalProject.Users, userIdToAdd)
 
 	query := fmt.Sprintf("UPDATE %s SET users=$1 WHERE id=$2 RETURNING *", s.table)
-	return execQuery(s.db, query, pq.Array(newUsers), projectId)
+	return execQuery(s.tx, query, pq.Array(newUsers), projectId)
 }
 
 func (s *storePg) removeUser(projectId string, userIdToRemove string) (*Project, error) {
@@ -124,13 +124,13 @@ func (s *storePg) removeUser(projectId string, userIdToRemove string) (*Project,
 	}
 
 	query := fmt.Sprintf("UPDATE %s SET users=$1 WHERE id=$2 RETURNING *", s.table)
-	return execQuery(s.db, query, pq.Array(remainingUsers), projectId)
+	return execQuery(s.tx, query, pq.Array(remainingUsers), projectId)
 }
 
 func (s *storePg) delete(projectId string) error {
 	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", s.table)
 
-	_, err := s.db.Exec(query, projectId)
+	_, err := s.tx.Exec(query, projectId)
 	return err
 }
 
@@ -145,18 +145,18 @@ func (s *storePg) getTasks(projectId string, userId string) ([]*task.Task, error
 }
 func (s *storePg) updateName(projectId string, newName string) (*Project, error) {
 	query := fmt.Sprintf("UPDATE %s SET name=$1 WHERE id=$2 RETURNING *", s.table)
-	return execQuery(s.db, query, newName, projectId)
+	return execQuery(s.tx, query, newName, projectId)
 }
 
 func (s *storePg) updateDescription(projectId string, newDescription string) (*Project, error) {
 	query := fmt.Sprintf("UPDATE %s SET description=$1 WHERE id=$2 RETURNING *", s.table)
-	return execQuery(s.db, query, newDescription, projectId)
+	return execQuery(s.tx, query, newDescription, projectId)
 }
 
 // execQuery executed the given query, turns the result into a Project object and closes the query.
-func execQuery(db *sql.Tx, query string, params ...interface{}) (*Project, error) {
+func execQuery(tx *sql.Tx, query string, params ...interface{}) (*Project, error) {
 	util.LogQuery(query, params...)
-	rows, err := db.Query(query, params...)
+	rows, err := tx.Query(query, params...)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not run query")
 	}
