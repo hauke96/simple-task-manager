@@ -32,12 +32,8 @@ var (
 )
 
 func Init(tx *sql.Tx, taskService *task.TaskService, permissionService *permission.PermissionService) *ProjectService {
-	// TODO put this into store file
-	store := &storePg{}
-	store.init(tx)
-
 	return &ProjectService{
-		store:             store,
+		store:             getStore(tx),
 		permissionService: permissionService,
 		taskService:       taskService,
 	}

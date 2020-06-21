@@ -22,13 +22,8 @@ type TaskService struct {
 }
 
 func Init(tx *sql.Tx, permissionService *permission.PermissionService) *TaskService {
-	// TODO put into store file
-	store := &storePg{}
-	store.init(tx)
-
-
 	return &TaskService{
-		store:             store,
+		store:             getStore(tx),
 		permissionService: permissionService,
 	}
 }

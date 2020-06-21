@@ -23,9 +23,11 @@ type storePg struct {
 	table string
 }
 
-func (s *storePg) init(tx *sql.Tx) {
-	s.tx = tx
-	s.table = "tasks"
+func getStore(tx *sql.Tx) *storePg {
+	return &storePg{
+		tx:    tx,
+		table: "projects",
+	}
 }
 
 func (s *storePg) getTasks(taskIds []string) ([]*Task, error) {

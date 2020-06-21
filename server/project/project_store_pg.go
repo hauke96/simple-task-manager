@@ -26,9 +26,11 @@ type storePg struct {
 	table string
 }
 
-func (s *storePg) init(tx *sql.Tx) {
-	s.tx = tx
-	s.table = "projects"
+func getStore(tx *sql.Tx) *storePg {
+	return &storePg{
+		tx:    tx,
+		table: "projects",
+	}
 }
 
 func (s *storePg) getProjects(userId string) ([]*Project, error) {
