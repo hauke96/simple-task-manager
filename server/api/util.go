@@ -2,6 +2,7 @@ package api
 
 import (
 	"database/sql"
+	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/database"
@@ -77,6 +78,7 @@ func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(w htt
 		return
 	}
 
+	// Create context with a new transaction and new service instances
 	context, err := createContext(token)
 	if err != nil {
 		sigolo.Error("Unable to get transaction: %s", err)
@@ -85,7 +87,28 @@ func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(w htt
 		return
 	}
 
-	// TODO defer recover from panic and rollback transaction
+	// Recover from panic and perform rollback on transaction
+	defer func() {
+		if r := recover(); r != nil {
+			var err error
+			switch r := r.(type) {
+			case error:
+				err = r
+			default:
+				err = fmt.Errorf("%v", r)
+			}
+
+			sigolo.Error(fmt.Sprintf("!! PANIC !! Recover from panic: %s", err.Error()))
+
+			sigolo.Info("Try to perform rollback")
+			err = context.transaction.Rollback()
+			if err != nil {
+				sigolo.Info("error performing rollback after panic: %s", err.Error())
+
+				util.ResponseInternalError(w, "Fatal error occurred!")
+			}
+		}
+	}()
 
 	// Call actual logic
 	handler(w, r, context)
@@ -100,6 +123,8 @@ func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(w htt
 	sigolo.Debug("Committed transaction")
 }
 
+// createContext starts a new transaction and creates new service instances which use this new transaction so that all
+// services (also those calling each other) are using the same transaction.
 func createContext(token *auth.Token) (*Context, error) {
 	context := &Context{}
 	context.token = token
