@@ -23,24 +23,9 @@ type Project struct {
 }
 
 type ProjectService struct {
-	store                projectStore
+	store                *storePg
 	// TODO add task service
 	// TODO add permission service
-}
-
-type projectStore interface {
-	init(db *sql.DB)
-	getProjects(userId string) ([]*Project, error)
-	getProject(projectId string) (*Project, error)
-	getProjectByTask(taskId string) (*Project, error)
-	areTasksUsed(taskIds []string) (bool, error)
-	addProject(draft *Project) (*Project, error)
-	addUser(projectId string, userIdToAdd string) (*Project, error)
-	removeUser(projectId string, userIdToRemove string) (*Project, error)
-	delete(projectId string) error
-	getTasks(projectId string, user string) ([]*task.Task, error)
-	updateName(projectId string, newName string) (*Project, error)
-	updateDescription(projectId string, newDescription string) (*Project, error)
 }
 
 var (
