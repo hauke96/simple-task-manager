@@ -50,7 +50,7 @@ func (s *ProjectService) GetProjects(userId string) ([]*Project, error) {
 	}
 
 	for _, p := range projects {
-		err = s.addProcessPointData(p, userId)
+		err = s.addMetadata(p, userId)
 		if err != nil {
 			return nil, errors.Wrap(err, fmt.Sprintf("Unable to add process point data to project %s", p.Id))
 		}
@@ -65,7 +65,7 @@ func (s *ProjectService) GetProjectByTask(taskId string, userId string) (*Projec
 		return nil, errors.Wrap(err, fmt.Sprintf("Error getting project with task %s", taskId))
 	}
 
-	err = s.addProcessPointData(project, userId)
+	err = s.addMetadata(project, userId)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Unable to add process point data to project %s", project.Id))
 	}
@@ -119,7 +119,7 @@ func (s *ProjectService) AddProject(projectDraft *Project) (*Project, error) {
 		return nil, errors.Wrap(err, "Unable to add projectDraft to store")
 	}
 
-	err = s.addProcessPointData(project, project.Owner)
+	err = s.addMetadata(project, project.Owner)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Unable to add process point data to project %s", project.Id))
 	}
@@ -138,7 +138,7 @@ func (s *ProjectService) GetProject(projectId string, potentialMemberId string) 
 		return nil, errors.Wrap(err, "getting project failed")
 	}
 
-	err = s.addProcessPointData(project, potentialMemberId)
+	err = s.addMetadata(project, potentialMemberId)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Unable to add process point data to project %s", project.Id))
 	}
@@ -146,8 +146,8 @@ func (s *ProjectService) GetProject(projectId string, potentialMemberId string) 
 	return project, nil
 }
 
-// TODO rename to something with metadata
-func (s *ProjectService) addProcessPointData(project *Project, potentialMemberId string) error {
+// addMetadata adds additional metadata for convenience. This includes information about process points as well as permissions.
+func (s *ProjectService) addMetadata(project *Project, potentialMemberId string) error {
 	tasks, err := s.GetTasks(project.Id, potentialMemberId)
 	if err != nil {
 		return errors.Wrap(err, "getting tasks of project failed")
@@ -192,7 +192,7 @@ func (s *ProjectService) AddUser(projectId, userId, potentialOwnerId string) (*P
 		return nil, errors.Wrap(err, "getting project failed")
 	}
 
-	err = s.addProcessPointData(project, potentialOwnerId)
+	err = s.addMetadata(project, potentialOwnerId)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Unable to add process point data to project %s", project.Id))
 	}
@@ -251,7 +251,7 @@ func (s *ProjectService) RemoveUser(projectId, requestingUserId, userIdToRemove 
 
 	// It could happen that someone removes him-/herself, so that we just removed requestingUserId from the project.
 	// Therefore the owner is used here.
-	err = s.addProcessPointData(project, project.Owner)
+	err = s.addMetadata(project, project.Owner)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Unable to add process point data to project %s", project.Id))
 	}
@@ -310,7 +310,7 @@ func (s *ProjectService) UpdateName(projectId string, newName string, requesting
 		return nil, errors.Wrap(err, "getting project failed")
 	}
 
-	err = s.addProcessPointData(project, requestingUserId)
+	err = s.addMetadata(project, requestingUserId)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Unable to add process point data to project %s", project.Id))
 	}
@@ -333,7 +333,7 @@ func (s *ProjectService) UpdateDescription(projectId string, newDescription stri
 		return nil, errors.Wrap(err, "getting project failed")
 	}
 
-	err = s.addProcessPointData(project, requestingUserId)
+	err = s.addMetadata(project, requestingUserId)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Unable to add process point data to project %s", project.Id))
 	}
