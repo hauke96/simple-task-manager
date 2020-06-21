@@ -81,9 +81,9 @@ func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(w htt
 	// Create context with a new transaction and new service instances
 	context, err := createContext(token)
 	if err != nil {
-		sigolo.Error("Unable to get transaction: %s", err)
+		sigolo.Error("Unable to create context: %s", err)
 		// No further information to caller (which is a potential attacker)
-		util.Response(w, "Unable to get transaction", http.StatusUnauthorized)
+		util.ResponseInternalError(w, "Unable to create context")
 		return
 	}
 
