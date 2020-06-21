@@ -8,7 +8,7 @@
 		<span class="error-text">ERROR: </span>
 		<span>{{currentErrorText}}</span>
 		<div class="close-button-container">
-			<span *ngIf="remainingErrors> 1" class="remaining-notifications-label">{{ remainingErrors - 1 }} more errors</span>
+			<span *ngIf="remainingErrors> 1" class="remaining-notifications-label">{{ remainingErrors }} errors left</span>
 			<button (click)="onCloseErrorButtonClicked()">OK</button>
 		</div>
 	</div>
@@ -16,7 +16,7 @@
 		<span class="warn-text">Warning: </span>
 		<span>{{currentWarningText}}</span>
 		<div class="close-button-container">
-			<span *ngIf="remainingWarning > 1" class="remaining-notifications-label">{{ remainingWarning - 1 }} more warnings</span>
+			<span *ngIf="remainingWarning > 1" class="remaining-notifications-label">{{ remainingWarning }} warnings left</span>
 			<button (click)="onCloseWarningButtonClicked()">OK</button>
 		</div>
 	</div>
@@ -24,7 +24,7 @@
 		<span>{{currentInfoText}}</span>
 		<button class="close-button-container" (click)="onCloseInfoButtonClicked()">OK</button>
 		<div class="close-button-container">
-			<span *ngIf="remainingInfo > 1" class="remaining-notifications-label">{{ remainingInfo - 1 }} more notifications</span>
+			<span *ngIf="remainingInfo > 1" class="remaining-notifications-label">{{ remainingInfo }} notifications left</span>
 			<button (click)="onCloseInfoButtonClicked()">OK</button>
 		</div>
 	</div>
