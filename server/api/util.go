@@ -14,8 +14,8 @@ import (
 )
 
 type Context struct {
-	token *auth.Token
-	transaction *sql.Tx
+	token          *auth.Token
+	transaction    *sql.Tx
 	projectService *project.ProjectService
 }
 
@@ -34,7 +34,7 @@ func authenticatedTransactionHandler(handler func(w http.ResponseWriter, r *http
 
 		token, err := auth.VerifyRequest(r)
 		if err != nil {
-			sigolo.Error( "No valid authentication found: %s", err)
+			sigolo.Error("No valid authentication found: %s", err)
 			// No further information to caller (which is a potential attacker)
 			util.Response(w, "No valid authentication found", http.StatusUnauthorized)
 			return
@@ -42,7 +42,7 @@ func authenticatedTransactionHandler(handler func(w http.ResponseWriter, r *http
 
 		context, err := createContext(token)
 		if err != nil {
-			sigolo.Error( "Unable to get transaction: %s", err)
+			sigolo.Error("Unable to get transaction: %s", err)
 			// No further information to caller (which is a potential attacker)
 			util.Response(w, "Unable to get transaction", http.StatusUnauthorized)
 			return
@@ -68,7 +68,7 @@ func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request,
 
 		token, err := auth.VerifyRequest(r)
 		if err != nil {
-			sigolo.Error( "No valid authentication found: %s", err)
+			sigolo.Error("No valid authentication found: %s", err)
 			// No further information to caller (which is a potential attacker)
 			util.Response(w, "No valid authentication found", http.StatusUnauthorized)
 			return
@@ -76,13 +76,25 @@ func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request,
 
 		context, err := createContext(token)
 		if err != nil {
-			sigolo.Error( "Unable to get transaction: %s", err)
+			sigolo.Error("Unable to get transaction: %s", err)
 			// No further information to caller (which is a potential attacker)
 			util.Response(w, "Unable to get transaction", http.StatusUnauthorized)
 			return
 		}
 
+		// TODO defer recover from panic and rollback transaction
+
+		// Call actual logic
 		handler(w, r, context)
+		// TODO Use (own?) response instead of ResponseWriter and capture error here
+
+		// Commit transaction
+		err = context.transaction.Commit()
+		if err != nil {
+			sigolo.Error("Unable to commit transaction: %s", err.Error())
+			panic(err)
+		}
+		sigolo.Debug("Committed transaction")
 	}
 }
 
@@ -90,7 +102,7 @@ func createContext(token *auth.Token) (*Context, error) {
 	context := &Context{}
 	context.token = token
 
-	tx,err := database.GetTransaction()
+	tx, err := database.GetTransaction()
 	if err != nil {
 		return nil, errors.Wrap(err, "error getting transaction")
 	}
