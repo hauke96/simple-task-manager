@@ -26,7 +26,7 @@ type storePg struct {
 func getStore(tx *sql.Tx) *storePg {
 	return &storePg{
 		tx:    tx,
-		table: "projects",
+		table: "tasks",
 	}
 }
 
