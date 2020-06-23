@@ -146,7 +146,8 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
   }
 
   private showTaskPolygon(task: Task) {
-    const feature = task.geometry;
+    // Without clone(), the tasks geometry would be changes inline.
+    const feature = task.geometry.clone();
     feature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
     feature.set('task_id', task.id);
 
