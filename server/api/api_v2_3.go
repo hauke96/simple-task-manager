@@ -9,6 +9,7 @@ import (
 	"github.com/hauke96/simple-task-manager/server/task"
 	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/hauke96/simple-task-manager/server/websocket"
+	"github.com/pkg/errors"
 	"io/ioutil"
 	"net/http"
 )
@@ -40,7 +41,7 @@ func Init_v2_3(router *mux.Router) (*mux.Router, string) {
 func getProjects_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	projects, err := project.GetProjects(token.UID)
 	if err != nil {
-		util.ResponseInternalError(w, err.Error())
+		util.ResponseInternalError(w, err)
 		return
 	}
 
@@ -51,20 +52,20 @@ func getProjects_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token)
 func addProject_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		util.ResponseBadRequest(w, err.Error())
+		util.ResponseBadRequest(w, err)
 		return
 	}
 
 	var draftProject project.Project
 	err = json.Unmarshal(bodyBytes, &draftProject)
 	if err != nil {
-		util.ResponseInternalError(w, err.Error())
+		util.ResponseInternalError(w, err)
 		return
 	}
 
 	addedProject, err := project.AddProject(&draftProject)
 	if err != nil {
-		util.ResponseInternalError(w, err.Error())
+		util.ResponseInternalError(w, err)
 		return
 	}
 
@@ -78,13 +79,13 @@ func getProject_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) 
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
-		util.ResponseBadRequest(w, "url segment 'id' not set")
+		util.ResponseBadRequest(w, errors.New("url segment 'id' not set"))
 		return
 	}
 
 	project, err := project.GetProject(projectId, token.UID)
 	if err != nil {
-		util.ResponseInternalError(w, err.Error())
+		util.ResponseInternalError(w, err)
 		return
 	}
 
@@ -96,13 +97,13 @@ func leaveProject_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
-		util.ResponseBadRequest(w, "url segment 'id' not set")
+		util.ResponseBadRequest(w, errors.New("url segment 'id' not set"))
 		return
 	}
 
 	updatedProject, err := project.RemoveUser(projectId, token.UID, token.UID)
 	if err != nil {
-		util.ResponseInternalError(w, err.Error())
+		util.ResponseInternalError(w, err)
 		return
 	}
 
@@ -113,19 +114,19 @@ func removeUser_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) 
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
-		util.ResponseBadRequest(w, "url segment 'id' not set")
+		util.ResponseBadRequest(w, errors.New("url segment 'id' not set"))
 		return
 	}
 
 	user, ok := vars["uid"]
 	if !ok {
-		util.ResponseBadRequest(w, "url segment 'user' not set")
+		util.ResponseBadRequest(w, errors.New("url segment 'user' not set"))
 		return
 	}
 
 	updatedProject, err := project.RemoveUser(projectId, token.UID, user)
 	if err != nil {
-		util.ResponseInternalError(w, err.Error())
+		util.ResponseInternalError(w, err)
 		return
 	}
 
@@ -139,19 +140,19 @@ func deleteProjects_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Tok
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
-		util.ResponseBadRequest(w, "url segment 'id' not set")
+		util.ResponseBadRequest(w, errors.New("url segment 'id' not set"))
 		return
 	}
 
 	projectToDelete, err := project.GetProject(projectId, token.UID)
 	if err != nil {
-		util.ResponseInternalError(w, err.Error())
+		util.ResponseInternalError(w, err)
 		return
 	}
 
 	err = project.DeleteProject(projectId, token.UID)
 	if err != nil {
-		util.ResponseInternalError(w, err.Error())
+		util.ResponseInternalError(w, err)
 		return
 	}
 
@@ -162,20 +163,20 @@ func updateProjectName_v2_3(w http.ResponseWriter, r *http.Request, token *auth.
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
-		util.ResponseBadRequest(w, "url segment 'id' not set")
+		msg := "url segment 'id' not set"
+		util.ResponseBadRequest(w, errors.New(msg))
 		return
 	}
 
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		sigolo.Error("Error reading request body: %s", err.Error())
-		util.ResponseBadRequest(w, err.Error())
+		util.ResponseBadRequest(w, err)
 		return
 	}
 
 	updatedProject, err := project.UpdateName(projectId, string(bodyBytes), token.UID)
 	if err != nil {
-		util.ResponseInternalError(w, err.Error())
+		util.ResponseInternalError(w, err)
 		return
 	}
 
@@ -189,20 +190,20 @@ func updateProjectDescription_v2_3(w http.ResponseWriter, r *http.Request, token
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
-		util.ResponseBadRequest(w, "url segment 'id' not set")
+		msg := "url segment 'id' not set"
+		util.ResponseBadRequest(w, errors.New(msg))
 		return
 	}
 
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		sigolo.Error("Error reading request body: %s", err.Error())
-		util.ResponseBadRequest(w, err.Error())
+		util.ResponseBadRequest(w, err)
 		return
 	}
 
 	updatedProject, err := project.UpdateDescription(projectId, string(bodyBytes), token.UID)
 	if err != nil {
-		util.ResponseInternalError(w, err.Error())
+		util.ResponseInternalError(w, err)
 		return
 	}
 
@@ -216,13 +217,13 @@ func getProjectTasks_v2_3(w http.ResponseWriter, r *http.Request, token *auth.To
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
-		util.ResponseBadRequest(w, "url segment 'id' not set")
+		util.ResponseBadRequest(w, errors.New("url segment 'id' not set"))
 		return
 	}
 
 	tasks, err := project.GetTasks(projectId, token.UID)
 	if err != nil {
-		util.ResponseInternalError(w, err.Error())
+		util.ResponseInternalError(w, err)
 		return
 	}
 
@@ -233,20 +234,20 @@ func getProjectTasks_v2_3(w http.ResponseWriter, r *http.Request, token *auth.To
 func addUserToProject_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	userToAdd, err := util.GetParam("uid", r)
 	if err != nil {
-		util.ResponseBadRequest(w, err.Error())
+		util.ResponseBadRequest(w, err)
 		return
 	}
 
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
-		util.ResponseBadRequest(w, "url segment 'id' not set")
+		util.ResponseBadRequest(w, errors.New("url segment 'id' not set"))
 		return
 	}
 
 	updatedProject, err := project.AddUser(projectId, userToAdd, token.UID)
 	if err != nil {
-		util.ResponseInternalError(w, err.Error())
+		util.ResponseInternalError(w, err)
 		return
 	}
 
@@ -260,7 +261,7 @@ func assignUser_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) 
 	vars := mux.Vars(r)
 	taskId, ok := vars["id"]
 	if !ok {
-		util.ResponseBadRequest(w, "url segment 'id' not set")
+		util.ResponseBadRequest(w, errors.New("url segment 'id' not set"))
 		return
 	}
 
@@ -268,13 +269,13 @@ func assignUser_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) 
 
 	task, err := task.AssignUser(taskId, user)
 	if err != nil {
-		util.ResponseInternalError(w, err.Error())
+		util.ResponseInternalError(w, err)
 		return
 	}
 
 	// Send via websockets
 	if sendTaskUpdate(task, user) != nil {
-		util.ResponseInternalError(w, err.Error())
+		util.ResponseInternalError(w, err)
 		return
 	}
 
@@ -288,7 +289,7 @@ func unassignUser_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token
 	vars := mux.Vars(r)
 	taskId, ok := vars["id"]
 	if !ok {
-		util.ResponseBadRequest(w, "url segment 'id' not set")
+		util.ResponseBadRequest(w, errors.New("url segment 'id' not set"))
 		return
 	}
 
@@ -296,13 +297,13 @@ func unassignUser_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token
 
 	task, err := task.UnassignUser(taskId, user)
 	if err != nil {
-		util.ResponseInternalError(w, err.Error())
+		util.ResponseInternalError(w, err)
 		return
 	}
 
 	// Send via websockets
 	if sendTaskUpdate(task, user) != nil {
-		util.ResponseInternalError(w, err.Error())
+		util.ResponseInternalError(w, err)
 		return
 	}
 
@@ -316,25 +317,25 @@ func setProcessPoints_v2_3(w http.ResponseWriter, r *http.Request, token *auth.T
 	vars := mux.Vars(r)
 	taskId, ok := vars["id"]
 	if !ok {
-		util.ResponseBadRequest(w, "url segment 'id' not set")
+		util.ResponseBadRequest(w, errors.New("url segment 'id' not set"))
 		return
 	}
 
 	processPoints, err := util.GetIntParam("process_points", r)
 	if err != nil {
-		util.ResponseBadRequest(w, err.Error())
+		util.ResponseBadRequest(w, err)
 		return
 	}
 
 	task, err := task.SetProcessPoints(taskId, processPoints, token.UID)
 	if err != nil {
-		util.ResponseInternalError(w, err.Error())
+		util.ResponseInternalError(w, err)
 		return
 	}
 
 	// Send via websockets
 	if sendTaskUpdate(task, token.UID) != nil {
-		util.ResponseInternalError(w, err.Error())
+		util.ResponseInternalError(w, err)
 		return
 	}
 
@@ -347,15 +348,16 @@ func setProcessPoints_v2_3(w http.ResponseWriter, r *http.Request, token *auth.T
 func addTask_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		sigolo.Error("Error reading request body: %s", err.Error())
-		util.ResponseBadRequest(w, err.Error())
+		//sigolo.Error("Error reading request body: %s", err.Error())
+		sigolo.Stack(err)
+		util.ResponseBadRequest(w, err)
 		return
 	}
 
 	var tasks []*task.Task
 	err = json.Unmarshal(bodyBytes, &tasks)
 	if err != nil {
-		util.ResponseInternalError(w, err.Error())
+		util.ResponseInternalError(w, err)
 		return
 	}
 
@@ -363,7 +365,7 @@ func addTask_v2_3(w http.ResponseWriter, r *http.Request, token *auth.Token) {
 
 	updatedTasks, err := task.AddTasks(tasks)
 	if err != nil {
-		util.ResponseInternalError(w, err.Error())
+		util.ResponseInternalError(w, err)
 		return
 	}
 

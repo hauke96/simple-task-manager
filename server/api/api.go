@@ -2,7 +2,6 @@ package api
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
 	"net/http"
 	"strconv"
 	"strings"
@@ -59,7 +58,7 @@ func Init() error {
 	}
 
 	if err != nil {
-		return errors.Wrap(err, "Could not start listening")
+		panic(err)
 	}
 
 	sigolo.Info("Start serving ...")
