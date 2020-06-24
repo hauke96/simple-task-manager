@@ -3,6 +3,7 @@ package task
 import (
 	"database/sql"
 	"fmt"
+	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/permission"
 	"github.com/pkg/errors"
 	"strings"

@@ -3,6 +3,7 @@ package project
 import (
 	"database/sql"
 	"fmt"
+	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/permission"
 	"github.com/hauke96/simple-task-manager/server/task"
 	"github.com/pkg/errors"
@@ -166,7 +167,8 @@ func (s *ProjectService) addMetadata(project *Project, potentialMemberId string)
 
 	needsAssignment, err := s.permissionService.AssignmentInProjectNeeded(project.Id)
 	if err != nil {
-		return errors.Wrap(err, fmt.Sprintf("unable to get assignment requirement for project %s", project.Id))
+		sigolo.Error("unable to get assignment requirement for project %s", project.Id)
+		return err
 	}
 	project.NeedsAssignment = needsAssignment
 
