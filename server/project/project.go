@@ -164,7 +164,6 @@ func (s *ProjectService) addMetadata(project *Project, potentialMemberId string)
 		project.TotalProcessPoints += t.MaxProcessPoints
 	}
 
-
 	needsAssignment, err := s.permissionService.AssignmentInProjectNeeded(project.Id)
 	if err != nil {
 		sigolo.Error("unable to get assignment requirement for project %s", project.Id)
@@ -226,7 +225,7 @@ func (s *ProjectService) RemoveUser(projectId, requestingUserId, userIdToRemove 
 	// It's not possible to remove the owner
 	err = s.permissionService.VerifyOwnership(projectId, userIdToRemove)
 	if err == nil {
-		return nil, err
+		return nil, errors.New("removing the owner is not allowed")
 	}
 
 	err = s.permissionService.VerifyOwnership(projectId, requestingUserId)
