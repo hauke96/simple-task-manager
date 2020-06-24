@@ -125,7 +125,7 @@ func AssignmentInProjectNeeded(projectId string) (bool, error) {
 	defer rows.Close()
 
 	if !rows.Next() {
-		return true, fmt.Errorf("no row to get assignment requirement for project %s", projectId)
+		return true, errors.New(fmt.Sprintf("no row to get assignment requirement for project %s", projectId))
 	}
 
 	var userCount int
@@ -150,7 +150,7 @@ func AssignmentInTaskNeeded(taskId string) (bool, error) {
 	defer rows.Close()
 
 	if !rows.Next() {
-		return true, fmt.Errorf("no row to get assignment requirement for task %s", taskId)
+		return true, errors.New(fmt.Sprintf("no row to get assignment requirement for task %s", taskId))
 	}
 
 	var userCount int

@@ -44,7 +44,7 @@ func Init() {
 func GetTasks(taskIds []string, requestingUserId string) ([]*Task, error) {
 	err := permission.VerifyMembershipTasks(taskIds, requestingUserId)
 	if err != nil {
-		return nil, errors.Wrap(err, "user membership verification failed")
+		return nil, err
 	}
 
 	return store.getTasks(taskIds)
@@ -64,12 +64,12 @@ func AddTasks(newTasks []*Task) ([]*Task, error) {
 func AssignUser(taskId, userId string) (*Task, error) {
 	task, err := store.getTask(taskId)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not get task to assign userId")
+		return nil, err
 	}
 
 	// Task has already an assigned user
 	if strings.TrimSpace(task.AssignedUser) != "" {
-		return nil, fmt.Errorf("task %s has already an assigned userId, cannot overwrite", task.Id)
+		return nil, errors.New(fmt.Sprintf("task %s has already an assigned userId, cannot overwrite", task.Id))
 	}
 
 	return store.assignUser(taskId, userId)
@@ -78,7 +78,7 @@ func AssignUser(taskId, userId string) (*Task, error) {
 func UnassignUser(taskId, requestingUserId string) (*Task, error) {
 	err := permission.VerifyAssignment(taskId, requestingUserId)
 	if err != nil {
-		return nil, errors.Wrap(err, "user assignment verification failed")
+		return nil, err
 	}
 
 	return store.unassignUser(taskId)
@@ -89,23 +89,24 @@ func UnassignUser(taskId, requestingUserId string) (*Task, error) {
 func SetProcessPoints(taskId string, newPoints int, requestingUserId string) (*Task, error) {
 	needsAssignment, err := permission.AssignmentInTaskNeeded(taskId)
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to get assignment requirement for setting process points")
+		return nil, err
 	}
 	if needsAssignment {
 		err := permission.VerifyAssignment(taskId, requestingUserId)
 		if err != nil {
-			return nil, errors.Wrap(err, "user assignment verification failed")
+			return nil, err
 		}
 	} else { // when no assignment is needed, the requesting user at least needs to be a member
 		err := permission.VerifyMembershipTask(taskId, requestingUserId)
 		if err != nil {
-			return nil, errors.Wrap(err, fmt.Sprintf("user not a member of the project, the task %s belongs to", taskId))
+			sigolo.Error("user not a member of the project, the task %s belongs to", taskId)
+			return nil, err
 		}
 	}
 
 	task, err := store.getTask(taskId)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not get task to set process points")
+		return nil, err
 	}
 
 	// New process points should be in the range "[0, MaxProcessPoints]" (so including 0 and MaxProcessPoints)
@@ -123,12 +124,12 @@ func SetProcessPoints(taskId string, newPoints int, requestingUserId string) (*T
 func Delete(taskIds []string, requestingUserId string) error {
 	err := permission.VerifyMembershipTasks(taskIds, requestingUserId)
 	if err != nil {
-		return errors.Wrap(err, "user membership verification failed")
+		return err
 	}
 
 	err = store.delete(taskIds)
 	if err != nil {
-		return errors.Wrap(err, "unable to remove tasks")
+		return err
 	}
 
 	return nil

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/hauke96/kingpin"
 	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/permission"
@@ -58,6 +57,7 @@ func main() {
 
 	err = api.Init()
 	if err != nil {
-		sigolo.Error(fmt.Sprintf("Error while serving: %s", err))
+		sigolo.Stack(err)
+		os.Exit(1)
 	}
 }

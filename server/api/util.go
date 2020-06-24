@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/gorilla/mux"
 	"github.com/hauke96/sigolo"
+	"github.com/pkg/errors"
 	"net/http"
 
 	"github.com/hauke96/simple-task-manager/server/auth"
@@ -32,7 +33,7 @@ func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request,
 
 		t := query.Get("token")
 		if t == "" {
-			util.ResponseBadRequest(w, "query parameter 'token' not set")
+			util.ResponseBadRequest(w, errors.New("query parameter 'token' not set"))
 			return
 		}
 		query.Del("token")
@@ -47,9 +48,8 @@ func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request,
 func verifyAndHandle(r *http.Request, w http.ResponseWriter, handler func(w http.ResponseWriter, r *http.Request, token *auth.Token)) {
 	token, err := auth.VerifyRequest(r)
 	if err != nil {
-		sigolo.Error("No valid authentication found: %s", err.Error())
 		// No further information to caller (which is a potential attacker)
-		util.Response(w, "No valid authentication found", http.StatusUnauthorized)
+		util.ErrorResponse(w, errors.New("No valid authentication found"), http.StatusUnauthorized)
 		return
 	}
 
