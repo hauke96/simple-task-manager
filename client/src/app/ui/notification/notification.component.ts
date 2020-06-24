@@ -29,7 +29,7 @@ export class NotificationComponent implements OnInit {
     return this.notificationService.hasError();
   }
 
-  public get remainingErrors(): number{
+  public get remainingErrors(): number {
     return this.notificationService.remainingErrors();
   }
 
@@ -49,7 +49,7 @@ export class NotificationComponent implements OnInit {
     return this.notificationService.hasWarning();
   }
 
-  public get remainingWarning(): number{
+  public get remainingWarning(): number {
     return this.notificationService.remainingWarning();
   }
 
@@ -69,7 +69,7 @@ export class NotificationComponent implements OnInit {
     return this.notificationService.hasInfo();
   }
 
-  public get remainingInfo(): number{
+  public get remainingInfo(): number {
     return this.notificationService.remainingInfo();
   }
 

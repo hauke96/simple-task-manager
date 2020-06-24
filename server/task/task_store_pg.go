@@ -3,6 +3,7 @@ package task
 import (
 	"database/sql"
 	"fmt"
+	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/lib/pq"
 	"github.com/pkg/errors"
@@ -75,7 +76,7 @@ func (s *storePg) getTasks(taskIds []string) ([]*Task, error) {
 	}
 
 	if len(tasks) == 0 {
-		return nil, errors.New(fmt.Sprintf("Tasks do not exist"))
+		return nil, errors.New("Tasks do not exist")
 	}
 
 	return tasks, nil
@@ -97,7 +98,8 @@ func (s *storePg) addTasks(newTasks []*Task) ([]*Task, error) {
 	for _, t := range newTasks {
 		id, err := s.addTask(t)
 		if err != nil {
-			return nil, errors.Wrapf(err, "error adding task '%s'", t.Id)
+			sigolo.Error("error adding task '%s'", t.Id)
+			return nil, err
 		}
 
 		taskIds = append(taskIds, id)

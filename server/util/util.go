@@ -3,6 +3,7 @@ package util
 import (
 	"fmt"
 	"github.com/hauke96/sigolo"
+	"github.com/pkg/errors"
 	"net/http"
 	"strconv"
 	"strings"
@@ -15,7 +16,7 @@ const (
 func GetParam(param string, r *http.Request) (string, error) {
 	value := r.FormValue(param)
 	if strings.TrimSpace(value) == "" {
-		return "", fmt.Errorf("parameter '%s' not specified", param)
+		return "", errors.New(fmt.Sprintf("parameter '%s' not specified", param))
 	}
 
 	return value, nil
@@ -30,18 +31,19 @@ func GetIntParam(param string, r *http.Request) (int, error) {
 	return strconv.Atoi(valueString)
 }
 
-func ResponseBadRequest(w http.ResponseWriter, err string) {
-	Response(w, err, http.StatusBadRequest)
+func ResponseBadRequest(w http.ResponseWriter, err error) {
+	ErrorResponse(w, err, http.StatusBadRequest)
 }
 
-func ResponseInternalError(w http.ResponseWriter, err string) {
-	Response(w, err, http.StatusInternalServerError)
+func ResponseInternalError(w http.ResponseWriter, err error) {
+	ErrorResponse(w, err, http.StatusInternalServerError)
 }
 
-func Response(w http.ResponseWriter, data string, status int) {
-	sigolo.Error("Response with status %d: %s", status, data)
+func ErrorResponse(w http.ResponseWriter, err error, status int) {
+	sigolo.Stack(err)
+	sigolo.Error("ErrorResponse with status %d: %s", status, err.Error())
 	w.WriteHeader(status)
-	w.Write([]byte(data))
+	w.Write([]byte(err.Error()))
 }
 
 func LogQuery(query string, args ...interface{}) {

@@ -3,6 +3,7 @@ package project
 import (
 	"database/sql"
 	"fmt"
+	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/task"
 	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/lib/pq"
@@ -102,7 +103,8 @@ func (s *storePg) addProject(draft *Project) (*Project, error) {
 func (s *storePg) addUser(projectId string, userIdToAdd string) (*Project, error) {
 	originalProject, err := s.getProject(projectId)
 	if err != nil {
-		return nil, errors.Wrapf(err, "error getting project with ID '%s'", projectId)
+		sigolo.Error("error getting project with ID '%s'", projectId)
+		return nil, err
 	}
 
 	newUsers := append(originalProject.Users, userIdToAdd)
@@ -114,7 +116,8 @@ func (s *storePg) addUser(projectId string, userIdToAdd string) (*Project, error
 func (s *storePg) removeUser(projectId string, userIdToRemove string) (*Project, error) {
 	originalProject, err := s.getProject(projectId)
 	if err != nil {
-		return nil, errors.Wrapf(err, "error getting project with ID '%s'", projectId)
+		sigolo.Error("error getting project with ID '%s'", projectId)
+		return nil, err
 	}
 
 	remainingUsers := make([]string, 0)
@@ -172,7 +175,7 @@ func (s *storePg) execQuery(tx *sql.Tx, query string, params ...interface{}) (*P
 	p, err := s.rowToProject(rows)
 
 	if p == nil && err == nil {
-		return nil, errors.New(fmt.Sprintf("Project does not exist"))
+		return nil, errors.New("Project does not exist")
 	}
 
 	return p, err

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/hauke96/kingpin"
 	"github.com/hauke96/sigolo"
 	_ "github.com/lib/pq" // Make driver "postgres" usable
@@ -52,6 +51,7 @@ func main() {
 
 	err = api.Init()
 	if err != nil {
-		sigolo.Error(fmt.Sprintf("Error while serving: %s", err))
+		sigolo.Stack(err)
+		os.Exit(1)
 	}
 }

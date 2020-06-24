@@ -37,8 +37,9 @@ var (
 func GetWebsocketConnection(w http.ResponseWriter, r *http.Request, uid string) {
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		sigolo.Error("Could not upgrade response writer and request to websocket connection")
-		util.ResponseInternalError(w, err.Error())
+		//sigolo.Error("Could not upgrade response writer and request to websocket connection")
+		sigolo.Stack(err)
+		util.ResponseInternalError(w, err)
 		return
 	}
 
@@ -62,11 +63,13 @@ func SendAll(messages []Message, uids ...string) {
 			err := c.WriteJSON(messages)
 
 			if err != nil {
-				sigolo.Error("Unable to send to websocket, close it. Error: %s", err.Error())
+				//sigolo.Error("Unable to send to websocket, close it. Error: %s", err.Error())
+				sigolo.Stack(err)
 
 				err := c.Close()
 				if err != nil {
-					sigolo.Error("Wasn't even able to close it: %s", err.Error())
+					//sigolo.Error("Wasn't even able to close it: %s", err.Error())
+					sigolo.Stack(err)
 				}
 			}
 		}

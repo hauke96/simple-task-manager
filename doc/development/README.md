@@ -77,3 +77,13 @@ Because the container build and test themselves, starting everything probably ta
 To increase build time, there's an own [base image for the client](https://hub.docker.com/r/simpletaskmanager/stm-client-base).
 
 During development I recommend to manually start the client and server (see according `README.md` files) and just use the docker container for the database.
+
+## Server: Error handling
+
+Whenever an error from a library/framework (e.g. in a database store) is returned, wrap it using `errors.Wrap(err)` (from the `github.com/pkg/errors` package) and return that.
+This will later result in a nice stack trace when the HTTP response is created.
+All other places just return the error because it's already wrapped (and therefore will already produce a stack trace).
+
+New errors should also be created using `errors.New(...)`.
+
+Whenever catching, creating or wrapping an error, feel free to print additional information using `sigolo.Error(...)`. 

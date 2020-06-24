@@ -32,7 +32,7 @@ func Init(tx *sql.Tx, permissionService *permission.PermissionService) *TaskServ
 func (s *TaskService) GetTasks(taskIds []string, requestingUserId string) ([]*Task, error) {
 	err := s.permissionService.VerifyMembershipTasks(taskIds, requestingUserId)
 	if err != nil {
-		return nil, errors.Wrap(err, "user membership verification failed")
+		return nil, err
 	}
 
 	return s.store.getTasks(taskIds)
@@ -52,12 +52,12 @@ func (s *TaskService) AddTasks(newTasks []*Task) ([]*Task, error) {
 func (s *TaskService) AssignUser(taskId, userId string) (*Task, error) {
 	task, err := s.store.getTask(taskId)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not get task to assign userId")
+		return nil, err
 	}
 
 	// Task has already an assigned user
 	if strings.TrimSpace(task.AssignedUser) != "" {
-		return nil, fmt.Errorf("task %s has already an assigned userId, cannot overwrite", task.Id)
+		return nil, errors.New(fmt.Sprintf("task %s has already an assigned userId, cannot overwrite", task.Id))
 	}
 
 	return s.store.assignUser(taskId, userId)
@@ -66,7 +66,7 @@ func (s *TaskService) AssignUser(taskId, userId string) (*Task, error) {
 func (s *TaskService) UnassignUser(taskId, requestingUserId string) (*Task, error) {
 	err := s.permissionService.VerifyAssignment(taskId, requestingUserId)
 	if err != nil {
-		return nil, errors.Wrap(err, "user assignment verification failed")
+		return nil, err
 	}
 
 	return s.store.unassignUser(taskId)
@@ -77,23 +77,24 @@ func (s *TaskService) UnassignUser(taskId, requestingUserId string) (*Task, erro
 func (s *TaskService) SetProcessPoints(taskId string, newPoints int, requestingUserId string) (*Task, error) {
 	needsAssignment, err := s.permissionService.AssignmentInTaskNeeded(taskId)
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to get assignment requirement for setting process points")
+		return nil, err
 	}
 	if needsAssignment {
 		err := s.permissionService.VerifyAssignment(taskId, requestingUserId)
 		if err != nil {
-			return nil, errors.Wrap(err, "user assignment verification failed")
+			return nil, err
 		}
 	} else { // when no assignment is needed, the requesting user at least needs to be a member
 		err := s.permissionService.VerifyMembershipTask(taskId, requestingUserId)
 		if err != nil {
-			return nil, errors.Wrap(err, fmt.Sprintf("user not a member of the project, the task %s belongs to", taskId))
+			sigolo.Error("user not a member of the project, the task %s belongs to", taskId)
+			return nil, err
 		}
 	}
 
 	task, err := s.store.getTask(taskId)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not get task to set process points")
+		return nil, err
 	}
 
 	// New process points should be in the range "[0, MaxProcessPoints]" (so including 0 and MaxProcessPoints)
@@ -111,12 +112,12 @@ func (s *TaskService) SetProcessPoints(taskId string, newPoints int, requestingU
 func (s *TaskService) Delete(taskIds []string, requestingUserId string) error {
 	err := s.permissionService.VerifyMembershipTasks(taskIds, requestingUserId)
 	if err != nil {
-		return errors.Wrap(err, "user membership verification failed")
+		return err
 	}
 
 	err = s.store.delete(taskIds)
 	if err != nil {
-		return errors.Wrap(err, "unable to remove tasks")
+		return err
 	}
 
 	return nil

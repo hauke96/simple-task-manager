@@ -5,15 +5,14 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/hauke96/sigolo"
+	"github.com/hauke96/simple-task-manager/server/auth"
 	"github.com/hauke96/simple-task-manager/server/database"
 	"github.com/hauke96/simple-task-manager/server/permission"
 	"github.com/hauke96/simple-task-manager/server/project"
 	"github.com/hauke96/simple-task-manager/server/task"
+	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/pkg/errors"
 	"net/http"
-
-	"github.com/hauke96/simple-task-manager/server/auth"
-	"github.com/hauke96/simple-task-manager/server/util"
 )
 
 type Context struct {
@@ -46,7 +45,7 @@ func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request,
 
 		t := query.Get("token")
 		if t == "" {
-			util.ResponseBadRequest(w, "query parameter 'token' not set")
+			util.ResponseBadRequest(w, errors.New("query parameter 'token' not set"))
 			return
 		}
 		query.Del("token")
@@ -58,7 +57,7 @@ func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request,
 		if err != nil {
 			sigolo.Error("No valid authentication found: %s", err)
 			// No further information to caller (which is a potential attacker)
-			util.Response(w, "No valid authentication found", http.StatusUnauthorized)
+			util.ErrorResponse(w, errors.New("No valid authentication found"), http.StatusUnauthorized)
 			return
 		}
 
@@ -72,9 +71,8 @@ func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request,
 func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(w http.ResponseWriter, r *http.Request, context *Context)) {
 	token, err := auth.VerifyRequest(r)
 	if err != nil {
-		sigolo.Error("No valid authentication found: %s", err)
 		// No further information to caller (which is a potential attacker)
-		util.Response(w, "No valid authentication found", http.StatusUnauthorized)
+		util.ErrorResponse(w, errors.New("No valid authentication found"), http.StatusUnauthorized)
 		return
 	}
 
@@ -83,7 +81,7 @@ func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(w htt
 	if err != nil {
 		sigolo.Error("Unable to create context: %s", err)
 		// No further information to caller (which is a potential attacker)
-		util.ResponseInternalError(w, "Unable to create context")
+		util.ResponseInternalError(w, errors.New("Unable to create context"))
 		return
 	}
 
@@ -105,7 +103,7 @@ func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(w htt
 			if err != nil {
 				sigolo.Info("error performing rollback after panic: %s", err.Error())
 
-				util.ResponseInternalError(w, "Fatal error occurred!")
+				util.ResponseInternalError(w, errors.New("Fatal error occurred!"))
 			}
 		}
 	}()
