@@ -10,7 +10,7 @@ The idea behind this project is to create a simple and general purpose tasking m
 A tasking manager is an application which helps multiple people to work in the same region without interfering with each other.
 Usually such region is divided into squares and only one mapper at a time works on one square.
 
-<img align="center" style="width: 100%; max-width: 1128px;" src="https://raw.githubusercontent.com/hauke96/simple-task-manager/dev/screenshot.png">
+<img align="center" style="width: 100%; max-width: 1128px;" src="https://raw.githubusercontent.com/hauke96/simple-task-manager/master/screenshot.png">
 
 # How does it work?
 
