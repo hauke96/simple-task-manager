@@ -2,6 +2,7 @@ package api
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/hauke96/sigolo"
@@ -14,6 +15,39 @@ import (
 	"github.com/pkg/errors"
 	"net/http"
 )
+
+type ApiResponse struct {
+	statusCode int
+	data       interface{}
+}
+
+func BadRequestError(err error) *ApiResponse {
+	return &ApiResponse{
+		statusCode: http.StatusBadRequest,
+		data:       err,
+	}
+}
+
+func InternalServerError(err error) *ApiResponse {
+	return &ApiResponse{
+		statusCode: http.StatusInternalServerError,
+		data:       err,
+	}
+}
+
+func JsonResponse(data interface{}) *ApiResponse {
+	return &ApiResponse{
+		statusCode: http.StatusOK,
+		data:       data,
+	}
+}
+
+func EmptyResponse() *ApiResponse {
+	return &ApiResponse{
+		statusCode: http.StatusOK,
+		data:       nil,
+	}
+}
 
 type Context struct {
 	token          *auth.Token
@@ -31,7 +65,7 @@ func printRoutes(router *mux.Router) {
 	})
 }
 
-func authenticatedTransactionHandler(handler func(w http.ResponseWriter, r *http.Request, context *Context)) func(http.ResponseWriter, *http.Request) {
+func authenticatedTransactionHandler(handler func(r *http.Request, context *Context) *ApiResponse) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 
@@ -45,7 +79,9 @@ func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request,
 
 		t := query.Get("token")
 		if t == "" {
-			util.ResponseBadRequest(w, errors.New("query parameter 'token' not set"))
+			err := errors.New("query parameter 'token' not set")
+			sigolo.Stack(err)
+			util.ResponseUnauthorized(w, err)
 			return
 		}
 		query.Del("token")
@@ -56,6 +92,7 @@ func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request,
 		token, err := auth.VerifyRequest(r)
 		if err != nil {
 			sigolo.Error("No valid authentication found: %s", err)
+			sigolo.Stack(err)
 			// No further information to caller (which is a potential attacker)
 			util.ResponseUnauthorized(w, errors.New("No valid authentication found"))
 			return
@@ -68,10 +105,11 @@ func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request,
 // prepareAndHandle gets and verifies the token from the request, creates the context, starts a transaction, manages
 // commit/rollback, calls the handler and also does error handling. When this function returns, everything should have a
 // valid state: The response as well as the transaction (database).
-func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(w http.ResponseWriter, r *http.Request, context *Context)) {
+func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(r *http.Request, context *Context) *ApiResponse) {
 	token, err := auth.VerifyRequest(r)
 	if err != nil {
 		sigolo.Debug("URL without token called: %s", r.URL.Path)
+		sigolo.Stack(err)
 		// No further information to caller (which is a potential attacker)
 		util.ResponseUnauthorized(w, errors.New("No valid authentication found"))
 		return
@@ -83,6 +121,7 @@ func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(w htt
 	context, err := createContext(token)
 	if err != nil {
 		sigolo.Error("Unable to create context: %s", err)
+		sigolo.Stack(err)
 		// No further information to caller (which is a potential attacker)
 		util.ResponseInternalError(w, errors.New("Unable to create context"))
 		return
@@ -99,21 +138,27 @@ func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(w htt
 				err = fmt.Errorf("%v", r)
 			}
 
-			sigolo.Error(fmt.Sprintf("!! PANIC !! Recover from panic: %s", err.Error()))
+			sigolo.Error(fmt.Sprintf("!! PANIC !! Recover from panic:"))
+			sigolo.Stack(err)
+
+			util.ResponseInternalError(w, err)
 
 			sigolo.Info("Try to perform rollback")
-			err = context.transaction.Rollback()
+			rollbackErr := context.transaction.Rollback()
 			if err != nil {
-				sigolo.Info("error performing rollback after panic: %s", err.Error())
-
-				util.ResponseInternalError(w, errors.New("Fatal error occurred!"))
+				sigolo.Stack(errors.Wrap(rollbackErr, "error performing rollback"))
 			}
 		}
 	}()
 
 	// Call actual logic
-	handler(w, r, context)
-	// TODO Use (own?) response instead of ResponseWriter and capture error here
+	var response *ApiResponse
+	response = handler(r, context)
+
+	if response.statusCode != http.StatusOK {
+		// Cause panic which will be recovered using the above function. This will then trigger a transaction rollback.
+		panic(response.data.(error))
+	}
 
 	// Commit transaction
 	err = context.transaction.Commit()
@@ -122,6 +167,11 @@ func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(w htt
 		panic(err)
 	}
 	sigolo.Debug("Committed transaction")
+
+	if response.data != nil {
+		encoder := json.NewEncoder(w)
+		encoder.Encode(response.data)
+	}
 }
 
 // createContext starts a new transaction and creates new service instances which use this new transaction so that all

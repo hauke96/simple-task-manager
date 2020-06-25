@@ -69,6 +69,7 @@ func OauthLogin(w http.ResponseWriter, r *http.Request) {
 
 	clientRedirectUrl, err := util.GetParam("redirect", r)
 	if err != nil {
+		sigolo.Stack(err)
 		util.ResponseBadRequest(w, err)
 		return
 	}
@@ -105,6 +106,7 @@ func OauthCallback(w http.ResponseWriter, r *http.Request) {
 
 	configKey, err := util.GetParam("config", r)
 	if err != nil {
+		sigolo.Stack(err)
 		util.ResponseBadRequest(w, err)
 		return
 	}
@@ -112,7 +114,9 @@ func OauthCallback(w http.ResponseWriter, r *http.Request) {
 	// Get the config where the request tokens are stored in. They are needed later to get some basic user information.
 	userConfig, ok := configs[configKey]
 	if !ok || userConfig == nil {
-		util.ResponseBadRequest(w, errors.New("User config not found"))
+		err := errors.New("User config not found")
+		sigolo.Stack(err)
+		util.ResponseBadRequest(w, err)
 		return
 	}
 	configs[configKey] = nil // Remove the config, we don't need it  anymore
@@ -120,6 +124,7 @@ func OauthCallback(w http.ResponseWriter, r *http.Request) {
 	// This gets the redirect URL of the web-client. So e.g. "https://stm-hauke-stieler.de/oauth-landing"
 	clientRedirectUrl, err := util.GetParam("redirect", r)
 	if err != nil {
+		sigolo.Stack(err)
 		util.ResponseBadRequest(w, err)
 		return
 	}
@@ -127,12 +132,14 @@ func OauthCallback(w http.ResponseWriter, r *http.Request) {
 	// Request access token from the OSM server in order to then get some user information.
 	err = requestAccessToken(r, userConfig)
 	if err != nil {
+		sigolo.Stack(err)
 		util.ResponseInternalError(w, err)
 		return
 	}
 
 	userName, userId, err := requestUserInformation(userConfig)
 	if err != nil {
+		sigolo.Stack(err)
 		util.ResponseInternalError(w, err)
 		return
 	}
@@ -147,6 +154,7 @@ func OauthCallback(w http.ResponseWriter, r *http.Request) {
 
 	encodedTokenString, err := createTokenString(err, userName, userId, validUntil)
 	if err != nil {
+		sigolo.Stack(err)
 		util.ResponseInternalError(w, err)
 		return
 	}

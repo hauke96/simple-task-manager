@@ -44,7 +44,6 @@ func ResponseUnauthorized(w http.ResponseWriter, err error) {
 }
 
 func ErrorResponse(w http.ResponseWriter, err error, status int) {
-	sigolo.Stack(err)
 	sigolo.Error("ErrorResponse with status %d: %s", status, err.Error())
 	w.WriteHeader(status)
 	w.Write([]byte(err.Error()))
