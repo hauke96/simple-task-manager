@@ -71,10 +71,13 @@ func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request,
 func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(w http.ResponseWriter, r *http.Request, context *Context)) {
 	token, err := auth.VerifyRequest(r)
 	if err != nil {
+		sigolo.Debug("URL without token called: %s", r.URL.Path)
 		// No further information to caller (which is a potential attacker)
 		util.ResponseUnauthorized(w, errors.New("No valid authentication found"))
 		return
 	}
+
+	sigolo.Debug("URL called by '%s' (%s): %s %s", token.User, token.UID, r.Method, r.URL.Path)
 
 	// Create context with a new transaction and new service instances
 	context, err := createContext(token)

@@ -348,7 +348,7 @@ func setProcessPoints_v2_3(w http.ResponseWriter, r *http.Request, context *Cont
 func addTask_v2_3(w http.ResponseWriter, r *http.Request, context *Context) {
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		//sigolo.Error("Error reading request body: %s", err.Error())
+		err = errors.Wrap(err, "error reading request body")
 		sigolo.Stack(err)
 		util.ResponseBadRequest(w, err)
 		return
@@ -357,6 +357,7 @@ func addTask_v2_3(w http.ResponseWriter, r *http.Request, context *Context) {
 	var tasks []*task.Task
 	err = json.Unmarshal(bodyBytes, &tasks)
 	if err != nil {
+		err = errors.Wrap(err, "error unmarshalling task")
 		util.ResponseInternalError(w, err)
 		return
 	}
