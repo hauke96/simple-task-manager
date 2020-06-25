@@ -23,7 +23,7 @@
 
 <div class="hline"></div>
 
-<div class="project-properties-container">
+<div>
 	<form #creationForm="ngForm">
 		<h2>Properties:</h2>
 		<div class="form-entry">
@@ -31,10 +31,11 @@
 			<input class="name-input" [(ngModel)]="newProjectName" required name="nameField">
 		</div>
 		<div class="form-entry">
-			<p>Description:</p>
+			<p class="input-field-label">Description:</p>
 			<textarea name="description-text-area" class="description-text-area" [(ngModel)]="newProjectDescription"></textarea>
 		</div>
 	</form>
+
+	<button class="save-button" (click)="onSaveButtonClicked()" [disabled]="!creationForm.form.valid">Save</button>
 </div>
 
-<button (click)="onSaveButtonClicked()" [disabled]="!creationForm.form.valid">Save</button>

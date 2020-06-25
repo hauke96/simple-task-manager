@@ -9,7 +9,7 @@
 }
 
 .save-button {
-	margin-left: $space-base;
+	margin-top: $space-base;
 }
 
 .description-text-area {
@@ -21,13 +21,7 @@
 	width: 100%;
 }
 
-.project-properties-container {
-	display: flex;
-	flex-direction: column;
-}
-
 // Also apply style to divs in child components using ::ng-deep
 .project-properties-container ::ng-deep .form-entry {
 	margin-bottom: $space-base
 }
-
