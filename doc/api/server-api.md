@@ -81,6 +81,8 @@ Adds the project as given in the body:
 }
 ```
 
+The `id` field must stay empty, it's filled by the server.
+
 The `needsAssignment` flag enables/disables the need for users to assign to a task in order to set process points on a task.
 When set to `false` users can modify a task without being assigned to it.
 
@@ -144,6 +146,13 @@ Adds the task specified by the body.
   }
 ]
 ```
+
+The `id` field must stay empty, it's filled by the server.
+
+The `geometry` must be a valid GeoJSON string.
+The `name` value in the `properties` is optional but will be displayed the clients task list.
+It's okay to not specify the `properties` field, to set it to `null` or `{}`.
+Only Polygons are supported, there's no guarantee that anything else will work at all.
 
 # Developer information
 
