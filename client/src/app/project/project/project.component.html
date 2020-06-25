@@ -6,8 +6,8 @@
 </app-toolbar>
 <div class="root-container">
 	<div class="task-list-details-container">
-		<div *ngIf="project?.description.trim().length !== 0">
-			<h2>Description:</h2>
+		<div class="description-container" *ngIf="project?.description.trim().length !== 0">
+			<h2 class="description-label">Description:</h2>
 			<div class="description-text">{{project?.description}}</div>
 		</div>
 		<app-tabs [tabs]="['Tasks', 'Users', 'Settings']" #tabs>
@@ -46,7 +46,6 @@
 		</app-tabs>
 	</div>
 	<div class="map-container">
-		<h2>Map</h2>
 		<app-task-map *ngIf="project.tasks" [tasks]="project.tasks" class="map"></app-task-map>
 	</div>
 </div>
