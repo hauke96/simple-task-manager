@@ -22,43 +22,33 @@ type Project struct {
 	DoneProcessPoints  int      `json:"doneProcessPoints"`  // Sum of all process points that have been set
 }
 
-type projectStore interface {
-	init(db *sql.DB)
-	getProjects(userId string) ([]*Project, error)
-	getProject(projectId string) (*Project, error)
-	getProjectByTask(taskId string) (*Project, error)
-	areTasksUsed(taskIds []string) (bool, error)
-	addProject(draft *Project) (*Project, error)
-	addUser(projectId string, userIdToAdd string) (*Project, error)
-	removeUser(projectId string, userIdToRemove string) (*Project, error)
-	delete(projectId string) error
-	getTasks(projectId string, user string) ([]*task.Task, error)
-	updateName(projectId string, newName string) (*Project, error)
-	updateDescription(projectId string, newDescription string) (*Project, error)
+type ProjectService struct {
+	store             *storePg
+	permissionService *permission.PermissionService
+	taskService       *task.TaskService
 }
 
 var (
-	store                projectStore
 	maxDescriptionLength = 10000
 )
 
-func Init() {
-	db, err := sql.Open("postgres", "user=postgres password=geheim dbname=stm sslmode=disable")
-	sigolo.FatalCheck(err)
-
-	store = &storePg{}
-	store.init(db)
+func Init(tx *sql.Tx, taskService *task.TaskService, permissionService *permission.PermissionService) *ProjectService {
+	return &ProjectService{
+		store:             getStore(tx),
+		permissionService: permissionService,
+		taskService:       taskService,
+	}
 }
 
-func GetProjects(userId string) ([]*Project, error) {
-	projects, err := store.getProjects(userId)
+func (s *ProjectService) GetProjects(userId string) ([]*Project, error) {
+	projects, err := s.store.getProjects(userId)
 	if err != nil {
 		sigolo.Error(fmt.Sprintf("Error getting projects for user %s", userId))
 		return nil, err
 	}
 
 	for _, p := range projects {
-		err = addProcessPointData(p, userId)
+		err = s.addMetadata(p, userId)
 		if err != nil {
 			sigolo.Error("Unable to add process point data to project %s", p.Id)
 			return nil, err
@@ -68,14 +58,14 @@ func GetProjects(userId string) ([]*Project, error) {
 	return projects, nil
 }
 
-func GetProjectByTask(taskId string, userId string) (*Project, error) {
-	project, err := store.getProjectByTask(taskId)
+func (s *ProjectService) GetProjectByTask(taskId string, userId string) (*Project, error) {
+	project, err := s.store.getProjectByTask(taskId)
 	if err != nil {
 		sigolo.Error("Error getting project with task %s", taskId)
 		return nil, err
 	}
 
-	err = addProcessPointData(project, userId)
+	err = s.addMetadata(project, userId)
 	if err != nil {
 		sigolo.Error("Unable to add process point data to project %s", project.Id)
 		return nil, err
@@ -85,7 +75,7 @@ func GetProjectByTask(taskId string, userId string) (*Project, error) {
 }
 
 // AddProject adds the project, as requested by user "userId".
-func AddProject(projectDraft *Project) (*Project, error) {
+func (s *ProjectService) AddProject(projectDraft *Project) (*Project, error) {
 	if projectDraft.Id != "" {
 		return nil, errors.New("Id not empty")
 	}
@@ -111,7 +101,7 @@ func AddProject(projectDraft *Project) (*Project, error) {
 		return nil, errors.New("No tasks have been specified")
 	}
 
-	tasksAlreadyUsed, err := store.areTasksUsed(projectDraft.TaskIDs)
+	tasksAlreadyUsed, err := s.store.areTasksUsed(projectDraft.TaskIDs)
 	if err != nil {
 		sigolo.Error("error checking whether given tasks %v are already used", projectDraft.TaskIDs)
 		return nil, err
@@ -126,32 +116,12 @@ func AddProject(projectDraft *Project) (*Project, error) {
 
 	// Actually add project and fill it with process point data
 
-	project, err := store.addProject(projectDraft)
+	project, err := s.store.addProject(projectDraft)
 	if err != nil {
 		return nil, err
 	}
 
-	err = addProcessPointData(project, project.Owner)
-	if err != nil {
-		sigolo.Error("Unable to add process point data to project %s", project.Id)
-		return nil, err
-	}
-
-	return project, nil
-}
-
-func GetProject(projectId string, potentialMemberId string) (*Project, error) {
-	err := permission.VerifyMembershipProject(projectId, potentialMemberId)
-	if err != nil {
-		return nil, err
-	}
-
-	project, err := store.getProject(projectId)
-	if err != nil {
-		return nil, err
-	}
-
-	err = addProcessPointData(project, potentialMemberId)
+	err = s.addMetadata(project, project.Owner)
 	if err != nil {
 		sigolo.Error("Unable to add process point data to project %s", project.Id)
 		return nil, err
@@ -160,8 +130,29 @@ func GetProject(projectId string, potentialMemberId string) (*Project, error) {
 	return project, nil
 }
 
-func addProcessPointData(project *Project, potentialMemberId string) error {
-	tasks, err := GetTasks(project.Id, potentialMemberId)
+func (s *ProjectService) GetProject(projectId string, potentialMemberId string) (*Project, error) {
+	err := s.permissionService.VerifyMembershipProject(projectId, potentialMemberId)
+	if err != nil {
+		return nil, err
+	}
+
+	project, err := s.store.getProject(projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	err = s.addMetadata(project, potentialMemberId)
+	if err != nil {
+		sigolo.Error("Unable to add process point data to project %s", project.Id)
+		return nil, err
+	}
+
+	return project, nil
+}
+
+// addMetadata adds additional metadata for convenience. This includes information about process points as well as permissions.
+func (s *ProjectService) addMetadata(project *Project, potentialMemberId string) error {
+	tasks, err := s.GetTasks(project.Id, potentialMemberId)
 	if err != nil {
 		sigolo.Error("getting tasks of project %s failed", project.Id)
 		return err
@@ -172,16 +163,24 @@ func addProcessPointData(project *Project, potentialMemberId string) error {
 		project.DoneProcessPoints += t.ProcessPoints
 		project.TotalProcessPoints += t.MaxProcessPoints
 	}
+
+	needsAssignment, err := s.permissionService.AssignmentInProjectNeeded(project.Id)
+	if err != nil {
+		sigolo.Error("unable to get assignment requirement for project %s", project.Id)
+		return err
+	}
+	project.NeedsAssignment = needsAssignment
+
 	return nil
 }
 
-func AddUser(projectId, userId, potentialOwnerId string) (*Project, error) {
-	err := permission.VerifyOwnership(projectId, potentialOwnerId)
+func (s *ProjectService) AddUser(projectId, userId, potentialOwnerId string) (*Project, error) {
+	err := s.permissionService.VerifyOwnership(projectId, potentialOwnerId)
 	if err != nil {
 		return nil, err
 	}
 
-	p, err := store.getProject(projectId)
+	p, err := s.store.getProject(projectId)
 	if err != nil {
 		return nil, err
 	}
@@ -193,12 +192,12 @@ func AddUser(projectId, userId, potentialOwnerId string) (*Project, error) {
 		}
 	}
 
-	project, err := store.addUser(projectId, userId)
+	project, err := s.store.addUser(projectId, userId)
 	if err != nil {
 		return nil, err
 	}
 
-	err = addProcessPointData(project, potentialOwnerId)
+	err = s.addMetadata(project, potentialOwnerId)
 	if err != nil {
 		sigolo.Error("Unable to add process point data to project %s", project.Id)
 		return nil, err
@@ -207,29 +206,29 @@ func AddUser(projectId, userId, potentialOwnerId string) (*Project, error) {
 	return project, nil
 }
 
-func LeaveProject(projectId string, potentialMemberId string) (*Project, error) {
-	return RemoveUser(projectId, potentialMemberId, potentialMemberId)
+func (s *ProjectService) LeaveProject(projectId string, potentialMemberId string) (*Project, error) {
+	return s.RemoveUser(projectId, potentialMemberId, potentialMemberId)
 }
 
-func RemoveUser(projectId, requestingUserId, userIdToRemove string) (*Project, error) {
+func (s *ProjectService) RemoveUser(projectId, requestingUserId, userIdToRemove string) (*Project, error) {
 	// Both users have to be member of the project
-	err := permission.VerifyMembershipProject(projectId, requestingUserId)
+	err := s.permissionService.VerifyMembershipProject(projectId, requestingUserId)
 	if err != nil {
 		return nil, err
 	}
 
-	err = permission.VerifyMembershipProject(projectId, userIdToRemove)
+	err = s.permissionService.VerifyMembershipProject(projectId, userIdToRemove)
 	if err != nil {
 		return nil, err
 	}
 
 	// It's not possible to remove the owner
-	err = permission.VerifyOwnership(projectId, userIdToRemove)
+	err = s.permissionService.VerifyOwnership(projectId, userIdToRemove)
 	if err == nil {
-		return nil, err
+		return nil, errors.New("removing the owner is not allowed")
 	}
 
-	err = permission.VerifyOwnership(projectId, requestingUserId)
+	err = s.permissionService.VerifyOwnership(projectId, requestingUserId)
 	requestingUserIsOwner := err == nil
 
 	// When a user tries to remove a different user, only the owner is allowed to do that
@@ -237,18 +236,18 @@ func RemoveUser(projectId, requestingUserId, userIdToRemove string) (*Project, e
 		return nil, errors.New(fmt.Sprintf("non-owner user '%s' is not allowed to remove another user", requestingUserId))
 	}
 
-	project, err := store.removeUser(projectId, userIdToRemove)
+	project, err := s.store.removeUser(projectId, userIdToRemove)
 	if err != nil {
 		return nil, err
 	}
 
 	// Unassign removed user from all tasks
 	for _, t := range project.TaskIDs {
-		err := permission.VerifyAssignment(t, userIdToRemove)
+		err := s.permissionService.VerifyAssignment(t, userIdToRemove)
 
 		// err != nil means: The user is assigned to the task 't'
 		if err == nil {
-			_, err := task.UnassignUser(t, userIdToRemove)
+			_, err := s.taskService.UnassignUser(t, userIdToRemove)
 
 			if err != nil {
 				sigolo.Error("Unable to unassign user '%s' from task '%s'", userIdToRemove, t)
@@ -259,7 +258,7 @@ func RemoveUser(projectId, requestingUserId, userIdToRemove string) (*Project, e
 
 	// It could happen that someone removes him-/herself, so that we just removed requestingUserId from the project.
 	// Therefore the owner is used here.
-	err = addProcessPointData(project, project.Owner)
+	err = s.addMetadata(project, project.Owner)
 	if err != nil {
 		sigolo.Error("Unable to add process point data to project %s", project.Id)
 		return nil, err
@@ -268,22 +267,22 @@ func RemoveUser(projectId, requestingUserId, userIdToRemove string) (*Project, e
 	return project, nil
 }
 
-func DeleteProject(projectId, potentialOwnerId string) error {
-	err := permission.VerifyOwnership(projectId, potentialOwnerId)
+func (s *ProjectService) DeleteProject(projectId, potentialOwnerId string) error {
+	err := s.permissionService.VerifyOwnership(projectId, potentialOwnerId)
 	if err != nil {
 		return err
 	}
 
-	project, err := store.getProject(projectId)
+	project, err := s.store.getProject(projectId)
 	if err != nil {
 		return err
 	}
 
 	// First delete the tasks, due to ownership check which won't work, when there's no project anymore.
-	task.Delete(project.TaskIDs, potentialOwnerId)
+	s.taskService.Delete(project.TaskIDs, potentialOwnerId)
 
 	// Then remove the project
-	err = store.delete(projectId)
+	err = s.store.delete(projectId)
 	if err != nil {
 		return err
 	}
@@ -292,17 +291,17 @@ func DeleteProject(projectId, potentialOwnerId string) error {
 }
 
 // TODO move into task package, pass task IDs as parameter and use the permission service to check the permissions on those tasks
-func GetTasks(projectId string, userId string) ([]*task.Task, error) {
-	err := permission.VerifyMembershipProject(projectId, userId)
+func (s *ProjectService) GetTasks(projectId string, userId string) ([]*task.Task, error) {
+	err := s.permissionService.VerifyMembershipProject(projectId, userId)
 	if err != nil {
 		return nil, err
 	}
 
-	return store.getTasks(projectId, userId)
+	return s.store.getTasks(projectId, userId, s.taskService)
 }
 
-func UpdateName(projectId string, newName string, requestingUserId string) (*Project, error) {
-	err := permission.VerifyOwnership(projectId, requestingUserId)
+func (s *ProjectService) UpdateName(projectId string, newName string, requestingUserId string) (*Project, error) {
+	err := s.permissionService.VerifyOwnership(projectId, requestingUserId)
 	if err != nil {
 		return nil, err
 	}
@@ -314,12 +313,12 @@ func UpdateName(projectId string, newName string, requestingUserId string) (*Pro
 		return nil, errors.New("No name specified")
 	}
 
-	project, err := store.updateName(projectId, newName)
+	project, err := s.store.updateName(projectId, newName)
 	if err != nil {
 		return nil, err
 	}
 
-	err = addProcessPointData(project, requestingUserId)
+	err = s.addMetadata(project, requestingUserId)
 	if err != nil {
 		sigolo.Error("Unable to add process point data to project %s", project.Id)
 		return nil, err
@@ -328,8 +327,8 @@ func UpdateName(projectId string, newName string, requestingUserId string) (*Pro
 	return project, nil
 }
 
-func UpdateDescription(projectId string, newDescription string, requestingUserId string) (*Project, error) {
-	err := permission.VerifyOwnership(projectId, requestingUserId)
+func (s *ProjectService) UpdateDescription(projectId string, newDescription string, requestingUserId string) (*Project, error) {
+	err := s.permissionService.VerifyOwnership(projectId, requestingUserId)
 	if err != nil {
 		return nil, err
 	}
@@ -338,12 +337,12 @@ func UpdateDescription(projectId string, newDescription string, requestingUserId
 		return nil, errors.New("No description specified")
 	}
 
-	project, err := store.updateDescription(projectId, newDescription)
+	project, err := s.store.updateDescription(projectId, newDescription)
 	if err != nil {
 		return nil, err
 	}
 
-	err = addProcessPointData(project, requestingUserId)
+	err = s.addMetadata(project, requestingUserId)
 	if err != nil {
 		sigolo.Error("Unable to add process point data to project %s", project.Id)
 		return nil, err

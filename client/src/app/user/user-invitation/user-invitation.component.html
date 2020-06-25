@@ -1,4 +1,4 @@
-<form #userForm="ngForm">
+<form class="flex-line" #userForm="ngForm">
 	<input id="userInput" [(ngModel)]="enteredUserName" placeholder="user name" required name="userInput">
 	<button (click)="onInvitationButtonClicked()" [disabled]="!userForm.form.valid">Invite</button>
 </form>

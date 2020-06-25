@@ -9,7 +9,7 @@
 
 <!-- Process points row -->
 <div class="process-point-container">
-	<form *ngIf="task?.assignedUser?.uid === currentUserId || !needUserAssignment; else currentUserElse" #processPointsForm="ngForm">
+	<form class="flex-line" *ngIf="task?.assignedUser?.uid === currentUserId || !needUserAssignment; else currentUserElse" #processPointsForm="ngForm">
 		<span class="points-label">Points:</span>
 		<input name="processPointInput"
 			   [(ngModel)]="newProcessPoints"
@@ -17,8 +17,7 @@
 			   required
 			   appMinValidator="0"
 			   appMaxValidator="{{task?.maxProcessPoints}}">
-		/
-		{{task?.maxProcessPoints}}
+		<span class="of-process-point-label">/ {{task?.maxProcessPoints}}</span>
 		<button class="save-button" (click)="onSaveButtonClick()" [disabled]="!processPointsForm.form.valid">Save
 		</button>
 	</form>

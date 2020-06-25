@@ -42,11 +42,10 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
           return;
         }
 
-        // TODO create a notification service for this or rename&extend the error service
         if (this.isOwner()) {
-          this.notificationService.addError('Project removed successfully');
+          this.notificationService.addInfo('Project removed successfully');
         } else {
-          this.notificationService.addError('This project has been removed');
+          this.notificationService.addWarning('This project has been removed');
         }
 
         this.router.navigate(['/manager']);
@@ -56,6 +55,7 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
           return;
         }
 
+        this.notificationService.addWarning('You have been removed from this project');
         this.router.navigate(['/manager']);
       })
     );

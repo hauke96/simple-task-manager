@@ -16,11 +16,6 @@
 	align-items: center;
 }
 
-.task-details-container {
-	 // Moves details up if there's space (otherwise this container would stick to the bottom of the page
-	margin-bottom: auto;
-}
-
 .root-container {
 	display: flex;
 	flex-grow: 1;

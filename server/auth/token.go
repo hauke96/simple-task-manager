@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"github.com/hauke96/sigolo"
 	"github.com/pkg/errors"
 	"time"
 )
@@ -41,7 +42,9 @@ func createTokenString(err error, userName string, userId string, validUntil int
 
 	jsonBytes, err := json.Marshal(token)
 	if err != nil {
-		return "", errors.Wrap(err, "error marshalling token object")
+		msg := "error marshalling token object"
+		sigolo.Error("%s. Token object: %#v", msg, token)
+		return "", errors.Wrap(err, msg)
 	}
 
 	encodedTokenString := base64.StdEncoding.EncodeToString(jsonBytes)
@@ -69,7 +72,9 @@ func verifyToken(encodedToken string) (*Token, error) {
 	var token Token
 	err = json.Unmarshal(tokenBytes, &token)
 	if err != nil {
-		return nil, errors.Wrap(err, "error marshalling token object")
+		msg := "error marshalling token object"
+		sigolo.Error("%s. Token bytes: %s", msg, string(tokenBytes))
+		return nil, errors.Wrap(err, msg)
 	}
 
 	targetSecret := createSecret(token.User, token.UID, token.ValidUntil)
