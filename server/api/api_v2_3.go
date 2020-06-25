@@ -23,7 +23,7 @@ func Init_v2_3(router *mux.Router) (*mux.Router, string) {
 	r.HandleFunc("/projects/{id}", authenticatedHandler(deleteProjects_v2_3)).Methods(http.MethodDelete)
 	r.HandleFunc("/projects/{id}/name", authenticatedHandler(updateProjectName_v2_3)).Methods(http.MethodPut)
 	r.HandleFunc("/projects/{id}/description", authenticatedHandler(updateProjectDescription_v2_3)).Methods(http.MethodPut)
-	r.HandleFunc("/projects/{id}/users", authenticatedHandler(addUserToProject_v2_3)).Methods(http.MethodPost)
+	r.HandleFunc("/projects/{id}/users", authenticatedHandler(addUserToProject_v2_3)).Methods(http.MethodPost) // projects/{id}/users?uid={uid}
 	r.HandleFunc("/projects/{id}/users", authenticatedHandler(leaveProject_v2_3)).Methods(http.MethodDelete)
 	r.HandleFunc("/projects/{id}/users/{uid}", authenticatedHandler(removeUser_v2_3)).Methods(http.MethodDelete)
 	r.HandleFunc("/projects/{id}/tasks", authenticatedHandler(getProjectTasks_v2_3)).Methods(http.MethodGet)

@@ -81,6 +81,9 @@ Adds the project as given in the body:
 }
 ```
 
+The `needsAssignment` flag enables/disables the need for users to assign to a task in order to set process points on a task.
+When set to `false` users can modify a task without being assigned to it.
+
 ##### GET  `/v2.3/projects/{id}`
 
 Returns the project with the given ID. The requesting user (specified by the token) must be **member** of the project.
@@ -89,23 +92,31 @@ Returns the project with the given ID. The requesting user (specified by the tok
 
 Deletes the project with the given ID. The requesting user (specified by the token) must be **owner** of the project.
 
+##### PUT `/v2.3/project/{id}/name`
+
+Updates the name of the given project. The name must be in the request body. The requesting user (specified by the token) must be **owner** of the project.
+
+##### PUT`/v2.3/project/{id}/description`
+         
+Updates the description of the given project. The description must be in the request body. The requesting user (specified by the token) must be **owner** of the project.
+
 ##### POST `/v2.3/projects/{id}/users?uid={uid}`
 
 Adds the user with id `{uid}` to the project. The requesting user (specified by the token) must be **owner** of the project.
 
 ##### DELETE `/v2.3/projects/{id}/users`
 
-Removes the requesting user (specified by the token) from the project.
+Removes the requesting user (specified by the token) from the project. The requesting user (specified by the token) must be **member** of the project.
 
 ##### DELETE `/v2.3/projects/{id}/users/{uid}`
 
 Removes the user with the id `{uid}` from the project. The requesting user (specified by the token) must either be the **owner** of the project or must be removing himself.
 
+### Tasks
+
 ##### GET  `/v2.3/projects/{id}/tasks`
 
 Gets the tasks of project `{id}`. The requesting user (specified by the token) must be **member** of the project.
-
-### Tasks
 
 ##### POST `/v2.3/tasks/{id}/assignedUser`
 
@@ -113,11 +124,11 @@ Assigns the requesting user (specified by the token) to the task with id `{id}`.
 
 ##### DELETE `/v2.3/tasks/{id}/assignedUser`
 
-Unassigns the requesting user (specified by the token) from the task with id `{id}`. Only the **assigned** user can unassign himself, you cannot unassign other users.
+Unassigns the requesting user (specified by the token) from the task with id `{id}`. When `needsAssignment=true`: Only the **assigned** user can unassign himself, you cannot unassign other users.
 
 ##### POST `/v2.3/tasks/{id}/processPoints?process_points={points}`
 
-Sets the amount of process points of the task with id `{id}` to `{points}`. Only the currently **assigned** user can do this.
+Sets the amount of process points of the task with id `{id}` to `{points}` which must be an integer. When `needsAssignment=true`:  Only the currently **assigned** user can do this.
 
 ##### POST `/v2.3/tasks`
 
@@ -129,9 +140,8 @@ Adds the task specified by the body.
     "id":"",
     "processPoints":0,
     "maxProcessPoints":100,
-    "geometry":[[9.948541687183733,53.56475407369166],[9.942962692432753,53.55843257241423],[9.952232406788223,53.55863650655573],[9.948541687183733,53.56475407369166]]
-  },
-  ...
+    "geometry": "{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[9.9,53.5],[9.92,53.55],[9.94,53.55]]]},\"properties\":{\"name\":\"Atlantis\"}}}"
+  }
 ]
 ```
 
