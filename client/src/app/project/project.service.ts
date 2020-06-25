@@ -114,7 +114,7 @@ export class ProjectService {
 
   // Gets the tasks of the given project
   public getTasks(projectId: string): Observable<Task[]> {
-    return this.http.get<TaskDto[]>(environment.url_projects + '/' + projectId + '/tasks')
+    return this.http.get<TaskDto[]>(environment.url_projects_task.replace('{id}', projectId))
       .pipe(
         flatMap((tasks: TaskDto[]) => this.taskService.addUserNames(tasks)),
         map(dtos => dtos.map(dto => this.taskService.toTask(dto)))
