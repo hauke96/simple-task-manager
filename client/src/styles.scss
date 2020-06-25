@@ -7,7 +7,7 @@
 $space-base: 10px;
 $space-small: $space-base / 2;
 $space-large: $space-base * 2;
-$space-huge: $space-base * 4;
+$space-huge: $space-base * 3.5;
 
 // =====
 // Fonts
@@ -100,7 +100,7 @@ a:hover {
 
 // Use the SVG as down-arrow instead of the default
 select {
-	height: $space-large * 1.5;
+	height: $space-huge;
 	flex-grow: 1;
 	padding: 5px;
 	background-color: white;
@@ -110,7 +110,7 @@ select {
 	appearance: none;
 	background-image: url('/assets/arrow-down.svg');
 	background-size: $space-base * 1.5;
-	background-position: calc(100% - 8px) 10px;
+	background-position: calc(100% - 8px) $space-base * 1.25;
 	background-repeat: no-repeat;
 }
 
@@ -169,7 +169,7 @@ textarea{
 }
 
 input {
-	height: $space-large * 1.5;
+	height: $space-huge;
 }
 
 input:focus,
