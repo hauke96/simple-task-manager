@@ -8,7 +8,7 @@
     "build": "ng build",
     "build-prod": "ng build --prod",
     "test": "ng test --browsers=FirefoxHeadless --code-coverage",
-    "docker-test": "ng test --watch=false --browsers=ChromeHeadlessNoSandbox",
+    "test-chrome": "ng test --watch=false --browsers=ChromeHeadlessNoSandbox --code-coverage",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },

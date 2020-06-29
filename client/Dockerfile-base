@@ -10,9 +10,3 @@ RUN cd /tmp && npm install
 RUN mkdir /stm-client
 WORKDIR /stm-client/
 RUN cp -r /tmp/node_modules ./
-
-# We need google chrome for testing. Unfortunately, I wasn't able to get firefox running for the tests :/
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-RUN echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | tee /etc/apt/sources.list.d/google-chrome.list
-RUN apt update
-RUN apt install -y google-chrome-stable
