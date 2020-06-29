@@ -17,11 +17,13 @@ The server is written in go (aka golang) so you need to install go and setup you
 This project uses the **go module** infrastructure, so e.g. `go build` installs all dependencies for you.
 The frameworks/libraries this project uses are there in order to make the development easier:
 
-* [gorilla/mux](https://github.com/gorilla/mux) to easily create simple REST endpoints
-* [kurrik/oauth1a](https://github.com/kurrik/oauth1a) for the OAuth1a authentication
-* [lib/pq](https://github.com/lib/pq) for a Postgres database driver
+* [gorilla/mux](https://github.com/gorilla/mux) to easily create simple rest endpoints
+* [gorilla/websocket](https://github.com/gorilla/websocket) for server → client communication
+* [kurrik/oauth1a](https://github.com/kurrik/oauth1a) for the oauth1a authentication
+* [lib/pq](https://github.com/lib/pq) for a postgres database driver
+* [pkg/errors](https://github.com/pkg/errors) better error handling and enables us to show stack traces
 * [hauke96/sigolo](https://github.com/hauke96/sigolo) for logging
-* [hauke96/kingpin](https://github.com/hauke96/kingpin) for CLI parameter and flag parsing
+* [hauke96/kingpin](https://github.com/hauke96/kingpin) for cli parameter and flag parsing
 
 ## Setup the Database
 
