@@ -1,5 +1,4 @@
-Development takes place on the `dev` branch (small, independent things) or on separate feature branches (whole features, not all commit have to run).
-The `master` branch only contains released versions as separate commit that are tagged.
+Everything you need to know in order to contribute to the code base:
 
 # Getting started
 
@@ -14,6 +13,9 @@ The `master` branch only contains released versions as separate commit that are 
 4. Read section "Git workflow and conventions" of this document
 
 # Git workflow and conventions
+
+Development takes place on the `dev` branch (small, independent things) or on separate feature branches (whole features, not all commit have to run).
+The `master` branch only contains released versions as separate commit that are tagged.
 
 All of this is heavily inspired by the branching model *git flow*.
 
