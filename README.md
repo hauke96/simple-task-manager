@@ -44,4 +44,4 @@ Additional technical documentation (deployment, api, security, architecture, etc
 
 Currently there are no real guidelines. Feel free to create an **issue** or **pull request**.
 
-**Wanna start coding?** Take a look at `doc/development/README.md` on how to get started.
+**Wanna start coding?** Take a look at [doc/development/README.md](doc/development/README.md) on how to get started.
