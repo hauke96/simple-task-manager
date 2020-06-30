@@ -1,7 +1,7 @@
 # Client
 
 This is the web application of the simple task manager.
-It's based on [Angular](https://angular.io) and uses `npm` as a package manager.
+It's mainly based on [Angular](https://angular.io), [OpenLayers](https://openlayers.org/) and uses `npm` as a package manager.
 
 # Setup environment
 
@@ -11,10 +11,14 @@ It's based on [Angular](https://angular.io) and uses `npm` as a package manager.
     ```bash
     npm install -g @angular/cli
     ```
-4. Install all dependencies
+4. Install all dependencies. This is just a local installation into the `node_modules` folder.
     ```bash
     npm install
     ```
+
+Now you are ready to go.
+Test your setup by starting the client (see below).
+Building and starting the client works without the server, but of course the client won't work without server).
 
 ## Run Client
 
