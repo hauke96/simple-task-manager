@@ -4,15 +4,19 @@ The server is written in go (aka golang) so you need to install go and setup you
 
 # Setup environment
 
-## Requirements
+## 1. Requirements
 
-* Installed and working **go compiler** (1.12 or newer to have module support)
+* Installed and working go compiler (1.12 or newer to have module support)
 * For the database do **one** of the following: 
-    * Installed and working **docker** daemon (for the database)
-    * Installed and working **PostgreSQL** server (9.6 and newer should work)
-* And of course an working **IDE** setup of your choice (I can recommend *GoLand* as fancy-pants, *LiteIDE* as pure open-source and of course *vim* as hard-core IDE)
+    * Install and setup docker daemon (for the PostgreSQL database; setup is described later)
+    * Directly install and setup PostgreSQL server (9.6 and newer should work)
+* And of course an working IDE setup of your choice (I can recommend *GoLand* as fancy-pants, *LiteIDE* as pure open-source and of course *vim* as hard-core IDE)
 
-## Dependencies
+## 2. Dependencies
+
+**tl;dr:**
+* If you use go version < 1.12 : the whole go module stuff doesn't work for you, so make sure the packages listed below are installed
+* If you use go version >= 1.12 : nothing to do here
 
 This project uses the **go module** infrastructure, so e.g. `go build` installs all dependencies for you.
 The frameworks/libraries this project uses are there in order to make the development easier:
@@ -25,9 +29,10 @@ The frameworks/libraries this project uses are there in order to make the develo
 * [hauke96/sigolo](https://github.com/hauke96/sigolo) for logging
 * [hauke96/kingpin](https://github.com/hauke96/kingpin) for cli parameter and flag parsing
 
-## Setup the Database
+## 3. Setup the Database
 
 The server requires a database called `stm` with the required tables as described below.
+This description assumes that you use docker instead of an direct installation of PostgreSQL.
 
 ### Start as docker container
 
@@ -35,7 +40,6 @@ The server requires a database called `stm` with the required tables as describe
 * `docker-compose up --build stm-db`
 * done
 
-I recommend to use a docker container for the database.
 The `docker-compose.yml` defines such container, just execute `docker-compose up --build stm-db` to start it.
 
 ### Initialize database 
@@ -50,7 +54,7 @@ The `docker-compose.yml` defines such container, just execute `docker-compose up
 The folder `server/database/` contains the script `init-db.sh`.
 Start your database and call this script (from within that folder).
 
-You need the tools `createdb` and `psql`. Both are -- for ubuntu users -- available in the package `postgresql-client`.
+You need the tools `createdb` and `psql`. Both are - for ubuntu users - available in the package `postgresql-client`.
 
 ### Reset database
 
@@ -60,7 +64,9 @@ You need the tools `createdb` and `psql`. Both are -- for ubuntu users -- availa
 * `./init-db.sh`
 * done
 
-## Setup the Login
+This is just needed if you want to get rid of the current data (e.g. after testing).
+
+## 4. Setup the Login
 
 There are two approaches:
 
@@ -87,13 +93,14 @@ There's also a pure local config.
 This makes use of a very simple [OAuth-Dummy server](https://github.com/hauke96/osm-oauth1a-dummy).
 Just clone the repo and start this auth server with `go run .`.
 
-Notice: You have to use the `local.config` file to use the local server, so using `go run . -c config/local.json` to start the server works fine.
-
 Using this approach makes you independent of the OSM server and of an internet connection in general.
 
-## Setup finished :)
+**Notice:**<br>
+You have to use the `local.config` file to use this locally running OAuth server, so use `go run . -c config/local.json` to start the server.
 
-Now you can start database, server (s. below) and client (see according README for that) and access the STM application under `localhost:4200`.
+## 5. Setup finished :)
+
+Now you can start database, server (s. below) and the client (s. [README](../../client) in the `client` folder) and access the STM application under `localhost:4200`.
 Everything should work now and if not, don't hesitate to raise an issue :)
 
 # Run server
@@ -102,6 +109,8 @@ After these variables are visible, start the server:
 
 * `cd server`
 * `go run .`
+
+The server starts under port `8080` and has an info page to check if it's running: [localhost:8080/info](http://localhost:8080/info)
 
 # Run Tests
 
@@ -148,3 +157,15 @@ At least for them, you only need to set the following properties in your configu
 **Important:** The `server-url` property has to begin with `https` in order to activate HTTPS.
 
 For **further information**, take a look at the `doc/operation/ssl-cert.md` file.
+
+# Development
+
+## Error handling
+
+Whenever an error from a library/framework (e.g. in a database store) is returned, wrap it using `errors.Wrap(err)` (from the `github.com/pkg/errors` package) and return that.
+This will later result in a nice stack trace when the HTTP response is created.
+All other places just return the error because it's already wrapped (and therefore will already produce a stack trace).
+
+New errors should also be created using `errors.New(...)`.
+
+Whenever catching, creating or wrapping an error, feel free to print additional information using `sigolo.Error(...)`. 
