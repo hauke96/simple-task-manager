@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+  stm-client-base:
+    build:
+      network: host
+      context: ./client/
+      dockerfile: Dockerfile-base
+    container_name: stm-client-base
+    network_mode: host

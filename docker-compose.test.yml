@@ -1,14 +1,15 @@
 version: '3.4'
 
 services:
-  stm-server:
+  stm-server-test:
     environment:
       - OAUTH_CONSUMER_KEY
       - OAUTH_SECRET
     build:
       network: host
       context: ./server/
-    container_name: stm-server
+      dockerfile: Dockerfile-test
+    container_name: stm-server-test
     network_mode: host
     restart: unless-stopped
     ports:
@@ -19,11 +20,12 @@ services:
       - "stm-db"
     logging:
       driver: 'journald'
-  stm-client:
+  stm-client-test:
     build:
       network: host
       context: ./client/
-    container_name: stm-client
+      dockerfile: Dockerfile-test
+    container_name: stm-client-test
     network_mode: host
     restart: unless-stopped
     ports:
