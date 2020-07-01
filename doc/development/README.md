@@ -11,7 +11,7 @@ Go through the "Getting started" section in order to setup your dev environment 
 
 # Getting started
 
-1. Make sure the tools `git`, `node`, `npm`, `go`, `psql`, `createdb` and `docker` are installed/available plus an IDE of your choice for the development with Typescript/Angular and golang.
+1. Make sure the tools `git`, `node`, `npm`, `go`, `psql`, `createdb`, `docker` and `docker-compose` are installed/available plus an IDE of your choice for the development with Typescript/Angular and golang.
 The tools `psql` and `createdb` are PostgreSQL tools.
 2. Clone this repo
 3. Client: See [/client/README.md](../../client/README.md)
