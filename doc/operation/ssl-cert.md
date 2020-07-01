@@ -72,7 +72,7 @@ Description=Certbot renewal
 
 [Timer]
 OnBootSec=5m
-OnUnitActiveSec=1dLangeweile
+OnUnitActiveSec=1d
 
 [Install]
 WantedBy=multi-user.target
