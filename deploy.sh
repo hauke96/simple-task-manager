@@ -25,13 +25,13 @@ read OAUTH_CONSUMER_KEY_INPUT
 
 echo -n "OAuth secret: "
 read -s OAUTH_SECRET_INPUT
+echo
 
 echo -n "Database username: "
-read -s STM_DB_USERNAME
+read STM_DB_USERNAME
 
 echo -n "Database password: "
 read -s STM_DB_PASSWORD
-
 echo
 
 export OAUTH_CONSUMER_KEY=$OAUTH_CONSUMER_KEY_INPUT
