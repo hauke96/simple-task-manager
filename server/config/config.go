@@ -61,7 +61,7 @@ func LoadConfig(file string) {
 	}
 	dbPassword, _ := os.LookupEnv(DbPasswordEnvVar)
 	if len(dbUsername) == 0 || !ok {
-		sigolo.Info("Environment variable %s for the database user not set. Fallback to default: %s", DbPasswordDefault, DbPasswordDefault)
+		sigolo.Info("Environment variable %s for the database user not set. Fallback to default: %s", DbPasswordEnvVar, DbPasswordDefault)
 		dbPassword = DbPasswordDefault
 	}
 
