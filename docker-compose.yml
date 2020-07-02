@@ -38,8 +38,8 @@ services:
     restart: unless-stopped
     network_mode: host
     environment:
-      - POSTGRES_PASSWORD=geheim
-      - POSTGRES_USER=postgres
+      - POSTGRES_USER=${STM_DB_USERNAME}
+      - POSTGRES_PASSWORD=${STM_DB_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
