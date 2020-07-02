@@ -28,16 +28,16 @@ read -s OAUTH_SECRET_INPUT
 echo
 
 echo -n "Database username: "
-read STM_DB_USERNAME
+read STM_DB_USERNAME_INPUT
 
 echo -n "Database password: "
-read -s STM_DB_PASSWORD
+read -s STM_DB_PASSWORD_INPUT
 echo
 
 export OAUTH_CONSUMER_KEY=$OAUTH_CONSUMER_KEY_INPUT
 export OAUTH_SECRET=$OAUTH_SECRET_INPUT
-export STM_DB_USERNAME=$STM_DB_USERNAME
-export STM_DB_PASSWORD=$STM_DB_PASSWORD
+export STM_DB_USERNAME=$STM_DB_USERNAME_INPUT
+export STM_DB_PASSWORD=$STM_DB_PASSWORD_INPUT
 
 # For logging to see how long building an deployment takes
 START_DATE=$(date)
