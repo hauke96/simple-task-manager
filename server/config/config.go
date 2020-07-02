@@ -84,7 +84,7 @@ func LoadConfig(file string) {
 		}else {
 			propertyValue = strings.Join(strings.Split(p, ":")[1:], ":") // Join remaining parts back together
 		}
-		
+
 		sigolo.Info("  %-*s = %s", 20, propertyName, propertyValue)
 	}
 }
