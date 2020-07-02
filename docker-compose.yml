@@ -5,6 +5,8 @@ services:
     environment:
       - OAUTH_CONSUMER_KEY
       - OAUTH_SECRET
+      - STM_DB_USERNAME
+      - STM_DB_PASSWORD
     build:
       network: host
       context: ./server/
@@ -45,7 +47,7 @@ services:
     volumes:
       - "./postgres-data:/var/lib/postgresql/data"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${STM_DB_USERNAME}"]
       interval: 1s
       timeout: 2s
       retries: 30
