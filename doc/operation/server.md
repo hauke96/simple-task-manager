@@ -71,7 +71,7 @@ I'm not a firewall and networking expert at all but this gives us some kind of b
         * Allows responses to come back to the server e.g. when `stm-server` makes requests to the OSM-Servers.
     * `iptables -A INPUT -i lo -j ACCEPT`
         * Allows local traffic (`-i lo` says "interface localhost")
-    * `iptables -A INPUT -p icmp --icmp-type echo-request -j REJECT`
+    * `iptables -A INPUT -p icmp --icmp-type echo-request -j ACCEPT`
         * Optional: Allows ping-requests. Not necessary but nice to check whether server is online or what latency there is.
     * `iptables -A INPUT -p tcp --dport <your ssh port> -j ACCEPT`
     * `iptables -A INPUT -p tcp --dport 8080 -j ACCEPT`
