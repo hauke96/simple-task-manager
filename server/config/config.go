@@ -77,7 +77,14 @@ func LoadConfig(file string) {
 	sigolo.Info("Config:")
 	for _, p := range propertyList {
 		propertyName := strings.Split(p, ":")[0]
-		propertyValue := strings.Join(strings.Split(p, ":")[1:], ":") // Join remaining parts back together
+
+		var propertyValue string
+		if propertyName == "DbPassword" || propertyName == "OauthSecret" {
+			propertyValue = "******" // don't show passwords etc. in the logs
+		}else {
+			propertyValue = strings.Join(strings.Split(p, ":")[1:], ":") // Join remaining parts back together
+		}
+		
 		sigolo.Info("  %-*s = %s", 20, propertyName, propertyValue)
 	}
 }
