@@ -36,9 +36,9 @@ So yes, basically this is another tasking manager, however, this is not a clone 
 
 # Documentation
 
-Development information can be found in the `client` and `server` folder.
+Documentation can be found in the [doc folder](doc) (deployment, api, security, architecture, operation, etc.) and in the separate [client](client) and [server](server) folders (mainly setup and development information).
 
-Additional technical documentation (deployment, api, security, architecture, etc.) can be found in the `doc` folder.
+Currently there's no end user manual, tutorial or something similar.
 
 # Contribute
 
