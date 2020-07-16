@@ -78,9 +78,8 @@ func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request,
 		query := r.URL.Query()
 
 		t := query.Get("token")
-		if t == "" {
-			err := errors.New("query parameter 'token' not set")
-			sigolo.Stack(err)
+		if t == "" || t == "null" || t == "\u009e" {
+			err := errors.New("could not establish websocket connection: query parameter 'token' not set")
 			util.ResponseUnauthorized(w, err)
 			return
 		}
