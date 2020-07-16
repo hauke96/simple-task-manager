@@ -76,6 +76,7 @@ I'm not a firewall and networking expert at all but this gives us some kind of b
     * `iptables -A INPUT -p tcp --dport <your ssh port> -j ACCEPT`
     * `iptables -A INPUT -p tcp --dport 8080 -j ACCEPT`
     * `iptables -A INPUT -p tcp --dport 443 -j ACCEPT`
+    * `iptables -A INPUT -p tcp --dport 80 -j ACCEPT`
     * `iptables -P INPUT DROP`
 * Store to file: `iptables-save > /etc/iptables/rules.v4`
 
