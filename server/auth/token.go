@@ -66,6 +66,7 @@ func createSecret(user string, uid string, expirationTime int64) string {
 func verifyToken(encodedToken string) (*Token, error) {
 	tokenBytes, err := base64.StdEncoding.DecodeString(encodedToken)
 	if err != nil {
+		sigolo.Error("Failed to decode this token: %s", encodedToken)
 		return nil, errors.Wrap(err, "error decoding encoded token")
 	}
 
