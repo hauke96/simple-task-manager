@@ -24,9 +24,9 @@ var (
 )
 
 func tokenInit() error {
-	bytes := []byte("test")//getRandomBytes(256)
+	bytes, err := getRandomBytes(256)
 	key = bytes
-	return nil
+	return err
 }
 
 func createTokenString(err error, userName string, userId string, validUntil int64) (string, error) {
