@@ -90,10 +90,9 @@ func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request,
 
 		token, err := auth.VerifyRequest(r)
 		if err != nil {
-			sigolo.Error("No valid authentication found: %s", err)
-			sigolo.Stack(err)
+			sigolo.Error("Token verification failed: %s", err)
 			// No further information to caller (which is a potential attacker)
-			util.ResponseUnauthorized(w, errors.New("No valid authentication found"))
+			util.ResponseUnauthorized(w, errors.New("No valid authentication token found"))
 			return
 		}
 
