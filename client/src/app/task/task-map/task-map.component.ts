@@ -84,10 +84,15 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
     this.unsubscribeLater(
       // react to changed selection and update the map style
       this.taskService.selectedTaskChanged.subscribe((task) => {
-        this.task = task;
-        this.vectorSource.changed();
+        this.selectTask(task);
       })
     );
+    this.selectTask(this.taskService.getSelectedTask());
+  }
+
+  private selectTask(task) {
+    this.task = task;
+    this.vectorSource.changed();
   }
 
   public getStyle(feature) {

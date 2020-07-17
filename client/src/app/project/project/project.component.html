@@ -4,6 +4,7 @@
 		<p class="project-label">Project: {{project?.name}}</p>
 	</div>
 </app-toolbar>
+
 <div class="root-container">
 	<div class="task-list-details-container">
 		<div class="description-container" *ngIf="project?.description.trim().length !== 0">
@@ -45,6 +46,7 @@
 			</div>
 		</app-tabs>
 	</div>
+
 	<div class="map-container">
 		<app-task-map *ngIf="project.tasks" [tasks]="project.tasks" class="map"></app-task-map>
 	</div>
