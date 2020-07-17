@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/hauke96/sigolo"
+	"github.com/hauke96/simple-task-manager/server/config"
 	"github.com/hauke96/simple-task-manager/server/database"
 	"github.com/hauke96/simple-task-manager/server/permission"
 	"github.com/hauke96/simple-task-manager/server/task"
@@ -21,6 +22,7 @@ var (
 )
 
 func setup() {
+	config.LoadConfig("../config/test.json")
 	testHelper.InitWithDummyData()
 	sigolo.LogLevel = sigolo.LOG_DEBUG
 
