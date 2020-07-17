@@ -30,16 +30,20 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
   }
 
   ngOnInit(): void {
-    this.task = this.taskService.getSelectedTask();
-    this.updateUser();
-
+    this.selectTask(this.taskService.getSelectedTask());
     this.unsubscribeLater(
       this.taskService.selectedTaskChanged.subscribe((task: Task) => {
-        this.task = task;
-        this.newProcessPoints = task.processPoints;
-        this.updateUser();
+        this.selectTask(task);
       })
     );
+  }
+
+  private selectTask(task: Task) {
+    this.task = task;
+    if (!!this.task) {
+      this.newProcessPoints = task.processPoints;
+    }
+    this.updateUser();
   }
 
   public get currentUserId(): string {

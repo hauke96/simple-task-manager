@@ -10,7 +10,6 @@ import { User } from '../user.material';
 })
 export class UserInvitationComponent implements OnInit {
   @Input() public users: User[];
-
   @Output() public userInvited: EventEmitter<User> = new EventEmitter<User>();
 
   public enteredUserName: string;
