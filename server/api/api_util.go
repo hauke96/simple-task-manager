@@ -107,10 +107,10 @@ func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request,
 func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(r *http.Request, context *Context) *ApiResponse) {
 	token, err := auth.VerifyRequest(r)
 	if err != nil {
-		sigolo.Debug("URL without token called: %s", r.URL.Path)
-		sigolo.Stack(err)
+		sigolo.Debug("URL without valid token called: %s", r.URL.Path)
+		sigolo.Error("Token verification failed: %s", err)
 		// No further information to caller (which is a potential attacker)
-		util.ResponseUnauthorized(w, errors.New("No valid authentication found"))
+		util.ResponseUnauthorized(w, errors.New("No valid authentication token found"))
 		return
 	}
 
