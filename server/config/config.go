@@ -67,7 +67,9 @@ func LoadConfig(file string) {
 
 	Conf.DbUsername = dbUsername
 	Conf.DbPassword = dbPassword
+}
 
+func PrintConfig() {
 	// Parse config struct to print it:
 	wholeConfStr := fmt.Sprintf("%#v", Conf)                      // -> "main.Config{Serve...}"
 	splitConfStr := strings.Split(wholeConfStr, "{")              // --> "main.Config" and "Serve...}"
@@ -81,7 +83,7 @@ func LoadConfig(file string) {
 		var propertyValue string
 		if propertyName == "DbPassword" || propertyName == "OauthSecret" {
 			propertyValue = "******" // don't show passwords etc. in the logs
-		}else {
+		} else {
 			propertyValue = strings.Join(strings.Split(p, ":")[1:], ":") // Join remaining parts back together
 		}
 		

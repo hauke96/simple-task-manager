@@ -42,6 +42,7 @@ func main() {
 
 	// Load config an override with CLI args
 	config.LoadConfig(*appConfig)
+	config.PrintConfig()
 
 	configureLogging()
 
