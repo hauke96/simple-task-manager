@@ -1,500 +1,581 @@
 package project
 
 import (
+	"database/sql"
+	"fmt"
 	"github.com/hauke96/sigolo"
+	"github.com/hauke96/simple-task-manager/server/config"
+	"github.com/hauke96/simple-task-manager/server/database"
 	"github.com/hauke96/simple-task-manager/server/permission"
+	"github.com/hauke96/simple-task-manager/server/task"
 	testHelper "github.com/hauke96/simple-task-manager/server/test"
+	"github.com/pkg/errors"
 	"testing"
 
-	"github.com/hauke96/simple-task-manager/server/task"
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 )
 
-func TestMain(m *testing.M) {
+var (
+	tx          *sql.Tx
+	s           *ProjectService
+	taskService *task.TaskService
+)
+
+func setup() {
+	config.LoadConfig("../config/test.json")
 	testHelper.InitWithDummyData()
-
 	sigolo.LogLevel = sigolo.LOG_DEBUG
-	Init()
-	permission.Init()
-	task.Init()
 
-	m.Run()
+	var err error
+	tx, err = database.GetTransaction()
+	if err != nil {
+		panic(err)
+	}
+	permissionService := permission.Init(tx)
+	taskService = task.Init(tx, permissionService)
+	s = Init(tx, taskService, permissionService)
+}
+
+func run(t *testing.T, testFunc func() error) {
+	setup()
+
+	err := testFunc()
+	if err != nil {
+		t.Errorf("%+v", err)
+		t.Fail()
+	}
+
+	tearDown()
+}
+
+func tearDown() {
+	err := tx.Commit()
+	if err != nil {
+		panic(err)
+	}
 }
 
 func TestGetProjects(t *testing.T) {
-	// For Maria (being part of project 1 and 2)
-	userProjects, err := GetProjects("Maria")
-	if err != nil {
-		t.Error(err.Error())
-		t.Fail()
-		return
-	}
-	if !contains("1", userProjects) {
-		t.Errorf("Maria is in deed project 1")
-		t.Fail()
-		return
-	}
-	if !contains("2", userProjects) {
-		t.Errorf("Maria is in deed project 2")
-		t.Fail()
-		return
-	}
+	run(t, func() error {
+		// For Maria (being part of project 1 and 2)
+		userProjects, err := s.GetProjects("Maria")
+		if err != nil {
+			return err
+		}
+		if !contains("1", userProjects) {
+			return errors.New("Maria is in deed project 1")
+		}
+		if !contains("2", userProjects) {
+			return errors.New("Maria is in deed project 2")
+		}
+		if userProjects[0].TotalProcessPoints != 10 || userProjects[0].DoneProcessPoints != 0 {
+			return errors.New("Process points on project not set correctly")
+		}
+		if userProjects[1].TotalProcessPoints != 308 || userProjects[1].DoneProcessPoints != 154 {
+			return errors.New("Process points on project not set correctly")
+		}
 
-	// For Peter (being part of only project 1)
-	userProjects, err = GetProjects("Peter")
-	if err != nil {
-		t.Errorf("Getting should work: %s", err.Error())
-		t.Fail()
-		return
-	}
-	if !contains("1", userProjects) {
-		t.Errorf("Peter is in deed project 1")
-		t.Fail()
-		return
-	}
-	if contains("2", userProjects) {
-		t.Errorf("Peter is not in project 2")
-		t.Fail()
-		return
-	}
+		// For Peter (being part of only project 1)
+		userProjects, err = s.GetProjects("Peter")
+		if err != nil {
+			return errors.New(fmt.Sprintf("Getting should work: %+v", err))
+		}
+		if !contains("1", userProjects) {
+			return errors.New("Peter is in deed project 1")
+		}
+		if contains("2", userProjects) {
+			return errors.New("Peter is not in project 2")
+		}
+		if userProjects[0].TotalProcessPoints != 10 || userProjects[0].DoneProcessPoints != 0 {
+			return errors.New("Process points on project not set correctly")
+		}
+		return nil
+	})
+}
+
+func TestGetProjectByTask(t *testing.T) {
+	run(t, func() error {
+		project, err := s.GetProjectByTask("4", "John")
+		if err != nil {
+			return err
+		}
+
+		if project.Id != "2" {
+			return errors.New("Project ID not matching")
+		}
+		if project.TotalProcessPoints != 308 || project.DoneProcessPoints != 154 {
+			return errors.New("Process points on project not set correctly")
+		}
+		return nil
+	})
 }
 
 func TestGetTasks(t *testing.T) {
-	tasks, err := GetTasks("1", "Peter")
-	if err != nil {
-		t.Errorf("Get should work: %s", err.Error())
-		t.Fail()
-		return
-	}
+	run(t, func() error {
+		tasks, err := s.GetTasks("1", "Peter")
+		if err != nil {
+			return errors.New(fmt.Sprintf("Get should work: %s", err.Error()))
+		}
 
-	sigolo.Debug("Tasks: %#v", tasks)
+		sigolo.Debug("Tasks: %#v", tasks)
 
-	if len(tasks) != 1 {
-		t.Error("There should be exactly one task")
-		t.Fail()
-		return
-	}
+		if len(tasks) != 1 {
+			return errors.New("There should be exactly one task")
+		}
 
-	task := tasks[0]
-	sigolo.Debug("Task: %#v", task)
+		task := tasks[0]
+		sigolo.Debug("Task: %#v", task)
 
-	if task.Id != "1" {
-		t.Error("id not matching")
-		t.Fail()
-		return
-	}
+		if task.Id != "1" {
+			return errors.New("id not matching")
+		}
 
-	if task.ProcessPoints != 0 {
-		t.Error("process points not matching")
-		t.Fail()
-		return
-	}
+		if task.ProcessPoints != 0 {
+			return errors.New("process points not matching")
+		}
 
-	if task.MaxProcessPoints != 10 {
-		t.Error("max process points not matching")
-		t.Fail()
-		return
-	}
+		if task.MaxProcessPoints != 10 {
+			return errors.New("max process points not matching")
+		}
 
-	if task.AssignedUser != "Peter" {
-		t.Error("assigned user not matching")
-		t.Fail()
-		return
-	}
+		if task.AssignedUser != "Peter" {
+			return errors.New("assigned user not matching")
+		}
 
-	// Part of project but not owning
-	_, err = GetTasks("1", "Maria")
-	if err != nil {
-		t.Error("This should work, Maria is part of the project")
-		t.Fail()
-		return
-	}
+		// Part of project but not owning
+		_, err = s.GetTasks("1", "Maria")
+		if err != nil {
+			return errors.New("This should work, Maria is part of the project")
+		}
 
-	// Not part of project
-	_, err = GetTasks("1", "Unknown user")
-	if err == nil {
-		t.Error("Get tasks of not owned project should not work")
-		t.Fail()
-		return
-	}
+		// Not part of project
+		_, err = s.GetTasks("1", "Unknown user")
+		if err == nil {
+			return errors.New("Get tasks of not owned project should not work")
+		}
 
-	// Not existing project
-	_, err = GetTasks("28745276", "Peter")
-	if err == nil {
-		t.Error("Get should not work")
-		t.Fail()
-		return
-	}
+		// Not existing project
+		_, err = s.GetTasks("28745276", "Peter")
+		if err == nil {
+			return errors.New("Get should not work")
+		}
+		return nil
+	})
 }
 
 func TestAddAndGetProject(t *testing.T) {
-	user := "Jack"
-	p := Project{
-		Name:    "Test name",
-		TaskIDs: []string{"11"},
-		Users:   []string{user, "user2"},
-		Owner:   user,
-	}
+	run(t, func() error {
+		user := "Jack"
+		p := Project{
+			Name:    "Test name",
+			TaskIDs: []string{"8"},
+			Users:   []string{user, "user2"},
+			Owner:   user,
+		}
 
-	newProject, err := AddProject(&p)
-	if err != nil {
-		t.Errorf("Adding should work: %s", err.Error())
-		t.Fail()
-		return
-	}
+		newProject, err := s.AddProject(&p)
+		if err != nil {
+			return errors.New(fmt.Sprintf("Adding should work: %s", err.Error()))
+		}
 
-	if len(newProject.Users) != 2 {
-		t.Errorf("User amount should be 2 but was %d", len(newProject.Users))
-		t.Fail()
-		return
-	}
-	if newProject.Users[0] != user || newProject.Users[1] != "user2" {
-		t.Errorf("User not matching")
-		t.Fail()
-		return
-	}
-	if len(newProject.TaskIDs) != len(p.TaskIDs) || newProject.TaskIDs[0] != p.TaskIDs[0] {
-		t.Errorf("Task ID should be '%s' but was '%s'", newProject.TaskIDs[0], p.TaskIDs[0])
-		t.Fail()
-		return
-	}
-	if newProject.Name != p.Name {
-		t.Errorf("Name should be '%s' but was '%s'", newProject.Name, p.Name)
-		t.Fail()
-		return
-	}
-	if newProject.Owner != user {
-		t.Errorf("Owner should be '%s' but was '%s'", user, newProject.Owner)
-		t.Fail()
-		return
-	}
+		if len(newProject.Users) != 2 {
+			return errors.New(fmt.Sprintf("User amount should be 2 but was %d", len(newProject.Users)))
+		}
+		if newProject.Users[0] != user || newProject.Users[1] != "user2" {
+			return errors.New(fmt.Sprintf("User not matching"))
+		}
+		if len(newProject.TaskIDs) != len(p.TaskIDs) || newProject.TaskIDs[0] != p.TaskIDs[0] {
+			return errors.New(fmt.Sprintf("Task ID should be '%s' but was '%s'", newProject.TaskIDs[0], p.TaskIDs[0]))
+		}
+		if newProject.Name != p.Name {
+			return errors.New(fmt.Sprintf("Name should be '%s' but was '%s'", newProject.Name, p.Name))
+		}
+		if newProject.Owner != user {
+			return errors.New(fmt.Sprintf("Owner should be '%s' but was '%s'", user, newProject.Owner))
+		}
+		if newProject.TotalProcessPoints != 100 || newProject.DoneProcessPoints != 5 {
+			return errors.New(fmt.Sprintf("Process points on project not set correctly"))
+		}
+		return nil
+	})
 }
 
 func TestAddProjectWithUsedTasks(t *testing.T) {
-	user := "Jen"
-	p := Project{
-		Name:    "Test name",
-		TaskIDs: []string{"1", "22", "33"}, // one task already used in a project
-		Users:   []string{user, "user2"},
-		Owner:   user,
-	}
+	run(t, func() error {
+		user := "Jen"
+		p := Project{
+			Name:    "Test name",
+			TaskIDs: []string{"1", "22", "33"}, // one task already used in a project
+			Users:   []string{user, "user2"},
+			Owner:   user,
+		}
 
-	_, err := AddProject(&p)
-	if err == nil {
-		t.Errorf("The tasks are already used. This should not work.")
-		t.Fail()
-		return
-	}
+		_, err := s.AddProject(&p)
+		if err == nil {
+			return errors.New(fmt.Sprintf("The tasks are already used. This should not work."))
+		}
+		return nil
+	})
 }
 
 func TestAddUser(t *testing.T) {
-	newUser := "new user"
+	run(t, func() error {
+		newUser := "new user"
 
-	p, err := AddUser("1", newUser, "Peter")
-	if err != nil {
-		t.Errorf("This should work: %s", err.Error())
-		t.Fail()
-		return
-	}
-
-	containsUser := false
-	for _, u := range p.Users {
-		if u == newUser {
-			containsUser = true
-			break
+		p, err := s.AddUser("1", newUser, "Peter")
+		if err != nil {
+			return errors.New(fmt.Sprintf("This should work: %s", err.Error()))
 		}
-	}
-	if !containsUser {
-		t.Error("Project should contain new user")
-		t.Fail()
-		return
-	}
 
-	p, err = AddUser("2284527", newUser, "Peter")
-	if err == nil {
-		t.Error("This should not work: The project does not exist")
-		t.Fail()
-		return
-	}
+		containsUser := false
+		for _, u := range p.Users {
+			if u == newUser {
+				containsUser = true
+				break
+			}
+		}
+		if !containsUser {
+			return errors.New("Project should contain new user")
+		}
+		if p.TotalProcessPoints != 10 || p.DoneProcessPoints != 0 {
+			return errors.New(fmt.Sprintf("Process points on project not set correctly"))
+		}
 
-	p, err = AddUser("1", newUser, "Not-Owning-User")
-	if err == nil {
-		t.Error("This should not work: A non-owner user tries to add a user")
-		t.Fail()
-		return
-	}
+		p, err = s.AddUser("2284527", newUser, "Peter")
+		if err == nil {
+			return errors.New("This should not work: The project does not exist")
+		}
+
+		p, err = s.AddUser("1", newUser, "Not-Owning-User")
+		if err == nil {
+			return errors.New("This should not work: A non-owner user tries to add a user")
+		}
+		return nil
+	})
 }
 
 func TestAddUserTwice(t *testing.T) {
-	newUser := "another-new-user"
+	run(t, func() error {
+		newUser := "another-new-user"
 
-	_, err := AddUser("1", newUser, "Peter")
-	if err != nil {
-		t.Errorf("This should work: %s", err.Error())
-		t.Fail()
-		return
-	}
+		_, err := s.AddUser("1", newUser, "Peter")
+		if err != nil {
+			return errors.New(fmt.Sprintf("This should work: %s", err.Error()))
+		}
 
-	// Add second time, this should now work
-	_, err = AddUser("1", newUser, "Peter")
-	if err == nil {
-		t.Error("Adding a user twice should not work")
-		t.Fail()
-		return
-	}
+		// Add second time, this should now work
+		_, err = s.AddUser("1", newUser, "Peter")
+		if err == nil {
+			return errors.New("Adding a user twice should not work")
+		}
+		return nil
+	})
 }
 
 func TestRemoveUser(t *testing.T) {
-	userToRemove := "Maria"
+	run(t, func() error {
+		userToRemove := "Maria"
 
-	p, err := RemoveUser("1", "Peter", userToRemove)
-	if err != nil {
-		t.Errorf("This should work: %s", err.Error())
-		t.Fail()
-		return
-	}
-
-	containsUser := false
-	for _, u := range p.Users {
-		if u == userToRemove {
-			containsUser = true
-			break
+		p, err := s.RemoveUser("1", "Peter", userToRemove)
+		if err != nil {
+			return errors.New(fmt.Sprintf("This should work: %s", err.Error()))
 		}
-	}
-	if containsUser {
-		t.Error("Project should not contain user anymore")
-		t.Fail()
-		return
-	}
 
-	tasks, err := task.GetTasks(p.TaskIDs, "Peter")
-	if err != nil {
-		t.Errorf("Getting tasks should still work")
-		t.Fail()
-		return
-	}
-
-	// Check that the user to remove has been unassigned
-	for _, task := range tasks {
-		if task.AssignedUser == userToRemove {
-			t.Errorf("Task '%s' still has user '%s' assigned", task.Id, userToRemove)
-			t.Fail()
-			return
+		containsUser := false
+		for _, u := range p.Users {
+			if u == userToRemove {
+				containsUser = true
+				break
+			}
 		}
-	}
+		if containsUser {
+			return errors.New("Project should not contain user anymore")
+		}
+		if p.TotalProcessPoints != 10 || p.DoneProcessPoints != 0 {
+			return errors.New(fmt.Sprintf("Process points on project not set correctly"))
+		}
 
-	// Not existing project
-	p, err = RemoveUser("2284527", "Peter", userToRemove)
-	if err == nil {
-		t.Error("This should not work: The project does not exist")
-		t.Fail()
-		return
-	}
+		tasks, err := taskService.GetTasks(p.TaskIDs, "Peter")
+		if err != nil {
+			return errors.New(fmt.Sprintf("Getting tasks should still work"))
+		}
 
-	// Not owning user requesting removal
-	p, err = RemoveUser("1", "Not-Owning-User", userToRemove)
-	if err == nil {
-		t.Error("This should not work: A non-owner user requests removal")
-		t.Fail()
-		return
-	}
+		// Check that the user to remove has been unassigned
+		for _, task := range tasks {
+			if task.AssignedUser == userToRemove {
+				return errors.New(fmt.Sprintf("Task '%s' still has user '%s' assigned", task.Id, userToRemove))
+			}
+		}
+
+		// Not existing project
+		p, err = s.RemoveUser("2284527", "Peter", userToRemove)
+		if err == nil {
+			return errors.New("This should not work: The project does not exist")
+		}
+
+		// Not owning user requesting removal
+		p, err = s.RemoveUser("1", "Not-Owning-User", userToRemove)
+		if err == nil {
+			return errors.New("This should not work: A non-owner user requests removal")
+		}
+		return nil
+	})
 }
 
 func TestRemoveNonOwnerUser(t *testing.T) {
-	userToRemove := "Carl"
+	run(t, func() error {
+		userToRemove := "Carl"
 
-	// Carl is not owner and removes himself, which is ok
-	p, err := RemoveUser("2", "Carl", userToRemove)
-	if err != nil {
-		t.Errorf("This should work: %s", err.Error())
-		t.Fail()
-		return
-	}
-
-	containsUser := false
-	for _, u := range p.Users {
-		if u == userToRemove {
-			containsUser = true
-			break
+		// Carl is not owner and removes himself, which is ok
+		p, err := s.RemoveUser("2", "Carl", userToRemove)
+		if err != nil {
+			return errors.New(fmt.Sprintf("This should work: %s", err.Error()))
 		}
-	}
-	if containsUser {
-		t.Error("Project should not contain user anymore")
-		t.Fail()
-		return
-	}
+
+		containsUser := false
+		for _, u := range p.Users {
+			if u == userToRemove {
+				containsUser = true
+				break
+			}
+		}
+		if containsUser {
+			return errors.New("Project should not contain user anymore")
+		}
+		return nil
+	})
 }
 
 func TestRemoveArbitraryUserNotAllowed(t *testing.T) {
-	userToRemove := "Anna"
+	run(t, func() error {
+		userToRemove := "Anna"
 
-	// Michael is not member of the project and should not be allowed to remove anyone
-	p, err := RemoveUser("2", "Michael", userToRemove)
-	if err == nil {
-		t.Errorf("This should not work: %s", err.Error())
-		t.Fail()
-		return
-	}
-
-	p, err = GetProject("2", "Maria")
-
-	if err != nil {
-		t.Error(err.Error())
-		t.Fail()
-	}
-
-	containsUser := false
-	for _, u := range p.Users {
-		if u == userToRemove {
-			containsUser = true
-			break
+		// Michael is not member of the project and should not be allowed to remove anyone
+		p, err := s.RemoveUser("2", "Michael", userToRemove)
+		if err == nil {
+			return errors.New(fmt.Sprintf("This should not work: %s", err.Error()))
 		}
-	}
-	if !containsUser {
-		t.Error("Project should still contain user")
-		t.Fail()
-		return
-	}
 
-	// Remove not-member user:
+		p, err = s.GetProject("2", "Maria")
+		if err != nil {
+			return err
+		}
 
-	userToRemove = "Nina" // Not a member of the project
-	p, err = RemoveUser("2", "Peter", userToRemove)
-	if err == nil {
-		t.Errorf("This should not work: %s", err.Error())
-		t.Fail()
-		return
-	}
+		containsUser := false
+		for _, u := range p.Users {
+			if u == userToRemove {
+				containsUser = true
+				break
+			}
+		}
+		if !containsUser {
+			return errors.New("Project should still contain user")
+		}
+
+		// Remove not-member user:
+
+		userToRemove = "Nina" // Not a member of the project
+		p, err = s.RemoveUser("2", "Peter", userToRemove)
+		if err == nil {
+			return errors.New(fmt.Sprintf("This should not work: %s", err.Error()))
+		}
+		return nil
+	})
 }
 
 func TestRemoveUserTwice(t *testing.T) {
-	_, err := RemoveUser("2", "Maria", "John")
-	if err != nil {
-		t.Error("This should work: ", err)
-		t.Fail()
-		return
-	}
+	run(t, func() error {
+		_, err := s.RemoveUser("2", "Maria", "John")
+		if err != nil {
+			t.Error("This should work: ", err)
+		}
 
-	// "John" was removed above to we remove him here the second time
-	_, err = RemoveUser("2", "Maria", "John")
-	if err == nil {
-		t.Error("Removing a user twice should not work")
-		t.Fail()
-		return
-	}
+		// "John" was removed above to we remove him here the second time
+		_, err = s.RemoveUser("2", "Maria", "John")
+		if err == nil {
+			return errors.New("Removing a user twice should not work")
+		}
+		return nil
+	})
 }
 
 func TestLeaveProject(t *testing.T) {
-	userToRemove := "Anna"
+	run(t, func() error {
+		userToRemove := "Anna"
 
-	p, err := LeaveProject("2", userToRemove)
-	if err != nil {
-		t.Errorf("This should work: %s", err.Error())
-		t.Fail()
-		return
-	}
-
-	containsUser := false
-	for _, u := range p.Users {
-		if u == userToRemove {
-			containsUser = true
-			break
+		p, err := s.LeaveProject("2", userToRemove)
+		if err != nil {
+			return errors.New(fmt.Sprintf("This should work: %s", err.Error()))
 		}
-	}
-	if containsUser {
-		t.Error("Project should not contain user anymore")
-		t.Fail()
-		return
-	}
 
-	p, err = LeaveProject("2", "Maria")
-	if err == nil {
-		t.Error("This should not work: The owner is not allowed to leave")
-		t.Fail()
-		return
-	}
+		containsUser := false
+		for _, u := range p.Users {
+			if u == userToRemove {
+				containsUser = true
+				break
+			}
+		}
+		if containsUser {
+			return errors.New("Project should not contain user anymore")
+		}
+		if p.TotalProcessPoints != 308 || p.DoneProcessPoints != 154 {
+			return errors.New(fmt.Sprintf("Process points on project not set correctly"))
+		}
 
-	p, err = LeaveProject("2284527", "Peter")
-	if err == nil {
-		t.Error("This should not work: The project does not exist")
-		t.Fail()
-		return
-	}
+		// Owner should not be allowed to leave
+		p, err = s.LeaveProject("2", "Maria")
+		if err == nil {
+			return errors.New("This should not work: The owner is not allowed to leave")
+		}
 
-	p, err = LeaveProject("1", "Not-Existing-User")
-	if err == nil {
-		t.Error("This should not work: A non-existing user should be removed")
-		t.Fail()
-		return
-	}
+		// Invalid project id
+		p, err = s.LeaveProject("2284527", "Peter")
+		if err == nil {
+			return errors.New("This should not work: The project does not exist")
+		}
 
-	// "Maria" was removed above to we remove her here the second time
-	_, err = LeaveProject("2", userToRemove)
-	if err == nil {
-		t.Error("Leaving a project twice should not work")
-		t.Fail()
-		return
-	}
+		// Not existing user wants to leave
+		p, err = s.LeaveProject("1", "Not-Existing-User")
+		if err == nil {
+			return errors.New("This should not work: A non-existing user should be removed")
+		}
+
+		// "Maria" was removed above to we remove her here the second time
+		_, err = s.LeaveProject("2", userToRemove)
+		if err == nil {
+			return errors.New("Leaving a project twice should not work")
+		}
+		return nil
+	})
 }
 
 func TestDeleteProject(t *testing.T) {
-	id := "1" // owned by "Peter"
+	run(t, func() error {
+		id := "1" // owned by "Peter"
 
-	// Try to remove with now-owning user
+		// Try to remove with now-owning user
 
-	err := DeleteProject(id, "Maria") // Maria does not own this project
-	if err == nil {
-		t.Error("Maria does not own this project, this should not work")
-		t.Fail()
-		return
-	}
+		err := s.DeleteProject(id, "Maria") // Maria does not own this project
+		if err == nil {
+			return errors.New("Maria does not own this project, this should not work")
+		}
 
-	_, err = GetProject(id, "Peter")
-	if err != nil {
-		t.Errorf("The project should exist: %s", err.Error())
-		t.Fail()
-		return
-	}
+		_, err = s.GetProject(id, "Peter")
+		if err != nil {
+			return errors.New(fmt.Sprintf("The project should exist: %s", err.Error()))
+		}
 
-	// Actually remove project
+		// Actually remove project
 
-	project, err := GetProject(id, "Peter")
-	if err != nil {
-		t.Errorf("Error getting project to relete: %s", err.Error())
-		t.Fail()
-		return
-	}
-	taskIds := project.TaskIDs
+		project, err := s.GetProject(id, "Peter")
+		if err != nil {
+			return errors.New(fmt.Sprintf("Error getting project to relete: %s", err.Error()))
+		}
+		taskIds := project.TaskIDs
 
-	err = DeleteProject(id, "Peter") // Maria does not own this project
-	if err != nil {
-		t.Errorf("Peter owns this project, this should work: %s", err.Error())
-		t.Fail()
-		return
-	}
+		err = s.DeleteProject(id, "Peter") // Maria does not own this project
+		if err != nil {
+			return errors.New(fmt.Sprintf("Peter owns this project, this should work: %s", err.Error()))
+		}
 
-	_, err = GetProject(id, "Peter")
-	if err == nil {
-		t.Error("The project should not exist anymore")
-		t.Fail()
-		return
-	}
+		_, err = s.GetProject(id, "Peter")
+		if err == nil {
+			return errors.New("The project should not exist anymore")
+		}
 
-	_, err = task.GetTasks(taskIds, "Peter")
-	if err == nil {
-		t.Error("The tasks should not exist anymore")
-		t.Fail()
-		return
-	}
+		_, err = taskService.GetTasks(taskIds, "Peter")
+		if err == nil {
+			return errors.New("The tasks should not exist anymore")
+		}
 
-	// Delete not existing project
+		// Delete not existing project
 
-	err = DeleteProject("45356475", "Peter")
-	if err == nil {
-		t.Error("This project does not exist, this should not work")
-		t.Fail()
-		return
-	}
+		err = s.DeleteProject("45356475", "Peter")
+		if err == nil {
+			return errors.New("This project does not exist, this should not work")
+		}
+		return nil
+	})
+}
+
+func TestUpdateName(t *testing.T) {
+	run(t, func() error {
+		oldProject, err := s.GetProject("1", "Peter")
+		if err != nil {
+			return errors.New(fmt.Sprintf("Error getting project to update: %s", err))
+		}
+
+		newName := "flubby dubby"
+		project, err := s.UpdateName("1", newName, "Peter")
+		if err != nil {
+			return errors.New(fmt.Sprintf("Error updating name wasn't expected: %s", err))
+		}
+		if project.Name != newName {
+			return errors.New(fmt.Sprintf("New name doesn't match with expected one: %s != %s", oldProject.Name, newName))
+		}
+		if project.TotalProcessPoints != 10 || project.DoneProcessPoints != 0 {
+			return errors.New(fmt.Sprintf("Process points on project not set correctly"))
+		}
+
+		// With newline
+
+		newNewlineName := "foo\nbar\nwhatever"
+		project, err = s.UpdateName("1", newNewlineName, "Peter")
+		if err != nil {
+			return errors.New(fmt.Sprintf("Error updating name wasn't expected: %s", err))
+		}
+		if project.Name != "foo" {
+			return errors.New(fmt.Sprintf("New name doesn't match with expected one: %s != foo", oldProject.Name))
+		}
+
+		// With non-owner (Maria)
+
+		_, err = s.UpdateName("1", "skfgkf", "Maria")
+		if err == nil {
+			return errors.New("Updating name should not be possible for non-owner user Maria")
+		}
+
+		// Empty name
+
+		_, err = s.UpdateName("1", "  ", "Peter")
+		if err == nil {
+			return errors.New("Updating name should not be possible with empty name")
+		}
+		return nil
+	})
+}
+
+func TestUpdateDescription(t *testing.T) {
+	run(t, func() error {
+		oldProject, _ := s.GetProject("1", "Peter")
+
+		newDescription := "flubby dubby\n foo bar"
+		project, err := s.UpdateDescription("1", newDescription, "Peter")
+		if err != nil {
+			return errors.New(fmt.Sprintf("Error updating description wasn't expected: %s", err))
+		}
+		if project.Description != newDescription {
+			return errors.New(fmt.Sprintf("New description doesn't match with expected one: %s != %s", oldProject.Name, newDescription))
+		}
+		if project.TotalProcessPoints != 10 || project.DoneProcessPoints != 0 {
+			return errors.New(fmt.Sprintf("Process points on project not set correctly"))
+		}
+
+		// With non-owner (Maria)
+
+		_, err = s.UpdateDescription("1", "skfgkf", "Maria")
+		if err == nil {
+			return errors.New("Updating description should not be possible for non-owner user Maria")
+		}
+
+		// Empty description
+
+		_, err = s.UpdateDescription("1", "  ", "Peter")
+		if err == nil {
+			return errors.New("Updating description should not be possible with empty description")
+		}
+		return nil
+	})
 }
 
 func contains(projectIdToFind string, projectsToCheck []*Project) bool {

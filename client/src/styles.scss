@@ -7,7 +7,7 @@
 $space-base: 10px;
 $space-small: $space-base / 2;
 $space-large: $space-base * 2;
-$space-huge: $space-base * 4;
+$space-huge: $space-base * 3.5;
 
 // =====
 // Fonts
@@ -42,14 +42,9 @@ h2 {
 // ==============
 
 body {
-	color: $very-dark-gray;
+	color: $color-gray-very-dark;
 	margin: 0px;
 	height: 100vh;
-}
-
-// Container around a screen filling component for better spacing to the screen edges
-.root-container {
-	margin: $space-large;
 }
 
 // ==========
@@ -60,6 +55,13 @@ body {
 	margin-right: auto;
 	margin-left: auto;
 	text-align: center;
+}
+
+.flex-line {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	width: 100%;
 }
 
 // ===========
@@ -84,8 +86,8 @@ button::-moz-focus-inner { // remove dotted line in Firefox
 }
 
 button:disabled {
-	background-color: $very-light-gray;
-	border-color: $light-gray;
+	background-color: $color-gray-very-light;
+	border-color: $color-gray-light;
 }
 
 a {
@@ -98,8 +100,8 @@ a:hover {
 
 // Use the SVG as down-arrow instead of the default
 select {
-	height: 29px; // Actually want  17px but have to add 12px because of custom background (probably)
-	width: 162px; // Actually want 150px but have to add 12px because of custom background (probably)
+	height: $space-huge;
+	flex-grow: 1;
 	padding: 5px;
 	background-color: white;
 	border: 1px solid $color-light;
@@ -108,7 +110,7 @@ select {
 	appearance: none;
 	background-image: url('/assets/arrow-down.svg');
 	background-size: $space-base * 1.5;
-	background-position: calc(100% - 8px) 10px;
+	background-position: calc(100% - 8px) $space-base * 1.25;
 	background-repeat: no-repeat;
 }
 
@@ -142,12 +144,12 @@ ul {
 	text-indent: -$space-large;
 }
 
-li:before {
+ul > li:before {
 	content: "–";
 	display: block;
 	float: left;
 	width: $space-large;
-	color: $gray-mid;
+	color: $color-gray-mid;
 }
 
 li {
@@ -163,7 +165,11 @@ textarea{
 	border: 1px solid $color-light;
 	padding: $space-small;
 	margin: 0px;
-	width: 150px;
+	flex-grow: 1;
+}
+
+input {
+	height: $space-huge;
 }
 
 input:focus,
@@ -173,7 +179,7 @@ textarea:focus {
 
 input.ng-invalid:not(form),
 textarea.ng-invalid:not(form)  {
-	border: 1px solid $color-warn;
+	border: 1px solid $color-error;
 }
 
 .input-field-label {
@@ -182,6 +188,6 @@ textarea.ng-invalid:not(form)  {
 }
 
 .hline {
-	border-bottom: 1px solid $light-gray;
+	border-bottom: 1px solid $color-gray-light;
 	margin: $space-large $space-base;
 }

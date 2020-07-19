@@ -1,18 +1,14 @@
 package main
 
 import (
-	"fmt"
 	"github.com/hauke96/kingpin"
 	"github.com/hauke96/sigolo"
-	"github.com/hauke96/simple-task-manager/server/permission"
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 	"os"
 
 	"github.com/hauke96/simple-task-manager/server/api"
 	"github.com/hauke96/simple-task-manager/server/auth"
 	"github.com/hauke96/simple-task-manager/server/config"
-	"github.com/hauke96/simple-task-manager/server/project"
-	"github.com/hauke96/simple-task-manager/server/task"
 	"github.com/hauke96/simple-task-manager/server/util"
 )
 
@@ -46,18 +42,17 @@ func main() {
 
 	// Load config an override with CLI args
 	config.LoadConfig(*appConfig)
+	config.PrintConfig()
 
 	configureLogging()
 
 	// Init of Config, Services, Storages, etc.
-	permission.Init()
-	project.Init()
-	task.Init()
 	auth.Init()
 	sigolo.Info("Initializes services, storages, etc.")
 
 	err = api.Init()
 	if err != nil {
-		sigolo.Error(fmt.Sprintf("Error while serving: %s", err))
+		sigolo.Stack(err)
+		os.Exit(1)
 	}
 }

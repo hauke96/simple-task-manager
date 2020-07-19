@@ -1,25 +1,78 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from 'rxjs';
-import { flatMap, map, mergeMap, tap } from 'rxjs/operators';
+import { concatMap, flatMap, map, mergeAll, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { Project, ProjectDto } from './project.material';
-import { Task } from './../task/task.material';
+import { Task, TaskDto } from './../task/task.material';
 import { TaskService } from './../task/task.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
 import { User } from '../user/user.material';
 import { UserService } from '../user/user.service';
+import { WebsocketClientService } from '../common/websocket-client.service';
+import { WebsocketMessage, WebsocketMessageType } from '../common/websocket-message';
+import { NotificationService } from '../common/notification.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProjectService {
+  public projectAdded: EventEmitter<Project> = new EventEmitter();
   public projectChanged: EventEmitter<Project> = new EventEmitter();
+  public projectDeleted: EventEmitter<string> = new EventEmitter();
+  public projectUserRemoved: EventEmitter<void> = new EventEmitter();
 
   constructor(
     private taskService: TaskService,
     private userService: UserService,
-    private http: HttpClient
+    private http: HttpClient,
+    private websocketClient: WebsocketClientService,
+    private notificationService: NotificationService
   ) {
+    websocketClient.messageReceived.subscribe((m: WebsocketMessage) => {
+      this.handleReceivedMessage(m);
+    }, e => {
+      console.error(e);
+      this.notificationService.addError('Could not initialize live-updates');
+    });
+  }
+
+  private handleReceivedMessage(m: WebsocketMessage) {
+    switch (m.type) {
+      case WebsocketMessageType.MessageType_ProjectAdded:
+        const addDto = m.data as ProjectDto;
+
+        this.toProject(addDto).subscribe(
+          p => {
+            this.projectAdded.emit(p);
+          },
+          e => {
+            console.error('Unable to process ' + m.type + ' event for project ' + addDto.id);
+            console.error(e);
+          }
+        );
+        break;
+      case WebsocketMessageType.MessageType_ProjectUpdated:
+        const updateDto = m.data as ProjectDto;
+
+        this.toProject(updateDto).subscribe(
+          p => {
+            // Also call the task service to send task-updates to the components.
+            this.taskService.updateTasks(p.tasks);
+            this.projectChanged.emit(p);
+          },
+          e => {
+            console.error('Unable to process ' + m.type + ' event for project ' + updateDto.id);
+            console.error(e);
+          }
+        );
+        break;
+      case WebsocketMessageType.MessageType_ProjectUserRemoved:
+        this.projectUserRemoved.emit(m.data);
+        break;
+      case WebsocketMessageType.MessageType_ProjectDeleted:
+        this.projectDeleted.emit(m.data);
+        break;
+    }
   }
 
   public getProjects(): Observable<Project[]> {
@@ -51,12 +104,8 @@ export class ProjectService {
       );
   }
 
-  public inviteUser(projectId: string, userId: string): Observable<Project> {
-    return this.http.post<ProjectDto>(environment.url_projects_users.replace('{id}', projectId) + '?uid=' + userId, '')
-      .pipe(
-        flatMap(dto => this.toProject(dto)),
-        tap(p => this.projectChanged.emit(p))
-      );
+  public inviteUser(projectId: string, userId: string): Observable<void> {
+    return this.http.post<void>(environment.url_projects_users.replace('{id}', projectId) + '?uid=' + userId, '');
   }
 
   public deleteProject(projectId: string): Observable<any> {
@@ -65,16 +114,31 @@ export class ProjectService {
 
   // Gets the tasks of the given project
   public getTasks(projectId: string): Observable<Task[]> {
-    return this.http.get<Task[]>(environment.url_projects + '/' + projectId + '/tasks')
+    return this.http.get<TaskDto[]>(environment.url_projects_task.replace('{id}', projectId))
       .pipe(
-        flatMap((tasks: Task[]) => {
-          return this.taskService.addUserNames(tasks);
-        })
+        flatMap((tasks: TaskDto[]) => this.taskService.addUserNames(tasks)),
+        map(dtos => dtos.map(dto => this.taskService.toTask(dto)))
       );
   }
 
   public removeUser(projectId: string, userId: string): Observable<Project> {
     return this.http.delete<ProjectDto>(environment.url_projects_users.replace('{id}', projectId) + '/' + userId)
+      .pipe(
+        flatMap(dto => this.toProject(dto)),
+        tap(p => this.projectChanged.emit(p))
+      );
+  }
+
+  public updateName(projectId: string, newName: string) {
+    return this.http.put<ProjectDto>(environment.url_projects_name.replace('{id}', projectId), newName)
+      .pipe(
+        flatMap(dto => this.toProject(dto)),
+        tap(p => this.projectChanged.emit(p))
+      );
+  }
+
+  public updateDescription(projectId: string, newDescription: string) {
+    return this.http.put<ProjectDto>(environment.url_projects_description.replace('{id}', projectId), newDescription)
       .pipe(
         flatMap(dto => this.toProject(dto)),
         tap(p => this.projectChanged.emit(p))

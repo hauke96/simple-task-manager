@@ -10,7 +10,7 @@ import { ProjectService } from '../project.service';
 import { Project } from '../project.material';
 import { Feature } from 'ol';
 import { MockRouter } from '../../common/mock-router';
-import { Task, TestTaskGeometry } from '../../task/task.material';
+import { Task, TestTaskFeature } from '../../task/task.material';
 import { User } from '../../user/user.material';
 
 describe('ProjectCreationComponent', () => {
@@ -55,11 +55,11 @@ describe('ProjectCreationComponent', () => {
     const spyService = spyOn(projectService, 'createNewProject').and.returnValue(of(createProject()));
     const spyRouter = spyOn(routerMock, 'navigate').and.callThrough();
 
-    const polygons: Polygon[] = [];
-    polygons.push(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]]));
-    polygons.push(new Polygon([[[4000, 4000], [5000, 6000], [6000, 4000], [4000, 4000]]]));
+    const feature: Feature[] = [];
+    feature.push(new Feature(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]])));
+    feature.push(new Feature(new Polygon([[[4000, 4000], [5000, 6000], [6000, 4000], [4000, 4000]]])));
 
-    component.createProject(name, 100, 'lorem ipsum', polygons);
+    component.createProject(name, 100, 'lorem ipsum', feature);
 
     expect(spyService).toHaveBeenCalled();
     expect(spyRouter).toHaveBeenCalledWith(['/manager']);
@@ -69,11 +69,11 @@ describe('ProjectCreationComponent', () => {
     const spyService = spyOn(projectService, 'createNewProject').and.returnValue(throwError('BOOM'));
     const spyRouter = spyOn(routerMock, 'navigate').and.callThrough();
 
-    const polygons: Polygon[] = [];
-    polygons.push(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]]));
-    polygons.push(new Polygon([[[4000, 4000], [5000, 6000], [6000, 4000], [4000, 4000]]]));
+    const feature: Feature[] = [];
+    feature.push(new Feature(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]])));
+    feature.push(new Feature(new Polygon([[[4000, 4000], [5000, 6000], [6000, 4000], [4000, 4000]]])));
 
-    component.createProject(name, 100, 'lorem ipsum', polygons);
+    component.createProject(name, 100, 'lorem ipsum', feature);
 
     expect(spyService).toHaveBeenCalled();
     expect(spyRouter).not.toHaveBeenCalled();
@@ -88,21 +88,27 @@ describe('ProjectCreationComponent', () => {
 
     // @ts-ignore
     const spySource = spyOn(component.vectorSource, 'addFeature');
+    // @ts-ignore
+    const spyView = spyOn(component.map.getView(), 'fit');
 
     component.onShapesCreated(features);
 
     expect(spySource).toHaveBeenCalledTimes(2);
+    expect(spyView).toHaveBeenCalled();
   });
 
   it('should add uploaded shape correctly', () => {
     const vectorSourceClearSpy = spyOn(component.vectorSource, 'clear').and.callThrough();
     const vectorSourceAddSpy = spyOn(component.vectorSource, 'addFeature').and.callThrough();
+    // @ts-ignore
+    const spyView = spyOn(component.map.getView(), 'fit');
 
     const feature = new Feature(new Polygon([[[0, 0]]]));
     component.onShapesUploaded([feature]);
 
     expect(vectorSourceClearSpy).toHaveBeenCalled();
     expect(vectorSourceAddSpy).toHaveBeenCalledWith(feature);
+    expect(spyView).toHaveBeenCalled();
   });
 
   it('should set interaction for "Draw" tab', () => {
@@ -121,8 +127,16 @@ describe('ProjectCreationComponent', () => {
     expect(component.selectInteraction.getActive()).toEqual(false);
   });
 
-  it('should set interaction for "Delete" tab', () => {
+  it('should set interaction for "Remote" tab', () => {
     component.onTabSelected(2);
+
+    expect(component.drawInteraction.getActive()).toEqual(false);
+    expect(component.modifyInteraction.getActive()).toEqual(true);
+    expect(component.selectInteraction.getActive()).toEqual(false);
+  });
+
+  it('should set interaction for "Delete" tab', () => {
+    component.onTabSelected(3);
 
     expect(component.drawInteraction.getActive()).toEqual(false);
     expect(component.modifyInteraction.getActive()).toEqual(false);
@@ -154,7 +168,7 @@ describe('ProjectCreationComponent', () => {
   });
 
   function createProject() {
-    const t = new Task('567', 10, 100, TestTaskGeometry);
+    const t = new Task('567', undefined, 10, 100, TestTaskFeature);
     const u1 = new User('test-user', '123');
     const u2 = new User('test-user2', '234');
     const u3 = new User('test-user3', '345');

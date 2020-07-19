@@ -1,6 +1,15 @@
+@import "../styles";
+
 :host {
 	height: 100%;
 	width: 100%;
 	display: block;
 }
 
+.test-label {
+	display: flex;
+	justify-content: center;
+	background-color: $color-warn;
+	padding-top: $space-small / 2;
+	padding-bottom: $space-small / 2;
+}

@@ -23,10 +23,13 @@ type Config struct {
 	DebugLogging     bool   `json:"debug-logging"`
 	SslCertFile      string `json:"ssl-cert-file"`
 	SslKeyFile       string `json:"ssl-key-file"`
-	Store            string `json:"store"`
+	DbUsername       string
+	DbPassword       string
 }
 
 func LoadConfig(file string) {
+	sigolo.Info("Use config file '%s'", file)
+
 	fileContent, err := ioutil.ReadFile(file)
 	if err != nil {
 		sigolo.FatalCheck(err)
@@ -39,15 +42,34 @@ func LoadConfig(file string) {
 		sigolo.FatalCheck(err)
 	}
 
+	// OSM Oauth configs
 	oauthConsumerKey, _ := os.LookupEnv("OAUTH_CONSUMER_KEY")
 	oauthSecret, _ := os.LookupEnv("OAUTH_SECRET")
-
-	// Simply overwrite values read from config
 	Conf.OauthConsumerKey = oauthConsumerKey
 	Conf.OauthSecret = oauthSecret
 
-	sigolo.Info("Use config file '%s'", file)
+	// Database configs
+	DbUsernameEnvVar := "STM_DB_USERNAME"
+	DbPasswordEnvVar := "STM_DB_PASSWORD"
+	DbUsernameDefault := "postgres"
+	DbPasswordDefault := "geheim"
 
+	dbUsername, ok := os.LookupEnv(DbUsernameEnvVar)
+	if len(dbUsername) == 0 || !ok {
+		sigolo.Info("Environment variable %s for the database user not set. Fallback to default: %s", DbUsernameEnvVar, DbUsernameDefault)
+		dbUsername = DbUsernameDefault
+	}
+	dbPassword, _ := os.LookupEnv(DbPasswordEnvVar)
+	if len(dbUsername) == 0 || !ok {
+		sigolo.Info("Environment variable %s for the database user not set. Fallback to default: %s", DbPasswordEnvVar, DbPasswordDefault)
+		dbPassword = DbPasswordDefault
+	}
+
+	Conf.DbUsername = dbUsername
+	Conf.DbPassword = dbPassword
+}
+
+func PrintConfig() {
 	// Parse config struct to print it:
 	wholeConfStr := fmt.Sprintf("%#v", Conf)                      // -> "main.Config{Serve...}"
 	splitConfStr := strings.Split(wholeConfStr, "{")              // --> "main.Config" and "Serve...}"
@@ -57,7 +79,14 @@ func LoadConfig(file string) {
 	sigolo.Info("Config:")
 	for _, p := range propertyList {
 		propertyName := strings.Split(p, ":")[0]
-		propertyValue := strings.Join(strings.Split(p, ":")[1:], ":") // Join remaining parts back together
+
+		var propertyValue string
+		if propertyName == "DbPassword" || propertyName == "OauthSecret" {
+			propertyValue = "******" // don't show passwords etc. in the logs
+		} else {
+			propertyValue = strings.Join(strings.Split(p, ":")[1:], ":") // Join remaining parts back together
+		}
+
 		sigolo.Info("  %-*s = %s", 20, propertyName, propertyValue)
 	}
 }

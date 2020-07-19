@@ -3,19 +3,19 @@ import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthService } from './auth.service';
-import { ErrorService } from '../common/error.service';
+import { NotificationService } from '../common/notification.service';
 import { environment } from '../../environments/environment';
 
 @Injectable()
 export class LoggedInInterceptor implements HttpInterceptor {
   constructor(
     private authService: AuthService,
-    private errorService: ErrorService) {
+    private notificationService: NotificationService) {
   }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     // JOSM-Remote-Control or OSM-API
-    if (request.url.startsWith('http://localhost:8111') || request.url.startsWith(environment.osm_api_url)) {
+    if (!request.url.startsWith(environment.base_url)) {
       return next.handle(request);
     }
 
@@ -31,7 +31,7 @@ export class LoggedInInterceptor implements HttpInterceptor {
         console.error(e);
         if (e.status === 401) {
           console.error('Trigger logout: ' + (e as HttpErrorResponse).message);
-          this.errorService.addError('Logout because authorization was not successful');
+          this.notificationService.addWarning('Logout because authorization was not successful');
           this.authService.logout();
         }
         throw e;

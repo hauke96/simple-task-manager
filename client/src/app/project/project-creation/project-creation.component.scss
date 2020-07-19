@@ -19,17 +19,21 @@
 .project-properties-container {
 	display: flex;
 	flex-direction: column;
-	margin-right: $space-large;
+	margin: $space-base;
 	min-width: 400px;
 	max-width: 400px;
 }
+
 // Also apply style to divs in child components using ::ng-deep
 .project-properties-container ::ng-deep .form-entry {
 	margin-bottom: $space-base
 }
 
+.properties-label {
+	margin-top: 0px;
+}
+
 .map-container {
-	margin-top: $space-large;
 	width: 100%;
 	display: flex;
 	flex-direction: column;
@@ -47,4 +51,8 @@
 .description-text-area {
 	width: 100%;
 	height: 120px;
+}
+
+app-tabs {
+	flex-grow: 1;
 }

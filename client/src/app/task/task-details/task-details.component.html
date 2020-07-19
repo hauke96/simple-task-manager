@@ -1,15 +1,15 @@
 <div class="assign-container">
 	<h2>Task {{task?.id}}</h2>
 	<div class="assign-button-container" *ngIf="needUserAssignment">
-		<button *ngIf="!task?.assignedUser" (click)="onAssignButtonClicked()">Assign me</button>
-		<span *ngIf="!!task?.assignedUser && task?.assignedUser !== currentUserId">Assigned to: {{assignedUserName}}</span>
-		<button *ngIf="task?.assignedUser === currentUserId" (click)="onUnassignButtonClicked()">Unassign</button>
+		<button *ngIf="!task?.assignedUser?.uid" (click)="onAssignButtonClicked()">Assign to me</button>
+		<span *ngIf="!!task?.assignedUser?.uid && task?.assignedUser?.uid !== currentUserId">Assigned to: {{assignedUserName}}</span>
+		<button *ngIf="task?.assignedUser?.uid === currentUserId" (click)="onUnassignButtonClicked()">Unassign</button>
 	</div>
 </div>
 
 <!-- Process points row -->
 <div class="process-point-container">
-	<form *ngIf="task?.assignedUser === currentUserId || !needUserAssignment; else currentUserElse" #processPointsForm="ngForm">
+	<form class="flex-line" *ngIf="task?.assignedUser?.uid === currentUserId || !needUserAssignment; else currentUserElse" #processPointsForm="ngForm">
 		<span class="points-label">Points:</span>
 		<input name="processPointInput"
 			   [(ngModel)]="newProcessPoints"
@@ -17,8 +17,7 @@
 			   required
 			   appMinValidator="0"
 			   appMaxValidator="{{task?.maxProcessPoints}}">
-		/
-		{{task?.maxProcessPoints}}
+		<span class="of-process-point-label">/ {{task?.maxProcessPoints}}</span>
 		<button class="save-button" (click)="onSaveButtonClick()" [disabled]="!processPointsForm.form.valid">Save
 		</button>
 	</form>

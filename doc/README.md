@@ -1,23 +1,29 @@
 Here you'll find some documentation about the simple task manager. This is ordered into few categories:
 
-### api
+### [api](api/README.md)
 * General information about the API
 * API methods
 * versions
 
-### architecture
+### [architecture](architecture/README.md)
 * client and server code architecture
 
-### authentication
+### [authentication](authentication/README.md)
 * technical in-depth description of the authentication and authorization process
 * token creation, handling and validation
 
-### operation
+### [development](development/README.md)
+
+* Steps to get started
+* Git workflow
+* Overview over client, server, docker and further links
+
+### [operation](operation/README.md)
 * HTTPS
     * create SSL certificates
     * automatic renewal of SSL certs
 * docker
 
-### testing
+### [testing](testing/README.md)
 * write server and client tests
 * run these tests

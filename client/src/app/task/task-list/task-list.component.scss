@@ -6,7 +6,6 @@
 
 .list-container {
 	overflow-y: auto;
-	height: 100%;
 }
 
 .list-item {
@@ -16,7 +15,7 @@
 }
 
 .gray-label {
-	color: $gray-mid;
+	color: $color-gray-mid;
 }
 
 .selected {

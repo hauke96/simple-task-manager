@@ -3,8 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UserInvitationComponent } from './user-invitation.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
-import { ProjectService } from '../../project/project.service';
-import { ErrorService } from '../../common/error.service';
+import { NotificationService } from '../../common/notification.service';
 import { of, throwError } from 'rxjs';
 import { UserService } from '../user.service';
 import { User } from '../user.material';
@@ -12,8 +11,7 @@ import { User } from '../user.material';
 describe('UserInvitationComponent', () => {
   let component: UserInvitationComponent;
   let fixture: ComponentFixture<UserInvitationComponent>;
-  let projectService: ProjectService;
-  let errorService: ErrorService;
+  let notificationService: NotificationService;
   let userService: UserService;
 
   beforeEach(async(() => {
@@ -26,42 +24,59 @@ describe('UserInvitationComponent', () => {
     })
       .compileComponents();
 
-    projectService = TestBed.inject(ProjectService);
-    errorService = TestBed.inject(ErrorService);
+    notificationService = TestBed.inject(NotificationService);
     userService = TestBed.inject(UserService);
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UserInvitationComponent);
     component = fixture.componentInstance;
+    component.users = [];
     fixture.detectChanges();
   });
 
-  it('should call project service correctly', () => {
-    const inviteUserSpy = spyOn(projectService, 'inviteUser').and.callThrough();
-    spyOn(userService, 'getUserByName').and.returnValue(of(new User('test-user', '123')));
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 
-    component.userName = 'test-user';
-    component.projectId = '1';
+  it('should fire event correctly', () => {
+    const user = new User('test-user', '123');
+
+    const inviteUserSpy = spyOn(component.userInvited, 'emit').and.callThrough();
+    spyOn(userService, 'getUserByName').and.returnValue(of(user));
+
+    component.enteredUserName = 'test-user';
 
     component.onInvitationButtonClicked();
 
-    expect(component).toBeTruthy();
-    expect(inviteUserSpy).toHaveBeenCalledWith('1', '123');
+    expect(inviteUserSpy).toHaveBeenCalledWith(user);
   });
 
-  it('should show error on error', () => {
-    const inviteUserSpy = spyOn(projectService, 'inviteUser').and.returnValue(throwError('test error'));
-    const errorServiceSpy = spyOn(errorService, 'addError').and.callThrough();
-    spyOn(userService, 'getUserByName').and.returnValue(of(new User('test-user', '123')));
+  it('should show error message on user service error', () => {
+    const inviteUserSpy = spyOn(component.userInvited, 'emit').and.callThrough();
+    const errorSpy = spyOn(notificationService, 'addError').and.callThrough();
+    spyOn(userService, 'getUserByName').and.returnValue(throwError('BOOM!'));
 
-    component.userName = 'test-user';
-    component.projectId = '1';
+    component.enteredUserName = 'test-user';
 
     component.onInvitationButtonClicked();
 
-    expect(component).toBeTruthy();
-    expect(inviteUserSpy).toHaveBeenCalledWith('1', '123');
-    expect(errorServiceSpy).toHaveBeenCalled();
+    expect(inviteUserSpy).not.toHaveBeenCalled();
+    expect(errorSpy).toHaveBeenCalled();
   });
+
+  it('should so nothing when adding user twice', () => {
+    const inviteUserSpy = spyOn(component.userInvited, 'emit').and.callThrough();
+    const userServiceSpy = spyOn(userService, 'getUserByName').and.callFake(user => {
+      component.users.push(new User(user, user));
+      return of(undefined);
+    });
+
+    component.enteredUserName = 'test-user';
+    component.onInvitationButtonClicked();
+    component.onInvitationButtonClicked();
+
+    expect(userServiceSpy).toHaveBeenCalledTimes(1);
+    expect(inviteUserSpy).toHaveBeenCalledTimes(1);
+  })
 });

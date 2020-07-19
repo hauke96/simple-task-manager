@@ -3,3 +3,21 @@
 .space-right {
 	margin-right: $space-base;
 }
+
+.save-button {
+	margin-top: $space-base;
+}
+
+.description-text-area {
+	width: 100%;
+	height: 120px;
+}
+
+.name-input {
+	width: 100%;
+}
+
+// Also apply style to divs in child components using ::ng-deep
+.project-properties-container ::ng-deep .form-entry {
+	margin-bottom: $space-base
+}

@@ -41,7 +41,7 @@ function nameToId()
 }
 
 # The returned data is something like "2|{user1,user2}" and the usage of "tr" turns it into "2|user1,user2"
-PROJECT_DATA=$(psql -h localhost -U postgres -t -A -c "SELECT id,users,owner FROM projects;" stm \
+PROJECT_DATA=$(psql -h localhost -U $STM_DB_USERNAME -t -A -c "SELECT id,users,owner FROM projects;" stm \
 	| tr -d '}' \
 	| tr -d '{')
 
@@ -135,7 +135,7 @@ done
 #
 
 # The returned data is something like "2|user1"
-TASK_DATA=$(psql -h localhost -U postgres -t -A -c "SELECT id,assigned_user FROM tasks;" stm \
+TASK_DATA=$(psql -h localhost -U $STM_DB_USERNAME -t -A -c "SELECT id,assigned_user FROM tasks;" stm \
 	| grep -v "|$")
 
 echo
@@ -202,7 +202,7 @@ echo "END TRANSACTION;" >> $OUTPUT_FILE
 echo
 echo "Execute SQL..."
 
-psql -q -v ON_ERROR_STOP=1 -h localhost -U postgres -f $OUTPUT_FILE stm
+psql -q -v ON_ERROR_STOP=1 -h localhost -U $STM_DB_USERNAME -f $OUTPUT_FILE stm
 OK=$?
 if [ $OK -ne 0 ]
 then

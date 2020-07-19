@@ -6,7 +6,7 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ManagerComponent } from './manager/manager.component';
-import { AuthComponent } from './auth/auth/auth.component';
+import { LoginComponent } from './auth/login/login.component';
 import { AuthGuard } from './auth/auth.guard';
 import { LoggedInInterceptor } from './auth/logged-in.interceptor';
 import { OauthLandingComponent } from './auth/oauth-landing/oauth-landing.component';
@@ -27,12 +27,13 @@ import { ShapeDivideComponent } from './project/shape-divide/shape-divide.compon
 import { ShapeUploadComponent } from './project/shape-upload/shape-upload.component';
 import { MaxValidatorDirective } from './ui/max-validator.directive';
 import { MinValidatorDirective } from './ui/min-validator.directive';
+import { ShapeRemoteComponent } from './project/shape-remote/shape-remote.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ManagerComponent,
-    AuthComponent,
+    LoginComponent,
     OauthLandingComponent,
     ProjectListComponent,
     ProjectComponent,
@@ -50,7 +51,8 @@ import { MinValidatorDirective } from './ui/min-validator.directive';
     ShapeDivideComponent,
     ShapeUploadComponent,
     MaxValidatorDirective,
-    MinValidatorDirective
+    MinValidatorDirective,
+    ShapeRemoteComponent
   ],
   imports: [
     BrowserModule,

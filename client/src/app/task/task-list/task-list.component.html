@@ -4,7 +4,7 @@
 	<div *ngFor="let t of tasks" class="list-item" (click)="onListItemClicked(t.id)"
 		 [ngClass]="{selected: t.id == selectedTaskId}">
 		<div>
-			{{t.id}}
+			{{taskTitle(t)}}
 			<span class="gray-label">
 			({{t.processPoints}} / {{t.maxProcessPoints}})
 		</span>
@@ -12,8 +12,8 @@
 		<span *ngIf="t.processPoints == t.maxProcessPoints" class="done-label">
 		Done
 	</span>
-		<span *ngIf="!!t.assignedUserName && !isAssignedToCurrentUser(t)"
-			  class="gray-label">{{t.assignedUserName}}</span>
+		<span *ngIf="!!t.assignedUser && !isAssignedToCurrentUser(t)"
+			  class="gray-label">{{t.assignedUser.name}}</span>
 		<span *ngIf="isAssignedToCurrentUser(t)" class="gray-label">(you)</span>
 	</div>
 </div>

@@ -10,7 +10,7 @@ import { Attribution, defaults as defaultControls, ScaleLine } from 'ol/control'
 import { Polygon } from 'ol/geom';
 import { Fill, Stroke, Style } from 'ol/style';
 import { Draw } from 'ol/interaction';
-import { ErrorService } from '../../common/error.service';
+import { NotificationService } from '../../common/notification.service';
 import GeometryType from 'ol/geom/GeometryType';
 import { CurrentUserService } from '../../user/current-user.service';
 import Snap from 'ol/interaction/Snap';
@@ -44,7 +44,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
 
   constructor(
     private projectService: ProjectService,
-    private errorService: ErrorService,
+    private notificationService: NotificationService,
     private currentUserService: CurrentUserService,
     private router: Router
   ) {
@@ -144,7 +144,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   }
 
   public onSaveButtonClicked() {
-    const polygons: Polygon[] = this.vectorSource.getFeatures().map(f => {
+    const features: Feature[] = this.vectorSource.getFeatures().map(f => {
       f = f.clone(); // otherwise we would change the polygons on the map
       let polygon = (f.getGeometry() as Polygon);
 
@@ -152,23 +152,20 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       // with lat/lon values, so we transform it back.
       polygon = polygon.transform('EPSG:3857', 'EPSG:4326') as Polygon;
 
-      // The openlayers "Polygon" Class can contain multiple rings. Because the
-      // user just draws things, there only exist polygons having only one ring.
-      // Therefore we take the first and only ring as our task geometry.
-      return polygon;
+      f.setGeometry(polygon);
+      return f;
     });
 
-    this.createProject(this.newProjectName, this.newMaxProcessPoints, this.projectDescription, polygons);
+    this.createProject(this.newProjectName, this.newMaxProcessPoints, this.projectDescription, features);
   }
 
-  public createProject(name: string, maxProcessPoints: number, projectDescription: string, polygons: Polygon[]) {
+  public createProject(name: string, maxProcessPoints: number, projectDescription: string, features: Feature[]) {
     const format = new GeoJSON();
     // We want features to attach attributes and to not be bound to one single Polygon.
     // Furthermore the escaping in the string breaks the format as the "\" character is actually transmitted as "\" character
     const geometries: string[] = [];
-    for (const polygon of polygons) {
-      let s = format.writeFeature(new Feature(polygon));
-      geometries.push(s);
+    for (const feature of features) {
+      geometries.push(format.writeFeature(feature));
     }
 
     const owner = this.currentUserService.getUserId();
@@ -177,12 +174,13 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
         this.router.navigate(['/manager']);
       }, e => {
         console.error(e);
-        this.errorService.addError('Could not create project');
+        this.notificationService.addError('Could not create project');
       });
   }
 
   // This function expects the geometry to be in the EPSG:4326 projection.
   public onShapesCreated(features: Feature[]) {
+    console.log(features.map(f => f.getProperties()));
     // Transform geometries into the correct projection
     features.forEach(f => {
       f.getGeometry().transform('EPSG:4326', 'EPSG:3857');
@@ -190,6 +188,11 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
 
     this.vectorSource.refresh(); // clears the source
     features.forEach(f => this.vectorSource.addFeature(f));
+
+    this.map.getView().fit(this.vectorSource.getExtent(), {
+      size: this.map.getSize(),
+      padding: [25, 25, 25, 25] // in pixels
+    });
   }
 
   // This function expects the geometry to be in the EPSG:4326 projection.
@@ -207,11 +210,12 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
         this.selectInteraction.setActive(false);
         break;
       case 1: // Tab: Upload
+      case 2: // Tab: Remote
         this.drawInteraction.setActive(false);
         this.modifyInteraction.setActive(true);
         this.selectInteraction.setActive(false);
         break;
-      case 2:
+      case 3: // Tab: Remove
         this.drawInteraction.setActive(false);
         this.modifyInteraction.setActive(false);
         this.selectInteraction.setActive(true);

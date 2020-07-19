@@ -1,5 +1,5 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { Task } from './task.material';
+import { Task, TaskDto } from './task.material';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
 import { from, Observable, of, throwError } from 'rxjs';
@@ -10,19 +10,35 @@ import { User } from '../user/user.material';
 import { UserService } from '../user/user.service';
 import GeoJSON from 'ol/format/GeoJSON';
 import { Coordinate } from 'ol/coordinate';
+import FeatureFormat from 'ol/format/Feature';
+import { Feature } from 'ol';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TaskService {
   public selectedTaskChanged: EventEmitter<Task> = new EventEmitter();
+  public tasksUpdated: EventEmitter<Task[]> = new EventEmitter();
 
   private selectedTask: Task;
+  private format: FeatureFormat = new GeoJSON();
 
   constructor(
     private http: HttpClient,
     private userService: UserService
   ) {
+  }
+
+  // Publishes the tasks via the tasksUpdated event. This is usually called from the project service when a project has been updated.
+  public updateTasks(tasks: Task[]) {
+    this.tasksUpdated.emit(tasks);
+
+    if (this.selectedTask) {
+      const updatedSelectedTask = tasks.filter(t => t.id === this.selectedTask.id);
+      if (updatedSelectedTask.length !== 0) {
+        this.selectedTaskChanged.emit(updatedSelectedTask[0]);
+      }
+    }
   }
 
   public selectTask(task: Task) {
@@ -36,10 +52,14 @@ export class TaskService {
 
   public createNewTasks(geometries: string[], maxProcessPoints: number): Observable<Task[]> {
     const draftTasks = geometries.map(g => {
-      return new Task('', 0, maxProcessPoints, g);
+      return new TaskDto('', 0, maxProcessPoints, g);
     });
-    return this.http.post<Task[]>(environment.url_tasks, JSON.stringify(draftTasks))
-      .pipe(flatMap(tasks => this.addUserNames(tasks)));
+    return this.http.post<TaskDto[]>(environment.url_tasks, JSON.stringify(draftTasks))
+      .pipe(
+        flatMap((tasks: TaskDto[]) => this.addUserNames(tasks)),
+        map(dtos => dtos.map(dto => this.toTask(dto))),
+        tap(tasks => tasks.forEach(t => this.selectedTaskChanged.emit(t)))
+      );
   }
 
   public setProcessPoints(taskId: string, newProcessPoints: number): Observable<Task> {
@@ -47,9 +67,12 @@ export class TaskService {
       return throwError('Task with id \'' + taskId + '\' not selected');
     }
 
-    return this.http.post<Task>(environment.url_task_processPoints.replace('{id}', taskId) + '?process_points=' + newProcessPoints, '')
-      .pipe(flatMap(task => this.addUserName(task)))
-      .pipe(tap(t => this.selectedTaskChanged.emit(t)));
+    return this.http.post<TaskDto>(environment.url_task_processPoints.replace('{id}', taskId) + '?process_points=' + newProcessPoints, '')
+      .pipe(
+        flatMap(task => this.addUserName(task)),
+        map(dto => this.toTask(dto)),
+        tap(t => this.selectedTaskChanged.emit(t))
+      );
   }
 
   public assign(taskId: string): Observable<Task> {
@@ -57,9 +80,12 @@ export class TaskService {
       return throwError('Task with id \'' + taskId + '\' not selected');
     }
 
-    return this.http.post<Task>(environment.url_task_assignedUser.replace('{id}', taskId), '')
-      .pipe(flatMap(task => this.addUserName(task)))
-      .pipe(tap(t => this.selectedTaskChanged.emit(t)));
+    return this.http.post<TaskDto>(environment.url_task_assignedUser.replace('{id}', taskId), '')
+      .pipe(
+        flatMap(task => this.addUserName(task)),
+        map(dto => this.toTask(dto)),
+        tap(t => this.selectedTaskChanged.emit(t))
+      );
   }
 
   public unassign(taskId: string): Observable<Task> {
@@ -67,8 +93,11 @@ export class TaskService {
       return throwError('Task with id \'' + taskId + '\' not selected');
     }
 
-    return this.http.delete<Task>(environment.url_task_assignedUser.replace('{id}', taskId))
-      .pipe(tap(t => this.selectedTaskChanged.emit(t)));
+    return this.http.delete<TaskDto>(environment.url_task_assignedUser.replace('{id}', taskId))
+      .pipe(
+        map(dto => this.toTask(dto)),
+        tap(t => this.selectedTaskChanged.emit(t))
+      );
   }
 
   public openInJosm(task: Task, projectId: string) {
@@ -89,12 +118,11 @@ export class TaskService {
   }
 
   public getExtent(task: Task): Extent {
-    return new GeoJSON().readFeature(task.geometry).getGeometry().getExtent();
+    return task.geometry.getGeometry().getExtent();
   }
 
   public getGeometryAsOsm(task: Task): string {
-    const format = new GeoJSON();
-    const taskFeature = format.readFeature(task.geometry);
+    const taskFeature = task.geometry;
     const taskPolygon = taskFeature.getGeometry() as Polygon;
     const coordinates: Coordinate[] = taskPolygon.getCoordinates()[0];
 
@@ -121,8 +149,8 @@ export class TaskService {
   }
 
   // Fills the "assignedUserName" of the task with the actual user name.
-  public addUserNames(tasks: Task[]): Observable<Task[]> {
-    const userIDs = tasks.filter(t => !!t.assignedUser && t.assignedUser !== '').map(t => t.assignedUser);
+  public addUserNames(tasks: TaskDto[]): Observable<TaskDto[]> {
+    const userIDs = tasks.filter(t => !!t.assignedUser).map(t => t.assignedUser);
 
     if (!userIDs || userIDs.length === 0) {
       return of(tasks);
@@ -142,7 +170,22 @@ export class TaskService {
       );
   }
 
-  public addUserName(task: Task): Observable<Task> {
+  public addUserName(task: TaskDto): Observable<TaskDto> {
     return this.addUserNames([task]).pipe(map(t => t[0]));
+  }
+
+  public toTask(dto: TaskDto): Task {
+    const feature = (this.format.readFeature(dto.geometry) as Feature);
+
+    const assignedUser = dto.assignedUser ? new User(dto.assignedUserName, dto.assignedUser) : undefined;
+
+    return new Task(
+      dto.id,
+      feature.get('name'),
+      dto.processPoints,
+      dto.maxProcessPoints,
+      feature,
+      assignedUser
+    );
   }
 }

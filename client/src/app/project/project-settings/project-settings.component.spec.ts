@@ -7,8 +7,8 @@ import { of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { MockRouter } from '../../common/mock-router';
 import { CurrentUserService } from '../../user/current-user.service';
-import { Project } from '../project.material';
 import { User } from '../../user/user.material';
+import { FormsModule } from '@angular/forms';
 
 describe('ProjectSettingsComponent', () => {
   let component: ProjectSettingsComponent;
@@ -21,7 +21,8 @@ describe('ProjectSettingsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ProjectSettingsComponent],
       imports: [
-        HttpClientTestingModule
+        HttpClientTestingModule,
+        FormsModule
       ],
       providers: [
         ProjectService,
@@ -102,7 +103,6 @@ describe('ProjectSettingsComponent', () => {
       expect(id).toEqual('1');
       return of({});
     });
-    spyOn(routerMock, 'navigate').and.callThrough();
     component.projectId = '1';
     // @ts-ignore
     component.action = 'delete';
@@ -110,7 +110,6 @@ describe('ProjectSettingsComponent', () => {
 
     component.onYesButtonClicked();
 
-    expect(routerMock.navigate).toHaveBeenCalledWith(['/manager']);
     expect(component.requestConfirmation).toEqual(false);
   });
 
@@ -119,7 +118,6 @@ describe('ProjectSettingsComponent', () => {
       expect(id).toEqual('1');
       return throwError('Test-error');
     });
-    spyOn(routerMock, 'navigate').and.callThrough();
     component.projectId = '1';
     // @ts-ignore
     component.action = 'delete';
@@ -127,7 +125,6 @@ describe('ProjectSettingsComponent', () => {
 
     component.onYesButtonClicked();
 
-    expect(routerMock.navigate).not.toHaveBeenCalled();
     expect(component.requestConfirmation).toEqual(false);
   });
 
@@ -167,5 +164,25 @@ describe('ProjectSettingsComponent', () => {
 
     expect(routerMock.navigate).not.toHaveBeenCalled();
     expect(component.requestConfirmation).toEqual(false);
+  });
+
+  //
+  // Update values
+  //
+
+  it('should call service on update', () => {
+    const nameSpy = spyOn(projectService, 'updateName').and.returnValue(of());
+    const descriptionSpy = spyOn(projectService, 'updateDescription').and.returnValue(of());
+
+    component.projectId = '1';
+    component.projectName = 'old name';
+    component.newProjectName = 'foo';
+    component.projectDescription = 'old description';
+    component.newProjectDescription = 'bar';
+
+    component.onSaveButtonClicked();
+
+    expect(nameSpy).toHaveBeenCalledWith('1', 'foo');
+    expect(descriptionSpy).toHaveBeenCalledWith('1', 'bar');
   });
 });

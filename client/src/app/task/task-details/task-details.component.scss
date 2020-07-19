@@ -23,7 +23,11 @@
 }
 
 .points-label {
-	margin-right: 5px;
+	margin-right: $space-small;
+}
+
+.of-process-point-label {
+	margin-left: $space-base;
 }
 
 .save-button {

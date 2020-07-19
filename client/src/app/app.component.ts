@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { UserService } from './user/user.service';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -8,4 +8,8 @@ import { UserService } from './user/user.service';
 })
 export class AppComponent {
   title = 'simple-task-manager';
+
+  get isInTestMode(): boolean {
+    return environment.test_mode;
+  }
 }

@@ -2,8 +2,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ProjectService } from '../project.service';
 import { Router } from '@angular/router';
 import { CurrentUserService } from '../../user/current-user.service';
-import { ErrorService } from '../../common/error.service';
+import { NotificationService } from '../../common/notification.service';
 import { User } from '../../user/user.material';
+import { forkJoin, Observable } from 'rxjs';
+import { Project } from '../project.material';
 
 @Component({
   selector: 'app-project-settings',
@@ -13,6 +15,11 @@ import { User } from '../../user/user.material';
 export class ProjectSettingsComponent implements OnInit {
   @Input() projectId: string;
   @Input() projectOwner: User;
+  @Input() projectName: string;
+  @Input() projectDescription: string;
+
+  public newProjectName: string;
+  public newProjectDescription: string;
 
   public requestConfirmation: boolean;
 
@@ -21,7 +28,7 @@ export class ProjectSettingsComponent implements OnInit {
   constructor(
     private projectService: ProjectService,
     private currentUserService: CurrentUserService,
-    private errorService: ErrorService,
+    private notificationService: NotificationService,
     private router: Router
   ) {
   }
@@ -30,6 +37,8 @@ export class ProjectSettingsComponent implements OnInit {
     // The owner cannot leave but only delete a project.
     // A normal member cannot delete a project but leave it.
     this.action = this.isOwner ? 'delete' : 'leave';
+    this.newProjectName = this.projectName;
+    this.newProjectDescription = this.projectDescription;
   }
 
   public get isOwner(): boolean {
@@ -60,10 +69,9 @@ export class ProjectSettingsComponent implements OnInit {
     this.projectService.deleteProject(this.projectId)
       .subscribe(() => {
         this.requestConfirmation = false;
-        this.router.navigate(['/manager']);
       }, err => {
         console.error(err);
-        this.errorService.addError('Could not delete project');
+        this.notificationService.addError('Could not delete project');
         this.requestConfirmation = false;
       });
   }
@@ -75,8 +83,29 @@ export class ProjectSettingsComponent implements OnInit {
         this.router.navigate(['/manager']);
       }, err => {
         console.error(err);
-        this.errorService.addError('Could not leave project');
+        this.notificationService.addError('Could not leave project');
         this.requestConfirmation = false;
       });
+  }
+
+  onSaveButtonClicked() {
+    const calls: Observable<Project>[] = [];
+
+    if (this.projectName !== this.newProjectName) {
+      calls.push(this.projectService.updateName(this.projectId, this.newProjectName));
+    }
+    if (this.projectDescription !== this.newProjectDescription) {
+      calls.push(this.projectService.updateDescription(this.projectId, this.newProjectDescription));
+    }
+
+    forkJoin(calls).subscribe(
+      () => {
+        this.notificationService.addInfo('Successfully updated project');
+      },
+      e => {
+        console.error(e);
+        this.notificationService.addError('Unable to update project title and/or description');
+      }
+    );
   }
 }

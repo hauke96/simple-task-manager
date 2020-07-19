@@ -59,11 +59,11 @@ client -> client : Finds token and redirects to "/manager" \n""(auth.service.ts"
 
 rnote over client : The STM loads the "/manager" \npage which contains a list of \nprojects. Therefore the projects \nare requested from the server.
 
-client -> client : Calls "/projects?user=..." \n""(project-list.component.ts:ngOnInit())""
+client -> client : Calls "/projects" \n""(project-list.component.ts:ngOnInit())""
 client -> client : Append token \n""(logged-in.interceptor.ts)""
-client -> stm : ""Header:""\n""  Authorization: "eyJ2YWxp..."""
+client -> stm : ""Header:""\n""  Authorization: "eyJ2...YW=="""
 
-stm -> stm : Verifies token using a "canonical \nverification" as cryptoanalysts would say \n\n""(auth.go:VerifyToken())""
+stm -> stm : Verifies token using a "canonical \nverification" as cryptoanalysts would say \n\n""(token.go:verifyToken())""
 stm -> stm : Read projects from database/store
 stm --> client : ""<projects>""
 
@@ -71,7 +71,7 @@ stm --> client : ""<projects>""
 
 client -> client : Calls some URL
 client -> client : Append token \n""(logged-in.interceptor.ts)""
-client -> stm : ""Header:""\n""  Authorization: "eyJ2YWxp..."""
+client -> stm : ""Header:""\n""  Authorization: "eyJ2...YW=="""
 
 stm -> stm : Verification failed (token expired)
 stm --> client : ""ERROR: 401""

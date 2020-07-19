@@ -2,16 +2,17 @@ import { Component, Input, OnInit } from '@angular/core';
 import { TaskService } from '../task.service';
 import { Task } from '../task.material';
 import { CurrentUserService } from '../../user/current-user.service';
-import { ErrorService } from '../../common/error.service';
+import { NotificationService } from '../../common/notification.service';
 import { User } from '../../user/user.material';
 import { UserService } from '../../user/user.service';
+import { Unsubscriber } from '../../common/unsubscriber';
 
 @Component({
   selector: 'app-task-details',
   templateUrl: './task-details.component.html',
   styleUrls: ['./task-details.component.scss']
 })
-export class TaskDetailsComponent implements OnInit {
+export class TaskDetailsComponent extends Unsubscriber implements OnInit {
   @Input() public projectId: string;
   @Input() public needUserAssignment: boolean;
 
@@ -23,19 +24,26 @@ export class TaskDetailsComponent implements OnInit {
     private taskService: TaskService,
     private currentUserService: CurrentUserService,
     private userService: UserService,
-    private errorService: ErrorService,
+    private notificationService: NotificationService,
   ) {
+    super();
   }
 
   ngOnInit(): void {
-    this.task = this.taskService.getSelectedTask();
-    this.updateUser();
+    this.selectTask(this.taskService.getSelectedTask());
+    this.unsubscribeLater(
+      this.taskService.selectedTaskChanged.subscribe((task: Task) => {
+        this.selectTask(task);
+      })
+    );
+  }
 
-    this.taskService.selectedTaskChanged.subscribe((task: Task) => {
-      this.task = task;
+  private selectTask(task: Task) {
+    this.task = task;
+    if (!!this.task) {
       this.newProcessPoints = task.processPoints;
-      this.updateUser();
-    });
+    }
+    this.updateUser();
   }
 
   public get currentUserId(): string {
@@ -43,18 +51,18 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   private updateUser() {
-    if (!this.task || !this.task.assignedUser) {
+    if (!this.task || !this.task.assignedUser || !this.task.assignedUser.uid) {
       this.assignedUserName = undefined;
       return;
     }
 
-    this.userService.getUsersByIds([this.task.assignedUser]).subscribe(
+    this.userService.getUsersByIds([this.task.assignedUser.uid]).subscribe(
       (users: User[]) => {
         this.assignedUserName = users[0].name;
       },
       e => {
         console.error(e);
-        this.errorService.addError('Unable to load assigned user');
+        this.notificationService.addError('Unable to load assigned user');
       }
     );
   }
@@ -66,7 +74,7 @@ export class TaskDetailsComponent implements OnInit {
         },
         e => {
           console.error(e);
-          this.errorService.addError('Could not assign user');
+          this.notificationService.addError('Could not assign user');
         });
   }
 
@@ -77,7 +85,7 @@ export class TaskDetailsComponent implements OnInit {
         },
         e => {
           console.error(e);
-          this.errorService.addError('Could not unassign user');
+          this.notificationService.addError('Could not unassign user');
         });
   }
 
@@ -88,7 +96,7 @@ export class TaskDetailsComponent implements OnInit {
         },
         e => {
           console.error(e);
-          this.errorService.addError('Could not set process points');
+          this.notificationService.addError('Could not set process points');
         });
   }
 
@@ -97,7 +105,7 @@ export class TaskDetailsComponent implements OnInit {
       .subscribe(() => {
         },
         err => {
-          this.errorService.addError('Unable to open JOSM. Is it running?');
+          this.notificationService.addError('Unable to open JOSM. Is it running?');
         });
   }
 }

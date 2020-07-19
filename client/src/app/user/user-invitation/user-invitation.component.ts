@@ -1,7 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ProjectService } from '../../project/project.service';
-import { ErrorService } from '../../common/error.service';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { NotificationService } from '../../common/notification.service';
 import { UserService } from '../user.service';
+import { User } from '../user.material';
 
 @Component({
   selector: 'app-user-invitation',
@@ -9,13 +9,14 @@ import { UserService } from '../user.service';
   styleUrls: ['./user-invitation.component.scss']
 })
 export class UserInvitationComponent implements OnInit {
-  @Input() public projectId: string;
-  public userName: string;
+  @Input() public users: User[];
+  @Output() public userInvited: EventEmitter<User> = new EventEmitter<User>();
+
+  public enteredUserName: string;
 
   constructor(
-    private projectService: ProjectService,
     private userService: UserService,
-    private errorService: ErrorService
+    private notificationService: NotificationService
   ) {
   }
 
@@ -23,17 +24,17 @@ export class UserInvitationComponent implements OnInit {
   }
 
   public onInvitationButtonClicked() {
-    this.userService.getUserByName(this.userName).subscribe(
+    if (this.users.map(u => u.name).includes(this.enteredUserName)) {
+      this.notificationService.addWarning('User ' + this.enteredUserName + ' is already a member of this project');
+      return;
+    }
+
+    this.userService.getUserByName(this.enteredUserName).subscribe(
       user => {
-        this.projectService.inviteUser(this.projectId, user.uid)
-          .subscribe(p => {
-          }, err => {
-            console.error(err);
-            this.errorService.addError('Could not invite user \'' + this.userName + '\'');
-          });
+        this.userInvited.emit(user);
       }, err => {
         console.error(err);
-        this.errorService.addError('Could not load user ID for user \'' + this.userName + '\'');
+        this.notificationService.addError('Could not load user ID for user \'' + this.enteredUserName + '\'');
       });
   }
 }

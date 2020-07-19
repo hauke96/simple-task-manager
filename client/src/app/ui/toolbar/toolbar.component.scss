@@ -6,6 +6,7 @@
 	padding-right: $space-large;
 	padding-top: $space-base;
 	padding-bottom: $space-base;
+	color: $color-white;
 	background-color: $color-mid;
 	height: $space-huge;
 	display: flex;
@@ -17,5 +18,5 @@
 }
 
 .toolbar > p {
-	color: $light-gray;
+	color: $color-gray-light;
 }

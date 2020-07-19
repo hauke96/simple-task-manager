@@ -34,6 +34,7 @@ module.exports = function (config) {
         }
     },
     singleRun: false,
-    restartOnFileChange: true
+    restartOnFileChange: true,
+    browserNoActivityTimeout: 900 * 1000 // 15 min.
   });
 };

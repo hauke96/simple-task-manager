@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AuthComponent } from './auth.component';
+import { LoginComponent } from './login.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AuthService } from '../auth.service';
 import { CurrentUserService } from '../../user/current-user.service';
@@ -10,8 +10,8 @@ import { NgZone } from '@angular/core';
 import { MockRouter } from '../../common/mock-router';
 
 describe('AuthComponent', () => {
-  let component: AuthComponent;
-  let fixture: ComponentFixture<AuthComponent>;
+  let component: LoginComponent;
+  let fixture: ComponentFixture<LoginComponent>;
   let authService: AuthService;
   let routerMock: MockRouter;
 
@@ -20,7 +20,7 @@ describe('AuthComponent', () => {
     mockNgZone.run.and.callFake(fn => fn());
 
     TestBed.configureTestingModule({
-      declarations: [AuthComponent],
+      declarations: [LoginComponent],
       imports: [
         HttpClientTestingModule
       ],
@@ -47,7 +47,7 @@ describe('AuthComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AuthComponent);
+    fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

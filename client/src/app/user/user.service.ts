@@ -49,6 +49,7 @@ export class UserService {
         if (!user) {
           throw new Error('User \'' + userName + '\' not found in changesets');
         }
+        this.cache.set(user.uid, user);
         return user;
       }),
       catchError((e: HttpErrorResponse) => {
@@ -63,6 +64,7 @@ export class UserService {
             if (!user) {
               throw new Error('User \'' + userName + '\' not found in notes');
             }
+            this.cache.set(user.uid, user);
             return user;
           })
         );

@@ -10,7 +10,7 @@ The idea behind this project is to create a simple and general purpose tasking m
 A tasking manager is an application which helps multiple people to work in the same region without interfering with each other.
 Usually such region is divided into squares and only one mapper at a time works on one square.
 
-<img align="center" style="width: 100%; max-width: 1128px;" src="https://raw.githubusercontent.com/hauke96/simple-task-manager/dev/screenshot.png">
+<img align="center" style="width: 100%; max-width: 1128px;" src="https://raw.githubusercontent.com/hauke96/simple-task-manager/master/screenshot.png">
 
 # How does it work?
 
@@ -36,12 +36,12 @@ So yes, basically this is another tasking manager, however, this is not a clone 
 
 # Documentation
 
-Development information can be found in the `client` and `server` folder.
+Documentation can be found in the [doc folder](doc) (deployment, api, security, architecture, operation, etc.) and in the separate [client](client) and [server](server) folders (mainly setup and development information).
 
-Additional technical documentation (setup, deployment, api, security, development, etc.) can be found in the `doc` folder.
+Currently there's no end user manual, tutorial or something similar.
 
 # Contribute
 
-Currently there are no real guidelines. Feel free to create issues or a pull request.
+Currently there are no real guidelines. Feel free to create an **issue** or **pull request**.
 
-**Keep in mind:** Take a look at `doc/development/README.md` before you start coding ;)
+**Wanna start coding?** Take a look at [doc/development/README.md](doc/development/README.md) on how to get started.

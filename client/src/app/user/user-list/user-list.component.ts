@@ -1,8 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ProjectService } from '../../project/project.service';
-import { Project } from '../../project/project.material';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CurrentUserService } from '../current-user.service';
-import { ErrorService } from '../../common/error.service';
 import { User } from '../user.material';
 
 @Component({
@@ -11,13 +8,13 @@ import { User } from '../user.material';
   styleUrls: ['./user-list.component.scss']
 })
 export class UserListComponent implements OnInit {
-  @Input() project: Project;
-  @Input() users: User[];
+  @Input() public users: User[];
+  @Input() public ownerUid: string;
+
+  @Output() public userRemoved: EventEmitter<string> = new EventEmitter<string>();
 
   constructor(
-    private projectService: ProjectService,
-    private currentUserService: CurrentUserService,
-    private errorService: ErrorService
+    private currentUserService: CurrentUserService
   ) {
   }
 
@@ -25,15 +22,10 @@ export class UserListComponent implements OnInit {
   }
 
   public onRemoveUserClicked(user: string) {
-    this.projectService.removeUser(this.project.id, user)
-      .subscribe(() => {
-      }, err => {
-        console.error(err);
-        this.errorService.addError('Could not remove user');
-      });
+    this.userRemoved.emit(user);
   }
 
   public canRemove(user: string): boolean {
-    return this.project.owner.uid === this.currentUserService.getUserId() && user !== this.currentUserService.getUserId();
+    return this.ownerUid === this.currentUserService.getUserId() && user !== this.currentUserService.getUserId();
   }
 }

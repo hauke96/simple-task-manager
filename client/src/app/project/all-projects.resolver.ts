@@ -5,20 +5,20 @@ import { ProjectService } from './project.service';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ErrorService } from '../common/error.service';
+import { NotificationService } from '../common/notification.service';
 
 @Injectable({providedIn: 'root'})
 export class AllProjectsResolver implements Resolve<Project[]> {
   constructor(
     private projectService: ProjectService,
-    private errorService: ErrorService
+    private notificationService: NotificationService
   ) {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Project[]> {
     return this.projectService.getProjects().pipe(
       catchError((e: HttpErrorResponse) => {
-        this.errorService.addError('Could not load projects');
+        this.notificationService.addError('Could not load projects');
         throw e;
       })
     );

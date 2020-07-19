@@ -2,29 +2,29 @@ package api
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
 	"net/http"
 	"strconv"
 	"strings"
 
+	"github.com/gorilla/mux"
+	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/auth"
 	"github.com/hauke96/simple-task-manager/server/config"
 	"github.com/hauke96/simple-task-manager/server/util"
-
-	"github.com/gorilla/mux"
-	"github.com/hauke96/sigolo"
 )
 
-var(
+var (
 	supportedApiVersions = make([]string, 0)
 )
 
 func Init() error {
 	// Register routes and print them
 	router := mux.NewRouter()
+
 	router.HandleFunc("/info", getInfo).Methods(http.MethodGet)
 	router.HandleFunc("/oauth_login", auth.OauthLogin).Methods(http.MethodGet)
 	router.HandleFunc("/oauth_callback", auth.OauthCallback).Methods(http.MethodGet)
+
 	sigolo.Info("Registered general routes:")
 	printRoutes(router)
 
@@ -32,19 +32,20 @@ func Init() error {
 	// API v1
 	// API v2
 	// API v2.1
-
 	// API v2.2
-	router_v2_2, version := Init_v2_2(router)
+
+	// API v2.3
+	router_v2_3, version := Init_v2_3(router)
 	supportedApiVersions = append(supportedApiVersions, version)
 	sigolo.Info("Registered routes for API %s:", version)
-	printRoutes(router_v2_2)
+	printRoutes(router_v2_3)
 
 	router.Methods(http.MethodOptions).HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Headers", "Authorization")
-		w.Header().Set("Access-Control-Allow-Methods", "GET,POST,DELETE")
+		w.Header().Set("Access-Control-Allow-Methods", "GET,POST,DELETE,PUT")
 		w.Header().Set("Access-Control-Allow-Request-Headers", "Authorization")
-		w.Header().Set("Access-Control-Allow-Request-Methods", "GET,POST,DELETE")
+		w.Header().Set("Access-Control-Allow-Request-Methods", "GET,POST,DELETE,PUT")
 	})
 
 	var err error
@@ -57,7 +58,7 @@ func Init() error {
 	}
 
 	if err != nil {
-		return errors.Wrap(err, "Could not start listening")
+		panic(err)
 	}
 
 	sigolo.Info("Start serving ...")

@@ -1,15 +1,39 @@
-Development takes place on the `dev` branch (small, independent things) or on separate feature branches (whole features, not all commit have to run).
-The `master` branch only contains released versions as separate commit that are tagged.
+Everything you need to know in order to contribute to the code base.
+
+# Components
+
+Next to a database, there are two main components the simple task manager consists of:
+
+* The **client** (or "frontend") is an Angular based web application and can be found in the `client/` folder with an according [README.md](../../client/README.md)
+* The **server** (or "backend") is written in go (aka golang) and can be found in the `server/` folder with an according [README.md](../../server/README.md) as well
+
+Go through the "Getting started" section in order to setup your dev environment etc.
+
+# Getting started
+
+1. Make sure the tools `git`, `node`, `npm`, `go`, `psql`, `createdb`, `docker` and `docker-compose` are installed/available plus an IDE of your choice for the development with Typescript/Angular and golang.
+The tools `psql` and `createdb` are PostgreSQL tools.
+2. Clone this repo
+3. Client: See [/client/README.md](../../client/README.md)
+    1. Go through the section "Setup environment"
+    2. If not already done: Take a look at the sections "Run Client" and "Run Tests"
+4. Server: See [/server/README.md](../../server/README.md)
+    1. Go through the section "Setup environment"
+    2. If not already done: Take a look at the sections "Run Server" and "Run Tests"
+5. Read section "Git workflow and conventions" of this document
 
 # Git workflow and conventions
 
-All of this is heavily inspired by the branching model *git flow*.
+Development takes place on the `dev` branch (small things) or on separate feature branches (whole features, not all commit have to work on these branches until merging with `dev`).
+The `master` branch only contains released versions as separate commit which are also tagged.
+
+All of this is heavily inspired by the branching model *git flow* (never heard of it? You should [take a look at this](https://nvie.com/posts/a-successful-git-branching-model/)).
 
 ## Conventions
 
 * **no rebase**, only merges
 * small commits
-* short but precise commit messages (avoid messages like 'fix', 'rename', 'refactoring', 'done', 'wtf')
+* short but precise commit messages (avoid one-word messages like 'fix', 'rename', 'refactoring', 'done', 'stuff', 'wtf' and so on)
 * branch names in small-caps and with dashes. No underscore, camel case, etc. Example: `feature/my-super-duper-feature`
 
 ## Feature workflow
@@ -45,18 +69,6 @@ git merge --no-ff feature/your-branch
 
 Using `--no-ff` (creates a single, separate merge commit) is not required.
 
-# Components
-
-## Client
-
-The client is an Angular based web application and can be found in the `client/` folder.
-The `README.md` in this folder gives you further instruction on the setup, running, building, etc.
-
-## Server
-
-The server is written in go (aka golang) and can be found in the `server/` folder.
-The `README.md` there also gives you instructions on setup, running, building, etc.
-
 # Deployment
 
 The `docker-compose.yml` creates three docker container for the client, server and the database.
@@ -64,4 +76,4 @@ Because the container build and test themselves, starting everything probably ta
 
 To increase build time, there's an own [base image for the client](https://hub.docker.com/r/simpletaskmanager/stm-client-base).
 
-During development I recommend to manually start the client and server (see according `README.md` files) and just use the docker container for the database.
+During development I recommend to manually start the client and server (see according `README.md` files in [client](../../client/README.md) and [server](../../server/README.md) folders) and just use the docker container for the database.
