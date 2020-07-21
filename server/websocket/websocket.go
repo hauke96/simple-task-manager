@@ -65,13 +65,14 @@ func SendAll(messages []Message, uids ...string) {
 			err := conn.WriteJSON(messages)
 
 			if err != nil {
-				sigolo.Error("Unable to send to websocket")
-				sigolo.Stack(err)
+				// Use Debug logging because this will happen a lot (e.g. every time someone reloads the web client)
+				sigolo.Debug("ERROR: Unable to send to websocket")
+				sigolo.Debug("ERROR: " + err.Error())
 
 				err := conn.Close()
 				if err != nil {
-					sigolo.Error("Wasn't even able to close it")
-					sigolo.Stack(err)
+					sigolo.Debug("ERROR: Wasn't even able to close it")
+					sigolo.Debug("ERROR: " + err.Error())
 				}
 
 				// Remove the closed connection from the list of connections:
@@ -81,5 +82,8 @@ func SendAll(messages []Message, uids ...string) {
 				i--                                                          // fix index so that we don't skip the i-th connection we just copied
 			}
 		}
+
+		// Update connection list in case some connections have been removed
+		connections[uid] = userConnections
 	}
 }
