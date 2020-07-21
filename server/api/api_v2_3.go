@@ -31,7 +31,7 @@ func Init_v2_3(router *mux.Router) (*mux.Router, string) {
 	r.HandleFunc("/tasks/{id}/assignedUser", authenticatedTransactionHandler(assignUser_v2_3)).Methods(http.MethodPost)
 	r.HandleFunc("/tasks/{id}/assignedUser", authenticatedTransactionHandler(unassignUser_v2_3)).Methods(http.MethodDelete)
 	r.HandleFunc("/tasks/{id}/processPoints", authenticatedTransactionHandler(setProcessPoints_v2_3)).Methods(http.MethodPost)
-	r.HandleFunc("/tasks", authenticatedTransactionHandler(addTask_v2_3)).Methods(http.MethodPost)
+	r.HandleFunc("/tasks", authenticatedTransactionHandler(addTasks_v2_3)).Methods(http.MethodPost)
 
 	r.HandleFunc("/updates", authenticatedWebsocket(getWebsocketConnection))
 
@@ -43,6 +43,8 @@ func getProjects_v2_3(r *http.Request, context *Context) *ApiResponse {
 	if err != nil {
 		return InternalServerError(err)
 	}
+
+	sigolo.Info("Successfully got projects")
 
 	return JsonResponse(projects)
 }
@@ -66,6 +68,8 @@ func addProject_v2_3(r *http.Request, context *Context) *ApiResponse {
 
 	sendAdd(addedProject)
 
+	sigolo.Info("Successfully added project %s", addedProject.Id)
+
 	return JsonResponse(addedProject)
 }
 
@@ -80,6 +84,8 @@ func getProject_v2_3(r *http.Request, context *Context) *ApiResponse {
 	if err != nil {
 		return InternalServerError(err)
 	}
+
+	sigolo.Info("Successfully got project project %s", projectId)
 
 	return JsonResponse(project)
 }
@@ -98,6 +104,8 @@ func leaveProject_v2_3(r *http.Request, context *Context) *ApiResponse {
 
 	sendUserRemoved(updatedProject, context.token.UID)
 
+	sigolo.Info("Successfully removed user '%s' from project %s (user left)", context.token.UID, projectId)
+
 	return EmptyResponse()
 }
 
@@ -108,17 +116,19 @@ func removeUser_v2_3(r *http.Request, context *Context) *ApiResponse {
 		return BadRequestError(errors.New("url segment 'id' not set"))
 	}
 
-	user, ok := vars["uid"]
+	userToRemove, ok := vars["uid"]
 	if !ok {
-		return BadRequestError(errors.New("url segment 'user' not set"))
+		return BadRequestError(errors.New("url segment 'uid' not set"))
 	}
 
-	updatedProject, err := context.projectService.RemoveUser(projectId, context.token.UID, user)
+	updatedProject, err := context.projectService.RemoveUser(projectId, context.token.UID, userToRemove)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
-	sendUserRemoved(updatedProject, user)
+	sendUserRemoved(updatedProject, userToRemove)
+
+	sigolo.Info("Successfully removed userToRemove '%s' from project %s", userToRemove, projectId)
 
 	return JsonResponse(updatedProject)
 }
@@ -142,6 +152,8 @@ func deleteProjects_v2_3(r *http.Request, context *Context) *ApiResponse {
 
 	sendDelete(projectToDelete)
 
+	sigolo.Info("Successfully removed project %s", projectId)
+
 	return EmptyResponse()
 }
 
@@ -163,6 +175,8 @@ func updateProjectName_v2_3(r *http.Request, context *Context) *ApiResponse {
 	}
 
 	sendUpdate(updatedProject)
+
+	sigolo.Info("Successfully updated name of project %s", projectId)
 
 	return JsonResponse(updatedProject)
 }
@@ -186,6 +200,8 @@ func updateProjectDescription_v2_3(r *http.Request, context *Context) *ApiRespon
 
 	sendUpdate(updatedProject)
 
+	sigolo.Info("Successfully updated description of project %s", projectId)
+
 	return JsonResponse(updatedProject)
 }
 
@@ -200,6 +216,8 @@ func getProjectTasks_v2_3(r *http.Request, context *Context) *ApiResponse {
 	if err != nil {
 		return InternalServerError(err)
 	}
+
+	sigolo.Info("Successfully got tasks of project %s", projectId)
 
 	return JsonResponse(tasks)
 }
@@ -222,6 +240,8 @@ func addUserToProject_v2_3(r *http.Request, context *Context) *ApiResponse {
 	}
 
 	sendUpdate(updatedProject)
+
+	sigolo.Info("Successfully added user '%s' to project %s", userToAdd, projectId)
 
 	return JsonResponse(updatedProject)
 }
@@ -304,7 +324,7 @@ func setProcessPoints_v2_3(r *http.Request, context *Context) *ApiResponse {
 	return JsonResponse(*task)
 }
 
-func addTask_v2_3(r *http.Request, context *Context) *ApiResponse {
+func addTasks_v2_3(r *http.Request, context *Context) *ApiResponse {
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		return BadRequestError(errors.Wrap(err, "error reading request body"))
@@ -322,6 +342,8 @@ func addTask_v2_3(r *http.Request, context *Context) *ApiResponse {
 	if err != nil {
 		return InternalServerError(err)
 	}
+
+	sigolo.Info("Successfully added tasks")
 
 	return JsonResponse(updatedTasks)
 }
@@ -367,8 +389,6 @@ func sendTaskUpdate(task *task.Task, userId string, context *Context) error {
 	if err != nil {
 		return err
 	}
-
-	sigolo.Info("Send: %#v", project)
 
 	websocket.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectUpdated,

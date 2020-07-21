@@ -113,7 +113,7 @@ func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(r *ht
 		return
 	}
 
-	sigolo.Debug("URL called by '%s' (%s): %s %s", token.User, token.UID, r.Method, r.URL.Path)
+	sigolo.Info("Call from '%s' (%s) to %s %s", token.User, token.UID, r.Method, r.URL.Path)
 
 	// Create context with a new transaction and new service instances
 	context, err := createContext(token)
