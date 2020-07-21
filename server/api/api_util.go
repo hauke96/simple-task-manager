@@ -143,7 +143,7 @@ func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(r *ht
 
 			sigolo.Info("Try to perform rollback")
 			rollbackErr := context.transaction.Rollback()
-			if err != nil {
+			if rollbackErr != nil {
 				sigolo.Stack(errors.Wrap(rollbackErr, "error performing rollback"))
 			}
 		}
