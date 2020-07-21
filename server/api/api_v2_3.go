@@ -128,7 +128,7 @@ func removeUser_v2_3(r *http.Request, context *Context) *ApiResponse {
 
 	sendUserRemoved(updatedProject, userToRemove)
 
-	sigolo.Info("Successfully removed userToRemove '%s' from project %s", userToRemove, projectId)
+	sigolo.Info("Successfully removed user '%s' from project %s", userToRemove, projectId)
 
 	return JsonResponse(updatedProject)
 }
