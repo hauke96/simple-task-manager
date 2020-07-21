@@ -3,7 +3,7 @@
 # SimpleTaskManager
 
 This is a simple structured task manager for e.g. [OpenStreetMap (OSM)](https://openstreetmap.org).
-Take a look at the latest version on [https://stm.hauke-stieler.de/](https://stm.hauke-stieler.de/).
+Take a look at the latest version on [stm.hauke-stieler.de](https://stm.hauke-stieler.de).
 
 The idea behind this project is to create a simple and general purpose tasking manager for all kind of geo-related things (e.g. mapping in OSM, photography of old buildings, etc.).
 
