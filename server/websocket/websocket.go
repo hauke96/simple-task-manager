@@ -58,20 +58,32 @@ func SendAll(messages []Message, uids ...string) {
 	for _, uid := range uids {
 		userConnections := connections[uid]
 
-		for _, c := range userConnections {
+		for i := 0; i < len(userConnections); i++ {
+			conn := userConnections[i]
+
 			// Send data as JSON
-			err := c.WriteJSON(messages)
+			err := conn.WriteJSON(messages)
 
 			if err != nil {
-				//sigolo.Error("Unable to send to websocket, close it. Error: %s", err.Error())
-				sigolo.Stack(err)
+				// Use Debug logging because this will happen a lot (e.g. every time someone reloads the web client)
+				sigolo.Debug("ERROR: Unable to send to websocket")
+				sigolo.Debug("ERROR: " + err.Error())
 
-				err := c.Close()
+				err := conn.Close()
 				if err != nil {
-					//sigolo.Error("Wasn't even able to close it: %s", err.Error())
-					sigolo.Stack(err)
+					sigolo.Debug("ERROR: Wasn't even able to close it")
+					sigolo.Debug("ERROR: " + err.Error())
 				}
+
+				// Remove the closed connection from the list of connections:
+				userConnections[i] = userConnections[len(userConnections)-1] // overwrite i-th element by the last element
+				userConnections[len(userConnections)-1] = nil                // delete the now duplicate last element from slice
+				userConnections = userConnections[:len(userConnections)-1]   // reduce slice size by 1
+				i--                                                          // fix index so that we don't skip the i-th connection we just copied
 			}
 		}
+
+		// Update connection list in case some connections have been removed
+		connections[uid] = userConnections
 	}
 }

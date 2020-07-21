@@ -42,9 +42,7 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
           return;
         }
 
-        if (this.isOwner()) {
-          this.notificationService.addInfo('Project removed successfully');
-        } else {
+        if (!this.isOwner()) {
           this.notificationService.addWarning('This project has been removed');
         }
 
