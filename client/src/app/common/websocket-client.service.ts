@@ -15,8 +15,13 @@ export class WebsocketClientService {
   }
 
   connect() {
+    const authToken = localStorage.getItem('auth_token');
+    if (authToken == null || authToken.trim().length === 0) {
+      return;
+    }
+
     const ws = new WebSocketSubject<WebsocketMessage[]>({
-      url: environment.url_updates + '?token=' + encodeURIComponent(localStorage.getItem('auth_token'))
+      url: environment.url_updates + '?token=' + encodeURIComponent(authToken)
     });
 
     ws
