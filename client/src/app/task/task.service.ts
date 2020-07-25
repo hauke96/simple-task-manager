@@ -117,6 +117,11 @@ export class TaskService {
       );
   }
 
+  public openInAnotherTab(task: Task) {
+    const e = this.getExtent(task);
+    window.open('https://openstreetmap.org/?bbox=' + e[0] + '%2C' + e[1] + '%2C' + e[2] + '%2C' + e[3], "_blank");
+  }
+
   public getExtent(task: Task): Extent {
     return task.geometry.getGeometry().getExtent();
   }
