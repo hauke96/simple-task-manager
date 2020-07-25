@@ -34,12 +34,14 @@ The frameworks/libraries this project uses are there in order to make the develo
 The server requires a database called `stm` with the required tables as described below.
 This description assumes that you use docker instead of an direct installation of PostgreSQL.
 
-### Set Database user/pass as environment variable
+### Set Database user/password as environment variable
 
+**tl;dr:**
 * `export STM_DB_USERNAME=postgres STM_DB_PASSWORD=geheim`
 
-If you want to run test expressed below, user and pass should be as same as the above.
-If you want to run it as public site, you should change to your own unique one.
+If you want to run test expressed below, user and password must be as same as the above.
+
+If you want to run it as public site, you should change to your own **unique and secure** password.
 
 ### Start as docker container
 
