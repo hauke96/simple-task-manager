@@ -17,6 +17,7 @@
         "sourceLocale": "en-US",
         "locales": {
           "ja": "src/locale/messages.ja.xlf",
+          "de": "src/locale/messages.de.xlf",
         }
       },
       "architect": {
@@ -51,7 +52,7 @@
               ]
             },
             "ja": {
-              "localize": ["ja"]
+              "localize": ["ja", "de"]
             },
             "production": {
               "fileReplacements": [
@@ -128,6 +129,9 @@
             },
             "ja": {
               "browserTarget": "simple-task-manager:build:ja"
+            },
+            "de": {
+              "browserTarget": "simple-task-manager:build:de"
             }
           }
         },

@@ -5,6 +5,7 @@
     "ng": "ng",
     "dev": "ng serve --watch",
     "dev-ja": "ng serve --watch --configuration=ja",
+    "dev-de": "ng serve --watch --configuration=de",
     "dev-local": "ng serve --watch -c local",
     "build": "ng build",
     "build-prod": "ng build --prod --localize",
