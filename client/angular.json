@@ -54,6 +54,9 @@
             "ja": {
               "localize": ["ja"]
             },
+            "de": {
+              "localize": ["de"]
+            },
             "production": {
               "fileReplacements": [
                 {

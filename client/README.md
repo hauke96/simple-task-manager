@@ -44,6 +44,7 @@ All together can be copied to a normal HTTP server.
 Similar to running the app, but with `npm run build`.
 The output will be in `client/dist/simple-taskmanager/`.
 
+
 **Beware:** This may take some time (up to several minutes), depending on your machine.
 
 # Configuration
