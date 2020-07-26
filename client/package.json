@@ -4,9 +4,10 @@
   "scripts": {
     "ng": "ng",
     "dev": "ng serve --watch",
+    "dev-ja": "ng serve --watch --configuration=ja",
     "dev-local": "ng serve --watch -c local",
     "build": "ng build",
-    "build-prod": "ng build --prod",
+    "build-prod": "ng build --prod --localize",
     "build-test": "ng build -c test",
     "test": "ng test --browsers=FirefoxHeadless --code-coverage",
     "test-chrome": "ng test --watch=false --browsers=ChromeHeadlessNoSandbox --code-coverage",
