@@ -53,22 +53,31 @@ Currently the client has a very simple dev- and prod-configuration in `client/sr
 
 Encryption (HTTPS) and HTTP-Server configs depend on the used HTTP-Server (Apache-HTTP, nginx, ...), so take a look at their documentation or at the `./client/nginx.conf` for my nginx config used in the `stm-client` docker container.
 
-# Translation
+# Internationalization
 
-When you want to add your local language to simple-taskmanager, it is recommended to use [Omega-T](https://omegat.org/) for translation tool.
+## Update message catalog
 
-## Generate message catalog in your favorit language
+**tl;dr:**
+* ng xi18n --output-path src/locale
+
+## Translation
+
+When you want to add your local language to simple-taskmanager, it is recommended to use [Omega-T](https://omegat.org/) and 
+[Okapi filters plugin](https://okapiframework.org/wiki/index.php?title=Okapi_Filters_Plugin_for_OmegaT) for translation tool.
+
+### Generate a localized message catalog in your favorite language
 
 1. Start Omega-T and create new project at new project directory with your favorit target language such as zh_CN.
-2. Copy `client/src/locale/messages.xlf` to `<omegat_project>/source/messages.<langID>.xlf` such as `messages.zh_CN.xlf`
-3. Click `File`-`Reload` on Omega-T.
-4. Trasnlate messages.
-5. Click `File`-`Generate target file` on Omega-T
-6. Copy `<omegat>/target/messages.<langID>.xlf` to `client/locale/messages.<langID>.xlf`
+2. Configure Omega-T enable Okapi Plugins XLIFF filter and disable internal XLIFF filter.
+3. Copy `client/src/locale/messages.xlf` to `<omegat_project>/source/messages.<langID>.xlf` such as `messages.zh_CN.xlf`
+4. Click `File`-`Reload` on Omega-T.
+5. Trasnlate messages.
+6. Click `File`-`Generate target file` on Omega-T
+7. Copy `<omegat>/target/messages.<langID>.xlf` to `client/locale/messages.<langID>.xlf`
 
-When UI is updated, please repeat step 2-6. You will find missing part on Omega-T.
+When UI is updated and source messages.xlf changed, please repeat step 3 - 6.
 
-## Add localize configuration
+### Add localize configuration
 
 Add following three part in `client/angular.json` for `<langID>`
 
