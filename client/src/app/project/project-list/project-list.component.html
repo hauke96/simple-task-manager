@@ -1,4 +1,4 @@
-<h1 i18n>Project</h1>
+<h1 i18n>Projects</h1>
 <div *ngIf="projects?.length !== 0">
 	<div *ngFor="let p of projects" class="list-item" (click)="onProjectListItemClicked(p.id)">
 		<span>{{p.name}}</span>
