@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, LOCALE_ID } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
@@ -61,13 +61,12 @@ import { ShapeRemoteComponent } from './project/shape-remote/shape-remote.compon
     HttpClientModule
   ],
   providers: [
-    {provide: LOCALE_ID, useValue: 'ja-JP'},
     AuthGuard,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: LoggedInInterceptor,
       multi: true
-    },
+    }
   ],
   bootstrap: [AppComponent]
 })
