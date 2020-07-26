@@ -1,23 +1,23 @@
 <div *ngIf="isOwner">
 	<div *ngIf="!requestConfirmation">
-		<button (click)="onDeleteButtonClicked()" class="space-right">Delete Project</button>
+		<button (click)="onDeleteButtonClicked()" class="space-right" i18n>Delete Project</button>
 	</div>
 
 	<div *ngIf="requestConfirmation">
-		<span class="space-right">Really delete Project?</span>
-		<button (click)="onNoButtonClicked()" class="space-right">No</button>
-		<button (click)="onYesButtonClicked()">Yes</button>
+		<span class="space-right" i18n>Really delete Project?</span>
+		<button (click)="onNoButtonClicked()" class="space-right" i18n>No</button>
+		<button (click)="onYesButtonClicked()" i18n>Yes</button>
 	</div>
 </div>
 <div *ngIf="!isOwner">
 	<div *ngIf="!requestConfirmation">
-	<button (click)="onLeaveProjectClicked()">Leave project</button>
+	<button (click)="onLeaveProjectClicked()" i18n>Leave project</button>
 	</div>
 
 	<div *ngIf="requestConfirmation">
-		<span class="space-right">Really leave Project?</span>
-		<button (click)="onNoButtonClicked()" class="space-right">No</button>
-		<button (click)="onYesButtonClicked()">Yes</button>
+		<span class="space-right" i18n>Really leave Project?</span>
+		<button (click)="onNoButtonClicked()" class="space-right" i18n>No</button>
+		<button (click)="onYesButtonClicked()" i18n>Yes</button>
 	</div>
 </div>
 
@@ -25,17 +25,17 @@
 
 <div>
 	<form #creationForm="ngForm">
-		<h2>Properties:</h2>
+		<h2 i18n>Properties:</h2>
 		<div class="form-entry">
-			<p class="input-field-label">Name:</p>
+			<p class="input-field-label" i18n>Name:</p>
 			<input class="name-input" [(ngModel)]="newProjectName" required name="nameField">
 		</div>
 		<div class="form-entry">
-			<p class="input-field-label">Description:</p>
+			<p class="input-field-label" i18n>Description:</p>
 			<textarea name="description-text-area" class="description-text-area" [(ngModel)]="newProjectDescription"></textarea>
 		</div>
 	</form>
 
-	<button class="save-button" (click)="onSaveButtonClicked()" [disabled]="!creationForm.form.valid">Save</button>
+	<button class="save-button" (click)="onSaveButtonClicked()" [disabled]="!creationForm.form.valid" i18n>Save</button>
 </div>
 

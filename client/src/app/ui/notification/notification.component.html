@@ -1,31 +1,31 @@
 <div class="notification-container">
 	<div *ngIf="isLoading" class="text-box-container">
-		<span class="text-box">Loading ...</span>
+		<span class="text-box" i18n>Loading ...</span>
 		<div class="loader simple-circle"></div>
 	</div>
 
 	<div *ngIf="hasError" class="error-container">
-		<span class="error-text">ERROR: </span>
+		<span class="error-text" i18n>ERROR: </span>
 		<span>{{currentErrorText}}</span>
 		<div class="close-button-container">
-			<span *ngIf="remainingErrors> 1" class="remaining-notifications-label">{{ remainingErrors }} errors left</span>
+			<span *ngIf="remainingErrors> 1" class="remaining-notifications-label" i18n>{{ remainingErrors }} errors left</span>
 			<button (click)="onCloseErrorButtonClicked()">OK</button>
 		</div>
 	</div>
 	<div *ngIf="hasWarning" class="warning-container">
-		<span class="warn-text">Warning: </span>
+		<span class="warn-text" i18n>Warning: </span>
 		<span>{{currentWarningText}}</span>
 		<div class="close-button-container">
-			<span *ngIf="remainingWarning > 1" class="remaining-notifications-label">{{ remainingWarning }} warnings left</span>
-			<button (click)="onCloseWarningButtonClicked()">OK</button>
+			<span *ngIf="remainingWarning > 1" class="remaining-notifications-label" i18n>{{ remainingWarning }} warnings left</span>
+			<button (click)="onCloseWarningButtonClicked()" i18n>OK</button>
 		</div>
 	</div>
 	<div *ngIf="hasInfo" class="text-box-container">
 		<span>{{currentInfoText}}</span>
-		<button class="close-button-container" (click)="onCloseInfoButtonClicked()">OK</button>
+		<button class="close-button-container" (click)="onCloseInfoButtonClicked()" i18n>OK</button>
 		<div class="close-button-container">
-			<span *ngIf="remainingInfo > 1" class="remaining-notifications-label">{{ remainingInfo }} notifications left</span>
-			<button (click)="onCloseInfoButtonClicked()">OK</button>
+			<span *ngIf="remainingInfo > 1" class="remaining-notifications-label" i18n>{{ remainingInfo }} notifications left</span>
+			<button (click)="onCloseInfoButtonClicked()" i18n>OK</button>
 		</div>
 	</div>
 </div>
