@@ -29,7 +29,7 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
-            "localize": true,
+            "localize": false,
             "aot": true,
             "assets": [
               "src/favicon.ico",
