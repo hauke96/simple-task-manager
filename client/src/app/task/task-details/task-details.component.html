@@ -30,5 +30,7 @@
 </div>
 
 <!-- Open in JOSM row -->
-<button (click)="onOpenJosmButtonClicked()">Open in JOSM</button>
-<button (click)="onOpenOsmOrgButtonClicked()">Open in OSM.org</button>
+<div class="open-button-row">
+	<button (click)="onOpenJosmButtonClicked()">Open in JOSM</button>
+	<button (click)="onOpenOsmOrgButtonClicked()" class="open-osm-button">Open in OSM.org</button>
+</div>
