@@ -110,6 +110,6 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
   }
 
   public onOpenOsmOrgButtonClicked() {
-    this.taskService.openInAnotherTab(this.task)
+    this.taskService.openInOsmOrg(this.task, this.projectId);
   }
 }
