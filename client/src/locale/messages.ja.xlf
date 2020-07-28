@@ -517,6 +517,190 @@
         </context-group>
         
       </trans-unit>
+      <trans-unit id="WARN_AUTH_FAIL" datatype="html">
+        <source>Logout because authorization was not successful</source>
+        <target xml:lang="ja">認証に失敗したのでログアウトしました</target>
+<context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ERROR_LOAD_PROJECTS" datatype="html">
+        <source>Could not load projects</source>
+        <target xml:lang="ja">プロジェクトを読みこめませんでした</target>
+<context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ERROR_LIVE_UPDATE" datatype="html">
+        <source>Could not initialize live-updates</source>
+        <target xml:lang="ja">ライブアップデートを初期化できませんでした</target>
+<context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ERROR_COULD_NOT_UPLOAD" datatype="html">
+        <source>Could not upload file '</source>
+        <target xml:lang="ja">次のファイルをアップロードできませんでした: '</target>
+<context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ERROR_PARSE_OSM_DATA" datatype="html">
+        <source>Error parsing loaded OSM data</source>
+        <target xml:lang="ja">OSMデータの解釈エラー</target>
+<context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ERROR_UNABLE_LOAD_URL" datatype="html">
+        <source>Unable to load data from remote URL</source>
+        <target xml:lang="ja">リモートのURLからデータを読みこめませんでした</target>
+<context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="WARN_ALREADY_MEMBER" datatype="html">
+        <source>is already a member of this project</source>
+        <target xml:lang="ja">はこのプロジェクトの既存メンバーです</target>
+<context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ERROR_USER_ID" datatype="html">
+        <source>Could not load user ID for user '</source>
+        <target xml:lang="ja">ユーザIDを読みこめませんでした：'</target>
+<context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ERROR_UNABLE_LOAD_USER" datatype="html">
+        <source>Unable to load assigned user</source>
+        <target xml:lang="ja">アサインしたユーザを読みこめませんでした</target>
+<context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ERROR_ASSIGN_USER" datatype="html">
+        <source>Could not assign user</source>
+        <target xml:lang="ja">アサインできません</target>
+<context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ERROR_UNASSIGN_USER" datatype="html">
+        <source>Could not unassign user</source>
+        <target xml:lang="ja">アサイン解除できません</target>
+<context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ERROR_PROCESS_POINTS" datatype="html">
+        <source>Could not set process points</source>
+        <target xml:lang="ja">進捗率を設定できませんでした</target>
+<context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ERROR_OPEN_JOSM" datatype="html">
+        <source>Unable to open JOSM. Is it running?</source>
+        <target xml:lang="ja">JOSMを開けません。実行中ですか？</target>
+<context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ERROR_NOT_LOAD_PROJ" datatype="html">
+        <source>Could not load project '</source>
+        <target xml:lang="ja">プロジェクトを読みこめませんでした：'</target>
+<context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ERROR_ONT_DELETE_PROJ" datatype="html">
+        <source>Could not delete project</source>
+        <target xml:lang="ja">プロジェクトを削除できませんでした</target>
+<context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="INFO_REMOVED_PROJ" datatype="html">
+        <source>Project removed successfully</source>
+        <target xml:lang="ja">プロジェクトを削除しました</target>
+<context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ERROR_LEAVE_PROJ" datatype="html">
+        <source>Could not leave project</source>
+        <target xml:lang="ja">プロジェクトを離れられませんでした</target>
+<context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="INFO_SUCCESS_UPDATE_PROJ" datatype="html">
+        <source>Successfully updated project</source>
+        <target xml:lang="ja">プロジェクト更新を完了しました</target>
+<context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ERROR_UPDATE_PROJ_TITLE" datatype="html">
+        <source>Unable to update project title and/or description</source>
+        <target xml:lang="ja">プロジェクトのタイトルや説明を更新できません</target>
+<context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="WARN_PROJECT_REMOVED" datatype="html">
+        <source>This project has been removed</source>
+        <target xml:lang="ja">このプロジェクトは削除されました</target>
+<context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="WARN_REMOVED_USER" datatype="html">
+        <source>You have been removed from this project</source>
+        <target xml:lang="ja">あなたは、このプロジェクトからすでに退場しています</target>
+<context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ERROR_NOT_REMOVE_USER" datatype="html">
+        <source>Could not remove user</source>
+        <target xml:lang="ja">ユーザを削除できませんでした</target>
+<context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ERROR_NOT_INVITE_USER" datatype="html">
+        <source>Could not invite user '</source>
+        <target xml:lang="ja">次のユーザを招待できませんでした:'</target>
+<context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
 </xliff>

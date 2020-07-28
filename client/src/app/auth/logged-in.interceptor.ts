@@ -31,7 +31,7 @@ export class LoggedInInterceptor implements HttpInterceptor {
         console.error(e);
         if (e.status === 401) {
           console.error('Trigger logout: ' + (e as HttpErrorResponse).message);
-          this.notificationService.addWarning('Logout because authorization was not successful');
+          this.notificationService.addWarning($localize`:@@WARN_AUTH_FAIL:Logout because authorization was not successful`);
           this.authService.logout();
         }
         throw e;

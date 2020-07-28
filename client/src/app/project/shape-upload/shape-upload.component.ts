@@ -39,7 +39,7 @@ export class ShapeUploadComponent implements OnInit {
     };
     reader.onerror = (evt) => {
       console.error(evt);
-      this.notificationService.addError('Could not upload file \'${evt.target.files[0]}\'');
+      this.notificationService.addError($localize`:@@ERROR_COULD_NOT_UPLOAD:Could not upload file` + '\'${ (<any>evt.target).files[0] }\'');
     };
   }
 
