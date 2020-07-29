@@ -525,12 +525,20 @@
           <context context-type="linenumber">2</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="ERROR_NOT_CREATE_PROJ" datatype="html">
+        <source>Could not create project</source>
+        <target xml:lang="de-DE">Could not create project</target>
+<context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="ERROR_LOAD_PROJECTS" datatype="html">
         <source>Could not load projects '<x id="INTERPOLATION" equiv-text="{{interp}}"/>'</source>
         <target xml:lang="de-DE">Could not load projects '<x id="INTERPOLATION" equiv-text="{{interp}}"/>'</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">3</context>
+          <context context-type="linenumber">4</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_LIVE_UPDATE" datatype="html">
@@ -538,7 +546,7 @@
         <target xml:lang="de-DE">Could not initialize live-updates</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">4</context>
+          <context context-type="linenumber">5</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_COULD_NOT_UPLOAD" datatype="html">
@@ -546,7 +554,7 @@
         <target xml:lang="de-DE">Could not upload file '</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">5</context>
+          <context context-type="linenumber">6</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_PARSE_OSM_DATA" datatype="html">
@@ -554,7 +562,7 @@
         <target xml:lang="de-DE">Error parsing loaded OSM data</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">6</context>
+          <context context-type="linenumber">7</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_UNABLE_LOAD_URL" datatype="html">
@@ -562,7 +570,7 @@
         <target xml:lang="de-DE">Unable to load data from remote URL</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">7</context>
+          <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
       <trans-unit id="WARN_ALREADY_MEMBER" datatype="html">
@@ -570,7 +578,7 @@
         <target xml:lang="de-DE">User '<x id="INTERPOLATION" equiv-text="{{interp}}"/>' is already a member of this project</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">8</context>
+          <context context-type="linenumber">9</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_USER_ID" datatype="html">
@@ -578,7 +586,7 @@
         <target xml:lang="de-DE">Could not load user ID for user '<x id="INTERPOLATION" equiv-text="{{interp}}"/>'</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">9</context>
+          <context context-type="linenumber">10</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_UNABLE_LOAD_USER" datatype="html">
@@ -586,7 +594,7 @@
         <target xml:lang="de-DE">Unable to load assigned user</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">10</context>
+          <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_ASSIGN_USER" datatype="html">
@@ -594,7 +602,7 @@
         <target xml:lang="de-DE">Could not assign user</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">11</context>
+          <context context-type="linenumber">12</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_UNASSIGN_USER" datatype="html">
@@ -602,7 +610,7 @@
         <target xml:lang="de-DE">Could not unassign user</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">12</context>
+          <context context-type="linenumber">13</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_PROCESS_POINTS" datatype="html">
@@ -610,7 +618,7 @@
         <target xml:lang="de-DE">Could not set process points</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">13</context>
+          <context context-type="linenumber">14</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_OPEN_JOSM" datatype="html">
@@ -618,7 +626,7 @@
         <target xml:lang="de-DE">Unable to open JOSM. Is it running?</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">14</context>
+          <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_NOT_LOAD_PROJ" datatype="html">
@@ -626,7 +634,7 @@
         <target xml:lang="de-DE">Could not load project '<x id="INTERPOLATION" equiv-text="{{interp}}"/>'</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">15</context>
+          <context context-type="linenumber">16</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_ONT_DELETE_PROJ" datatype="html">
@@ -634,7 +642,7 @@
         <target xml:lang="de-DE">Could not delete project</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">16</context>
+          <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
       <trans-unit id="INFO_REMOVED_PROJ" datatype="html">
@@ -642,7 +650,7 @@
         <target xml:lang="de-DE">Project removed successfully</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">17</context>
+          <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_LEAVE_PROJ" datatype="html">
@@ -650,7 +658,7 @@
         <target xml:lang="de-DE">Could not leave project</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">18</context>
+          <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
       <trans-unit id="INFO_SUCCESS_UPDATE_PROJ" datatype="html">
@@ -658,7 +666,7 @@
         <target xml:lang="de-DE">Successfully updated project</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">19</context>
+          <context context-type="linenumber">20</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_UPDATE_PROJ_TITLE" datatype="html">
@@ -666,7 +674,7 @@
         <target xml:lang="de-DE">Unable to update project title and/or description</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">20</context>
+          <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
       <trans-unit id="WARN_PROJECT_REMOVED" datatype="html">
@@ -674,7 +682,7 @@
         <target xml:lang="de-DE">This project has been removed</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">21</context>
+          <context context-type="linenumber">22</context>
         </context-group>
       </trans-unit>
       <trans-unit id="WARN_REMOVED_USER" datatype="html">
@@ -682,7 +690,7 @@
         <target xml:lang="de-DE">You have been removed from this project</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">22</context>
+          <context context-type="linenumber">23</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_NOT_REMOVE_USER" datatype="html">
@@ -690,7 +698,7 @@
         <target xml:lang="de-DE">Could not remove user</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">23</context>
+          <context context-type="linenumber">24</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_NOT_INVITE_USER" datatype="html">
@@ -698,7 +706,7 @@
         <target xml:lang="de-DE">Could not invite user<x id="INTERPOLATION" equiv-text="{{interp}}"/></target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">24</context>
+          <context context-type="linenumber">25</context>
         </context-group>
       </trans-unit>
     </body>
