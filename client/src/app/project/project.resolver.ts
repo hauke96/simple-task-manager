@@ -19,7 +19,7 @@ export class ProjectResolver implements Resolve<Project> {
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Project> {
     return this.projectService.getProject(route.paramMap.get('id')).pipe(
       catchError((e: HttpErrorResponse) => {
-        this.notificationService.addError($localize`:@@ERROR_NOT_LOAD_PROJ:Could not load project '` + route.paramMap.get('id') + '\'');
+        this.notificationService.addError($localize`:@@ERROR_NOT_LOAD_PROJ:Could not load project '${ route.paramMap.get('id') }:INTERPOLATION:'`);
         throw e;
       })
     );

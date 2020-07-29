@@ -526,8 +526,8 @@
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_LOAD_PROJECTS" datatype="html">
-        <source>Could not load projects</source>
-        <target xml:lang="de-DE">Could not load projects</target>
+        <source>Could not load projects '<x id="INTERPOLATION" equiv-text="{{interp}}"/>'</source>
+        <target xml:lang="de-DE">Could not load projects '<x id="INTERPOLATION" equiv-text="{{interp}}"/>'</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">3</context>
@@ -566,16 +566,16 @@
         </context-group>
       </trans-unit>
       <trans-unit id="WARN_ALREADY_MEMBER" datatype="html">
-        <source>is already a member of this project</source>
-        <target xml:lang="de-DE">is already a member of this project</target>
+        <source>User '<x id="INTERPOLATION" equiv-text="{{interp}}"/>' is already a member of this project</source>
+        <target xml:lang="de-DE">User '<x id="INTERPOLATION" equiv-text="{{interp}}"/>' is already a member of this project</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_USER_ID" datatype="html">
-        <source>Could not load user ID for user '</source>
-        <target xml:lang="de-DE">Could not load user ID for user '</target>
+        <source>Could not load user ID for user '<x id="INTERPOLATION" equiv-text="{{interp}}"/>'</source>
+        <target xml:lang="de-DE">Could not load user ID for user '<x id="INTERPOLATION" equiv-text="{{interp}}"/>'</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">9</context>
@@ -622,8 +622,8 @@
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_NOT_LOAD_PROJ" datatype="html">
-        <source>Could not load project '</source>
-        <target xml:lang="de-DE">Could not load project '</target>
+        <source>Could not load project '<x id="INTERPOLATION" equiv-text="{{interp}}"/>'</source>
+        <target xml:lang="de-DE">Could not load project '<x id="INTERPOLATION" equiv-text="{{interp}}"/>'</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">15</context>
@@ -694,8 +694,8 @@
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_NOT_INVITE_USER" datatype="html">
-        <source>Could not invite user '</source>
-        <target xml:lang="de-DE">Could not invite user '</target>
+        <source>Could not invite user<x id="INTERPOLATION" equiv-text="{{interp}}"/></source>
+        <target xml:lang="de-DE">Could not invite user<x id="INTERPOLATION" equiv-text="{{interp}}"/></target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">24</context>

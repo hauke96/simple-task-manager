@@ -73,7 +73,7 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
       .subscribe(() => {
       }, err => {
         console.error(err);
-        this.notificationService.addError($localize`:@@ERROR_NOT_INVITE_USER:Could not invite user '` + user.name + '\'');
+        this.notificationService.addError($localize`:@@ERROR_NOT_INVITE_USER:Could not invite user '${ user.name }:INTERPOLATION:'`);
       });
   }
 

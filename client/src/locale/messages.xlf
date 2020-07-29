@@ -484,7 +484,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_LOAD_PROJECTS" datatype="html">
-        <source>Could not load projects</source>
+        <source>Could not load projects &apos;<x id="INTERPOLATION" equiv-text="{{interp}}"/>&apos;</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">3</context>
@@ -519,14 +519,14 @@
         </context-group>
       </trans-unit>
       <trans-unit id="WARN_ALREADY_MEMBER" datatype="html">
-        <source>is already a member of this project</source>
+        <source>User &apos;<x id="INTERPOLATION" equiv-text="{{interp}}"/>&apos; is already a member of this project</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_USER_ID" datatype="html">
-        <source>Could not load user ID for user &apos;</source>
+        <source>Could not load user ID for user &apos;<x id="INTERPOLATION" equiv-text="{{interp}}"/>&apos;</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">9</context>
@@ -568,7 +568,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_NOT_LOAD_PROJ" datatype="html">
-        <source>Could not load project &apos;</source>
+        <source>Could not load project &apos;<x id="INTERPOLATION" equiv-text="{{interp}}"/>&apos;</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">15</context>
@@ -631,7 +631,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_NOT_INVITE_USER" datatype="html">
-        <source>Could not invite user &apos;</source>
+        <source>Could not invite user<x id="INTERPOLATION" equiv-text="{{interp}}"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">24</context>
