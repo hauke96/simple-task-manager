@@ -16,7 +16,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
         <span i18n="@@ERROR_NOT_CREATE_PROJ">Could not create project</span>
         <span i18n="@@ERROR_LOAD_PROJECTS">Could not load projects '{{interp}}'</span>
         <span i18n="@@ERROR_LIVE_UPDATE">Could not initialize live-updates</span>
-        <span i18n="@@ERROR_COULD_NOT_UPLOAD">Could not upload file '</span>
+        <span i18n="@@ERROR_COULD_NOT_UPLOAD">Could not upload file '{{interp}}'</span>
         <span i18n="@@ERROR_PARSE_OSM_DATA">Error parsing loaded OSM data</span>
         <span i18n="@@ERROR_UNABLE_LOAD_URL">Unable to load data from remote URL</span>
         <span i18n="@@WARN_ALREADY_MEMBER">User '{{interp}}' is already a member of this project</span>
