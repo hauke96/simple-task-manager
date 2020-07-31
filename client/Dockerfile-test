@@ -4,7 +4,6 @@ FROM simpletaskmanager/stm-client-base:1.1.0-dev as builder
 COPY ./ /stm-client/
 WORKDIR /stm-client/
 
-RUN NODE_OPTIONS="--max_old_space_size=4096" npm install @angular/localize
 RUN NODE_OPTIONS="--max_old_space_size=4096" npm run build-test
 
 ## STAGE 2 : Configure nginx and run client
