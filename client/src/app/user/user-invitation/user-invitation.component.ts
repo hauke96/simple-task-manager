@@ -25,7 +25,7 @@ export class UserInvitationComponent implements OnInit {
 
   public onInvitationButtonClicked() {
     if (this.users.map(u => u.name).includes(this.enteredUserName)) {
-      this.notificationService.addWarning($localize`:@@WARN_ALREADY_MEMBER:User ${ this.enteredUserName }:INTERPOLATION:' is already a member of this project`);
+      this.notificationService.addWarning($localize`:@@WARN_ALREADY_MEMBER:User '${ this.enteredUserName }:INTERPOLATION:' is already a member of this project`);
       return;
     }
 
