@@ -36,6 +36,13 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
         <span i18n="@@WARN_REMOVED_USER">You have been removed from this project</span>
         <span i18n="@@ERROR_NOT_REMOVE_USER">Could not remove user</span>
         <span i18n="@@ERROR_NOT_INVITE_USER">Could not invite user{{interp}}</span>
+		    <span i18n="@@TABS_TASKS">Tasks</span>
+		    <span i18n="@@TABS_USERS">Users</span>
+		    <span i18n="@@TABS_SETTINGS">Settings</span>
+		    <span i18n="@@TABS_DRAW">Draw</span>
+		    <span i18n="@@TABS_UPLOAD">Upload</span>
+		    <span i18n="@@TABS_REMOTE">Remote</span>
+		    <span i18n="@@TABS_REMOVE">Remove</span>
     `,
     changeDetection: ChangeDetectionStrategy.OnPush,
 })

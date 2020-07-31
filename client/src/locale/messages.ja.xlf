@@ -709,6 +709,62 @@
           <context context-type="linenumber">25</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="TABS_TASKS" datatype="html">
+        <source>Tasks</source>
+        <target>Tasks</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">26</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="TABS_USERS" datatype="html">
+        <source>Users</source>
+        <target>Benutzer</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">27</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="TABS_SETTINGS" datatype="html">
+        <source>Settings</source>
+        <target>Einstellungen</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">28</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="TABS_DRAW" datatype="html">
+        <source>Draw</source>
+        <target>Zeichnen</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="TABS_UPLOAD" datatype="html">
+        <source>Upload</source>
+        <target>Hochladen</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="TABS_REMOTE" datatype="html">
+        <source>Remote</source>
+        <target>Remote</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="TABS_REMOVE" datatype="html">
+        <source>Remove</source>
+        <target>Entfernen</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">32</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
 </xliff>

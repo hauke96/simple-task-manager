@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-US" datatype="plaintext" original="ng2.template">
     <body>
@@ -66,7 +66,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="29d7d978a0fc305f377415641b05669ca55b1a81" datatype="html">
-        <source>You currently don&apos;t have any projects.</source>
+        <source>You currently don't have any projects.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project-list/project-list.component.html</context>
           <context context-type="linenumber">18</context>
@@ -122,13 +122,6 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.html</context>
           <context context-type="linenumber">39</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="c8b75c15ec7cbbebc6f953cb0bd20a171112c311" datatype="html">
-        <source>[&apos;Tasks&apos;, &apos;Users&apos;, &apos;Settings&apos;]</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/project/project.component.html</context>
-          <context context-type="linenumber">14</context>
         </context-group>
       </trans-unit>
       <trans-unit id="586a5fd72602b5b14ec0c55f84814de47bb21e3a" datatype="html">
@@ -491,7 +484,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_LOAD_PROJECTS" datatype="html">
-        <source>Could not load projects &apos;<x id="INTERPOLATION" equiv-text="{{interp}}"/>&apos;</source>
+        <source>Could not load projects '<x id="INTERPOLATION" equiv-text="{{interp}}"/>'</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">4</context>
@@ -505,7 +498,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_COULD_NOT_UPLOAD" datatype="html">
-        <source>Could not upload file &apos;<x id="INTERPOLATION" equiv-text="{{interp}}"/>&apos;</source>
+        <source>Could not upload file '<x id="INTERPOLATION" equiv-text="{{interp}}"/>'</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">6</context>
@@ -526,14 +519,14 @@
         </context-group>
       </trans-unit>
       <trans-unit id="WARN_ALREADY_MEMBER" datatype="html">
-        <source>User &apos;<x id="INTERPOLATION" equiv-text="{{interp}}"/>&apos; is already a member of this project</source>
+        <source>User '<x id="INTERPOLATION" equiv-text="{{interp}}"/>' is already a member of this project</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">9</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_USER_ID" datatype="html">
-        <source>Could not load user ID for user &apos;<x id="INTERPOLATION" equiv-text="{{interp}}"/>&apos;</source>
+        <source>Could not load user ID for user '<x id="INTERPOLATION" equiv-text="{{interp}}"/>'</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">10</context>
@@ -575,7 +568,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_NOT_LOAD_PROJ" datatype="html">
-        <source>Could not load project &apos;<x id="INTERPOLATION" equiv-text="{{interp}}"/>&apos;</source>
+        <source>Could not load project '<x id="INTERPOLATION" equiv-text="{{interp}}"/>'</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">16</context>
@@ -642,6 +635,55 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">25</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="TABS_TASKS" datatype="html">
+        <source>Tasks</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">26</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="TABS_USERS" datatype="html">
+        <source>Users</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">27</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="TABS_SETTINGS" datatype="html">
+        <source>Settings</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">28</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="TABS_DRAW" datatype="html">
+        <source>Draw</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="TABS_UPLOAD" datatype="html">
+        <source>Upload</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="TABS_REMOTE" datatype="html">
+        <source>Remote</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="TABS_REMOVE" datatype="html">
+        <source>Remove</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">32</context>
         </context-group>
       </trans-unit>
     </body>

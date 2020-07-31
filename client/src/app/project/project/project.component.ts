@@ -59,6 +59,14 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
     );
   }
 
+  public get tabTitles(): string[] {
+    return [
+      $localize`:@@TABS_TASKS:Tasks`,
+      $localize`:@@TABS_USERS:Users`,
+      $localize`:@@TABS_SETTINGS:Settings`
+    ];
+  }
+
   public onUserRemoved(userIdToRemove: string) {
     this.projectService.removeUser(this.project.id, userIdToRemove)
       .subscribe(() => {
@@ -73,7 +81,7 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
       .subscribe(() => {
       }, err => {
         console.error(err);
-        this.notificationService.addError($localize`:@@ERROR_NOT_INVITE_USER:Could not invite user '${ user.name }:INTERPOLATION:'`);
+        this.notificationService.addError($localize`:@@ERROR_NOT_INVITE_USER:Could not invite user '${user.name}:INTERPOLATION:'`);
       });
   }
 
