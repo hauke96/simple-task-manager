@@ -108,4 +108,8 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
           this.notificationService.addError($localize`:@@ERROR_OPEN_JOSM:Unable to open JOSM. Is it running?`);
         });
   }
+
+  public onOpenOsmOrgButtonClicked() {
+    this.taskService.openInOsmOrg(this.task, this.projectId);
+  }
 }
