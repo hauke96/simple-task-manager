@@ -155,10 +155,18 @@
       </trans-unit>
       <trans-unit id="0728be2cde8178df6f108a5e2fc0b4ff39492396" datatype="html">
         <source>Open in JOSM</source>
-        <target xml:lang="zh-CN">开门JOSM</target>
+        <target xml:lang="zh-CN">打开JOSM</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/task/task-details/task-details.component.html</context>
           <context context-type="linenumber">34</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4ded01fb65e9e8ffb0cca5b798e24e77eedd9d4d" datatype="html">
+        <source>Open in iD</source>
+        <target xml:lang="zh-CN">打开iD</target>
+<context-group purpose="location">
+          <context context-type="sourcefile">src/app/task/task-details/task-details.component.html</context>
+          <context context-type="linenumber">35</context>
         </context-group>
       </trans-unit>
       <trans-unit id="462f2f44a9c3615a6e54769b7f73c94f18cf1f55" datatype="html">
