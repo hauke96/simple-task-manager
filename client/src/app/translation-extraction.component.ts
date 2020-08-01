@@ -14,7 +14,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
     template: `
         <span i18n="@@WARN_AUTH_FAIL">Logout because authorization was not successful</span>
         <span i18n="@@ERROR_NOT_CREATE_PROJ">Could not create project</span>
-        <span i18n="@@ERROR_LOAD_PROJECTS">Could not load projects '{{interp}}'</span>
+        <span i18n="@@ERROR_LOAD_PROJECTS">Could not load projects</span>
         <span i18n="@@ERROR_LIVE_UPDATE">Could not initialize live-updates</span>
         <span i18n="@@ERROR_COULD_NOT_UPLOAD">Could not upload file '{{interp}}'</span>
         <span i18n="@@ERROR_PARSING_OSM_DATA">Error parsing loaded OSM data</span>

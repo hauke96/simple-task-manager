@@ -158,7 +158,7 @@
         <target xml:lang="zh-CN">开门JOSM</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/task/task-details/task-details.component.html</context>
-          <context context-type="linenumber">33</context>
+          <context context-type="linenumber">34</context>
         </context-group>
       </trans-unit>
       <trans-unit id="462f2f44a9c3615a6e54769b7f73c94f18cf1f55" datatype="html">
@@ -526,8 +526,8 @@
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_LOAD_PROJECTS" datatype="html">
-        <source>Could not load projects '<x id="INTERPOLATION" equiv-text="{{interp}}"/>'</source>
-        <target xml:lang="zh-CN">无法载入专案<x id="INTERPOLATION" equiv-text="{{interp}}"/>"</target>
+        <source>Could not load projects</source>
+        <target xml:lang="zh-CN">无法载入专案</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">4</context>
