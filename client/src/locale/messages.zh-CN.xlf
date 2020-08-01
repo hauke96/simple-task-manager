@@ -17,11 +17,11 @@
           <context context-type="sourcefile">src/app/manager/manager.component.html</context>
           <context context-type="linenumber">4</context>
         </context-group>
-
+        
       </trans-unit>
       <trans-unit id="a40a5da1275dd0b1cba2d4eb75b3c874db4a8858" datatype="html">
-        <source>Welcome to the SimpleTaskManager for <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>OpenStreetMap<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></source>
-        <target xml:lang="zh-CN">欢迎来到SimpleTaskManager for <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>OpenStreetMap<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></target>
+        <source>Welcome to the SimpleTaskManager for <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>OpenStreetMap<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/></source>
+        <target xml:lang="zh-CN">欢迎来到SimpleTaskManager for <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>OpenStreetMap<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/></target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/login/login.component.html</context>
           <context context-type="linenumber">7</context>
@@ -36,8 +36,8 @@
         </context-group>
       </trans-unit>
       <trans-unit id="b25cb492ef5f66268ad50bb4e05fce0a95e79977" datatype="html">
-        <source><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Changes in 1.1.0:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;"/> New features: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/> <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/> Minor changes: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/> <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/> Internals: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/> <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/></source>
-        <target xml:lang="zh-CN"><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>变更1.1.0:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;"/>新功能:<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>小变更:<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>/&gt;内部:<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/></target>
+        <source><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b>"/>Changes in 1.1.0:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b>"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/> New features: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/> <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/> Minor changes: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/> <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/> Internals: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/> <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/></source>
+        <target xml:lang="zh-CN"><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b>"/>变更1.1.0:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b>"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>新功能:<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/>小变更:<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/>/>内部:<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/></target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/login/login.component.html</context>
           <context context-type="linenumber">16</context>
@@ -90,7 +90,7 @@
           <context context-type="sourcefile">src/app/project/project/project.component.html</context>
           <context context-type="linenumber">3</context>
         </context-group>
-
+        
       </trans-unit>
       <trans-unit id="4a22c6843133f0b0d7dc0d28f864f2f90c1de7ad" datatype="html">
         <source>Description:</source>
@@ -107,7 +107,7 @@
           <context context-type="sourcefile">src/app/project/project-settings/project-settings.component.html</context>
           <context context-type="linenumber">34</context>
         </context-group>
-
+        
       </trans-unit>
       <trans-unit id="4d13a9cd5ed3dcee0eab22cb25198d43886942be" datatype="html">
         <source>Users</source>
@@ -123,14 +123,6 @@
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.html</context>
           <context context-type="linenumber">39</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="c8b75c15ec7cbbebc6f953cb0bd20a171112c311" datatype="html">
-        <source>['Tasks', 'Users', 'Settings']</source>
-        <target xml:lang="zh-CN">['Tasks', 'Users', 'Settings']</target>
-<context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/project/project.component.html</context>
-          <context context-type="linenumber">14</context>
         </context-group>
       </trans-unit>
       <trans-unit id="586a5fd72602b5b14ec0c55f84814de47bb21e3a" datatype="html">
@@ -170,8 +162,8 @@
         </context-group>
       </trans-unit>
       <trans-unit id="462f2f44a9c3615a6e54769b7f73c94f18cf1f55" datatype="html">
-        <source>SimpleTaskManager <x id="INTERPOLATION" equiv-text="{{version}}"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>Code: <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>github.com/hauke96/simple-task-manager<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>Licensed under <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a&gt;"/>GPLv3<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></source>
-        <target xml:lang="zh-CN">SimpleTaskManager <x id="INTERPOLATION" equiv-text="{{version}}"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>Code: <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>github.com/hauke96/simple-task-manager<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>Licensed under <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a&gt;"/>GPLv3<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></target>
+        <source>SimpleTaskManager <x id="INTERPOLATION" equiv-text="{{version}}"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/>Code: <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>github.com/hauke96/simple-task-manager<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/>Licensed under <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a>"/>GPLv3<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/></source>
+        <target xml:lang="zh-CN">SimpleTaskManager <x id="INTERPOLATION" equiv-text="{{version}}"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/>Code: <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>github.com/hauke96/simple-task-manager<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/>Licensed under <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a>"/>GPLv3<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/></target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/ui/footer/footer.component.html</context>
           <context context-type="linenumber">1</context>
@@ -488,25 +480,25 @@
           <context context-type="sourcefile">src/app/project/shape-remote/shape-remote.component.html</context>
           <context context-type="linenumber">9</context>
         </context-group>
-
+        
       </trans-unit>
       <trans-unit id="622e64f6296a7467dd7da977bee29f2dc726fdea" datatype="html">
-        <source>Click on &quot;Export&quot;</source>
-        <target xml:lang="zh-CN">按一下&quot;汇出&quot;</target>
+        <source>Click on "Export"</source>
+        <target xml:lang="zh-CN">按一下"汇出"</target>
 <note from="description" priority="1">loading data from overpass</note><context-group purpose="location">
           <context context-type="sourcefile">src/app/project/shape-remote/shape-remote.component.html</context>
           <context context-type="linenumber">10</context>
         </context-group>
-
+        
       </trans-unit>
       <trans-unit id="485a698b86f89dca935c8d6c92f695e6ae0c93c8" datatype="html">
-        <source>Copy the link after &quot;raw data directly from&quot; (right click and &quot;copy link&quot;)</source>
-        <target xml:lang="zh-CN">在&quot;直接资料直接从&quot;(右键按一下，&quot;复制连结&quot;)之后复制连结</target>
+        <source>Copy the link after "raw data directly from" (right click and "copy link")</source>
+        <target xml:lang="zh-CN">在"直接资料直接从"(右键按一下，"复制连结")之后复制连结</target>
 <note from="description" priority="1">loading data from overpass</note><context-group purpose="location">
           <context context-type="sourcefile">src/app/project/shape-remote/shape-remote.component.html</context>
           <context context-type="linenumber">11</context>
         </context-group>
-
+        
       </trans-unit>
       <trans-unit id="bb8915a54f561863ae3d67bfb1593724ca320c8e" datatype="html">
         <source>Paste this URL in here</source>
@@ -515,7 +507,7 @@
           <context context-type="sourcefile">src/app/project/shape-remote/shape-remote.component.html</context>
           <context context-type="linenumber">12</context>
         </context-group>
-
+        
       </trans-unit>
       <trans-unit id="WARN_AUTH_FAIL" datatype="html">
         <source>Logout because authorization was not successful</source>
@@ -534,8 +526,8 @@
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_LOAD_PROJECTS" datatype="html">
-        <source>Could not load projects</source>
-        <target xml:lang="zh-CN">无法载入专案</target>
+        <source>Could not load projects '<x id="INTERPOLATION" equiv-text="{{interp}}"/>'</source>
+        <target xml:lang="zh-CN">无法载入专案<x id="INTERPOLATION" equiv-text="{{interp}}"/>"</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">4</context>
@@ -551,7 +543,7 @@
       </trans-unit>
       <trans-unit id="ERROR_COULD_NOT_UPLOAD" datatype="html">
         <source>Could not upload file '<x id="INTERPOLATION" equiv-text="{{interp}}"/>'</source>
-        <target xml:lang="zh-CN">无法上传档案&quot;<x id="INTERPOLATION" equiv-text="{{interp}}"/>&quot;</target>
+        <target xml:lang="zh-CN">无法上传档案"<x id="INTERPOLATION" equiv-text="{{interp}}"/>"</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">6</context>
@@ -583,7 +575,7 @@
       </trans-unit>
       <trans-unit id="ERROR_USER_ID" datatype="html">
         <source>Could not load user ID for user '<x id="INTERPOLATION" equiv-text="{{interp}}"/>'</source>
-        <target xml:lang="zh-CN">无法载入使用者&quot;<x id="INTERPOLATION" equiv-text="{{interp}}"/>&quot;的使用者ID</target>
+        <target xml:lang="zh-CN">无法载入使用者"<x id="INTERPOLATION" equiv-text="{{interp}}"/>"的使用者ID</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">10</context>
@@ -631,7 +623,7 @@
       </trans-unit>
       <trans-unit id="ERROR_NOT_LOAD_PROJ" datatype="html">
         <source>Could not load project '<x id="INTERPOLATION" equiv-text="{{interp}}"/>'</source>
-        <target xml:lang="zh-CN">无法载入专案&quot;<x id="INTERPOLATION" equiv-text="{{interp}}"/>&quot;</target>
+        <target xml:lang="zh-CN">无法载入专案"<x id="INTERPOLATION" equiv-text="{{interp}}"/>"</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">16</context>
@@ -711,56 +703,56 @@
       </trans-unit>
       <trans-unit id="TABS_TASKS" datatype="html">
         <source>Tasks</source>
-        <target>Tasks</target>
-        <context-group purpose="location">
+        <target xml:lang="zh-CN">任务</target>
+<context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">26</context>
         </context-group>
       </trans-unit>
       <trans-unit id="TABS_USERS" datatype="html">
         <source>Users</source>
-        <target>Benutzer</target>
-        <context-group purpose="location">
+        <target xml:lang="zh-CN">使用者</target>
+<context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">27</context>
         </context-group>
       </trans-unit>
       <trans-unit id="TABS_SETTINGS" datatype="html">
         <source>Settings</source>
-        <target>Einstellungen</target>
-        <context-group purpose="location">
+        <target xml:lang="zh-CN">设定</target>
+<context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
       <trans-unit id="TABS_DRAW" datatype="html">
         <source>Draw</source>
-        <target>Zeichnen</target>
-        <context-group purpose="location">
+        <target xml:lang="zh-CN">绘制</target>
+<context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">29</context>
         </context-group>
       </trans-unit>
       <trans-unit id="TABS_UPLOAD" datatype="html">
         <source>Upload</source>
-        <target>Hochladen</target>
-        <context-group purpose="location">
+        <target xml:lang="zh-CN">上传</target>
+<context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">30</context>
         </context-group>
       </trans-unit>
       <trans-unit id="TABS_REMOTE" datatype="html">
         <source>Remote</source>
-        <target>Remote</target>
-        <context-group purpose="location">
+        <target xml:lang="zh-CN">远端</target>
+<context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">31</context>
         </context-group>
       </trans-unit>
       <trans-unit id="TABS_REMOVE" datatype="html">
         <source>Remove</source>
-        <target>Entfernen</target>
-        <context-group purpose="location">
+        <target xml:lang="zh-CN">移除</target>
+<context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">32</context>
         </context-group>
