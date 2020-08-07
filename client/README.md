@@ -58,7 +58,8 @@ Encryption (HTTPS) and HTTP-Server configs depend on the used HTTP-Server (Apach
 ## Update message catalog
 
 **tl;dr:**
-* ng xi18n --output-path src/locale
+* `cd client`
+* `ng xi18n --output-path src/locale`
 
 ## Translation
 
