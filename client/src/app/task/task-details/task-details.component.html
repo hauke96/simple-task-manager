@@ -12,6 +12,7 @@
 	<form class="flex-line" *ngIf="task?.assignedUser?.uid === currentUserId || !needUserAssignment; else currentUserElse" #processPointsForm="ngForm">
 		<span class="points-label" i18n>Points:</span>
 		<input name="processPointInput"
+			   class="process-point-input"
 			   [(ngModel)]="newProcessPoints"
 			   type="number"
 			   required
