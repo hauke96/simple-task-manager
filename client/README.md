@@ -62,16 +62,24 @@ Encryption (HTTPS) and HTTP-Server configs depend on the used HTTP-Server (Apach
 
 ## Translation
 
-When you want to add your local language to simple-taskmanager, it is recommended to use [Omega-T](https://omegat.org/) and 
-[Okapi filters plugin](https://okapiframework.org/wiki/index.php?title=Okapi_Filters_Plugin_for_OmegaT) for translation tool.
+In order to translate STM, it's recommended to use a proper XLF/XLIFF editor like *Omega-T* or *Poedit*.
 
-### Generate a localized message catalog in your favorite language
+### Poedit
+
+1. Open the `.xlf` file you want to translate
+2. Translate the entries
+3. Click save or hit CTRL+S
+
+### Omega-T
+
+Alternatively you can use [Omega-T](https://omegat.org/) with the 
+[Okapi filters plugin](https://okapiframework.org/wiki/index.php?title=Okapi_Filters_Plugin_for_OmegaT) for translation.
 
 1. Start Omega-T and create new project at new project directory with your favorit target language such as zh_CN.
 2. Configure Omega-T enable Okapi Plugins XLIFF filter and disable internal XLIFF filter.
 3. Copy `client/src/locale/messages.xlf` to `<omegat_project>/source/messages.<langID>.xlf` such as `messages.zh_CN.xlf`
 4. Click `File`-`Reload` on Omega-T.
-5. Trasnlate messages.
+5. Translate messages.
 6. Click `File`-`Generate target file` on Omega-T
 7. Copy `<omegat>/target/messages.<langID>.xlf` to `client/locale/messages.<langID>.xlf`
 
@@ -79,7 +87,7 @@ When UI is updated and source messages.xlf changed, please repeat step 3 - 6.
 
 ### Add localize configuration
 
-Add following three part in `client/angular.json` for `<langID>`
+To tell the Angular-compiler about the new language, add the following three parts into the `client/angular.json` for `<langID>`:
 
 ```json
   "projects": {
