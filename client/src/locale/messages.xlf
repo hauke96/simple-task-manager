@@ -157,6 +157,13 @@
           <context context-type="linenumber">34</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="4ded01fb65e9e8ffb0cca5b798e24e77eedd9d4d" datatype="html">
+        <source>Open in iD</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/task/task-details/task-details.component.html</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="462f2f44a9c3615a6e54769b7f73c94f18cf1f55" datatype="html">
         <source>
   SimpleTaskManager <x id="INTERPOLATION" equiv-text="{{version}}"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>Code: <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>github.com/hauke96/simple-task-manager<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>Licensed under <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a&gt;"/>GPLv3<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>
@@ -484,7 +491,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_LOAD_PROJECTS" datatype="html">
-        <source>Could not load projects &apos;<x id="INTERPOLATION" equiv-text="{{interp}}"/>&apos;</source>
+        <source>Could not load projects</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">4</context>
