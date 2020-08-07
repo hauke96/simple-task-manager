@@ -5,7 +5,7 @@
 	</div>
 
 	<div *ngIf="hasError" class="error-container">
-		<span class="error-text" i18n>ERROR: </span>
+		<span class="error-text" i18n>ERROR:</span>&nbsp;
 		<span>{{currentErrorText}}</span>
 		<div class="close-button-container">
 			<span *ngIf="remainingErrors> 1" class="remaining-notifications-label" i18n>{{ remainingErrors }} errors left</span>
@@ -13,7 +13,7 @@
 		</div>
 	</div>
 	<div *ngIf="hasWarning" class="warning-container">
-		<span class="warn-text" i18n>Warning: </span>
+		<span class="warn-text" i18n>Warning:</span>&nbsp;
 		<span>{{currentWarningText}}</span>
 		<div class="close-button-container">
 			<span *ngIf="remainingWarning > 1" class="remaining-notifications-label" i18n>{{ remainingWarning }} warnings left</span>
