@@ -35,9 +35,42 @@
           <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="b25cb492ef5f66268ad50bb4e05fce0a95e79977" datatype="html">
-        <source><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b>"/>Changes in 1.1.0:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b>"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/> New features: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/> <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/> Minor changes: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/> <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/> Internals: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/> <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/></source>
-        <target xml:lang="de-DE"><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b>"/>Änderungen in 1.1.0:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b>"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/> Neue Features: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/> <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/> Kleinere Änderungen: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/> <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/> Internes:<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/> <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/></target>
+      <trans-unit id="6d1ba1fe215fa70099bc19567de47d0f05381e2c" datatype="html">
+        <source>
+            <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
+            <x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b>"/>
+            Changes in 1.1.0:
+            <x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b>"/>
+            <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
+            New features:
+            <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/>
+                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Translation of STM into chinese, german and japanese<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Button to open task in iD<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+            <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/>
+            Minor changes:
+            <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/>
+            <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/>
+            Internals:
+            <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/>
+            <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/>
+        </source>
+        <target xml:lang="de-DE"><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
+            <x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b>"/>
+            Änderungen in 1.1.0:
+            <x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b>"/>
+            <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
+            Neue Features:
+            <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/>
+                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Übersetzung vom STM nach Chinesisch, Deutsch und Japanisch<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Button um Task in iD zu öffnen<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+            <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/>
+            Kleinere Änderungen:
+            <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/>
+            <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/>
+            Internes:
+            <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/>
+            <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/>
+        </target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/login/login.component.html</context>
           <context context-type="linenumber">16</context>

@@ -60,6 +60,7 @@ Encryption (HTTPS) and HTTP-Server configs depend on the used HTTP-Server (Apach
 **tl;dr:**
 * `cd client`
 * `ng xi18n --output-path src/locale`
+* Copy new/changes entries to specific translation files (e.g. from the `messages.xlf` to `messages.ja.xlf`)
 
 ## Translation
 
