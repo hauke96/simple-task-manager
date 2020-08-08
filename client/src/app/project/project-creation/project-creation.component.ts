@@ -105,6 +105,15 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     this.addMapInteractions();
   }
 
+  public get tabTitles(): string[] {
+    return [
+      $localize`:@@TABS_DRAW:Draw`,
+      $localize`:@@TABS_UPLOAD:Upload`,
+      $localize`:@@TABS_REMOTE:Remote`,
+      $localize`:@@TABS_REMOVE:Remove`
+    ];
+  }
+
   private addMapInteractions() {
     this.drawInteraction = new Draw({
       source: this.vectorSource,
@@ -174,7 +183,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
         this.router.navigate(['/manager']);
       }, e => {
         console.error(e);
-        this.notificationService.addError('Could not create project');
+        this.notificationService.addError($localize`:@@ERROR_NOT_CREATE_PROJ:Could not create project`);
       });
   }
 

@@ -10,19 +10,20 @@
 <!-- Process points row -->
 <div class="process-point-container">
 	<form class="flex-line" *ngIf="task?.assignedUser?.uid === currentUserId || !needUserAssignment; else currentUserElse" #processPointsForm="ngForm">
-		<span class="points-label">Points:</span>
+		<span class="points-label" i18n>Points:</span>
 		<input name="processPointInput"
+			   class="process-point-input"
 			   [(ngModel)]="newProcessPoints"
 			   type="number"
 			   required
 			   appMinValidator="0"
 			   appMaxValidator="{{task?.maxProcessPoints}}">
 		<span class="of-process-point-label">/ {{task?.maxProcessPoints}}</span>
-		<button class="save-button" (click)="onSaveButtonClick()" [disabled]="!processPointsForm.form.valid">Save
+		<button class="save-button" (click)="onSaveButtonClick()" [disabled]="!processPointsForm.form.valid" i18n>Save
 		</button>
 	</form>
 	<ng-template #currentUserElse>
-		<span class="points-label">Points:</span>
+		<span class="points-label" i18n>Points:</span>
 		{{task?.processPoints}}
 		/
 		{{task?.maxProcessPoints}}
@@ -31,6 +32,6 @@
 
 <!-- Open in JOSM row -->
 <div class="open-button-row">
-	<button (click)="onOpenJosmButtonClicked()">Open in JOSM</button>
-	<button (click)="onOpenOsmOrgButtonClicked()" class="open-osm-button">Open in iD</button>
+	<button (click)="onOpenJosmButtonClicked()" i18n>Open in JOSM</button>
+	<button (click)="onOpenOsmOrgButtonClicked()" class="open-osm-button" i18n>Open in iD</button>
 </div>

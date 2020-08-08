@@ -32,7 +32,7 @@ export class ProjectService {
       this.handleReceivedMessage(m);
     }, e => {
       console.error(e);
-      this.notificationService.addError('Could not initialize live-updates');
+      this.notificationService.addError($localize`:@@ERROR_LIVE_UPDATE:Could not initialize live-updates`);
     });
   }
 

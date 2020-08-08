@@ -1,7 +1,7 @@
 <div>
 	<app-toolbar>
-		<p>Welcome {{userName}} :)</p>
-		<button (click)="onLogoutClicked()">Logout</button>
+		<p i18n>Welcome {{userName}} :)</p>
+		<button (click)="onLogoutClicked()" i18n="logout button">Logout</button>
 	</app-toolbar>
 	<div class="root-container">
 		<app-project-list></app-project-list>

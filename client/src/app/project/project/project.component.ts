@@ -43,7 +43,7 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
         }
 
         if (!this.isOwner()) {
-          this.notificationService.addWarning('This project has been removed');
+          this.notificationService.addWarning($localize`:@@WARN_PROJECT_REMOVED:This project has been removed`);
         }
 
         this.router.navigate(['/manager']);
@@ -53,10 +53,18 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
           return;
         }
 
-        this.notificationService.addWarning('You have been removed from this project');
+        this.notificationService.addWarning($localize`:@@WARN_REMOVED_USER:You have been removed from this project`);
         this.router.navigate(['/manager']);
       })
     );
+  }
+
+  public get tabTitles(): string[] {
+    return [
+      $localize`:@@TABS_TASKS:Tasks`,
+      $localize`:@@TABS_USERS:Users`,
+      $localize`:@@TABS_SETTINGS:Settings`
+    ];
   }
 
   public onUserRemoved(userIdToRemove: string) {
@@ -64,7 +72,7 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
       .subscribe(() => {
       }, err => {
         console.error(err);
-        this.notificationService.addError('Could not remove user');
+        this.notificationService.addError($localize`:@@ERROR_NOT_REMOVE_USER:Could not remove user`);
       });
   }
 
@@ -73,7 +81,7 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
       .subscribe(() => {
       }, err => {
         console.error(err);
-        this.notificationService.addError('Could not invite user \'' + user.name + '\'');
+        this.notificationService.addError($localize`:@@ERROR_NOT_INVITE_USER:Could not invite user '${user.name}:INTERPOLATION:'`);
       });
   }
 

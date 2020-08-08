@@ -36,12 +36,12 @@ export class ShapeRemoteComponent implements OnInit {
           console.error('Error parsing loaded OSM-XML');
           console.log(data);
           console.error(e);
-          this.notificationService.addError('Error parsing loaded OSM data');
+          this.notificationService.addError($localize`:@@ERROR_PARSING_OSM_DATA:Error parsing loaded OSM data`);
         }
       }, e => {
         console.error('Error loading OSM-XML from remote URL');
         console.error(e);
-        this.notificationService.addError('Unable to load data from remote URL');
+        this.notificationService.addError($localize`:@@ERROR_UNABLE_LOAD_URL:Unable to load data from remote URL`);
       });
   }
 }
