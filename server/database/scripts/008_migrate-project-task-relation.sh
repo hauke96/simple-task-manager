@@ -27,7 +27,7 @@ done
 #
 # Set version
 #
-set_version "007"
+set_version "008"
 
 #
 # Generate the SQL script
