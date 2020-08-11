@@ -7,6 +7,10 @@ CREATE TABLE project_tasks(
     CONSTRAINT  fk_task
         FOREIGN KEY (task_id)
             REFERENCES tasks(id)
+            ON DELETE CASCADE,
+    CONSTRAINT  fk_project
+        FOREIGN KEY (project_id)
+            REFERENCES projects(id)
             ON DELETE CASCADE
 );
 
