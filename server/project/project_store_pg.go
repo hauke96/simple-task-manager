@@ -23,14 +23,16 @@ type projectRow struct {
 }
 
 type storePg struct {
-	tx    *sql.Tx
-	table string
+	tx            *sql.Tx
+	table         string
+	relationTable string
 }
 
 func getStore(tx *sql.Tx) *storePg {
 	return &storePg{
-		tx:    tx,
-		table: "projects",
+		tx:            tx,
+		table:         "projects",
+		relationTable: "project_tasks",
 	}
 }
 
@@ -70,7 +72,7 @@ func (s *storePg) getProjectByTask(taskId string) (*Project, error) {
 // areTasksUsed checks whether any of the given tasks is already part of a project. Returns false and an error in case
 // of an error.
 func (s *storePg) areTasksUsed(taskIds []string) (bool, error) {
-	query := fmt.Sprintf("SELECT COUNT(*) FROM %s WHERE task_ids && $1", s.table)
+	query := fmt.Sprintf("SELECT COUNT(*) FROM %s WHERE task_id = $1", s.relationTable)
 
 	util.LogQuery(query, taskIds)
 	rows, err := s.tx.Query(query, pq.Array(taskIds))
@@ -95,9 +97,20 @@ func (s *storePg) areTasksUsed(taskIds []string) (bool, error) {
 
 // Adds the given project draft and assigns an ID to the project
 func (s *storePg) addProject(draft *Project) (*Project, error) {
-	query := fmt.Sprintf("INSERT INTO %s (name, task_ids, description, users, owner) VALUES($1, $2, $3, $4, $5) RETURNING *", s.table)
+	query := fmt.Sprintf("INSERT INTO %s (name, description, users, owner) VALUES($1, $2, $3, $4) RETURNING *", s.table)
 
-	return s.execQuery(s.tx, query, draft.Name, pq.Array(draft.TaskIDs), draft.Description, pq.Array(draft.Users), draft.Owner)
+	project, err := s.execQuery(s.tx, query, draft.Name, draft.Description, pq.Array(draft.Users), draft.Owner)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, taskId := range draft.TaskIDs {
+		query = fmt.Sprintf("INSERT INTO %s (project_id, task_id) VALUES($1, $2)", s.relationTable)
+		s.execRawQuery(s.tx, query, draft.Id, taskId)
+	}
+
+	project.TaskIDs = draft.TaskIDs
+	return project, nil
 }
 
 func (s *storePg) addUser(projectId string, userIdToAdd string) (*Project, error) {
@@ -159,6 +172,17 @@ func (s *storePg) updateDescription(projectId string, newDescription string) (*P
 }
 
 // execQuery executed the given query, turns the result into a Project object and closes the query.
+func (s *storePg) execRawQuery(tx *sql.Tx, query string, params ...interface{}) error {
+	util.LogQuery(query, params...)
+	rows, err := tx.Query(query, params...)
+	if err != nil {
+		return errors.Wrap(err, "could not run query")
+	}
+
+	return rows.Close()
+}
+
+// execQuery executed the given query, turns the result into a Project object and closes the query.
 func (s *storePg) execQuery(tx *sql.Tx, query string, params ...interface{}) (*Project, error) {
 	util.LogQuery(query, params...)
 	rows, err := tx.Query(query, params...)
@@ -184,7 +208,7 @@ func (s *storePg) execQuery(tx *sql.Tx, query string, params ...interface{}) (*P
 // rowToProject turns the current row into a Project object. This does not close the row.
 func (s *storePg) rowToProject(rows *sql.Rows) (*Project, error) {
 	var p projectRow
-	err := rows.Scan(&p.id, &p.name, &p.owner, &p.description, pq.Array(&p.taskIds), pq.Array(&p.users))
+	err := rows.Scan(&p.id, &p.name, &p.owner, &p.description, pq.Array(&p.users))
 	if err != nil {
 		return nil, errors.Wrap(err, "could not scan rows")
 	}
@@ -196,7 +220,36 @@ func (s *storePg) rowToProject(rows *sql.Rows) (*Project, error) {
 	result.Users = p.users
 	result.Owner = p.owner
 	result.Description = p.description
-	result.TaskIDs = p.taskIds
+
+	rows.Close()
+
+	err = s.addTaskIdsToProject(&result)
+	if err != nil {
+		return nil, err
+	}
 
 	return &result, nil
+}
+
+func (s *storePg) addTaskIdsToProject(project *Project) error {
+	query := fmt.Sprintf("SELECT ARRAY_AGG(task_id) FROM %s WHERE project_id = $1", s.relationTable)
+
+	util.LogQuery(query, project.Id)
+	rows, err := s.tx.Query(query, project.Id)
+	if err != nil {
+		return errors.Wrap(err, "could not run query")
+	}
+	defer rows.Close()
+
+	ok := rows.Next()
+	if !ok {
+		return errors.New("there is no next row or an error happened")
+	}
+
+	err = rows.Scan(pq.Array(&project.TaskIDs))
+	if err != nil {
+		return errors.Wrap(err, "could not scan task IDs from row")
+	}
+
+	return nil
 }

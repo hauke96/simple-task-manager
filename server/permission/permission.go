@@ -12,8 +12,9 @@ type PermissionService struct {
 }
 
 var (
-	taskTable    = "tasks"
-	projectTable = "projects"
+	taskTable        = "tasks"
+	projectTable     = "projects"
+	projectTaskTable = "project_tasks"
 )
 
 // Init the permission service for the project and task table.
@@ -61,7 +62,7 @@ func (s *PermissionService) VerifyMembershipProject(projectId string, user strin
 
 // VerifyMembershipTask checks if "user" is a member of the project, where the given task with "id" is in.
 func (s *PermissionService) VerifyMembershipTask(taskId string, user string) error {
-	query := fmt.Sprintf("SELECT * FROM %s WHERE $1=ANY(task_ids) AND $2=ANY(users);", projectTable)
+	query := fmt.Sprintf("SELECT * FROM %s p, %s r WHERE r.project_id = p.id AND r.task_id = $1 AND $2=ANY(p.users);", projectTable, projectTaskTable)
 
 	util.LogQuery(query, taskId, user)
 	rows, err := s.tx.Query(query, taskId, user)
