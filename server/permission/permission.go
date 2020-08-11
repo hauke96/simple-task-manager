@@ -81,6 +81,7 @@ func (s *PermissionService) VerifyMembershipTask(taskId string, user string) err
 
 // VerifyMembershipTask checks if "user" is a member of the projects, where the given tasks are in.
 func (s *PermissionService) VerifyMembershipTasks(taskIds []string, user string) error {
+	// TODO create PG array from tasks and use that for querying. Otherwise this will take very long.
 	for _, t := range taskIds {
 		err := s.VerifyMembershipTask(t, user)
 

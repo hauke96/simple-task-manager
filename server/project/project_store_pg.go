@@ -16,7 +16,6 @@ import (
 type projectRow struct {
 	id          int
 	name        string
-	taskIds     []string
 	users       []string
 	owner       string
 	description string
@@ -45,6 +44,7 @@ func (s *storePg) getProjects(userId string) ([]*Project, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "error executing query")
 	}
+	defer rows.Close()
 
 	projects := make([]*Project, 0)
 	for rows.Next() {
@@ -54,6 +54,16 @@ func (s *storePg) getProjects(userId string) ([]*Project, error) {
 		}
 
 		projects = append(projects, project)
+	}
+
+	rows.Close()
+
+	// Add task-IDs to projects
+	for _, project := range projects{
+		err = s.addTaskIdsToProject(project)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return projects, nil
@@ -198,6 +208,14 @@ func (s *storePg) execQuery(tx *sql.Tx, query string, params ...interface{}) (*P
 
 	p, err := s.rowToProject(rows)
 
+	// Close row here already to do new queries within "addTaskIdsToProject"
+	rows.Close()
+
+	err = s.addTaskIdsToProject(p)
+	if err != nil {
+		return nil, err
+	}
+
 	if p == nil && err == nil {
 		return nil, errors.New("Project does not exist")
 	}
@@ -221,13 +239,6 @@ func (s *storePg) rowToProject(rows *sql.Rows) (*Project, error) {
 	result.Owner = p.owner
 	result.Description = p.description
 
-	rows.Close()
-
-	err = s.addTaskIdsToProject(&result)
-	if err != nil {
-		return nil, err
-	}
-
 	return &result, nil
 }
 
@@ -250,6 +261,8 @@ func (s *storePg) addTaskIdsToProject(project *Project) error {
 	if err != nil {
 		return errors.Wrap(err, "could not scan task IDs from row")
 	}
+
+	sigolo.Info("Added task-IDs to project %s", project.Id)
 
 	return nil
 }
