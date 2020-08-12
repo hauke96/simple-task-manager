@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/hauke96/simple-task-manager/server/util"
+	"github.com/lib/pq"
 	"github.com/pkg/errors"
 )
 
@@ -67,7 +68,7 @@ func (s *PermissionService) VerifyMembershipTask(taskId string, user string) err
 	util.LogQuery(query, taskId, user)
 	rows, err := s.tx.Query(query, taskId, user)
 	if err != nil {
-		return errors.Wrap(err, fmt.Sprintf("error verifying membership of user %s in task %s", user, taskId))
+		return errors.Wrap(err, fmt.Sprintf("error verifying membership of user %s for task %s", user, taskId))
 	}
 	defer rows.Close()
 
@@ -81,13 +82,24 @@ func (s *PermissionService) VerifyMembershipTask(taskId string, user string) err
 
 // VerifyMembershipTask checks if "user" is a member of the projects, where the given tasks are in.
 func (s *PermissionService) VerifyMembershipTasks(taskIds []string, user string) error {
-	// TODO create PG array from tasks and use that for querying. Otherwise this will take very long.
-	for _, t := range taskIds {
-		err := s.VerifyMembershipTask(t, user)
+	query := fmt.Sprintf("SELECT COUNT(*) FROM %s p, %s r WHERE r.project_id = p.id AND r.task_id = ANY($1) AND $2=ANY(p.users);", projectTable, projectTaskTable)
 
-		if err != nil {
-			return err
-		}
+	util.LogQuery(query, pq.Array(taskIds), user)
+	rows, err := s.tx.Query(query, pq.Array(taskIds), user)
+	if err != nil {
+		return errors.Wrap(err, fmt.Sprintf("error verifying membership of user %s for tasks %v", user, taskIds))
+	}
+	defer rows.Close()
+
+	// If there's a next row, then the given task in in the list of a project where the given user is a member of.
+	if !rows.Next() {
+		return errors.New(fmt.Sprintf("user %s is not a member of all projects where the tasks %v are in", user, taskIds))
+	}
+
+	var taskMemberships int
+	rows.Scan(&taskMemberships)
+	if taskMemberships != len(taskIds){
+		return errors.New(fmt.Sprintf("user %s is not a member of all %d tasks (only of %d)", user, len(taskIds), taskMemberships))
 	}
 
 	return nil
