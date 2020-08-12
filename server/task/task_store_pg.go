@@ -49,6 +49,7 @@ func (s *storePg) getTasks(taskIds []string) ([]*Task, error) {
 
 	// Generate "IN" clause with "$1,$2,,..." string for all IDs
 	// TODO use postgres arrays
+	// TODO Maybe don't get project-ID here?
 	query := fmt.Sprintf("SELECT * FROM %s WHERE id IN (%s);", s.table, strings.Join(queryPlaceholderStrings, ","))
 	util.LogQuery(query, taskIdNumbers...)
 
@@ -109,6 +110,7 @@ func (s *storePg) addTasks(newTasks []*Task) ([]*Task, error) {
 }
 
 func (s *storePg) addTask(task *Task) (string, error) {
+	// TODO Add project ID here
 	query := fmt.Sprintf("INSERT INTO %s(process_points, max_process_points, geometry, assigned_user) VALUES($1, $2, $3, $4) RETURNING *;", s.table)
 	t, err := execQuery(s.tx, query, task.ProcessPoints, task.MaxProcessPoints, task.Geometry, task.AssignedUser)
 

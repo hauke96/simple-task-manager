@@ -15,7 +15,6 @@ type PermissionService struct {
 var (
 	taskTable        = "tasks"
 	projectTable     = "projects"
-	projectTaskTable = "project_tasks"
 )
 
 // Init the permission service for the project and task table.
@@ -63,7 +62,7 @@ func (s *PermissionService) VerifyMembershipProject(projectId string, user strin
 
 // VerifyMembershipTask checks if "user" is a member of the project, where the given task with "id" is in.
 func (s *PermissionService) VerifyMembershipTask(taskId string, user string) error {
-	query := fmt.Sprintf("SELECT * FROM %s p, %s r WHERE r.project_id = p.id AND r.task_id = $1 AND $2=ANY(p.users);", projectTable, projectTaskTable)
+	query := fmt.Sprintf("SELECT * FROM %s p, %s t WHERE t.project_id = p.id AND t.id = $1 AND $2=ANY(p.users);", projectTable, taskTable)
 
 	util.LogQuery(query, taskId, user)
 	rows, err := s.tx.Query(query, taskId, user)
@@ -82,7 +81,7 @@ func (s *PermissionService) VerifyMembershipTask(taskId string, user string) err
 
 // VerifyMembershipTask checks if "user" is a member of the projects, where the given tasks are in.
 func (s *PermissionService) VerifyMembershipTasks(taskIds []string, user string) error {
-	query := fmt.Sprintf("SELECT COUNT(*) FROM %s p, %s r WHERE r.project_id = p.id AND r.task_id = ANY($1) AND $2=ANY(p.users);", projectTable, projectTaskTable)
+	query := fmt.Sprintf("SELECT COUNT(*) FROM %s p, %s t WHERE t.project_id = p.id AND t.id = ANY($1) AND $2=ANY(p.users);", projectTable, taskTable)
 
 	util.LogQuery(query, pq.Array(taskIds), user)
 	rows, err := s.tx.Query(query, pq.Array(taskIds), user)
@@ -155,7 +154,7 @@ func (s *PermissionService) AssignmentInProjectNeeded(projectId string) (bool, e
 
 // AssignmentInTaskNeeded determines whether a user needs to be assigned to this task.
 func (s *PermissionService) AssignmentInTaskNeeded(taskId string) (bool, error) {
-	query := fmt.Sprintf("SELECT ARRAY_LENGTH(p.users, 1) FROM %s p, %s r WHERE $1=r.task_id AND r.project_id = p.id;", projectTable, projectTaskTable)
+	query := fmt.Sprintf("SELECT ARRAY_LENGTH(p.users, 1) FROM %s p, %s t WHERE $1 = t.id AND t.project_id = p.id;", projectTable, taskTable)
 
 	util.LogQuery(query, taskId)
 	rows, err := s.tx.Query(query, taskId)

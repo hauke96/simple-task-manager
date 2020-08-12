@@ -18,7 +18,7 @@ do
   IFS=$','
   for TASK_ID in $TASK_IDS
   do
-	  echo "INSERT INTO project_tasks VALUES ($PROJECT_ID, $TASK_ID);" >> $OUTPUT_FILE
+    echo "UPDATE tasks SET project_id = $PROJECT_ID WHERE id = $TASK_ID;" >> $OUTPUT_FILE
 	done
 
 	IFS=$'\n'

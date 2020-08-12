@@ -97,6 +97,8 @@ func (s *ProjectService) AddProject(projectDraft *Project) (*Project, error) {
 		return nil, errors.New("Project must have a title")
 	}
 
+	// TODO how to deal with non existing task-IDs? When to add to the relation table?
+
 	if len(projectDraft.TaskIDs) == 0 {
 		return nil, errors.New("No tasks have been specified")
 	}
@@ -273,13 +275,13 @@ func (s *ProjectService) DeleteProject(projectId, potentialOwnerId string) error
 		return err
 	}
 
-	project, err := s.store.getProject(projectId)
-	if err != nil {
-		return err
-	}
-
-	// First delete the tasks, due to ownership check which won't work, when there's no project anymore.
-	s.taskService.Delete(project.TaskIDs, potentialOwnerId)
+	//project, err := s.store.getProject(projectId)
+	//if err != nil {
+	//	return err
+	//}
+	//
+	//// First delete the tasks, due to ownership check which won't work, when there's no project anymore.
+	//s.taskService.Delete(project.TaskIDs, potentialOwnerId)
 
 	// Then remove the project
 	err = s.store.delete(projectId)

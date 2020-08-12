@@ -22,16 +22,16 @@ type projectRow struct {
 }
 
 type storePg struct {
-	tx            *sql.Tx
-	table         string
-	relationTable string
+	tx        *sql.Tx
+	table     string
+	taskTable string
 }
 
 func getStore(tx *sql.Tx) *storePg {
 	return &storePg{
-		tx:            tx,
-		table:         "projects",
-		relationTable: "project_tasks",
+		tx:        tx,
+		table:     "projects",
+		taskTable: "tasks",
 	}
 }
 
@@ -59,7 +59,7 @@ func (s *storePg) getProjects(userId string) ([]*Project, error) {
 	rows.Close()
 
 	// Add task-IDs to projects
-	for _, project := range projects{
+	for _, project := range projects {
 		err = s.addTaskIdsToProject(project)
 		if err != nil {
 			return nil, err
@@ -75,14 +75,14 @@ func (s *storePg) getProject(projectId string) (*Project, error) {
 }
 
 func (s *storePg) getProjectByTask(taskId string) (*Project, error) {
-	query := fmt.Sprintf("SELECT p.* FROM %s p, %s r WHERE $1=r.task_id AND r.project_id = p.id", s.table, s.relationTable)
+	query := fmt.Sprintf("SELECT p.* FROM %s p, %s t WHERE $1 = t.id AND t.project_id = p.id", s.table, s.taskTable)
 	return s.execQuery(s.tx, query, taskId)
 }
 
 // areTasksUsed checks whether any of the given tasks is already part of a project. Returns false and an error in case
 // of an error.
 func (s *storePg) areTasksUsed(taskIds []string) (bool, error) {
-	query := fmt.Sprintf("SELECT COUNT(*) FROM %s WHERE task_id = ANY($1)", s.relationTable)
+	query := fmt.Sprintf("SELECT COUNT(*) FROM %s WHERE id = ANY($1)", s.taskTable)
 
 	util.LogQuery(query, taskIds)
 	rows, err := s.tx.Query(query, pq.Array(taskIds))
@@ -115,7 +115,7 @@ func (s *storePg) addProject(draft *Project) (*Project, error) {
 	}
 
 	for _, taskId := range draft.TaskIDs {
-		query = fmt.Sprintf("INSERT INTO %s (project_id, task_id) VALUES($1, $2)", s.relationTable)
+		query = fmt.Sprintf("INSERT INTO %s (project_id, id) VALUES($1, $2)", s.taskTable)
 		err := s.execRawQuery(s.tx, query, project.Id, taskId)
 		if err != nil {
 			return nil, err
@@ -251,7 +251,7 @@ func (s *storePg) rowToProject(rows *sql.Rows) (*Project, error) {
 }
 
 func (s *storePg) addTaskIdsToProject(project *Project) error {
-	query := fmt.Sprintf("SELECT ARRAY_AGG(task_id) FROM %s WHERE project_id = $1", s.relationTable)
+	query := fmt.Sprintf("SELECT ARRAY_AGG(id) FROM %s WHERE project_id = $1", s.taskTable)
 
 	util.LogQuery(query, project.Id)
 	rows, err := s.tx.Query(query, project.Id)
