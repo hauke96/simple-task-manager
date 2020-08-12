@@ -97,7 +97,11 @@ func (s *PermissionService) VerifyMembershipTasks(taskIds []string, user string)
 	}
 
 	var taskMemberships int
-	rows.Scan(&taskMemberships)
+	err = rows.Scan(&taskMemberships)
+	if err != nil {
+		return errors.Wrap(err, "unable to read task membership result")
+	}
+
 	if taskMemberships != len(taskIds){
 		return errors.New(fmt.Sprintf("user %s is not a member of all %d tasks (only of %d)", user, len(taskIds), taskMemberships))
 	}
@@ -149,9 +153,9 @@ func (s *PermissionService) AssignmentInProjectNeeded(projectId string) (bool, e
 	return userCount != 1, nil
 }
 
-// AssignmentNeeded determines whether a user needs to be assigned to this task.
+// AssignmentInTaskNeeded determines whether a user needs to be assigned to this task.
 func (s *PermissionService) AssignmentInTaskNeeded(taskId string) (bool, error) {
-	query := fmt.Sprintf("SELECT ARRAY_LENGTH(users, 1) FROM %s WHERE $1=ANY(task_ids);", projectTable)
+	query := fmt.Sprintf("SELECT ARRAY_LENGTH(p.users, 1) FROM %s p, %s r WHERE $1=r.task_id AND r.project_id = p.id;", projectTable, projectTaskTable)
 
 	util.LogQuery(query, taskId)
 	rows, err := s.tx.Query(query, taskId)

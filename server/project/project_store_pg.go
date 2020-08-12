@@ -75,14 +75,14 @@ func (s *storePg) getProject(projectId string) (*Project, error) {
 }
 
 func (s *storePg) getProjectByTask(taskId string) (*Project, error) {
-	query := fmt.Sprintf("SELECT * FROM %s WHERE $1=ANY(task_ids)", s.table)
+	query := fmt.Sprintf("SELECT p.* FROM %s p, %s r WHERE $1=r.task_id AND r.project_id = p.id", s.table, s.relationTable)
 	return s.execQuery(s.tx, query, taskId)
 }
 
 // areTasksUsed checks whether any of the given tasks is already part of a project. Returns false and an error in case
 // of an error.
 func (s *storePg) areTasksUsed(taskIds []string) (bool, error) {
-	query := fmt.Sprintf("SELECT COUNT(*) FROM %s WHERE task_id = $1", s.relationTable)
+	query := fmt.Sprintf("SELECT COUNT(*) FROM %s WHERE task_id = ANY($1)", s.relationTable)
 
 	util.LogQuery(query, taskIds)
 	rows, err := s.tx.Query(query, pq.Array(taskIds))
@@ -116,7 +116,10 @@ func (s *storePg) addProject(draft *Project) (*Project, error) {
 
 	for _, taskId := range draft.TaskIDs {
 		query = fmt.Sprintf("INSERT INTO %s (project_id, task_id) VALUES($1, $2)", s.relationTable)
-		s.execRawQuery(s.tx, query, draft.Id, taskId)
+		err := s.execRawQuery(s.tx, query, project.Id, taskId)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	project.TaskIDs = draft.TaskIDs
@@ -189,7 +192,12 @@ func (s *storePg) execRawQuery(tx *sql.Tx, query string, params ...interface{}) 
 		return errors.Wrap(err, "could not run query")
 	}
 
-	return rows.Close()
+	err = rows.Close()
+	if err != nil {
+		return errors.Wrap(err, "could not close row")
+	}
+
+	return nil
 }
 
 // execQuery executed the given query, turns the result into a Project object and closes the query.
