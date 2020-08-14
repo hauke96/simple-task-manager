@@ -48,10 +48,29 @@ func run(t *testing.T, testFunc func() error) {
 	tearDown()
 }
 
+func runFail(t *testing.T, testFunc func() error) {
+	setup()
+
+	err := testFunc()
+	if err != nil {
+		t.Errorf("%+v", err)
+		t.Fail()
+	}
+
+	tearDownFail()
+}
+
 func tearDown() {
 	err := tx.Commit()
 	if err != nil {
 		panic(err)
+	}
+}
+
+func tearDownFail() {
+	err := tx.Commit()
+	if err == nil {
+		panic(errors.New("database error and rollback expected but not occurred"))
 	}
 }
 
@@ -163,12 +182,51 @@ func TestGetTasks(t *testing.T) {
 	})
 }
 
+func TestAddWithTasks(t *testing.T) {
+	run(t, func() error {
+		user := "Jack"
+		p := Project{
+			Name:    "Test name",
+			Users:   []string{user, "user2"},
+			Owner:   user,
+		}
+
+		t := task.Task{
+			ProcessPoints:    5,
+			MaxProcessPoints: 100,
+			Geometry:         "{}",
+			AssignedUser:     "user2",
+		}
+
+		newProject, err := s.AddProjectWithTasks(&p, []*task.Task{&t})
+		if err != nil {
+			return errors.New(fmt.Sprintf("Adding should work: %s", err.Error()))
+		}
+
+		if len(newProject.Users) != 2 {
+			return errors.New(fmt.Sprintf("User amount should be 2 but was %d", len(newProject.Users)))
+		}
+		if newProject.Users[0] != user || newProject.Users[1] != "user2" {
+			return errors.New(fmt.Sprintf("User not matching"))
+		}
+		if newProject.Name != p.Name {
+			return errors.New(fmt.Sprintf("Name should be '%s' but was '%s'", newProject.Name, p.Name))
+		}
+		if newProject.Owner != user {
+			return errors.New(fmt.Sprintf("Owner should be '%s' but was '%s'", user, newProject.Owner))
+		}
+		if newProject.TotalProcessPoints != 100 || newProject.DoneProcessPoints != 5 {
+			return errors.New(fmt.Sprintf("Process points on project not set correctly"))
+		}
+		return nil
+	})
+}
+
 func TestAddAndGetProject(t *testing.T) {
 	run(t, func() error {
 		user := "Jack"
 		p := Project{
 			Name:    "Test name",
-			TaskIDs: []string{"8"},
 			Users:   []string{user, "user2"},
 			Owner:   user,
 		}
@@ -184,24 +242,18 @@ func TestAddAndGetProject(t *testing.T) {
 		if newProject.Users[0] != user || newProject.Users[1] != "user2" {
 			return errors.New(fmt.Sprintf("User not matching"))
 		}
-		if len(newProject.TaskIDs) != len(p.TaskIDs) || newProject.TaskIDs[0] != p.TaskIDs[0] {
-			return errors.New(fmt.Sprintf("Task ID should be '%s' but was '%s'", newProject.TaskIDs[0], p.TaskIDs[0]))
-		}
 		if newProject.Name != p.Name {
 			return errors.New(fmt.Sprintf("Name should be '%s' but was '%s'", newProject.Name, p.Name))
 		}
 		if newProject.Owner != user {
 			return errors.New(fmt.Sprintf("Owner should be '%s' but was '%s'", user, newProject.Owner))
 		}
-		if newProject.TotalProcessPoints != 100 || newProject.DoneProcessPoints != 5 {
-			return errors.New(fmt.Sprintf("Process points on project not set correctly"))
-		}
 		return nil
 	})
 }
 
 func TestAddProjectWithUsedTasks(t *testing.T) {
-	run(t, func() error {
+	runFail(t, func() error {
 		user := "Jen"
 		p := Project{
 			Name:    "Test name",

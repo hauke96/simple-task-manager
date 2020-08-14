@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/auth"
@@ -67,35 +66,9 @@ func addProject_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(errors.Wrap(err, "error unmarshalling project draft"))
 	}
 
-	//
-	// Store project
-	//
-
-	addedProject, err := context.projectService.AddProject(&dto.Project)
+	addedProject, err := context.projectService.AddProjectWithTasks(&dto.Project, dto.Tasks)
 	if err != nil {
-		return InternalServerError(err)
-	}
-
-	sigolo.Info("Successfully added project %s", addedProject.Id)
-
-	// TODO check for correct GeoJson format in task geometries
-
-	//
-	// Store tasks
-	//
-
-	_, err = context.taskService.AddTasks(dto.Tasks, addedProject.Id)
-	if err != nil {
-		return InternalServerError(err)
-	}
-	sigolo.Info("Successfully added tasks")
-
-	//
-	// Add Metadata now, that we have tasks
-	//
-	err = context.projectService.AddMetadata(addedProject, context.token.UID)
-	if err != nil {
-		return InternalServerError(errors.Wrap(err, fmt.Sprintf("Unable to add metadata to project %s", addedProject.Id)))
+		return InternalServerError(errors.Wrap(err, "error adding project with tasks"))
 	}
 
 	sendAdd(addedProject)

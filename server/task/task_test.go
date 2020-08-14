@@ -100,7 +100,7 @@ func TestAddTasks(t *testing.T) {
 			AssignedUser:     "Mark",
 		}
 
-		addedTasks, err := s.AddTasks([]*Task{rawTask})
+		addedTasks, err := s.AddTasks([]*Task{rawTask}, "1")
 		if err != nil {
 			return errors.New(fmt.Sprintf("Error: %s\n", err.Error()))
 		}
@@ -125,7 +125,7 @@ func TestAddTasksInvalidProcessPoints(t *testing.T) {
 			AssignedUser:     "Mark",
 		}
 
-		_, err := s.AddTasks([]*Task{rawTask})
+		_, err := s.AddTasks([]*Task{rawTask}, "1")
 		if err == nil {
 			return errors.New(fmt.Sprintf("Adding task with maxProcessPoints=0 should not be possible"))
 		}
@@ -134,7 +134,7 @@ func TestAddTasksInvalidProcessPoints(t *testing.T) {
 		rawTask.ProcessPoints = 20
 		rawTask.MaxProcessPoints = 10
 
-		_, err = s.AddTasks([]*Task{rawTask})
+		_, err = s.AddTasks([]*Task{rawTask}, "1")
 		if err == nil {
 			return errors.New(fmt.Sprintf("Adding task with more than maxProcessPoints should not be possible"))
 		}
@@ -143,7 +143,7 @@ func TestAddTasksInvalidProcessPoints(t *testing.T) {
 		rawTask.ProcessPoints = 0
 		rawTask.MaxProcessPoints = -5
 
-		_, err = s.AddTasks([]*Task{rawTask})
+		_, err = s.AddTasks([]*Task{rawTask}, "1")
 		if err == nil {
 			return errors.New(fmt.Sprintf("Adding task with negative maxProcessPoints should not be possible"))
 		}
@@ -152,7 +152,7 @@ func TestAddTasksInvalidProcessPoints(t *testing.T) {
 		rawTask.ProcessPoints = -5
 		rawTask.MaxProcessPoints = 10
 
-		_, err = s.AddTasks([]*Task{rawTask})
+		_, err = s.AddTasks([]*Task{rawTask}, "1")
 		if err == nil {
 			return errors.New(fmt.Sprintf("Adding task with negative processPoints should not be possible"))
 		}

@@ -13,7 +13,7 @@ import (
 type Project struct {
 	Id                 string   `json:"id"`
 	Name               string   `json:"name"`
-	TaskIDs            []string `json:"taskIds"`
+	TaskIDs            []string `json:"taskIds"` // TODO remove?
 	Users              []string `json:"users"`
 	Owner              string   `json:"owner"`
 	Description        string   `json:"description"`
@@ -72,6 +72,41 @@ func (s *ProjectService) GetProjectByTask(taskId string, userId string) (*Projec
 	}
 
 	return project, nil
+}
+
+func (s *ProjectService) AddProjectWithTasks(projectDraft *Project, taskDrafts []*task.Task) (*Project, error) {
+	//
+	// Store project
+	//
+
+	addedProject, err := s.AddProject(projectDraft)
+	if err != nil {
+		return nil, err
+	}
+
+	sigolo.Info("Successfully added project %s", addedProject.Id)
+
+	// TODO check for correct GeoJson format in task geometries
+
+	//
+	// Store tasks
+	//
+
+	_, err = s.taskService.AddTasks(taskDrafts, addedProject.Id)
+	if err != nil {
+		return nil, err
+	}
+	sigolo.Info("Successfully added tasks")
+
+	//
+	// Add Metadata now, that we have tasks
+	//
+	err = s.AddMetadata(addedProject, addedProject.Owner)
+	if err != nil {
+		return nil, err
+	}
+
+	return addedProject, nil
 }
 
 // AddProject adds the project, as requested by user "userId". This does NOT fill the metadata information because
