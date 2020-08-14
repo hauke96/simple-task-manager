@@ -174,6 +174,7 @@ func (s *storePg) getTasks(projectId string, userId string, taskService *task.Ta
 	// TODO IMPORTANT: I hope all of your red lights are flashing because this is currently really bad: A store using a service? Nope nope nope. There's already a TODO in the function calling this function.
 	return taskService.GetTasks(p.TaskIDs, userId)
 }
+
 func (s *storePg) updateName(projectId string, newName string) (*Project, error) {
 	query := fmt.Sprintf("UPDATE %s SET name=$1 WHERE id=$2 RETURNING *", s.table)
 	return s.execQuery(s.tx, query, newName, projectId)

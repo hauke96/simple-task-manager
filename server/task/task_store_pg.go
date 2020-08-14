@@ -8,7 +8,6 @@ import (
 	"github.com/lib/pq"
 	"github.com/pkg/errors"
 	"strconv"
-	"strings"
 )
 
 type taskRow struct {
@@ -20,9 +19,13 @@ type taskRow struct {
 }
 
 type storePg struct {
-	tx    *sql.Tx
-	table string
+	tx           *sql.Tx
+	table        string
 }
+
+var(
+	returnValues = "id, process_points, max_process_points, geometry, assigned_user"
+)
 
 func getStore(tx *sql.Tx) *storePg {
 	return &storePg{
@@ -47,13 +50,10 @@ func (s *storePg) getTasks(taskIds []string) ([]*Task, error) {
 		queryPlaceholderStrings[i] = fmt.Sprintf("$%d", i+1)
 	}
 
-	// Generate "IN" clause with "$1,$2,,..." string for all IDs
-	// TODO use postgres arrays
-	// TODO Maybe don't get project-ID here?
-	query := fmt.Sprintf("SELECT * FROM %s WHERE id IN (%s);", s.table, strings.Join(queryPlaceholderStrings, ","))
-	util.LogQuery(query, taskIdNumbers...)
+	query := fmt.Sprintf("SELECT id,process_points,max_process_points,geometry,assigned_user FROM %s WHERE id = ANY($1);", s.table)
+	util.LogQuery(query, taskIds)
 
-	rows, err := s.tx.Query(query, taskIdNumbers...)
+	rows, err := s.tx.Query(query, pq.Array(taskIds))
 	if err != nil {
 		return nil, errors.Wrap(err, "error executing query")
 	}
@@ -92,12 +92,12 @@ func (s *storePg) getTask(taskId string) (*Task, error) {
 	return tasks[0], nil
 }
 
-func (s *storePg) addTasks(newTasks []*Task) ([]*Task, error) {
+func (s *storePg) addTasks(newTasks []*Task, projectId string) ([]*Task, error) {
 	taskIds := make([]string, 0)
 
 	// TODO Do not add one by one but instead build one large query (otherwise it's really slow)
 	for _, t := range newTasks {
-		id, err := s.addTask(t)
+		id, err := s.addTask(t, projectId)
 		if err != nil {
 			sigolo.Error("error adding task '%s'", t.Id)
 			return nil, err
@@ -109,30 +109,29 @@ func (s *storePg) addTasks(newTasks []*Task) ([]*Task, error) {
 	return s.getTasks(taskIds)
 }
 
-func (s *storePg) addTask(task *Task) (string, error) {
-	// TODO Add project ID here
-	query := fmt.Sprintf("INSERT INTO %s(process_points, max_process_points, geometry, assigned_user) VALUES($1, $2, $3, $4) RETURNING *;", s.table)
-	t, err := execQuery(s.tx, query, task.ProcessPoints, task.MaxProcessPoints, task.Geometry, task.AssignedUser)
+func (s *storePg) addTask(task *Task, projectId string) (string, error) {
+	query := fmt.Sprintf("INSERT INTO %s(process_points, max_process_points, geometry, assigned_user, project_id) VALUES($1, $2, $3, $4, $5) RETURNING %s;", s.table, returnValues)
+	t, err := execQuery(s.tx, query, task.ProcessPoints, task.MaxProcessPoints, task.Geometry, task.AssignedUser, projectId)
 
-	if err == nil && t != nil {
-		return t.Id, nil
+	if err != nil {
+		return "", err
 	}
 
-	return "", err
+	return t.Id, nil
 }
 
 func (s *storePg) assignUser(taskId, userId string) (*Task, error) {
-	query := fmt.Sprintf("UPDATE %s SET assigned_user=$1 WHERE id=$2 RETURNING *;", s.table)
+	query := fmt.Sprintf("UPDATE %s SET assigned_user=$1 WHERE id=$2 RETURNING %s;", s.table, returnValues)
 	return execQuery(s.tx, query, userId, taskId)
 }
 
 func (s *storePg) unassignUser(taskId string) (*Task, error) {
-	query := fmt.Sprintf("UPDATE %s SET assigned_user='' WHERE id=$1 RETURNING *;", s.table)
+	query := fmt.Sprintf("UPDATE %s SET assigned_user='' WHERE id=$1 RETURNING %s;", s.table, returnValues)
 	return execQuery(s.tx, query, taskId)
 }
 
 func (s *storePg) setProcessPoints(taskId string, newPoints int) (*Task, error) {
-	query := fmt.Sprintf("UPDATE %s SET process_points=$1 WHERE id=$2 RETURNING *;", s.table)
+	query := fmt.Sprintf("UPDATE %s SET process_points=$1 WHERE id=$2 RETURNING %s;", s.table, returnValues)
 	return execQuery(s.tx, query, newPoints, taskId)
 }
 
@@ -153,7 +152,7 @@ func execQuery(db *sql.Tx, query string, params ...interface{}) (*Task, error) {
 	util.LogQuery(query, params...)
 	rows, err := db.Query(query, params...)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "could not run query")
 	}
 	defer rows.Close()
 
@@ -172,7 +171,7 @@ func rowToTask(rows *sql.Rows) (*Task, error) {
 	var task taskRow
 	err := rows.Scan(&task.id, &task.processPoints, &task.maxProcessPoints, &task.geometry, &task.assignedUser)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "could not scan rows")
 	}
 
 	result := Task{}

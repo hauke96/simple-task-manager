@@ -40,14 +40,14 @@ func (s *TaskService) GetTasks(taskIds []string, requestingUserId string) ([]*Ta
 }
 
 // AddTasks sets the ID of the tasks and adds them to the storage.
-func (s *TaskService) AddTasks(newTasks []*Task) ([]*Task, error) {
+func (s *TaskService) AddTasks(newTasks []*Task, projectId string) ([]*Task, error) {
 	for _, t := range newTasks {
 		if t.ProcessPoints < 0 || t.MaxProcessPoints < 1 || t.MaxProcessPoints < t.ProcessPoints {
 			return nil, errors.New(fmt.Sprintf("process points of task are out of range (%d / %d)", t.ProcessPoints, t.MaxProcessPoints))
 		}
 	}
 
-	return s.store.addTasks(newTasks)
+	return s.store.addTasks(newTasks, projectId)
 }
 
 func (s *TaskService) AssignUser(taskId, userId string) (*Task, error) {
