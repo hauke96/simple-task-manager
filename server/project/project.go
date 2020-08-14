@@ -292,14 +292,6 @@ func (s *ProjectService) DeleteProject(projectId, potentialOwnerId string) error
 		return err
 	}
 
-	//project, err := s.store.getProject(projectId)
-	//if err != nil {
-	//	return err
-	//}
-	//
-	//// First delete the tasks, due to ownership check which won't work, when there's no project anymore.
-	//s.taskService.Delete(project.TaskIDs, potentialOwnerId)
-
 	// Then remove the project
 	err = s.store.delete(projectId)
 	if err != nil {
