@@ -35,7 +35,7 @@ func getStore(tx *sql.Tx) *storePg {
 }
 
 func (s *storePg) getProjects(userId string) ([]*Project, error) {
-	query := fmt.Sprintf("SELECT * FROM %s WHERE $1=ANY(users)", s.table)
+	query := fmt.Sprintf("SELECT * FROM %s WHERE $1 = ANY(users)", s.table)
 
 	util.LogQuery(query, userId)
 
@@ -76,32 +76,6 @@ func (s *storePg) getProject(projectId string) (*Project, error) {
 func (s *storePg) getProjectByTask(taskId string) (*Project, error) {
 	query := fmt.Sprintf("SELECT p.* FROM %s p, %s t WHERE $1 = t.id AND t.project_id = p.id", s.table, s.taskTable)
 	return s.execQuery(s.tx, query, taskId)
-}
-
-// areTasksUsed checks whether any of the given tasks is already part of a project. Returns false and an error in case
-// of an error.
-func (s *storePg) areTasksUsed(taskIds []string) (bool, error) {
-	query := fmt.Sprintf("SELECT COUNT(*) FROM %s WHERE id = ANY($1)", s.taskTable)
-
-	util.LogQuery(query, taskIds)
-	rows, err := s.tx.Query(query, pq.Array(taskIds))
-	if err != nil {
-		return false, errors.Wrap(err, "could not run query")
-	}
-	defer rows.Close()
-
-	ok := rows.Next()
-	if !ok {
-		return false, errors.New("there is no next row or an error happened")
-	}
-
-	var count int
-	err = rows.Scan(&count)
-	if err != nil {
-		return false, errors.Wrap(err, "could not scan count from rows")
-	}
-
-	return count != 0, nil
 }
 
 // Adds the given project draft and assigns an ID to the project

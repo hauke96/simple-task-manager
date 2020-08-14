@@ -81,6 +81,31 @@ func TestGetProjects(t *testing.T) {
 		if userProjects[0].TotalProcessPoints != 10 || userProjects[0].DoneProcessPoints != 0 {
 			return errors.New("Process points on project not set correctly")
 		}
+
+		return nil
+	})
+}
+
+func TestGetProjectsInvalidUser(t *testing.T) {
+	h.Run(t, func() error {
+		// User "Worf" does not exist
+		projects, err := s.GetProjects("Worf")
+		if err != nil {
+			return errors.New("Getting projects for 'Worf' should work")
+		}
+		if len(projects) != 0 {
+			return errors.New("User 'Worf' has no project")
+		}
+
+		// This should not fail but should also not return anything
+		projects, err = s.GetProjects("")
+		if err != nil {
+			return errors.New("Getting projects for empty user should work")
+		}
+		if len(projects) != 0 {
+			return errors.New("Empty user has no project")
+		}
+
 		return nil
 	})
 }
@@ -389,6 +414,29 @@ func TestRemoveUserTwice(t *testing.T) {
 		if err == nil {
 			return errors.New("Removing a user twice should not work")
 		}
+		return nil
+	})
+}
+
+func TestRemoveUserUnassignsHim(t *testing.T) {
+	h.Run(t, func() error {
+		_, err := s.RemoveUser("2", "Donny", "Donny")
+		if err != nil {
+			return errors.New("Removing user should work")
+		}
+
+		tasks, err := s.taskService.GetTasks("2", "Maria")
+		if err != nil {
+			return errors.New("Getting tasks should work")
+		}
+
+		// No task should be assigned to "Donny"
+		for _, t := range tasks {
+			if t.AssignedUser == "Donny" {
+				return errors.New(fmt.Sprintf("User %s still assigned to task %s", "Donny", t.Id))
+			}
+		}
+
 		return nil
 	})
 }
