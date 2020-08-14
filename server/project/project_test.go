@@ -8,7 +8,7 @@ import (
 	"github.com/hauke96/simple-task-manager/server/database"
 	"github.com/hauke96/simple-task-manager/server/permission"
 	"github.com/hauke96/simple-task-manager/server/task"
-	testHelper "github.com/hauke96/simple-task-manager/server/test"
+	test "github.com/hauke96/simple-task-manager/server/test"
 	"github.com/pkg/errors"
 	"testing"
 
@@ -19,11 +19,18 @@ var (
 	tx          *sql.Tx
 	s           *ProjectService
 	taskService *task.TaskService
+	h           *test.TestHelper
 )
+
+func TestMain(m *testing.M) {
+	h = &test.TestHelper{
+		Setup: setup,
+	}
+}
 
 func setup() {
 	config.LoadConfig("../config/test.json")
-	testHelper.InitWithDummyData()
+	test.InitWithDummyData()
 	sigolo.LogLevel = sigolo.LOG_DEBUG
 
 	var err error
@@ -31,51 +38,15 @@ func setup() {
 	if err != nil {
 		panic(err)
 	}
+
+	h.Tx = tx
 	permissionService := permission.Init(tx)
 	taskService = task.Init(tx, permissionService)
 	s = Init(tx, taskService, permissionService)
 }
 
-func run(t *testing.T, testFunc func() error) {
-	setup()
-
-	err := testFunc()
-	if err != nil {
-		t.Errorf("%+v", err)
-		t.Fail()
-	}
-
-	tearDown()
-}
-
-func runFail(t *testing.T, testFunc func() error) {
-	setup()
-
-	err := testFunc()
-	if err != nil {
-		t.Errorf("%+v", err)
-		t.Fail()
-	}
-
-	tearDownFail()
-}
-
-func tearDown() {
-	err := tx.Commit()
-	if err != nil {
-		panic(err)
-	}
-}
-
-func tearDownFail() {
-	err := tx.Commit()
-	if err == nil {
-		panic(errors.New("database error and rollback expected but not occurred"))
-	}
-}
-
 func TestGetProjects(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		// For Maria (being part of project 1 and 2)
 		userProjects, err := s.GetProjects("Maria")
 		if err != nil {
@@ -113,7 +84,7 @@ func TestGetProjects(t *testing.T) {
 }
 
 func TestGetProjectByTask(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		project, err := s.GetProjectByTask("4", "John")
 		if err != nil {
 			return err
@@ -130,7 +101,7 @@ func TestGetProjectByTask(t *testing.T) {
 }
 
 func TestGetTasks(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		tasks, err := s.GetTasks("1", "Peter")
 		if err != nil {
 			return errors.New(fmt.Sprintf("Get should work: %s", err.Error()))
@@ -183,12 +154,12 @@ func TestGetTasks(t *testing.T) {
 }
 
 func TestAddWithTasks(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		user := "Jack"
 		p := Project{
-			Name:    "Test name",
-			Users:   []string{user, "user2"},
-			Owner:   user,
+			Name:  "Test name",
+			Users: []string{user, "user2"},
+			Owner: user,
 		}
 
 		t := task.Task{
@@ -223,12 +194,12 @@ func TestAddWithTasks(t *testing.T) {
 }
 
 func TestAddAndGetProject(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		user := "Jack"
 		p := Project{
-			Name:    "Test name",
-			Users:   []string{user, "user2"},
-			Owner:   user,
+			Name:  "Test name",
+			Users: []string{user, "user2"},
+			Owner: user,
 		}
 
 		newProject, err := s.AddProject(&p)
@@ -253,7 +224,7 @@ func TestAddAndGetProject(t *testing.T) {
 }
 
 func TestAddProjectWithUsedTasks(t *testing.T) {
-	runFail(t, func() error {
+	h.RunFail(t, func() error {
 		user := "Jen"
 		p := Project{
 			Name:    "Test name",
@@ -271,7 +242,7 @@ func TestAddProjectWithUsedTasks(t *testing.T) {
 }
 
 func TestAddUser(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		newUser := "new user"
 
 		p, err := s.AddUser("1", newUser, "Peter")
@@ -307,7 +278,7 @@ func TestAddUser(t *testing.T) {
 }
 
 func TestAddUserTwice(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		newUser := "another-new-user"
 
 		_, err := s.AddUser("1", newUser, "Peter")
@@ -325,7 +296,7 @@ func TestAddUserTwice(t *testing.T) {
 }
 
 func TestRemoveUser(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		userToRemove := "Maria"
 
 		p, err := s.RemoveUser("1", "Peter", userToRemove)
@@ -375,7 +346,7 @@ func TestRemoveUser(t *testing.T) {
 }
 
 func TestRemoveNonOwnerUser(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		userToRemove := "Carl"
 
 		// Carl is not owner and removes himself, which is ok
@@ -399,7 +370,7 @@ func TestRemoveNonOwnerUser(t *testing.T) {
 }
 
 func TestRemoveArbitraryUserNotAllowed(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		userToRemove := "Anna"
 
 		// Michael is not member of the project and should not be allowed to remove anyone
@@ -436,7 +407,7 @@ func TestRemoveArbitraryUserNotAllowed(t *testing.T) {
 }
 
 func TestRemoveUserTwice(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		_, err := s.RemoveUser("2", "Maria", "John")
 		if err != nil {
 			t.Error("This should work: ", err)
@@ -452,7 +423,7 @@ func TestRemoveUserTwice(t *testing.T) {
 }
 
 func TestLeaveProject(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		userToRemove := "Anna"
 
 		p, err := s.LeaveProject("2", userToRemove)
@@ -502,7 +473,7 @@ func TestLeaveProject(t *testing.T) {
 }
 
 func TestDeleteProject(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		id := "1" // owned by "Peter"
 
 		// Try to remove with now-owning user
@@ -551,7 +522,7 @@ func TestDeleteProject(t *testing.T) {
 }
 
 func TestUpdateName(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		oldProject, err := s.GetProject("1", "Peter")
 		if err != nil {
 			return errors.New(fmt.Sprintf("Error getting project to update: %s", err))
@@ -598,7 +569,7 @@ func TestUpdateName(t *testing.T) {
 }
 
 func TestUpdateDescription(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		oldProject, _ := s.GetProject("1", "Peter")
 
 		newDescription := "flubby dubby\n foo bar"
