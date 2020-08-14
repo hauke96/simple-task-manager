@@ -74,6 +74,8 @@ func (s *ProjectService) GetProjectByTask(taskId string, userId string) (*Projec
 	return project, nil
 }
 
+// AddProjectWithTasks takes the project and the tasks and adds them to the database. This also adds the process-point
+// metadata to the returned project.
 func (s *ProjectService) AddProjectWithTasks(projectDraft *Project, taskDrafts []*task.Task) (*Project, error) {
 	//
 	// Store project
