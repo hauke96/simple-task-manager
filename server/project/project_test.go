@@ -123,11 +123,13 @@ func TestAddWithTasks(t *testing.T) {
 			return errors.New(fmt.Sprintf("Adding should work: %s", err.Error()))
 		}
 
+		// Check project
+
 		if len(newProject.Users) != 2 {
 			return errors.New(fmt.Sprintf("User amount should be 2 but was %d", len(newProject.Users)))
 		}
 		if newProject.Users[0] != user || newProject.Users[1] != "user2" {
-			return errors.New(fmt.Sprintf("User not matching"))
+			return errors.New("User not matching")
 		}
 		if newProject.Name != p.Name {
 			return errors.New(fmt.Sprintf("Name should be '%s' but was '%s'", newProject.Name, p.Name))
@@ -136,8 +138,28 @@ func TestAddWithTasks(t *testing.T) {
 			return errors.New(fmt.Sprintf("Owner should be '%s' but was '%s'", user, newProject.Owner))
 		}
 		if newProject.TotalProcessPoints != 100 || newProject.DoneProcessPoints != 5 {
-			return errors.New(fmt.Sprintf("Process points on project not set correctly"))
+			return errors.New("Process points on project not set correctly")
 		}
+
+		// Check task
+
+		tasks, err := s.taskService.GetTasks(newProject.Id, newProject.Owner)
+		if err != nil {
+			return errors.Wrap(err, "Getting tasks after adding project should work")
+		}
+
+		if tasks == nil || len(tasks) != 1 {
+			return errors.New("Expect to have exactly one task")
+		}
+
+		task := tasks[0]
+		if task.AssignedUser != "user2" ||
+			task.MaxProcessPoints != 100 ||
+			task.ProcessPoints != 5 ||
+			task.Geometry != "{}" {
+			return errors.New(fmt.Sprintf("Added task does not match:\n%v\n%v\n", t, task))
+		}
+
 		return nil
 	})
 }
