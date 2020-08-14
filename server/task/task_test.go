@@ -7,7 +7,7 @@ import (
 	"github.com/hauke96/simple-task-manager/server/config"
 	"github.com/hauke96/simple-task-manager/server/database"
 	"github.com/hauke96/simple-task-manager/server/permission"
-	testHelper "github.com/hauke96/simple-task-manager/server/test"
+	"github.com/hauke96/simple-task-manager/server/test"
 	"github.com/pkg/errors"
 	"testing"
 
@@ -17,11 +17,18 @@ import (
 var (
 	tx *sql.Tx
 	s  *TaskService
+	h  *test.TestHelper
 )
+
+func TestMain(m *testing.M) {
+	h = &test.TestHelper{
+		Setup: setup,
+	}
+}
 
 func setup() {
 	config.LoadConfig("../config/test.json")
-	testHelper.InitWithDummyData()
+	test.InitWithDummyData()
 	sigolo.LogLevel = sigolo.LOG_DEBUG
 
 	var err error
@@ -29,31 +36,14 @@ func setup() {
 	if err != nil {
 		panic(err)
 	}
+
+	h.Tx = tx
 	permissionService := permission.Init(tx)
 	s = Init(tx, permissionService)
 }
 
-func run(t *testing.T, testFunc func() error) {
-	setup()
-
-	err := testFunc()
-	if err != nil {
-		t.Errorf("%+v", err)
-		t.Fail()
-	}
-
-	tearDown()
-}
-
-func tearDown() {
-	err := tx.Commit()
-	if err != nil {
-		panic(err)
-	}
-}
-
 func TestGetTasks(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		ids := []string{"2", "3"}
 
 		tasks, err := s.GetTasks(ids, "Clara")
@@ -92,7 +82,7 @@ func TestGetTasks(t *testing.T) {
 }
 
 func TestAddTasks(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		rawTask := &Task{
 			ProcessPoints:    5,
 			MaxProcessPoints: 250,
@@ -116,7 +106,7 @@ func TestAddTasks(t *testing.T) {
 }
 
 func TestAddTasksInvalidProcessPoints(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		// Max points = 0 is not allowed
 		rawTask := &Task{
 			ProcessPoints:    0,
@@ -161,7 +151,7 @@ func TestAddTasksInvalidProcessPoints(t *testing.T) {
 }
 
 func TestAssignUser(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		task, err := s.AssignUser("2", "assigned-user")
 		if err != nil {
 			return errors.New(fmt.Sprintf("Error: %s\n", err.Error()))
@@ -187,7 +177,7 @@ func TestAssignUser(t *testing.T) {
 }
 
 func TestAssignUserTwice(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		_, err := s.AssignUser("4", "foo-bar")
 		if err != nil {
 			return errors.New(fmt.Sprintf("Error: %s\n", err.Error()))
@@ -202,7 +192,7 @@ func TestAssignUserTwice(t *testing.T) {
 }
 
 func TestUnassignUser(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		s.AssignUser("2", "assigned-user")
 
 		task, err := s.UnassignUser("2", "assigned-user")
@@ -230,7 +220,7 @@ func TestUnassignUser(t *testing.T) {
 }
 
 func TestSetProcessPoints(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		// Test Increase number
 		task, err := s.SetProcessPoints("3", 70, "Maria")
 		if err != nil {
@@ -279,7 +269,7 @@ func TestSetProcessPoints(t *testing.T) {
 }
 
 func TestDelete(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		// tasks of project 2
 		taskIds := []string{"6", "7"}
 

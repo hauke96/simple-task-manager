@@ -8,7 +8,7 @@ import (
 	"github.com/hauke96/simple-task-manager/server/database"
 	"github.com/hauke96/simple-task-manager/server/permission"
 	"github.com/hauke96/simple-task-manager/server/task"
-	test "github.com/hauke96/simple-task-manager/server/test"
+	"github.com/hauke96/simple-task-manager/server/test"
 	"github.com/pkg/errors"
 	"testing"
 
