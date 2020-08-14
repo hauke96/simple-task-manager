@@ -30,13 +30,13 @@ func Init(tx *sql.Tx, permissionService *permission.PermissionService) *TaskServ
 }
 
 // GetTasks checks the membership of the requesting user and gets the tasks requested by the IDs.
-func (s *TaskService) GetTasks(taskIds []string, requestingUserId string) ([]*Task, error) {
-	err := s.permissionService.VerifyMembershipTasks(taskIds, requestingUserId)
+func (s *TaskService) GetTasks(projectId string, requestingUserId string) ([]*Task, error) {
+	err := s.permissionService.VerifyMembershipProject(projectId, requestingUserId)
 	if err != nil {
 		return nil, err
 	}
 
-	return s.store.getTasks(taskIds)
+	return s.store.getTasks(projectId)
 }
 
 // AddTasks sets the ID of the tasks and adds them to the storage.

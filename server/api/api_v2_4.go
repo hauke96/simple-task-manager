@@ -215,7 +215,7 @@ func getProjectTasks_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return BadRequestError(errors.New("url segment 'id' not set"))
 	}
 
-	tasks, err := context.projectService.GetTasks(projectId, context.token.UID)
+	tasks, err := context.taskService.GetTasks(projectId, context.token.UID)
 	if err != nil {
 		return InternalServerError(err)
 	}

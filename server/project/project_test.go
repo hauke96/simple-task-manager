@@ -26,6 +26,8 @@ func TestMain(m *testing.M) {
 	h = &test.TestHelper{
 		Setup: setup,
 	}
+
+	m.Run()
 }
 
 func setup() {
@@ -95,59 +97,6 @@ func TestGetProjectByTask(t *testing.T) {
 		}
 		if project.TotalProcessPoints != 308 || project.DoneProcessPoints != 154 {
 			return errors.New("Process points on project not set correctly")
-		}
-		return nil
-	})
-}
-
-func TestGetTasks(t *testing.T) {
-	h.Run(t, func() error {
-		tasks, err := s.GetTasks("1", "Peter")
-		if err != nil {
-			return errors.New(fmt.Sprintf("Get should work: %s", err.Error()))
-		}
-
-		sigolo.Debug("Tasks: %#v", tasks)
-
-		if len(tasks) != 1 {
-			return errors.New("There should be exactly one task")
-		}
-
-		task := tasks[0]
-		sigolo.Debug("Task: %#v", task)
-
-		if task.Id != "1" {
-			return errors.New("id not matching")
-		}
-
-		if task.ProcessPoints != 0 {
-			return errors.New("process points not matching")
-		}
-
-		if task.MaxProcessPoints != 10 {
-			return errors.New("max process points not matching")
-		}
-
-		if task.AssignedUser != "Peter" {
-			return errors.New("assigned user not matching")
-		}
-
-		// Part of project but not owning
-		_, err = s.GetTasks("1", "Maria")
-		if err != nil {
-			return errors.New("This should work, Maria is part of the project")
-		}
-
-		// Not part of project
-		_, err = s.GetTasks("1", "Unknown user")
-		if err == nil {
-			return errors.New("Get tasks of not owned project should not work")
-		}
-
-		// Not existing project
-		_, err = s.GetTasks("28745276", "Peter")
-		if err == nil {
-			return errors.New("Get should not work")
 		}
 		return nil
 	})
@@ -318,7 +267,7 @@ func TestRemoveUser(t *testing.T) {
 			return errors.New(fmt.Sprintf("Process points on project not set correctly"))
 		}
 
-		tasks, err := taskService.GetTasks(p.TaskIDs, "Peter")
+		tasks, err := taskService.GetTasks(p.Id, "Peter")
 		if err != nil {
 			return errors.New(fmt.Sprintf("Getting tasks should still work"))
 		}
@@ -490,12 +439,6 @@ func TestDeleteProject(t *testing.T) {
 
 		// Actually remove project
 
-		project, err := s.GetProject(id, "Peter")
-		if err != nil {
-			return errors.New(fmt.Sprintf("Error getting project to relete: %s", err.Error()))
-		}
-		taskIds := project.TaskIDs
-
 		err = s.DeleteProject(id, "Peter") // Maria does not own this project
 		if err != nil {
 			return errors.New(fmt.Sprintf("Peter owns this project, this should work: %s", err.Error()))
@@ -506,7 +449,7 @@ func TestDeleteProject(t *testing.T) {
 			return errors.New("The project should not exist anymore")
 		}
 
-		_, err = taskService.GetTasks(taskIds, "Peter")
+		_, err = taskService.GetTasks(id, "Peter")
 		if err == nil {
 			return errors.New("The tasks should not exist anymore")
 		}

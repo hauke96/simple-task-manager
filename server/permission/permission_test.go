@@ -22,6 +22,8 @@ func TestMain(m *testing.M) {
 	h = &test.TestHelper{
 		Setup: setup,
 	}
+
+	m.Run()
 }
 
 func setup() {

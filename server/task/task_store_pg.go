@@ -34,40 +34,19 @@ func getStore(tx *sql.Tx) *storePg {
 	}
 }
 
-func (s *storePg) getTasks(taskIds []string) ([]*Task, error) {
-	// Turn the given taskIDs into a slice of "interface{}", because the "Query" function below need this type.
-	// Also create the query parameter placeholder string ("$1", "$2", etc.).
-	taskIdNumbers := make([]interface{}, len(taskIds))
-	queryPlaceholderStrings := make([]string, len(taskIds))
-	for i, _ := range taskIds {
-		n, err := strconv.Atoi(taskIds[i])
+func (s *storePg) getTasks(projectId string) ([]*Task, error) {
+	query := fmt.Sprintf("SELECT id,process_points,max_process_points,geometry,assigned_user FROM %s WHERE project_id = $1;", s.table)
+	util.LogQuery(query, projectId)
 
-		if err != nil {
-			return nil, err
-		}
-
-		taskIdNumbers[i] = n
-		queryPlaceholderStrings[i] = fmt.Sprintf("$%d", i+1)
-	}
-
-	query := fmt.Sprintf("SELECT id,process_points,max_process_points,geometry,assigned_user FROM %s WHERE id = ANY($1);", s.table)
-	util.LogQuery(query, taskIds)
-
-	rows, err := s.tx.Query(query, pq.Array(taskIds))
+	rows, err := s.tx.Query(query, projectId)
 	if err != nil {
-		return nil, errors.Wrap(err, "error executing query")
+		return nil, errors.Wrapf(err, "error executing query to get tasks for project %s", projectId)
 	}
 	defer rows.Close()
 
 	// Read all tasks from the returned rows of the query
 	tasks := make([]*Task, 0)
 	for rows.Next() {
-		var t taskRow
-		err = rows.Scan(&t.id, &t.processPoints, &t.maxProcessPoints, &t.geometry, &t.assignedUser)
-		if err != nil {
-			return nil, errors.Wrap(err, "unable to scan task row")
-		}
-
 		task, err := rowToTask(rows)
 		if err != nil {
 			return nil, errors.Wrap(err, "error converting row to task")
@@ -84,12 +63,25 @@ func (s *storePg) getTasks(taskIds []string) ([]*Task, error) {
 }
 
 func (s *storePg) getTask(taskId string) (*Task, error) {
-	tasks, err := s.getTasks([]string{taskId})
+	query := fmt.Sprintf("SELECT id,process_points,max_process_points,geometry,assigned_user FROM %s WHERE id = $1;", s.table)
+	util.LogQuery(query, taskId)
+
+	rows, err := s.tx.Query(query, taskId)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrapf(err, "error executing query to get task %s", taskId)
+	}
+	defer rows.Close()
+
+	if !rows.Next() {
+		return nil, errors.New("there is no next row or an error happened")
 	}
 
-	return tasks[0], nil
+	task, err := rowToTask(rows)
+	if err != nil {
+		return nil, errors.Wrap(err, "error converting row to task")
+	}
+
+	return task, nil
 }
 
 func (s *storePg) addTasks(newTasks []*Task, projectId string) ([]*Task, error) {
@@ -106,7 +98,7 @@ func (s *storePg) addTasks(newTasks []*Task, projectId string) ([]*Task, error) 
 		taskIds = append(taskIds, id)
 	}
 
-	return s.getTasks(taskIds)
+	return s.getTasks(projectId)
 }
 
 func (s *storePg) addTask(task *Task, projectId string) (string, error) {

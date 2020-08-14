@@ -171,7 +171,7 @@ func (s *ProjectService) GetProject(projectId string, potentialMemberId string) 
 
 // AddMetadata adds additional metadata for convenience. This includes information about process points as well as permissions.
 func (s *ProjectService) AddMetadata(project *Project, potentialMemberId string) error {
-	tasks, err := s.GetTasks(project.Id, potentialMemberId)
+	tasks, err := s.taskService.GetTasks(project.Id, potentialMemberId)
 	if err != nil {
 		sigolo.Error("getting tasks of project %s failed", project.Id)
 		return err
@@ -307,16 +307,6 @@ func (s *ProjectService) DeleteProject(projectId, potentialOwnerId string) error
 	}
 
 	return nil
-}
-
-// TODO move into task package, pass task IDs as parameter and use the permission service to check the permissions on those tasks
-func (s *ProjectService) GetTasks(projectId string, userId string) ([]*task.Task, error) {
-	err := s.permissionService.VerifyMembershipProject(projectId, userId)
-	if err != nil {
-		return nil, err
-	}
-
-	return s.store.getTasks(projectId, userId, s.taskService)
 }
 
 func (s *ProjectService) UpdateName(projectId string, newName string, requestingUserId string) (*Project, error) {

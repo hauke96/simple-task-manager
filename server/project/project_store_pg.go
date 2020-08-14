@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/hauke96/sigolo"
-	"github.com/hauke96/simple-task-manager/server/task"
 	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/lib/pq"
 	"github.com/pkg/errors"
@@ -164,17 +163,6 @@ func (s *storePg) delete(projectId string) error {
 	return err
 }
 
-// getTasks will get the tasks for the given projectId and also checks the ownership of the given user.
-func (s *storePg) getTasks(projectId string, userId string, taskService *task.TaskService) ([]*task.Task, error) {
-	p, err := s.getProject(projectId)
-	if err != nil {
-		return nil, err
-	}
-
-	// TODO IMPORTANT: I hope all of your red lights are flashing because this is currently really bad: A store using a service? Nope nope nope. There's already a TODO in the function calling this function.
-	return taskService.GetTasks(p.TaskIDs, userId)
-}
-
 func (s *storePg) updateName(projectId string, newName string) (*Project, error) {
 	query := fmt.Sprintf("UPDATE %s SET name=$1 WHERE id=$2 RETURNING *", s.table)
 	return s.execQuery(s.tx, query, newName, projectId)
@@ -210,8 +198,7 @@ func (s *storePg) execQuery(tx *sql.Tx, query string, params ...interface{}) (*P
 	}
 	defer rows.Close()
 
-	ok := rows.Next()
-	if !ok {
+	if !rows.Next() {
 		return nil, errors.New("there is no next row or an error happened")
 	}
 

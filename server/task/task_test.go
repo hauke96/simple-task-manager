@@ -24,6 +24,8 @@ func TestMain(m *testing.M) {
 	h = &test.TestHelper{
 		Setup: setup,
 	}
+
+	m.Run()
 }
 
 func setup() {
@@ -44,9 +46,7 @@ func setup() {
 
 func TestGetTasks(t *testing.T) {
 	h.Run(t, func() error {
-		ids := []string{"2", "3"}
-
-		tasks, err := s.GetTasks(ids, "Clara")
+		tasks, err := s.GetTasks("3", "Otto")
 
 		if err != nil {
 			return errors.New(fmt.Sprintf("Error: %s\n", err.Error()))
@@ -56,27 +56,33 @@ func TestGetTasks(t *testing.T) {
 		fmt.Printf("1: %#v\n", tasks[1])
 
 		t1 := tasks[0]
-		if t1.Id != "2" ||
+		if t1.Id != "5" ||
 			t1.AssignedUser != "" ||
-			t1.MaxProcessPoints != 100 ||
-			t1.ProcessPoints != 100 {
+			t1.MaxProcessPoints != 1000 ||
+			t1.ProcessPoints != 345 {
 			return errors.New(fmt.Sprintf("Task 2 does not match\n"))
 		}
 
 		t2 := tasks[1]
-		if t2.Id != "3" ||
-			t2.AssignedUser != "Maria" ||
-			t2.MaxProcessPoints != 100 ||
-			t2.ProcessPoints != 50 {
+		if t2.Id != "8" ||
+			t2.AssignedUser != "Otto" ||
+			t2.MaxProcessPoints != 1000 ||
+			t2.ProcessPoints != 0 {
 			return errors.New(fmt.Sprintf("Task 3 does not match\n"))
 		}
 
-		// TODO Uncomment this when task-IDs are integers in the code as well. The problem here: The test itself works but the tearDown makes a commit which lets the test fail due to these invalid ID types (here string instead of integer)
-		// not existing task should cause error
-		//_, err = s.GetTasks([]string{"an id", "yet another id"}, "Anna")
-		//if err == nil { // database returns just not a task
-		//	return errors.New(fmt.Sprintf("Should not be able to get not existing tasks\n"))
-		//}
+		return nil
+	})
+}
+
+func TestGetTasksUnknownProject(t *testing.T) {
+	h.Run(t, func() error {
+		_, err := s.GetTasks("42", "Clara")
+
+		if err == nil {
+			return errors.New("Project 42 doesn't exist, getting tasks should not work")
+		}
+
 		return nil
 	})
 }
@@ -95,11 +101,11 @@ func TestAddTasks(t *testing.T) {
 			return errors.New(fmt.Sprintf("Error: %s\n", err.Error()))
 		}
 
-		validTaskWithId := addedTasks[0]
-		if validTaskWithId.AssignedUser != "Mark" ||
-			validTaskWithId.MaxProcessPoints != 250 ||
-			validTaskWithId.ProcessPoints != 5 {
-			return errors.New(fmt.Sprintf("Added task does not match\n"))
+		addedTask := addedTasks[1] // [0] is the original task from the dummy data
+		if addedTask.AssignedUser != "Mark" ||
+			addedTask.MaxProcessPoints != 250 ||
+			addedTask.ProcessPoints != 5 {
+			return errors.New(fmt.Sprintf("Added task does not match:\n%v\n%v\n", rawTask, addedTask))
 		}
 		return nil
 	})
@@ -278,15 +284,15 @@ func TestDelete(t *testing.T) {
 			return errors.New(fmt.Sprintf("error deleting tasks: %s", err.Error()))
 		}
 
-		for i := 0; i < len(taskIds); i++ {
-			tasks, err := s.GetTasks([]string{taskIds[i]}, "Maria")
-			if tasks != nil && len(tasks) > 0 {
-				return errors.New(fmt.Sprintf("It should not be possible to read task '%s': %#v", taskIds[i], tasks[0]))
-			}
-			if err == nil {
-				return errors.New(fmt.Sprintf("The task %s should not exist anymore", taskIds[i]))
-			}
+		remainingTasks,err := s.GetTasks("2", "Maria")
+		if err != nil {
+			return errors.New("Getting remaining tasks should work")
 		}
+
+		if len(remainingTasks) != 3 {
+			return errors.New(fmt.Sprintf("Expect 3 remaining tasks but found %d", len(remainingTasks)))
+		}
+
 		return nil
 	})
 }

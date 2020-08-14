@@ -31,9 +31,10 @@ INSERT INTO tasks(id, project_id, process_points, max_process_points, geometry, 
 --
 INSERT INTO projects(id, name, users, owner) VALUES (3, 'Project 3', '{Otto}', 'Otto');
 INSERT INTO tasks(id, project_id, process_points, max_process_points, geometry, assigned_user) VALUES (5, 3, 345, 1000, '{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[9.951631591968885,53.563785517845105],[9.935667083912245,53.55022340710764],[10.00639157121693,53.53675896834966],[10.013773010425917,53.570921724776724],[9.951631591968885,53.563785517845105]]]},"properties":null}', '');
+INSERT INTO tasks(id, project_id, process_points, max_process_points, geometry, assigned_user) VALUES (8, 3, 0, 1000, '{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[9.951631591968885,53.563785517845105],[9.935667083912245,53.55022340710764],[10.00639157121693,53.53675896834966],[10.013773010425917,53.570921724776724],[9.951631591968885,53.563785517845105]]]},"properties":null}', 'Otto');
 
 --
 -- Reset sequences for primary keys
 --
 ALTER SEQUENCE projects_id_seq RESTART WITH 4;
-ALTER SEQUENCE tasks_id_seq RESTART WITH 8;
+ALTER SEQUENCE tasks_id_seq RESTART WITH 9;
