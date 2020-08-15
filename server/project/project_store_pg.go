@@ -78,7 +78,7 @@ func (s *storePg) getProjectByTask(taskId string) (*Project, error) {
 	return s.execQuery(s.tx, query, taskId)
 }
 
-// Adds the given project draft and assigns an ID to the project
+// addProject adds the given project draft and assigns an ID to the project.
 func (s *storePg) addProject(draft *Project) (*Project, error) {
 	query := fmt.Sprintf("INSERT INTO %s (name, description, users, owner) VALUES($1, $2, $3, $4) RETURNING *", s.table)
 
@@ -147,7 +147,7 @@ func (s *storePg) updateDescription(projectId string, newDescription string) (*P
 	return s.execQuery(s.tx, query, newDescription, projectId)
 }
 
-// execQuery executed the given query, turns the result into a Project object and closes the query.
+// execQuery executed the given query but doesn't collect any result data. Use "execQuery" to get a proper result.
 func (s *storePg) execRawQuery(tx *sql.Tx, query string, params ...interface{}) error {
 	util.LogQuery(query, params...)
 	rows, err := tx.Query(query, params...)

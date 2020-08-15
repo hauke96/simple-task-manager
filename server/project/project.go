@@ -48,7 +48,7 @@ func (s *ProjectService) GetProjects(userId string) ([]*Project, error) {
 	}
 
 	for _, p := range projects {
-		err = s.AddMetadata(p, userId)
+		err = s.addMetadata(p, userId)
 		if err != nil {
 			sigolo.Error("Unable to add process point data to project %s", p.Id)
 			return nil, err
@@ -65,7 +65,7 @@ func (s *ProjectService) GetProjectByTask(taskId string, userId string) (*Projec
 		return nil, err
 	}
 
-	err = s.AddMetadata(project, userId)
+	err = s.addMetadata(project, userId)
 	if err != nil {
 		sigolo.Error("Unable to add process point data to project %s", project.Id)
 		return nil, err
@@ -103,7 +103,7 @@ func (s *ProjectService) AddProjectWithTasks(projectDraft *Project, taskDrafts [
 	//
 	// Add Metadata now, that we have tasks
 	//
-	err = s.AddMetadata(addedProject, addedProject.Owner)
+	err = s.addMetadata(addedProject, addedProject.Owner)
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +160,7 @@ func (s *ProjectService) GetProject(projectId string, potentialMemberId string) 
 		return nil, err
 	}
 
-	err = s.AddMetadata(project, potentialMemberId)
+	err = s.addMetadata(project, potentialMemberId)
 	if err != nil {
 		sigolo.Error("Unable to add process point data to project %s", project.Id)
 		return nil, err
@@ -169,8 +169,8 @@ func (s *ProjectService) GetProject(projectId string, potentialMemberId string) 
 	return project, nil
 }
 
-// AddMetadata adds additional metadata for convenience. This includes information about process points as well as permissions.
-func (s *ProjectService) AddMetadata(project *Project, potentialMemberId string) error {
+// addMetadata adds additional metadata for convenience. This includes information about process points as well as permissions.
+func (s *ProjectService) addMetadata(project *Project, potentialMemberId string) error {
 	tasks, err := s.taskService.GetTasks(project.Id, potentialMemberId)
 	if err != nil {
 		sigolo.Error("getting tasks of project %s failed", project.Id)
@@ -216,7 +216,7 @@ func (s *ProjectService) AddUser(projectId, userId, potentialOwnerId string) (*P
 		return nil, err
 	}
 
-	err = s.AddMetadata(project, potentialOwnerId)
+	err = s.addMetadata(project, potentialOwnerId)
 	if err != nil {
 		sigolo.Error("Unable to add process point data to project %s", project.Id)
 		return nil, err
@@ -273,7 +273,7 @@ func (s *ProjectService) RemoveUser(projectId, requestingUserId, userIdToRemove 
 
 	// It could happen that someone removes him-/herself, so that we just removed requestingUserId from the project.
 	// Therefore the owner is used here.
-	err = s.AddMetadata(project, project.Owner)
+	err = s.addMetadata(project, project.Owner)
 	if err != nil {
 		sigolo.Error("Unable to add process point data to project %s", project.Id)
 		return nil, err
@@ -315,7 +315,7 @@ func (s *ProjectService) UpdateName(projectId string, newName string, requesting
 		return nil, err
 	}
 
-	err = s.AddMetadata(project, requestingUserId)
+	err = s.addMetadata(project, requestingUserId)
 	if err != nil {
 		sigolo.Error("Unable to add process point data to project %s", project.Id)
 		return nil, err
@@ -339,7 +339,7 @@ func (s *ProjectService) UpdateDescription(projectId string, newDescription stri
 		return nil, err
 	}
 
-	err = s.AddMetadata(project, requestingUserId)
+	err = s.addMetadata(project, requestingUserId)
 	if err != nil {
 		sigolo.Error("Unable to add process point data to project %s", project.Id)
 		return nil, err

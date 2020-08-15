@@ -73,6 +73,8 @@ func addProject_v2_4(r *http.Request, context *Context) *ApiResponse {
 
 	sendAdd(addedProject)
 
+	sigolo.Info("Successfully added project %s with %d tasks", addedProject.Id, len(dto.Tasks))
+
 	return JsonResponse(addedProject)
 }
 
