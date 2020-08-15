@@ -441,56 +441,6 @@ func TestRemoveUserUnassignsHim(t *testing.T) {
 	})
 }
 
-func TestLeaveProject(t *testing.T) {
-	h.Run(t, func() error {
-		userToRemove := "Anna"
-
-		p, err := s.LeaveProject("2", userToRemove)
-		if err != nil {
-			return errors.New(fmt.Sprintf("This should work: %s", err.Error()))
-		}
-
-		containsUser := false
-		for _, u := range p.Users {
-			if u == userToRemove {
-				containsUser = true
-				break
-			}
-		}
-		if containsUser {
-			return errors.New("Project should not contain user anymore")
-		}
-		if p.TotalProcessPoints != 308 || p.DoneProcessPoints != 154 {
-			return errors.New(fmt.Sprintf("Process points on project not set correctly"))
-		}
-
-		// Owner should not be allowed to leave
-		p, err = s.LeaveProject("2", "Maria")
-		if err == nil {
-			return errors.New("This should not work: The owner is not allowed to leave")
-		}
-
-		// Invalid project id
-		p, err = s.LeaveProject("2284527", "Peter")
-		if err == nil {
-			return errors.New("This should not work: The project does not exist")
-		}
-
-		// Not existing user wants to leave
-		p, err = s.LeaveProject("1", "Not-Existing-User")
-		if err == nil {
-			return errors.New("This should not work: A non-existing user should be removed")
-		}
-
-		// "Maria" was removed above to we remove her here the second time
-		_, err = s.LeaveProject("2", userToRemove)
-		if err == nil {
-			return errors.New("Leaving a project twice should not work")
-		}
-		return nil
-	})
-}
-
 func TestDeleteProject(t *testing.T) {
 	h.Run(t, func() error {
 		id := "1" // owned by "Peter"

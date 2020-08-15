@@ -225,10 +225,6 @@ func (s *ProjectService) AddUser(projectId, userId, potentialOwnerId string) (*P
 	return project, nil
 }
 
-func (s *ProjectService) LeaveProject(projectId string, potentialMemberId string) (*Project, error) {
-	return s.RemoveUser(projectId, potentialMemberId, potentialMemberId)
-}
-
 func (s *ProjectService) RemoveUser(projectId, requestingUserId, userIdToRemove string) (*Project, error) {
 	// Both users have to be member of the project
 	err := s.permissionService.VerifyMembershipProject(projectId, requestingUserId)
