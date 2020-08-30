@@ -31,7 +31,12 @@ export class ShapeRemoteComponent implements OnInit {
         try {
           let features = (new OSMXML().readFeatures(data) as Feature[]);
           features = [].concat(...features.map(f => this.geometryService.toUsableTaskFeature(f)));
-          this.featuresLoaded.emit(features);
+
+          if (!features || features.length !== 0) {
+            this.featuresLoaded.emit(features);
+          } else {
+            this.notificationService.addError($localize`:@@ERROR_OVERPASS_NO_POLYGONS:No usable polygons have been found. Make sure the output format is set to 'out:xml' and the result contains actual polygons.`);
+          }
         } catch (e) {
           console.error('Error parsing loaded OSM-XML');
           console.log(data);

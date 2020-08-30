@@ -18,6 +18,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
         <span i18n="@@ERROR_LIVE_UPDATE">Could not initialize live-updates</span>
         <span i18n="@@ERROR_COULD_NOT_UPLOAD">Could not upload file '{{interp}}'</span>
         <span i18n="@@ERROR_PARSING_OSM_DATA">Error parsing loaded OSM data</span>
+        <span i18n="@@ERROR_OVERPASS_NO_POLYGONS">No usable polygons have been found. Make sure the output format is set to \'out:xml\' and the result contains actual polygons.</span>
         <span i18n="@@ERROR_UNABLE_LOAD_URL">Unable to load data from remote URL</span>
         <span i18n="@@WARN_ALREADY_MEMBER">User '{{interp}}' is already a member of this project</span>
         <span i18n="@@ERROR_USER_ID">Could not load user ID for user '{{interp}}'</span>
