@@ -4,6 +4,8 @@ import { Feature } from 'ol';
 import OSMXML from 'ol/format/OSMXML';
 import { NotificationService } from '../../common/notification.service';
 import { GeometryService } from '../../common/geometry.service';
+import { LoadingService } from '../../common/loading.service';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-shape-remote',
@@ -18,7 +20,8 @@ export class ShapeRemoteComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private notificationService: NotificationService,
-    private geometryService: GeometryService
+    private geometryService: GeometryService,
+    private loadingService: LoadingService
   ) {
   }
 
@@ -26,7 +29,12 @@ export class ShapeRemoteComponent implements OnInit {
   }
 
   onLoadButtonClicked() {
-    this.http.get(this.queryUrl, {responseType: 'text', headers: {ContentType: 'text/xml'}}).subscribe(
+    this.loadingService.loading = true;
+
+    this.http.get(this.queryUrl, {responseType: 'text', headers: {ContentType: 'text/xml'}})
+      .pipe(
+        tap(() => this.loadingService.loading = false)
+      ).subscribe(
       data => {
         try {
           let features = (new OSMXML().readFeatures(data) as Feature[]);
