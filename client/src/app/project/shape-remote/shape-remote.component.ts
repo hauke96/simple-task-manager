@@ -5,7 +5,6 @@ import OSMXML from 'ol/format/OSMXML';
 import { NotificationService } from '../../common/notification.service';
 import { GeometryService } from '../../common/geometry.service';
 import { LoadingService } from '../../common/loading.service';
-import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-shape-remote',
@@ -31,11 +30,10 @@ export class ShapeRemoteComponent implements OnInit {
   onLoadButtonClicked() {
     this.loadingService.loading = true;
 
-    this.http.get(this.queryUrl, {responseType: 'text', headers: {ContentType: 'text/xml'}})
-      .pipe(
-        tap(() => this.loadingService.loading = false)
-      ).subscribe(
+    this.http.get(this.queryUrl, {responseType: 'text', headers: {ContentType: 'text/xml'}}).subscribe(
       data => {
+        this.loadingService.loading = false;
+
         try {
           let features = (new OSMXML().readFeatures(data) as Feature[]);
           features = [].concat(...features.map(f => this.geometryService.toUsableTaskFeature(f)));
@@ -52,7 +50,7 @@ export class ShapeRemoteComponent implements OnInit {
           this.notificationService.addError($localize`:@@ERROR_PARSING_OSM_DATA:Error parsing loaded OSM data`);
         }
       }, e => {
-        this.loadingService.loading = false
+        this.loadingService.loading = false;
         console.error('Error loading OSM-XML from remote URL');
         console.error(e);
         this.notificationService.addError($localize`:@@ERROR_UNABLE_LOAD_URL:Unable to load data from remote URL`);
