@@ -68,7 +68,7 @@ describe('ProjectComponent', () => {
     // Trigger all needed events
     websocketService.messageReceived.emit(new WebsocketMessage(
       WebsocketMessageType.MessageType_ProjectUpdated,
-      new ProjectDto(p.id, p.name, p.description, p.tasks.map(t => t.id), p.users.map(u => u.uid), p.owner.uid, p.needsAssignment)
+      new ProjectDto(p.id, p.name, p.description, p.users.map(u => u.uid), p.owner.uid, p.needsAssignment)
     ));
 
     expect(component.project).toEqual(p);

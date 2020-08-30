@@ -5,7 +5,7 @@ import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Rout
   providedIn: 'root'
 })
 export class LoadingService {
-  private loading: boolean;
+  private loading = false;
 
   constructor(private router: Router) {
     router.events.subscribe(event => {

@@ -3,23 +3,22 @@ import { TestBed } from '@angular/core/testing';
 import { LoadingService } from './loading.service';
 import { ReplaySubject } from 'rxjs';
 import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterEvent } from '@angular/router';
+import { MockRouter } from './mock-router';
 
 describe('LoadingService', () => {
   let service: LoadingService;
 
   const routerEventSubject = new ReplaySubject<RouterEvent>();
-  const routerMock = {
-    navigate: jasmine.createSpy('navigate'),
-    events: routerEventSubject.asObservable(),
-    url: '/foo/bar'
-  };
+
+  const mockRouter = new MockRouter();
+  mockRouter.events = routerEventSubject.asObservable();
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         {
-          provider: Router,
-          useValue: routerMock
+          provide: Router,
+          useValue: mockRouter
         }
       ]
     });
