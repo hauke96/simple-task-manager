@@ -28,11 +28,11 @@ export class ShapeRemoteComponent implements OnInit {
   }
 
   onLoadButtonClicked() {
-    this.loadingService.loading = true;
+    this.loadingService.start();
 
     this.http.get(this.queryUrl, {responseType: 'text', headers: {ContentType: 'text/xml'}}).subscribe(
       data => {
-        this.loadingService.loading = false;
+        this.loadingService.end();
 
         try {
           let features = (new OSMXML().readFeatures(data) as Feature[]);
@@ -50,7 +50,7 @@ export class ShapeRemoteComponent implements OnInit {
           this.notificationService.addError($localize`:@@ERROR_PARSING_OSM_DATA:Error parsing loaded OSM data`);
         }
       }, e => {
-        this.loadingService.loading = false;
+        this.loadingService.end();
         console.error('Error loading OSM-XML from remote URL');
         console.error(e);
         this.notificationService.addError($localize`:@@ERROR_UNABLE_LOAD_URL:Unable to load data from remote URL`);
