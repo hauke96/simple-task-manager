@@ -1,16 +1,11 @@
 package api
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/auth"
-	"github.com/hauke96/simple-task-manager/server/database"
-	"github.com/hauke96/simple-task-manager/server/permission"
-	"github.com/hauke96/simple-task-manager/server/project"
-	"github.com/hauke96/simple-task-manager/server/task"
 	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/pkg/errors"
 	"net/http"
@@ -47,13 +42,6 @@ func EmptyResponse() *ApiResponse {
 		statusCode: http.StatusOK,
 		data:       nil,
 	}
-}
-
-type Context struct {
-	token          *auth.Token
-	transaction    *sql.Tx
-	projectService *project.ProjectService
-	taskService    *task.TaskService
 }
 
 func printRoutes(router *mux.Router) {
@@ -113,17 +101,17 @@ func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(r *ht
 		return
 	}
 
-	sigolo.Info("Call from '%s' (%s) to %s %s", token.User, token.UID, r.Method, r.URL.Path)
-
 	// Create context with a new transaction and new service instances
 	context, err := createContext(token)
 	if err != nil {
-		sigolo.Error("Unable to create context: %s", err)
+		sigolo.Error("Unable to create context for call user from '%s' (%s) to %s %s: %s", token.User, token.UID, r.Method, r.URL.Path, err)
 		sigolo.Stack(err)
 		// No further information to caller (which is a potential attacker)
 		util.ResponseInternalError(w, errors.New("Unable to create context"))
 		return
 	}
+
+	context.logf("Call from '%s' (%s) to %s %s", token.User, token.UID, r.Method, r.URL.Path)
 
 	// Recover from panic and perform rollback on transaction
 	defer func() {
@@ -170,23 +158,4 @@ func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(r *ht
 		encoder := json.NewEncoder(w)
 		encoder.Encode(response.data)
 	}
-}
-
-// createContext starts a new transaction and creates new service instances which use this new transaction so that all
-// services (also those calling each other) are using the same transaction.
-func createContext(token *auth.Token) (*Context, error) {
-	context := &Context{}
-	context.token = token
-
-	tx, err := database.GetTransaction()
-	if err != nil {
-		return nil, errors.Wrap(err, "error getting transaction")
-	}
-	context.transaction = tx
-
-	permissionService := permission.Init(tx)
-	context.taskService = task.Init(tx, permissionService)
-	context.projectService = project.Init(tx, context.taskService, permissionService)
-
-	return context, nil
 }
