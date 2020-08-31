@@ -26,6 +26,10 @@ func (l *Logger) Err(message string) {
 	sigolo.Errorb(1, "#%x | %s", l.logTraceId, message)
 }
 
+func (l *Logger) Debug(message string) {
+	sigolo.Debugb(1, "#%x | %s", l.logTraceId, message)
+}
+
 func (l *Logger) Stack(err error) {
 	sigolo.Stackb(1, err)
 }

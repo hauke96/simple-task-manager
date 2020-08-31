@@ -153,7 +153,7 @@ func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(r *ht
 		sigolo.Error("Unable to commit transaction: %s", err.Error())
 		panic(err)
 	}
-	sigolo.Debug("Committed transaction")
+	context.Debug("Committed transaction")
 
 	if response.data != nil {
 		encoder := json.NewEncoder(w)
