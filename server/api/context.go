@@ -8,6 +8,7 @@ import (
 	"github.com/hauke96/simple-task-manager/server/project"
 	"github.com/hauke96/simple-task-manager/server/task"
 	"github.com/hauke96/simple-task-manager/server/util"
+	"github.com/hauke96/simple-task-manager/server/websocket"
 	"github.com/pkg/errors"
 )
 
@@ -17,6 +18,7 @@ type Context struct {
 	Transaction    *sql.Tx
 	ProjectService *project.ProjectService
 	TaskService    *task.TaskService
+	WebsocketSender *websocket.WebsocketSender
 }
 
 // createContext starts a new Transaction and creates new service instances which use this new Transaction so that all
@@ -36,6 +38,7 @@ func createContext(token *auth.Token) (*Context, error) {
 	permissionService := permission.Init(tx, ctx.LogTraceId)
 	ctx.TaskService = task.Init(tx, ctx.LogTraceId, permissionService)
 	ctx.ProjectService = project.Init(tx, ctx.LogTraceId, ctx.TaskService, permissionService)
+	ctx.WebsocketSender = websocket.Init(ctx.LogTraceId)
 
 	return ctx, nil
 }

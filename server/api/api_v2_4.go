@@ -70,7 +70,7 @@ func addProject_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(errors.Wrap(err, "error adding project with tasks"))
 	}
 
-	sendAdd(addedProject)
+	sendAdd(context.WebsocketSender, addedProject)
 
 	context.Log("Successfully added project %s with %d tasks", addedProject.Id, len(dto.Tasks))
 
@@ -106,7 +106,7 @@ func leaveProject_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(err)
 	}
 
-	sendUserRemoved(updatedProject, context.Token.UID)
+	sendUserRemoved(context.WebsocketSender, updatedProject, context.Token.UID)
 
 	context.Log("Successfully removed user '%s' from project %s (user left)", context.Token.UID, projectId)
 
@@ -130,7 +130,7 @@ func removeUser_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(err)
 	}
 
-	sendUserRemoved(updatedProject, userToRemove)
+	sendUserRemoved(context.WebsocketSender, updatedProject, userToRemove)
 
 	context.Log("Successfully removed user '%s' from project %s", userToRemove, projectId)
 
@@ -154,7 +154,7 @@ func deleteProjects_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(err)
 	}
 
-	sendDelete(projectToDelete)
+	sendDelete(context.WebsocketSender, projectToDelete)
 
 	context.Log("Successfully removed project %s", projectId)
 
@@ -178,7 +178,7 @@ func updateProjectName_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(err)
 	}
 
-	sendUpdate(updatedProject)
+	sendUpdate(context.WebsocketSender, updatedProject)
 
 	context.Log("Successfully updated name of project %s", projectId)
 
@@ -202,7 +202,7 @@ func updateProjectDescription_v2_4(r *http.Request, context *Context) *ApiRespon
 		return InternalServerError(err)
 	}
 
-	sendUpdate(updatedProject)
+	sendUpdate(context.WebsocketSender, updatedProject)
 
 	context.Log("Successfully updated description of project %s", projectId)
 
@@ -243,7 +243,7 @@ func addUserToProject_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(err)
 	}
 
-	sendUpdate(updatedProject)
+	sendUpdate(context.WebsocketSender, updatedProject)
 
 	context.Log("Successfully added user '%s' to project %s", userToAdd, projectId)
 
@@ -265,7 +265,7 @@ func assignUser_v2_4(r *http.Request, context *Context) *ApiResponse {
 	}
 
 	// Send via websockets
-	err = sendTaskUpdate(task, user, context)
+	err = sendTaskUpdate(context.WebsocketSender, task, user, context)
 	if err != nil {
 		return InternalServerError(err)
 	}
@@ -290,7 +290,7 @@ func unassignUser_v2_4(r *http.Request, context *Context) *ApiResponse {
 	}
 
 	// Send via websockets
-	err = sendTaskUpdate(task, user, context)
+	err = sendTaskUpdate(context.WebsocketSender, task, user, context)
 	if err != nil {
 		return InternalServerError(err)
 	}
@@ -318,7 +318,7 @@ func setProcessPoints_v2_4(r *http.Request, context *Context) *ApiResponse {
 	}
 
 	// Send via websockets
-	err = sendTaskUpdate(task, context.Token.UID, context)
+	err = sendTaskUpdate(context.WebsocketSender, task, context.Token.UID, context)
 	if err != nil {
 		return InternalServerError(err)
 	}
@@ -328,49 +328,49 @@ func setProcessPoints_v2_4(r *http.Request, context *Context) *ApiResponse {
 	return JsonResponse(*task)
 }
 
-func getWebsocketConnection(w http.ResponseWriter, r *http.Request, token *auth.Token) {
-	websocket.GetWebsocketConnection(w, r, token.UID)
+func getWebsocketConnection(w http.ResponseWriter, r *http.Request, token *auth.Token, websocketSender *websocket.WebsocketSender) {
+	websocketSender.GetWebsocketConnection(w, r, token.UID)
 }
 
-func sendAdd(addedProject *project.Project) {
-	websocket.Send(websocket.Message{
+func sendAdd(sender *websocket.WebsocketSender, addedProject *project.Project) {
+	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectAdded,
 		Data: addedProject,
 	}, addedProject.Users...)
 }
 
-func sendUpdate(updatedProject *project.Project) {
-	websocket.Send(websocket.Message{
+func sendUpdate(sender *websocket.WebsocketSender, updatedProject *project.Project) {
+	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectUpdated,
 		Data: updatedProject,
 	}, updatedProject.Users...)
 }
 
-func sendUserRemoved(updatedProject *project.Project, removedUser string) {
-	websocket.Send(websocket.Message{
+func sendUserRemoved(sender *websocket.WebsocketSender, updatedProject *project.Project, removedUser string) {
+	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectUpdated,
 		Data: updatedProject,
 	}, updatedProject.Users...)
-	websocket.Send(websocket.Message{
+	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectUserRemoved,
 		Data: updatedProject.Id,
 	}, removedUser)
 }
 
-func sendDelete(removedProject *project.Project) {
-	websocket.Send(websocket.Message{
+func sendDelete(sender *websocket.WebsocketSender, removedProject *project.Project) {
+	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectDeleted,
 		Data: removedProject.Id,
 	}, removedProject.Users...)
 }
 
-func sendTaskUpdate(task *task.Task, userId string, context *Context) error {
+func sendTaskUpdate(sender *websocket.WebsocketSender, task *task.Task, userId string, context *Context) error {
 	project, err := context.ProjectService.GetProjectByTask(task.Id, userId)
 	if err != nil {
 		return err
 	}
 
-	websocket.Send(websocket.Message{
+	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectUpdated,
 		Data: project,
 	}, project.Users...)

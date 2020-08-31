@@ -7,6 +7,7 @@ import (
 	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/auth"
 	"github.com/hauke96/simple-task-manager/server/util"
+	"github.com/hauke96/simple-task-manager/server/websocket"
 	"github.com/pkg/errors"
 	"net/http"
 )
@@ -61,7 +62,7 @@ func authenticatedTransactionHandler(handler func(r *http.Request, context *Cont
 	}
 }
 
-func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request, token *auth.Token)) func(http.ResponseWriter, *http.Request) {
+func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request, token *auth.Token, websocketSender *websocket.WebsocketSender)) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		query := r.URL.Query()
 
@@ -84,7 +85,9 @@ func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request,
 			return
 		}
 
-		handler(w, r, token)
+		sender := websocket.Init(util.GetLogTraceId())
+
+		handler(w, r, token, sender)
 	}
 }
 
