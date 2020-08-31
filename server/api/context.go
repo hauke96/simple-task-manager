@@ -1,8 +1,9 @@
-package context
+package api
 
 import (
 	"database/sql"
 	"github.com/hauke96/simple-task-manager/server/auth"
+	"github.com/hauke96/simple-task-manager/server/context"
 	"github.com/hauke96/simple-task-manager/server/database"
 	"github.com/hauke96/simple-task-manager/server/permission"
 	"github.com/hauke96/simple-task-manager/server/project"
@@ -11,7 +12,7 @@ import (
 )
 
 type Context struct {
-	Logger
+	context.Logger
 	Token          *auth.Token
 	Transaction    *sql.Tx
 	ProjectService *project.ProjectService
@@ -20,21 +21,21 @@ type Context struct {
 
 // createContext starts a new Transaction and creates new service instances which use this new Transaction so that all
 // services (also those calling each other) are using the same Transaction.
-func CreateContext(token *auth.Token) (*Context, error) {
-	context := &Context{}
-	context.Token = token
+func createContext(token *auth.Token) (*Context, error) {
+	ctx := &Context{}
+	ctx.Token = token
 
 	tx, err := database.GetTransaction()
 	if err != nil {
 		return nil, errors.Wrap(err, "error getting Transaction")
 	}
-	context.Transaction = tx
+	ctx.Transaction = tx
 
-	context.LogTraceId = getNextTraceId()
+	ctx.LogTraceId = context.GetNextTraceId()
 
-	permissionService := permission.Init(tx, context.LogTraceId)
-	context.TaskService = task.Init(tx, context.LogTraceId, permissionService)
-	context.ProjectService = project.Init(tx, context.LogTraceId, context.TaskService, permissionService)
+	permissionService := permission.Init(tx, ctx.LogTraceId)
+	ctx.TaskService = task.Init(tx, ctx.LogTraceId, permissionService)
+	ctx.ProjectService = project.Init(tx, ctx.LogTraceId, ctx.TaskService, permissionService)
 
-	return context, nil
+	return ctx, nil
 }

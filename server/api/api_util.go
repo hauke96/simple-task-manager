@@ -6,7 +6,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/auth"
-	"github.com/hauke96/simple-task-manager/server/context"
 	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/pkg/errors"
 	"net/http"
@@ -54,7 +53,7 @@ func printRoutes(router *mux.Router) {
 	})
 }
 
-func authenticatedTransactionHandler(handler func(r *http.Request, context *context.Context) *ApiResponse) func(http.ResponseWriter, *http.Request) {
+func authenticatedTransactionHandler(handler func(r *http.Request, context *Context) *ApiResponse) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 
@@ -92,7 +91,7 @@ func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request,
 // prepareAndHandle gets and verifies the token from the request, creates the context, starts a transaction, manages
 // commit/rollback, calls the handler and also does error handling. When this function returns, everything should have a
 // valid state: The response as well as the transaction (database).
-func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(r *http.Request, context *context.Context) *ApiResponse) {
+func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(r *http.Request, context *Context) *ApiResponse) {
 	token, err := auth.VerifyRequest(r)
 	if err != nil {
 		sigolo.Debug("URL without valid token called: %s", r.URL.Path)
@@ -103,7 +102,7 @@ func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(r *ht
 	}
 
 	// Create context with a new transaction and new service instances
-	context, err := context.CreateContext(token)
+	context, err := createContext(token)
 	if err != nil {
 		sigolo.Error("Unable to create context for call user from '%s' (%s) to %s %s: %s", token.User, token.UID, r.Method, r.URL.Path, err)
 		sigolo.Stack(err)

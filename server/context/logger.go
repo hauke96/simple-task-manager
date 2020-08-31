@@ -9,7 +9,7 @@ var (
 	nextTraceId = 0
 )
 
-func getNextTraceId() int {
+func GetNextTraceId() int {
 	defer func() { nextTraceId++ }() // Just increase trace-ID counter after return statement
 	return nextTraceId
 }

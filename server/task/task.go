@@ -28,7 +28,7 @@ func Init(tx *sql.Tx, loggerTraceId int, permissionService *permission.Permissio
 		Logger: context.Logger{
 			LogTraceId: loggerTraceId,
 		},
-		store:             getStore(tx),
+		store:             getStore(tx, loggerTraceId),
 		permissionService: permissionService,
 	}
 }
