@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"github.com/hauke96/simple-task-manager/server/auth"
+	"github.com/hauke96/simple-task-manager/server/context"
 	"github.com/hauke96/simple-task-manager/server/project"
 	"github.com/hauke96/simple-task-manager/server/task"
 	"github.com/hauke96/simple-task-manager/server/util"
@@ -42,18 +43,18 @@ func Init_v2_4(router *mux.Router) (*mux.Router, string) {
 	return r, "v2.4"
 }
 
-func getProjects_v2_4(r *http.Request, context *Context) *ApiResponse {
-	projects, err := context.projectService.GetProjects(context.token.UID)
+func getProjects_v2_4(r *http.Request, context *context.Context) *ApiResponse {
+	projects, err := context.ProjectService.GetProjects(context.Token.UID)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
-	context.log("Successfully got projects")
+	context.Log("Successfully got projects")
 
 	return JsonResponse(projects)
 }
 
-func addProject_v2_4(r *http.Request, context *Context) *ApiResponse {
+func addProject_v2_4(r *http.Request, context *context.Context) *ApiResponse {
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		return BadRequestError(errors.Wrap(err, "error reading request body"))
@@ -65,55 +66,55 @@ func addProject_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(errors.Wrap(err, "error unmarshalling project draft"))
 	}
 
-	addedProject, err := context.projectService.AddProjectWithTasks(&dto.Project, dto.Tasks)
+	addedProject, err := context.ProjectService.AddProjectWithTasks(&dto.Project, dto.Tasks)
 	if err != nil {
 		return InternalServerError(errors.Wrap(err, "error adding project with tasks"))
 	}
 
 	sendAdd(addedProject)
 
-	context.log("Successfully added project %s with %d tasks", addedProject.Id, len(dto.Tasks))
+	context.Log("Successfully added project %s with %d tasks", addedProject.Id, len(dto.Tasks))
 
 	return JsonResponse(addedProject)
 }
 
-func getProject_v2_4(r *http.Request, context *Context) *ApiResponse {
+func getProject_v2_4(r *http.Request, context *context.Context) *ApiResponse {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
 		return BadRequestError(errors.New("url segment 'id' not set"))
 	}
 
-	project, err := context.projectService.GetProject(projectId, context.token.UID)
+	project, err := context.ProjectService.GetProject(projectId, context.Token.UID)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
-	context.log("Successfully got project project %s", projectId)
+	context.Log("Successfully got project project %s", projectId)
 
 	return JsonResponse(project)
 }
 
-func leaveProject_v2_4(r *http.Request, context *Context) *ApiResponse {
+func leaveProject_v2_4(r *http.Request, context *context.Context) *ApiResponse {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
 		return BadRequestError(errors.New("url segment 'id' not set"))
 	}
 
-	updatedProject, err := context.projectService.RemoveUser(projectId, context.token.UID, context.token.UID)
+	updatedProject, err := context.ProjectService.RemoveUser(projectId, context.Token.UID, context.Token.UID)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
-	sendUserRemoved(updatedProject, context.token.UID)
+	sendUserRemoved(updatedProject, context.Token.UID)
 
-	context.log("Successfully removed user '%s' from project %s (user left)", context.token.UID, projectId)
+	context.Log("Successfully removed user '%s' from project %s (user left)", context.Token.UID, projectId)
 
 	return EmptyResponse()
 }
 
-func removeUser_v2_4(r *http.Request, context *Context) *ApiResponse {
+func removeUser_v2_4(r *http.Request, context *context.Context) *ApiResponse {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
@@ -125,43 +126,43 @@ func removeUser_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return BadRequestError(errors.New("url segment 'uid' not set"))
 	}
 
-	updatedProject, err := context.projectService.RemoveUser(projectId, context.token.UID, userToRemove)
+	updatedProject, err := context.ProjectService.RemoveUser(projectId, context.Token.UID, userToRemove)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
 	sendUserRemoved(updatedProject, userToRemove)
 
-	context.log("Successfully removed user '%s' from project %s", userToRemove, projectId)
+	context.Log("Successfully removed user '%s' from project %s", userToRemove, projectId)
 
 	return JsonResponse(updatedProject)
 }
 
-func deleteProjects_v2_4(r *http.Request, context *Context) *ApiResponse {
+func deleteProjects_v2_4(r *http.Request, context *context.Context) *ApiResponse {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
 		return BadRequestError(errors.New("url segment 'id' not set"))
 	}
 
-	projectToDelete, err := context.projectService.GetProject(projectId, context.token.UID)
+	projectToDelete, err := context.ProjectService.GetProject(projectId, context.Token.UID)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
-	err = context.projectService.DeleteProject(projectId, context.token.UID)
+	err = context.ProjectService.DeleteProject(projectId, context.Token.UID)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
 	sendDelete(projectToDelete)
 
-	context.log("Successfully removed project %s", projectId)
+	context.Log("Successfully removed project %s", projectId)
 
 	return EmptyResponse()
 }
 
-func updateProjectName_v2_4(r *http.Request, context *Context) *ApiResponse {
+func updateProjectName_v2_4(r *http.Request, context *context.Context) *ApiResponse {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
@@ -173,19 +174,19 @@ func updateProjectName_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(errors.Wrap(err, "error reading request body"))
 	}
 
-	updatedProject, err := context.projectService.UpdateName(projectId, string(bodyBytes), context.token.UID)
+	updatedProject, err := context.ProjectService.UpdateName(projectId, string(bodyBytes), context.Token.UID)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
 	sendUpdate(updatedProject)
 
-	context.log("Successfully updated name of project %s", projectId)
+	context.Log("Successfully updated name of project %s", projectId)
 
 	return JsonResponse(updatedProject)
 }
 
-func updateProjectDescription_v2_4(r *http.Request, context *Context) *ApiResponse {
+func updateProjectDescription_v2_4(r *http.Request, context *context.Context) *ApiResponse {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
@@ -197,36 +198,36 @@ func updateProjectDescription_v2_4(r *http.Request, context *Context) *ApiRespon
 		return InternalServerError(errors.Wrap(err, "error reading request body"))
 	}
 
-	updatedProject, err := context.projectService.UpdateDescription(projectId, string(bodyBytes), context.token.UID)
+	updatedProject, err := context.ProjectService.UpdateDescription(projectId, string(bodyBytes), context.Token.UID)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
 	sendUpdate(updatedProject)
 
-	context.log("Successfully updated description of project %s", projectId)
+	context.Log("Successfully updated description of project %s", projectId)
 
 	return JsonResponse(updatedProject)
 }
 
-func getProjectTasks_v2_4(r *http.Request, context *Context) *ApiResponse {
+func getProjectTasks_v2_4(r *http.Request, context *context.Context) *ApiResponse {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
 		return BadRequestError(errors.New("url segment 'id' not set"))
 	}
 
-	tasks, err := context.taskService.GetTasks(projectId, context.token.UID)
+	tasks, err := context.TaskService.GetTasks(projectId, context.Token.UID)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
-	context.log("Successfully got tasks of project %s", projectId)
+	context.Log("Successfully got tasks of project %s", projectId)
 
 	return JsonResponse(tasks)
 }
 
-func addUserToProject_v2_4(r *http.Request, context *Context) *ApiResponse {
+func addUserToProject_v2_4(r *http.Request, context *context.Context) *ApiResponse {
 	userToAdd, err := util.GetParam("uid", r)
 	if err != nil {
 		return BadRequestError(errors.Wrap(err, "url param 'uid' not set"))
@@ -238,28 +239,28 @@ func addUserToProject_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return BadRequestError(errors.New("url segment 'id' not set"))
 	}
 
-	updatedProject, err := context.projectService.AddUser(projectId, userToAdd, context.token.UID)
+	updatedProject, err := context.ProjectService.AddUser(projectId, userToAdd, context.Token.UID)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
 	sendUpdate(updatedProject)
 
-	context.log("Successfully added user '%s' to project %s", userToAdd, projectId)
+	context.Log("Successfully added user '%s' to project %s", userToAdd, projectId)
 
 	return JsonResponse(updatedProject)
 }
 
-func assignUser_v2_4(r *http.Request, context *Context) *ApiResponse {
+func assignUser_v2_4(r *http.Request, context *context.Context) *ApiResponse {
 	vars := mux.Vars(r)
 	taskId, ok := vars["id"]
 	if !ok {
 		return BadRequestError(errors.New("url segment 'id' not set"))
 	}
 
-	user := context.token.UID
+	user := context.Token.UID
 
-	task, err := context.taskService.AssignUser(taskId, user)
+	task, err := context.TaskService.AssignUser(taskId, user)
 	if err != nil {
 		return InternalServerError(err)
 	}
@@ -270,21 +271,21 @@ func assignUser_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(err)
 	}
 
-	context.log("Successfully assigned user '%s' to task '%s'", user, taskId)
+	context.Log("Successfully assigned user '%s' to task '%s'", user, taskId)
 
 	return JsonResponse(*task)
 }
 
-func unassignUser_v2_4(r *http.Request, context *Context) *ApiResponse {
+func unassignUser_v2_4(r *http.Request, context *context.Context) *ApiResponse {
 	vars := mux.Vars(r)
 	taskId, ok := vars["id"]
 	if !ok {
 		return BadRequestError(errors.New("url segment 'id' not set"))
 	}
 
-	user := context.token.UID
+	user := context.Token.UID
 
-	task, err := context.taskService.UnassignUser(taskId, user)
+	task, err := context.TaskService.UnassignUser(taskId, user)
 	if err != nil {
 		return InternalServerError(err)
 	}
@@ -295,12 +296,12 @@ func unassignUser_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(err)
 	}
 
-	context.log("Successfully unassigned user '%s' from task '%s'", user, taskId)
+	context.Log("Successfully unassigned user '%s' from task '%s'", user, taskId)
 
 	return JsonResponse(*task)
 }
 
-func setProcessPoints_v2_4(r *http.Request, context *Context) *ApiResponse {
+func setProcessPoints_v2_4(r *http.Request, context *context.Context) *ApiResponse {
 	vars := mux.Vars(r)
 	taskId, ok := vars["id"]
 	if !ok {
@@ -312,18 +313,18 @@ func setProcessPoints_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return BadRequestError(errors.Wrap(err, "url üarameter 'process_point' not set"))
 	}
 
-	task, err := context.taskService.SetProcessPoints(taskId, processPoints, context.token.UID)
+	task, err := context.TaskService.SetProcessPoints(taskId, processPoints, context.Token.UID)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
 	// Send via websockets
-	err = sendTaskUpdate(task, context.token.UID, context)
+	err = sendTaskUpdate(task, context.Token.UID, context)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
-	context.log("Successfully set process points on task '%s' to %d", taskId, processPoints)
+	context.Log("Successfully set process points on task '%s' to %d", taskId, processPoints)
 
 	return JsonResponse(*task)
 }
@@ -364,8 +365,8 @@ func sendDelete(removedProject *project.Project) {
 	}, removedProject.Users...)
 }
 
-func sendTaskUpdate(task *task.Task, userId string, context *Context) error {
-	project, err := context.projectService.GetProjectByTask(task.Id, userId)
+func sendTaskUpdate(task *task.Task, userId string, context *context.Context) error {
+	project, err := context.ProjectService.GetProjectByTask(task.Id, userId)
 	if err != nil {
 		return err
 	}

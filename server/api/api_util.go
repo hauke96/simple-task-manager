@@ -6,6 +6,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/auth"
+	"github.com/hauke96/simple-task-manager/server/context"
 	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/pkg/errors"
 	"net/http"
@@ -53,7 +54,7 @@ func printRoutes(router *mux.Router) {
 	})
 }
 
-func authenticatedTransactionHandler(handler func(r *http.Request, context *Context) *ApiResponse) func(http.ResponseWriter, *http.Request) {
+func authenticatedTransactionHandler(handler func(r *http.Request, context *context.Context) *ApiResponse) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 
@@ -91,7 +92,7 @@ func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request,
 // prepareAndHandle gets and verifies the token from the request, creates the context, starts a transaction, manages
 // commit/rollback, calls the handler and also does error handling. When this function returns, everything should have a
 // valid state: The response as well as the transaction (database).
-func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(r *http.Request, context *Context) *ApiResponse) {
+func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(r *http.Request, context *context.Context) *ApiResponse) {
 	token, err := auth.VerifyRequest(r)
 	if err != nil {
 		sigolo.Debug("URL without valid token called: %s", r.URL.Path)
@@ -102,7 +103,7 @@ func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(r *ht
 	}
 
 	// Create context with a new transaction and new service instances
-	context, err := createContext(token)
+	context, err := context.CreateContext(token)
 	if err != nil {
 		sigolo.Error("Unable to create context for call user from '%s' (%s) to %s %s: %s", token.User, token.UID, r.Method, r.URL.Path, err)
 		sigolo.Stack(err)
@@ -111,7 +112,7 @@ func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(r *ht
 		return
 	}
 
-	context.log("Call from '%s' (%s) to %s %s", token.User, token.UID, r.Method, r.URL.Path)
+	context.Log("Call from '%s' (%s) to %s %s", token.User, token.UID, r.Method, r.URL.Path)
 
 	// Recover from panic and perform rollback on transaction
 	defer func() {
@@ -124,13 +125,13 @@ func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(r *ht
 				err = fmt.Errorf("%v", r)
 			}
 
-			context.err(fmt.Sprintf("!! PANIC !! Recover from panic:"))
-			context.stack(err)
+			context.Err(fmt.Sprintf("!! PANIC !! Recover from panic:"))
+			context.Stack(err)
 
 			util.ResponseInternalError(w, err)
 
-			context.log("Try to perform rollback")
-			rollbackErr := context.transaction.Rollback()
+			context.Log("Try to perform rollback")
+			rollbackErr := context.Transaction.Rollback()
 			if rollbackErr != nil {
 				sigolo.Stack(errors.Wrap(rollbackErr, "error performing rollback"))
 			}
@@ -147,7 +148,7 @@ func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(r *ht
 	}
 
 	// Commit transaction
-	err = context.transaction.Commit()
+	err = context.Transaction.Commit()
 	if err != nil {
 		sigolo.Error("Unable to commit transaction: %s", err.Error())
 		panic(err)
