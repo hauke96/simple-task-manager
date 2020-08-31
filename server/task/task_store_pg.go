@@ -3,7 +3,7 @@ package task
 import (
 	"database/sql"
 	"fmt"
-	"github.com/hauke96/sigolo"
+	"github.com/hauke96/simple-task-manager/server/context"
 	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/lib/pq"
 	"github.com/pkg/errors"
@@ -19,6 +19,7 @@ type taskRow struct {
 }
 
 type storePg struct {
+	context.Logger
 	tx           *sql.Tx
 	table        string
 }
@@ -27,8 +28,11 @@ var(
 	returnValues = "id, process_points, max_process_points, geometry, assigned_user"
 )
 
-func getStore(tx *sql.Tx) *storePg {
+func getStore(tx *sql.Tx, loggerTraceId int) *storePg {
 	return &storePg{
+		Logger: context.Logger{
+			LogTraceId: loggerTraceId,
+		},
 		tx:    tx,
 		table: "tasks",
 	}
@@ -91,7 +95,7 @@ func (s *storePg) addTasks(newTasks []*Task, projectId string) ([]*Task, error) 
 	for _, t := range newTasks {
 		id, err := s.addTask(t, projectId)
 		if err != nil {
-			sigolo.Error("error adding task '%s'", t.Id)
+			s.Err("error adding task '%s'", t.Id)
 			return nil, err
 		}
 

@@ -30,11 +30,11 @@ func CreateContext(token *auth.Token) (*Context, error) {
 	}
 	context.Transaction = tx
 
-	permissionService := permission.Init(tx)
-	context.TaskService = task.Init(tx, permissionService)
-	context.ProjectService = project.Init(tx, context.TaskService, permissionService)
+	context.LogTraceId = getNextTraceId()
 
-	context.logTraceId = getNextTraceId()
+	permissionService := permission.Init(tx, context.LogTraceId)
+	context.TaskService = task.Init(tx, context.LogTraceId, permissionService)
+	context.ProjectService = project.Init(tx, context.LogTraceId, context.TaskService, permissionService)
 
 	return context, nil
 }

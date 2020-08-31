@@ -3,7 +3,7 @@ package project
 import (
 	"database/sql"
 	"fmt"
-	"github.com/hauke96/sigolo"
+	"github.com/hauke96/simple-task-manager/server/context"
 	"github.com/hauke96/simple-task-manager/server/permission"
 	"github.com/hauke96/simple-task-manager/server/task"
 	"github.com/pkg/errors"
@@ -23,6 +23,7 @@ type Project struct {
 }
 
 type ProjectService struct {
+	context.Logger
 	store             *storePg
 	permissionService *permission.PermissionService
 	taskService       *task.TaskService
@@ -32,9 +33,12 @@ var (
 	maxDescriptionLength = 10000
 )
 
-func Init(tx *sql.Tx, taskService *task.TaskService, permissionService *permission.PermissionService) *ProjectService {
+func Init(tx *sql.Tx, loggerTraceId int, taskService *task.TaskService, permissionService *permission.PermissionService) *ProjectService {
 	return &ProjectService{
-		store:             getStore(tx),
+		Logger: context.Logger{
+			LogTraceId: loggerTraceId,
+		},
+		store:             getStore(tx, loggerTraceId),
 		permissionService: permissionService,
 		taskService:       taskService,
 	}
@@ -43,14 +47,14 @@ func Init(tx *sql.Tx, taskService *task.TaskService, permissionService *permissi
 func (s *ProjectService) GetProjects(userId string) ([]*Project, error) {
 	projects, err := s.store.getProjects(userId)
 	if err != nil {
-		sigolo.Error(fmt.Sprintf("Error getting projects for user %s", userId))
+		s.Err(fmt.Sprintf("Error getting projects for user %s", userId))
 		return nil, err
 	}
 
 	for _, p := range projects {
 		err = s.addMetadata(p, userId)
 		if err != nil {
-			sigolo.Error("Unable to add process point data to project %s", p.Id)
+			s.Err("Unable to add process point data to project %s", p.Id)
 			return nil, err
 		}
 	}
@@ -61,13 +65,13 @@ func (s *ProjectService) GetProjects(userId string) ([]*Project, error) {
 func (s *ProjectService) GetProjectByTask(taskId string, userId string) (*Project, error) {
 	project, err := s.store.getProjectByTask(taskId)
 	if err != nil {
-		sigolo.Error("Error getting project with task %s", taskId)
+		s.Err("Error getting project with task %s", taskId)
 		return nil, err
 	}
 
 	err = s.addMetadata(project, userId)
 	if err != nil {
-		sigolo.Error("Unable to add process point data to project %s", project.Id)
+		s.Err("Unable to add process point data to project %s", project.Id)
 		return nil, err
 	}
 
@@ -86,7 +90,7 @@ func (s *ProjectService) AddProjectWithTasks(projectDraft *Project, taskDrafts [
 		return nil, err
 	}
 
-	sigolo.Info("Successfully added project %s", addedProject.Id)
+	s.Log("Successfully added project %s", addedProject.Id)
 
 	// TODO check for correct GeoJson format in task geometries
 
@@ -98,7 +102,7 @@ func (s *ProjectService) AddProjectWithTasks(projectDraft *Project, taskDrafts [
 	if err != nil {
 		return nil, err
 	}
-	sigolo.Info("Successfully added tasks")
+	s.Log("Successfully added tasks")
 
 	//
 	// Add Metadata now, that we have tasks
@@ -162,7 +166,7 @@ func (s *ProjectService) GetProject(projectId string, potentialMemberId string) 
 
 	err = s.addMetadata(project, potentialMemberId)
 	if err != nil {
-		sigolo.Error("Unable to add process point data to project %s", project.Id)
+		s.Err("Unable to add process point data to project %s", project.Id)
 		return nil, err
 	}
 
@@ -173,7 +177,7 @@ func (s *ProjectService) GetProject(projectId string, potentialMemberId string) 
 func (s *ProjectService) addMetadata(project *Project, potentialMemberId string) error {
 	tasks, err := s.taskService.GetTasks(project.Id, potentialMemberId)
 	if err != nil {
-		sigolo.Error("getting tasks of project %s failed", project.Id)
+		s.Err("getting tasks of project %s failed", project.Id)
 		return err
 	}
 
@@ -185,7 +189,7 @@ func (s *ProjectService) addMetadata(project *Project, potentialMemberId string)
 
 	needsAssignment, err := s.permissionService.AssignmentInProjectNeeded(project.Id)
 	if err != nil {
-		sigolo.Error("unable to get assignment requirement for project %s", project.Id)
+		s.Err("unable to get assignment requirement for project %s", project.Id)
 		return err
 	}
 	project.NeedsAssignment = needsAssignment
@@ -218,7 +222,7 @@ func (s *ProjectService) AddUser(projectId, userId, potentialOwnerId string) (*P
 
 	err = s.addMetadata(project, potentialOwnerId)
 	if err != nil {
-		sigolo.Error("Unable to add process point data to project %s", project.Id)
+		s.Err("Unable to add process point data to project %s", project.Id)
 		return nil, err
 	}
 
@@ -265,7 +269,7 @@ func (s *ProjectService) RemoveUser(projectId, requestingUserId, userIdToRemove 
 			_, err := s.taskService.UnassignUser(t, userIdToRemove)
 
 			if err != nil {
-				sigolo.Error("Unable to unassign user '%s' from task '%s'", userIdToRemove, t)
+				s.Err("Unable to unassign user '%s' from task '%s'", userIdToRemove, t)
 				return nil, err
 			}
 		}
@@ -275,7 +279,7 @@ func (s *ProjectService) RemoveUser(projectId, requestingUserId, userIdToRemove 
 	// Therefore the owner is used here.
 	err = s.addMetadata(project, project.Owner)
 	if err != nil {
-		sigolo.Error("Unable to add process point data to project %s", project.Id)
+		s.Err("Unable to add process point data to project %s", project.Id)
 		return nil, err
 	}
 
@@ -317,7 +321,7 @@ func (s *ProjectService) UpdateName(projectId string, newName string, requesting
 
 	err = s.addMetadata(project, requestingUserId)
 	if err != nil {
-		sigolo.Error("Unable to add process point data to project %s", project.Id)
+		s.Err("Unable to add process point data to project %s", project.Id)
 		return nil, err
 	}
 
@@ -341,7 +345,7 @@ func (s *ProjectService) UpdateDescription(projectId string, newDescription stri
 
 	err = s.addMetadata(project, requestingUserId)
 	if err != nil {
-		sigolo.Error("Unable to add process point data to project %s", project.Id)
+		s.Err("Unable to add process point data to project %s", project.Id)
 		return nil, err
 	}
 

@@ -3,7 +3,7 @@ package project
 import (
 	"database/sql"
 	"fmt"
-	"github.com/hauke96/sigolo"
+	"github.com/hauke96/simple-task-manager/server/context"
 	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/lib/pq"
 	"github.com/pkg/errors"
@@ -21,13 +21,17 @@ type projectRow struct {
 }
 
 type storePg struct {
+	context.Logger
 	tx        *sql.Tx
 	table     string
 	taskTable string
 }
 
-func getStore(tx *sql.Tx) *storePg {
+func getStore(tx *sql.Tx, loggerTraceId int) *storePg {
 	return &storePg{
+		Logger: context.Logger{
+			LogTraceId: loggerTraceId,
+		},
 		tx:        tx,
 		table:     "projects",
 		taskTable: "tasks",
@@ -102,7 +106,7 @@ func (s *storePg) addProject(draft *Project) (*Project, error) {
 func (s *storePg) addUser(projectId string, userIdToAdd string) (*Project, error) {
 	originalProject, err := s.getProject(projectId)
 	if err != nil {
-		sigolo.Error("error getting project with ID '%s'", projectId)
+		s.Err("error getting project with ID '%s'", projectId)
 		return nil, err
 	}
 
@@ -115,7 +119,7 @@ func (s *storePg) addUser(projectId string, userIdToAdd string) (*Project, error
 func (s *storePg) removeUser(projectId string, userIdToRemove string) (*Project, error) {
 	originalProject, err := s.getProject(projectId)
 	if err != nil {
-		sigolo.Error("error getting project with ID '%s'", projectId)
+		s.Err("error getting project with ID '%s'", projectId)
 		return nil, err
 	}
 
@@ -232,7 +236,7 @@ func (s *storePg) addTaskIdsToProject(project *Project) error {
 		return errors.Wrap(err, "could not scan task IDs from row")
 	}
 
-	sigolo.Info("Added task-IDs to project %s", project.Id)
+	s.Log("Added task-IDs to project %s", project.Id)
 
 	return nil
 }

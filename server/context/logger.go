@@ -15,19 +15,19 @@ func getNextTraceId() int {
 }
 
 type Logger struct {
-	logTraceId int
+	LogTraceId int
 }
 
 func (l *Logger) Log(format string, args ...interface{}) {
-	sigolo.Infob(1, "#%x | %s", l.logTraceId, fmt.Sprintf(format, args...))
+	sigolo.Infob(1, "#%x | %s", l.LogTraceId, fmt.Sprintf(format, args...))
 }
 
-func (l *Logger) Err(message string) {
-	sigolo.Errorb(1, "#%x | %s", l.logTraceId, message)
+func (l *Logger) Err(format string, args ...interface{}) {
+	sigolo.Errorb(1, "#%x | %s", l.LogTraceId, fmt.Sprintf(format, args...))
 }
 
 func (l *Logger) Debug(message string) {
-	sigolo.Debugb(1, "#%x | %s", l.logTraceId, message)
+	sigolo.Debugb(1, "#%x | %s", l.LogTraceId, message)
 }
 
 func (l *Logger) Stack(err error) {

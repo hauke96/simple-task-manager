@@ -3,7 +3,7 @@ package task
 import (
 	"database/sql"
 	"fmt"
-	"github.com/hauke96/sigolo"
+	"github.com/hauke96/simple-task-manager/server/context"
 	"github.com/hauke96/simple-task-manager/server/permission"
 	"github.com/pkg/errors"
 	"strings"
@@ -18,12 +18,16 @@ type Task struct {
 }
 
 type TaskService struct {
-	store *storePg
+	context.Logger
+	store             *storePg
 	permissionService *permission.PermissionService
 }
 
-func Init(tx *sql.Tx, permissionService *permission.PermissionService) *TaskService {
+func Init(tx *sql.Tx, loggerTraceId int, permissionService *permission.PermissionService) *TaskService {
 	return &TaskService{
+		Logger: context.Logger{
+			LogTraceId: loggerTraceId,
+		},
 		store:             getStore(tx),
 		permissionService: permissionService,
 	}
@@ -88,7 +92,7 @@ func (s *TaskService) SetProcessPoints(taskId string, newPoints int, requestingU
 	} else { // when no assignment is needed, the requesting user at least needs to be a member
 		err := s.permissionService.VerifyMembershipTask(taskId, requestingUserId)
 		if err != nil {
-			sigolo.Error("user not a member of the project, the task %s belongs to", taskId)
+			s.Err("user not a member of the project, the task %s belongs to", taskId)
 			return nil, err
 		}
 	}
