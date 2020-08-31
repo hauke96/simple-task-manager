@@ -3,7 +3,6 @@ package project
 import (
 	"database/sql"
 	"fmt"
-	"github.com/hauke96/simple-task-manager/server/context"
 	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/lib/pq"
 	"github.com/pkg/errors"
@@ -21,7 +20,7 @@ type projectRow struct {
 }
 
 type storePg struct {
-	context.Logger
+	util.Logger
 	tx        *sql.Tx
 	table     string
 	taskTable string
@@ -29,7 +28,7 @@ type storePg struct {
 
 func getStore(tx *sql.Tx, loggerTraceId int) *storePg {
 	return &storePg{
-		Logger: context.Logger{
+		Logger: util.Logger{
 			LogTraceId: loggerTraceId,
 		},
 		tx:        tx,

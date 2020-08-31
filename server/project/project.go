@@ -3,9 +3,9 @@ package project
 import (
 	"database/sql"
 	"fmt"
-	"github.com/hauke96/simple-task-manager/server/context"
 	"github.com/hauke96/simple-task-manager/server/permission"
 	"github.com/hauke96/simple-task-manager/server/task"
+	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/pkg/errors"
 	"strings"
 )
@@ -23,7 +23,7 @@ type Project struct {
 }
 
 type ProjectService struct {
-	context.Logger
+	util.Logger
 	store             *storePg
 	permissionService *permission.PermissionService
 	taskService       *task.TaskService
@@ -35,7 +35,7 @@ var (
 
 func Init(tx *sql.Tx, loggerTraceId int, taskService *task.TaskService, permissionService *permission.PermissionService) *ProjectService {
 	return &ProjectService{
-		Logger: context.Logger{
+		Logger: util.Logger{
 			LogTraceId: loggerTraceId,
 		},
 		store:             getStore(tx, loggerTraceId),

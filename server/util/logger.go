@@ -1,4 +1,4 @@
-package context
+package util
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ var (
 	nextTraceId = 0
 )
 
-func GetNextTraceId() int {
+func GetLogTraceId() int {
 	defer func() { nextTraceId++ }() // Just increase trace-ID counter after return statement
 	return nextTraceId
 }

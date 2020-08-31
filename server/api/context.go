@@ -3,16 +3,16 @@ package api
 import (
 	"database/sql"
 	"github.com/hauke96/simple-task-manager/server/auth"
-	"github.com/hauke96/simple-task-manager/server/context"
 	"github.com/hauke96/simple-task-manager/server/database"
 	"github.com/hauke96/simple-task-manager/server/permission"
 	"github.com/hauke96/simple-task-manager/server/project"
 	"github.com/hauke96/simple-task-manager/server/task"
+	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/pkg/errors"
 )
 
 type Context struct {
-	context.Logger
+	util.Logger
 	Token          *auth.Token
 	Transaction    *sql.Tx
 	ProjectService *project.ProjectService
@@ -31,7 +31,7 @@ func createContext(token *auth.Token) (*Context, error) {
 	}
 	ctx.Transaction = tx
 
-	ctx.LogTraceId = context.GetNextTraceId()
+	ctx.LogTraceId = util.GetLogTraceId()
 
 	permissionService := permission.Init(tx, ctx.LogTraceId)
 	ctx.TaskService = task.Init(tx, ctx.LogTraceId, permissionService)

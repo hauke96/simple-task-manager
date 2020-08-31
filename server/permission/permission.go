@@ -3,14 +3,13 @@ package permission
 import (
 	"database/sql"
 	"fmt"
-	"github.com/hauke96/simple-task-manager/server/context"
 	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/lib/pq"
 	"github.com/pkg/errors"
 )
 
 type PermissionService struct {
-	context.Logger
+	util.Logger
 	tx *sql.Tx
 }
 
@@ -22,7 +21,7 @@ var (
 // Init the permission service for the project and task table.
 func Init(tx *sql.Tx, loggerTraceId int) *PermissionService {
 	return &PermissionService{
-		Logger: context.Logger{
+		Logger: util.Logger{
 			LogTraceId: loggerTraceId,
 		},
 		tx: tx,
