@@ -64,12 +64,14 @@ func authenticatedTransactionHandler(handler func(r *http.Request, context *Cont
 
 func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request, token *auth.Token, websocketSender *websocket.WebsocketSender)) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		logger := util.NewLogger()
+
 		query := r.URL.Query()
 
 		t := query.Get("token")
 		if t == "" || t == "null" || t == "\u009e" {
 			err := errors.New("could not establish websocket connection: query parameter 'token' not set")
-			util.ResponseUnauthorized(w, err)
+			util.ResponseUnauthorized(w, logger, err)
 			return
 		}
 		query.Del("token")
@@ -77,15 +79,15 @@ func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request,
 		// Add token query param value (set by websocket clients) as authorization so that verifyRequest can check it.
 		r.Header.Add("Authorization", t)
 
-		token, err := auth.VerifyRequest(r)
+		token, err := auth.VerifyRequest(r, logger)
 		if err != nil {
-			sigolo.Error("Token verification failed: %s", err)
+			logger.Err("Token verification failed: %s", err)
 			// No further information to caller (which is a potential attacker)
-			util.ResponseUnauthorized(w, errors.New("No valid authentication token found"))
+			util.ResponseUnauthorized(w, logger, errors.New("No valid authentication token found"))
 			return
 		}
 
-		sender := websocket.Init(util.GetLogTraceId())
+		sender := websocket.Init(*logger)
 
 		handler(w, r, token, sender)
 	}
@@ -95,22 +97,25 @@ func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request,
 // commit/rollback, calls the handler and also does error handling. When this function returns, everything should have a
 // valid state: The response as well as the transaction (database).
 func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(r *http.Request, context *Context) *ApiResponse) {
-	token, err := auth.VerifyRequest(r)
+	// temporary logger before there's a context
+	logger := util.NewLogger()
+
+	token, err := auth.VerifyRequest(r, logger)
 	if err != nil {
-		sigolo.Debug("URL without valid token called: %s", r.URL.Path)
-		sigolo.Error("Token verification failed: %s", err)
+		logger.Debug("URL without valid token called: %s", r.URL.Path)
+		logger.Err("Token verification failed: %s", err)
 		// No further information to caller (which is a potential attacker)
-		util.ResponseUnauthorized(w, errors.New("No valid authentication token found"))
+		util.ResponseUnauthorized(w, logger, errors.New("No valid authentication token found"))
 		return
 	}
 
 	// Create context with a new transaction and new service instances
-	context, err := createContext(token)
+	context, err := createContext(token, logger.LogTraceId)
 	if err != nil {
-		sigolo.Error("Unable to create context for call user from '%s' (%s) to %s %s: %s", token.User, token.UID, r.Method, r.URL.Path, err)
-		sigolo.Stack(err)
+		logger.Err("Unable to create context for call user from '%s' (%s) to %s %s: %s", token.User, token.UID, r.Method, r.URL.Path, err)
+		logger.Stack(err)
 		// No further information to caller (which is a potential attacker)
-		util.ResponseInternalError(w, errors.New("Unable to create context"))
+		util.ResponseInternalError(w, logger, errors.New("Unable to create context"))
 		return
 	}
 
@@ -130,12 +135,12 @@ func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(r *ht
 			context.Err(fmt.Sprintf("!! PANIC !! Recover from panic:"))
 			context.Stack(err)
 
-			util.ResponseInternalError(w, err)
+			util.ResponseInternalError(w, &context.Logger, err)
 
 			context.Log("Try to perform rollback")
 			rollbackErr := context.Transaction.Rollback()
 			if rollbackErr != nil {
-				sigolo.Stack(errors.Wrap(rollbackErr, "error performing rollback"))
+				logger.Stack(errors.Wrap(rollbackErr, "error performing rollback"))
 			}
 		}
 	}()
@@ -152,7 +157,7 @@ func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(r *ht
 	// Commit transaction
 	err = context.Transaction.Commit()
 	if err != nil {
-		sigolo.Error("Unable to commit transaction: %s", err.Error())
+		context.Err("Unable to commit transaction: %s", err.Error())
 		panic(err)
 	}
 	context.Debug("Committed transaction")

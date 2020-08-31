@@ -37,9 +37,9 @@ type WebsocketSender struct {
 	util.Logger
 }
 
-func Init(logTraceId int) *WebsocketSender {
+func Init(logger util.Logger) *WebsocketSender {
 	return &WebsocketSender{
-		Logger: util.Logger{LogTraceId: logTraceId},
+		Logger: logger,
 	}
 }
 
@@ -48,7 +48,7 @@ func (s *WebsocketSender) GetWebsocketConnection(w http.ResponseWriter, r *http.
 	if err != nil {
 		//sigolo.Error("Could not upgrade response writer and request to websocket connection")
 		s.Stack(err)
-		util.ResponseInternalError(w, err)
+		util.ResponseInternalError(w, &s.Logger, err)
 		return
 	}
 

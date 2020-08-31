@@ -10,9 +10,9 @@ var (
 	nextTraceId = 0
 )
 
-func GetLogTraceId() int {
+func NewLogger() *Logger {
 	defer func() { nextTraceId++ }() // Just increase trace-ID counter after return statement
-	return nextTraceId
+	return &Logger{LogTraceId: nextTraceId}
 }
 
 type Logger struct {
@@ -20,15 +20,15 @@ type Logger struct {
 }
 
 func (l *Logger) Log(format string, args ...interface{}) {
-	sigolo.Infob(1, "#%x | %s", l.LogTraceId, fmt.Sprintf(format, args...))
+	sigolo.Infob(1, "#%x | %s", l.LogTraceId, fmt.Sprintf(format, args))
 }
 
 func (l *Logger) Err(format string, args ...interface{}) {
-	sigolo.Errorb(1, "#%x | %s", l.LogTraceId, fmt.Sprintf(format, args...))
+	sigolo.Errorb(1, "#%x | %s", l.LogTraceId, fmt.Sprintf(format, args))
 }
 
-func (l *Logger) Debug(message string) {
-	sigolo.Debugb(1, "#%x | %s", l.LogTraceId, message)
+func (l *Logger) Debug(format string, args ...interface{}) {
+	sigolo.Debugb(1, "#%x | %s", l.LogTraceId, fmt.Sprintf(format, args))
 }
 
 func (l *Logger) Stack(err error) {
