@@ -3,6 +3,7 @@ package util
 import (
 	"fmt"
 	"github.com/hauke96/sigolo"
+	"strings"
 )
 
 var (
@@ -32,4 +33,12 @@ func (l *Logger) Debug(message string) {
 
 func (l *Logger) Stack(err error) {
 	sigolo.Stackb(1, err)
+}
+
+func (l *Logger) LogQuery(query string, args ...interface{}) {
+	for i, a := range args {
+		query = strings.Replace(query, fmt.Sprintf("$%d", i+1), fmt.Sprintf("%v", a), 1)
+	}
+
+	l.Debug(query)
 }

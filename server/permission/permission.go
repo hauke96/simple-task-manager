@@ -32,7 +32,7 @@ func Init(tx *sql.Tx, loggerTraceId int) *PermissionService {
 func (s *PermissionService) VerifyOwnership(projectId string, user string) error {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE id=$1 AND owner=$2", projectTable)
 
-	util.LogQuery(query, projectId, user)
+	s.LogQuery(query, projectId, user)
 	rows, err := s.tx.Query(query, projectId, user)
 	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error verifying ownership of user %s in project %s", user, projectId))
@@ -51,7 +51,7 @@ func (s *PermissionService) VerifyOwnership(projectId string, user string) error
 func (s *PermissionService) VerifyMembershipProject(projectId string, user string) error {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE id=$1 AND $2=ANY(users)", projectTable)
 
-	util.LogQuery(query, projectId, user)
+	s.LogQuery(query, projectId, user)
 	rows, err := s.tx.Query(query, projectId, user)
 	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error verifying membership of user %s in project %s", user, projectId))
@@ -70,7 +70,7 @@ func (s *PermissionService) VerifyMembershipProject(projectId string, user strin
 func (s *PermissionService) VerifyMembershipTask(taskId string, user string) error {
 	query := fmt.Sprintf("SELECT * FROM %s p, %s t WHERE t.project_id = p.id AND t.id = $1 AND $2=ANY(p.users);", projectTable, taskTable)
 
-	util.LogQuery(query, taskId, user)
+	s.LogQuery(query, taskId, user)
 	rows, err := s.tx.Query(query, taskId, user)
 	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error verifying membership of user %s for task %s", user, taskId))
@@ -89,7 +89,7 @@ func (s *PermissionService) VerifyMembershipTask(taskId string, user string) err
 func (s *PermissionService) VerifyMembershipTasks(taskIds []string, user string) error {
 	query := fmt.Sprintf("SELECT COUNT(*) FROM %s p, %s t WHERE t.project_id = p.id AND t.id = ANY($1) AND $2=ANY(p.users);", projectTable, taskTable)
 
-	util.LogQuery(query, pq.Array(taskIds), user)
+	s.LogQuery(query, pq.Array(taskIds), user)
 	rows, err := s.tx.Query(query, pq.Array(taskIds), user)
 	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error verifying membership of user %s for tasks %v", user, taskIds))
@@ -118,7 +118,7 @@ func (s *PermissionService) VerifyMembershipTasks(taskIds []string, user string)
 func (s *PermissionService) VerifyAssignment(taskId string, user string) error {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE id=$1 AND assigned_user=$2;", taskTable)
 
-	util.LogQuery(query, taskId, user)
+	s.LogQuery(query, taskId, user)
 	rows, err := s.tx.Query(query, taskId, user)
 	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error verifying assignment of user %s to task %s", user, taskId))
@@ -137,7 +137,7 @@ func (s *PermissionService) VerifyAssignment(taskId string, user string) error {
 func (s *PermissionService) AssignmentInProjectNeeded(projectId string) (bool, error) {
 	query := fmt.Sprintf("SELECT ARRAY_LENGTH(users, 1) FROM %s WHERE id=$1;", projectTable)
 
-	util.LogQuery(query, projectId)
+	s.LogQuery(query, projectId)
 	rows, err := s.tx.Query(query, projectId)
 	if err != nil {
 		return true, errors.Wrap(err, fmt.Sprintf("error getting assignment requirement for project %s", projectId))
@@ -162,7 +162,7 @@ func (s *PermissionService) AssignmentInProjectNeeded(projectId string) (bool, e
 func (s *PermissionService) AssignmentInTaskNeeded(taskId string) (bool, error) {
 	query := fmt.Sprintf("SELECT ARRAY_LENGTH(p.users, 1) FROM %s p, %s t WHERE $1 = t.id AND t.project_id = p.id;", projectTable, taskTable)
 
-	util.LogQuery(query, taskId)
+	s.LogQuery(query, taskId)
 	rows, err := s.tx.Query(query, taskId)
 	if err != nil {
 		return true, errors.Wrap(err, fmt.Sprintf("error getting assignment requirement for task %s", taskId))

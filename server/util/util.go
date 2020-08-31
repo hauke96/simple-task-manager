@@ -48,11 +48,3 @@ func ErrorResponse(w http.ResponseWriter, err error, status int) {
 	w.WriteHeader(status)
 	w.Write([]byte(err.Error()))
 }
-
-func LogQuery(query string, args ...interface{}) {
-	for i, a := range args {
-		query = strings.Replace(query, fmt.Sprintf("$%d", i+1), fmt.Sprintf("%v", a), 1)
-	}
-
-	sigolo.Debug(query)
-}
