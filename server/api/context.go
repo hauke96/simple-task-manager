@@ -16,12 +16,29 @@ var (
 	nextTraceId = 0
 )
 
+type Logger struct {
+	logTraceId     int
+}
+
+func (l *Logger) log(format string, args ...interface{}) {
+	sigolo.Infob(1, "#%x | %s", l.logTraceId, fmt.Sprintf(format, args...))
+}
+
+func (l *Logger) err(message string) {
+	sigolo.Errorb(1, "#%x | %s", l.logTraceId, message)
+}
+
+func (l *Logger) stack(err error) {
+	sigolo.Stackb(1, err)
+}
+
+
 type Context struct {
+	Logger
 	token          *auth.Token
 	transaction    *sql.Tx
 	projectService *project.ProjectService
 	taskService    *task.TaskService
-	logTraceId     int
 }
 
 // createContext starts a new transaction and creates new service instances which use this new transaction so that all
@@ -44,16 +61,4 @@ func createContext(token *auth.Token) (*Context, error) {
 	nextTraceId++
 
 	return context, nil
-}
-
-func (c *Context) log(format string, args ...interface{}) {
-	sigolo.Infob(1, "#%x | %s", c.logTraceId, fmt.Sprintf(format, args...))
-}
-
-func (c *Context) err(message string) {
-	sigolo.Errorb(1, "#%x | %s", c.logTraceId, message)
-}
-
-func (c *Context) stack(err error) {
-	sigolo.Stackb(1, err)
 }
