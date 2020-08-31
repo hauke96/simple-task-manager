@@ -111,7 +111,7 @@ func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(r *ht
 		return
 	}
 
-	context.logf("Call from '%s' (%s) to %s %s", token.User, token.UID, r.Method, r.URL.Path)
+	context.log("Call from '%s' (%s) to %s %s", token.User, token.UID, r.Method, r.URL.Path)
 
 	// Recover from panic and perform rollback on transaction
 	defer func() {
@@ -124,12 +124,12 @@ func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(r *ht
 				err = fmt.Errorf("%v", r)
 			}
 
-			sigolo.Error(fmt.Sprintf("!! PANIC !! Recover from panic:"))
-			sigolo.Stack(err)
+			context.err(fmt.Sprintf("!! PANIC !! Recover from panic:"))
+			context.stack(err)
 
 			util.ResponseInternalError(w, err)
 
-			sigolo.Info("Try to perform rollback")
+			context.log("Try to perform rollback")
 			rollbackErr := context.transaction.Rollback()
 			if rollbackErr != nil {
 				sigolo.Stack(errors.Wrap(rollbackErr, "error performing rollback"))

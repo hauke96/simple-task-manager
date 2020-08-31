@@ -3,7 +3,6 @@ package api
 import (
 	"encoding/json"
 	"github.com/gorilla/mux"
-	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/auth"
 	"github.com/hauke96/simple-task-manager/server/project"
 	"github.com/hauke96/simple-task-manager/server/task"
@@ -49,7 +48,7 @@ func getProjects_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(err)
 	}
 
-	sigolo.Info("Successfully got projects")
+	context.log("Successfully got projects")
 
 	return JsonResponse(projects)
 }
@@ -73,7 +72,7 @@ func addProject_v2_4(r *http.Request, context *Context) *ApiResponse {
 
 	sendAdd(addedProject)
 
-	sigolo.Info("Successfully added project %s with %d tasks", addedProject.Id, len(dto.Tasks))
+	context.log("Successfully added project %s with %d tasks", addedProject.Id, len(dto.Tasks))
 
 	return JsonResponse(addedProject)
 }
@@ -90,7 +89,7 @@ func getProject_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(err)
 	}
 
-	sigolo.Info("Successfully got project project %s", projectId)
+	context.log("Successfully got project project %s", projectId)
 
 	return JsonResponse(project)
 }
@@ -109,7 +108,7 @@ func leaveProject_v2_4(r *http.Request, context *Context) *ApiResponse {
 
 	sendUserRemoved(updatedProject, context.token.UID)
 
-	sigolo.Info("Successfully removed user '%s' from project %s (user left)", context.token.UID, projectId)
+	context.log("Successfully removed user '%s' from project %s (user left)", context.token.UID, projectId)
 
 	return EmptyResponse()
 }
@@ -133,7 +132,7 @@ func removeUser_v2_4(r *http.Request, context *Context) *ApiResponse {
 
 	sendUserRemoved(updatedProject, userToRemove)
 
-	sigolo.Info("Successfully removed user '%s' from project %s", userToRemove, projectId)
+	context.log("Successfully removed user '%s' from project %s", userToRemove, projectId)
 
 	return JsonResponse(updatedProject)
 }
@@ -157,7 +156,7 @@ func deleteProjects_v2_4(r *http.Request, context *Context) *ApiResponse {
 
 	sendDelete(projectToDelete)
 
-	sigolo.Info("Successfully removed project %s", projectId)
+	context.log("Successfully removed project %s", projectId)
 
 	return EmptyResponse()
 }
@@ -181,7 +180,7 @@ func updateProjectName_v2_4(r *http.Request, context *Context) *ApiResponse {
 
 	sendUpdate(updatedProject)
 
-	sigolo.Info("Successfully updated name of project %s", projectId)
+	context.log("Successfully updated name of project %s", projectId)
 
 	return JsonResponse(updatedProject)
 }
@@ -205,7 +204,7 @@ func updateProjectDescription_v2_4(r *http.Request, context *Context) *ApiRespon
 
 	sendUpdate(updatedProject)
 
-	sigolo.Info("Successfully updated description of project %s", projectId)
+	context.log("Successfully updated description of project %s", projectId)
 
 	return JsonResponse(updatedProject)
 }
@@ -222,7 +221,7 @@ func getProjectTasks_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(err)
 	}
 
-	sigolo.Info("Successfully got tasks of project %s", projectId)
+	context.log("Successfully got tasks of project %s", projectId)
 
 	return JsonResponse(tasks)
 }
@@ -246,7 +245,7 @@ func addUserToProject_v2_4(r *http.Request, context *Context) *ApiResponse {
 
 	sendUpdate(updatedProject)
 
-	sigolo.Info("Successfully added user '%s' to project %s", userToAdd, projectId)
+	context.log("Successfully added user '%s' to project %s", userToAdd, projectId)
 
 	return JsonResponse(updatedProject)
 }
@@ -271,7 +270,7 @@ func assignUser_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(err)
 	}
 
-	sigolo.Info("Successfully assigned user '%s' to task '%s'", user, taskId)
+	context.log("Successfully assigned user '%s' to task '%s'", user, taskId)
 
 	return JsonResponse(*task)
 }
@@ -296,7 +295,7 @@ func unassignUser_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(err)
 	}
 
-	sigolo.Info("Successfully unassigned user '%s' from task '%s'", user, taskId)
+	context.log("Successfully unassigned user '%s' from task '%s'", user, taskId)
 
 	return JsonResponse(*task)
 }
@@ -324,7 +323,7 @@ func setProcessPoints_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(err)
 	}
 
-	sigolo.Info("Successfully set process points on task '%s' to %d", taskId, processPoints)
+	context.log("Successfully set process points on task '%s' to %d", taskId, processPoints)
 
 	return JsonResponse(*task)
 }
