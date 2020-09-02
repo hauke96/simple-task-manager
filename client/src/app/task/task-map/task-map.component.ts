@@ -2,7 +2,7 @@ import { AfterViewInit, Component, Input } from '@angular/core';
 import { TaskService } from '../task.service';
 import { CurrentUserService } from '../../user/current-user.service';
 import { Task } from '../task.material';
-import { Map, View } from 'ol';
+import { Feature, Map, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import { OSM } from 'ol/source';
 import VectorLayer from 'ol/layer/Vector';
@@ -110,11 +110,11 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
     return center;
   }
 
-  private getTaskFeature() {
+  private getTaskFeature(): Feature {
     return this.vectorSource.getFeatures().find(f => f.get('task_id') === this.task.id);
   }
 
-  public getStyle(feature) {
+  public getStyle(feature): Style {
     const task = this.tasks.find(t => t.id === feature.get('task_id'));
 
     const hasAssignedUser = !!task.assignedUser && task.assignedUser.uid !== '';
