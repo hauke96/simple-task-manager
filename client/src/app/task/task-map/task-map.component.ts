@@ -11,6 +11,8 @@ import { Attribution, defaults as defaultControls, ScaleLine } from 'ol/control'
 import { Fill, Stroke, Style, Text } from 'ol/style';
 import { ProcessPointColorService } from '../../common/process-point-color.service';
 import { Unsubscriber } from '../../common/unsubscriber';
+import { intersects } from 'ol/extent';
+import { Coordinate } from 'ol/coordinate';
 
 @Component({
   selector: 'app-task-map',
@@ -93,6 +95,23 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
   private selectTask(task) {
     this.task = task;
     this.vectorSource.changed();
+
+    // Center view when the task isn't visible on the map
+    const feature = this.getTaskFeature();
+    const taskGeometryVisible = intersects(this.map.getView().calculateExtent(), feature.getGeometry().getExtent());
+    if (!taskGeometryVisible) {
+      this.map.getView().setCenter(this.getTaskCenter());
+    }
+  }
+
+  private getTaskCenter(): Coordinate {
+    const e = this.getTaskFeature().getGeometry().getExtent();
+    const center = [e[0] + (e[2] - e[0]) / 2, e[1] + (e[3] - e[1]) / 2];
+    return center;
+  }
+
+  private getTaskFeature() {
+    return this.vectorSource.getFeatures().find(f => f.get('task_id') === this.task.id);
   }
 
   public getStyle(feature) {
