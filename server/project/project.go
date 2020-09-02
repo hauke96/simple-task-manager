@@ -87,8 +87,7 @@ func (s *ProjectService) AddProjectWithTasks(projectDraft *Project, taskDrafts [
 	if err != nil {
 		return nil, err
 	}
-
-	s.Log("Successfully added project %s", addedProject.Id)
+	s.Log("Added project %s", addedProject.Id)
 
 	// TODO check for correct GeoJson format in task geometries
 
@@ -100,7 +99,7 @@ func (s *ProjectService) AddProjectWithTasks(projectDraft *Project, taskDrafts [
 	if err != nil {
 		return nil, err
 	}
-	s.Log("Successfully added tasks")
+	s.Log("Added tasks")
 
 	//
 	// Add Metadata now, that we have tasks
@@ -147,6 +146,7 @@ func (s *ProjectService) AddProject(projectDraft *Project) (*Project, error) {
 	if err != nil {
 		return nil, err
 	}
+	s.Log("Added project %s", project.Id)
 
 	return project, nil
 }
@@ -192,6 +192,8 @@ func (s *ProjectService) addMetadata(project *Project, potentialMemberId string)
 	}
 	project.NeedsAssignment = needsAssignment
 
+	s.Log("Added task metadata to project %s", project.Id)
+
 	return nil
 }
 
@@ -217,6 +219,7 @@ func (s *ProjectService) AddUser(projectId, userId, potentialOwnerId string) (*P
 	if err != nil {
 		return nil, err
 	}
+	s.Log("Added user to project %s", project.Id)
 
 	err = s.addMetadata(project, potentialOwnerId)
 	if err != nil {
@@ -257,6 +260,7 @@ func (s *ProjectService) RemoveUser(projectId, requestingUserId, userIdToRemove 
 	if err != nil {
 		return nil, err
 	}
+	s.Log("User removed from project %s", project.Id)
 
 	// Unassign removed user from all tasks
 	for _, t := range project.TaskIDs {
@@ -270,8 +274,11 @@ func (s *ProjectService) RemoveUser(projectId, requestingUserId, userIdToRemove 
 				s.Err("Unable to unassign user '%s' from task '%s'", userIdToRemove, t)
 				return nil, err
 			}
+
+			s.Log("Unassigned user %s from task %s", userIdToRemove, t)
 		}
 	}
+	s.Log("Unassigned the removed user %s from all tasks of project %s", userIdToRemove, project.Id)
 
 	// It could happen that someone removes him-/herself, so that we just removed requestingUserId from the project.
 	// Therefore the owner is used here.
@@ -295,6 +302,7 @@ func (s *ProjectService) DeleteProject(projectId, potentialOwnerId string) error
 	if err != nil {
 		return err
 	}
+	s.Log("Deleted project %s", projectId)
 
 	return nil
 }
@@ -316,6 +324,7 @@ func (s *ProjectService) UpdateName(projectId string, newName string, requesting
 	if err != nil {
 		return nil, err
 	}
+	s.Log("Updated name of project %s to '%s'", project.Id, newName)
 
 	err = s.addMetadata(project, requestingUserId)
 	if err != nil {
@@ -340,6 +349,7 @@ func (s *ProjectService) UpdateDescription(projectId string, newDescription stri
 	if err != nil {
 		return nil, err
 	}
+	s.Log("Updated description of project %s", project.Id)
 
 	err = s.addMetadata(project, requestingUserId)
 	if err != nil {

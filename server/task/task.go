@@ -49,7 +49,22 @@ func (s *TaskService) AddTasks(newTasks []*Task, projectId string) ([]*Task, err
 		}
 	}
 
-	return s.store.addTasks(newTasks, projectId)
+	tasks, err := s.store.addTasks(newTasks, projectId)
+	if err != nil {
+		return nil, err
+	}
+	s.Log("Added all %d tasks to project %s", len(tasks), projectId)
+	s.Debug("Added task IDs: %v", toTaskIds(tasks))
+
+	return tasks, nil
+}
+
+func toTaskIds(tasks []*Task) []string {
+	ids := make([]string, len(tasks))
+	for i, v := range tasks {
+		ids[i] = v.Id
+	}
+	return ids
 }
 
 func (s *TaskService) AssignUser(taskId, userId string) (*Task, error) {
@@ -63,7 +78,13 @@ func (s *TaskService) AssignUser(taskId, userId string) (*Task, error) {
 		return nil, errors.New(fmt.Sprintf("task %s has already an assigned userId, cannot overwrite", task.Id))
 	}
 
-	return s.store.assignUser(taskId, userId)
+	task, err = s.store.assignUser(taskId, userId)
+	if err != nil {
+		return nil, err
+	}
+	s.Log("Assigned user %s from task %s", userId, taskId)
+
+	return task, nil
 }
 
 func (s *TaskService) UnassignUser(taskId, requestingUserId string) (*Task, error) {
@@ -72,7 +93,13 @@ func (s *TaskService) UnassignUser(taskId, requestingUserId string) (*Task, erro
 		return nil, err
 	}
 
-	return s.store.unassignUser(taskId)
+	task, err := s.store.unassignUser(taskId)
+	if err != nil {
+		return nil, err
+	}
+	s.Log("Unassigned user %s from task %s", requestingUserId, taskId)
+
+	return task, nil
 }
 
 // SetProcessPoints updates the process points on task "id". When "needsAssignedUser" is true on the project, this
@@ -105,7 +132,13 @@ func (s *TaskService) SetProcessPoints(taskId string, newPoints int, requestingU
 		return nil, errors.New("process points out of range")
 	}
 
-	return s.store.setProcessPoints(taskId, newPoints)
+	task, err = s.store.setProcessPoints(taskId, newPoints)
+	if err != nil {
+		return nil, err
+	}
+	s.Log("Set process points of task %s to %d", taskId)
+
+	return task, nil
 }
 
 // Delete will remove the given tasks, if the requestingUser is a member of the project these tasks are in.
@@ -122,6 +155,7 @@ func (s *TaskService) Delete(taskIds []string, requestingUserId string) error {
 	if err != nil {
 		return err
 	}
+	s.Log("Deleted tasks %v", taskIds)
 
 	return nil
 }
