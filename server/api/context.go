@@ -13,11 +13,11 @@ import (
 )
 
 type Context struct {
-	util.Logger
-	Token          *auth.Token
-	Transaction    *sql.Tx
-	ProjectService *project.ProjectService
-	TaskService    *task.TaskService
+	*util.Logger
+	Token           *auth.Token
+	Transaction     *sql.Tx
+	ProjectService  *project.ProjectService
+	TaskService     *task.TaskService
 	WebsocketSender *websocket.WebsocketSender
 }
 
@@ -35,8 +35,8 @@ func createContext(token *auth.Token, loggerTraceId int) (*Context, error) {
 	ctx.Transaction = tx
 
 	permissionService := permission.Init(tx, ctx.LogTraceId)
-	ctx.TaskService = task.Init(tx, ctx.LogTraceId, permissionService)
-	ctx.ProjectService = project.Init(tx, ctx.LogTraceId, ctx.TaskService, permissionService)
+	ctx.TaskService = task.Init(tx, ctx.Logger, permissionService)
+	ctx.ProjectService = project.Init(tx, ctx.Logger, ctx.TaskService, permissionService)
 	ctx.WebsocketSender = websocket.Init(ctx.Logger)
 
 	return ctx, nil

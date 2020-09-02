@@ -18,17 +18,15 @@ type Task struct {
 }
 
 type TaskService struct {
-	util.Logger
+	*util.Logger
 	store             *storePg
 	permissionService *permission.PermissionService
 }
 
-func Init(tx *sql.Tx, loggerTraceId int, permissionService *permission.PermissionService) *TaskService {
+func Init(tx *sql.Tx, logger *util.Logger, permissionService *permission.PermissionService) *TaskService {
 	return &TaskService{
-		Logger: util.Logger{
-			LogTraceId: loggerTraceId,
-		},
-		store:             getStore(tx, loggerTraceId),
+		Logger:            logger,
+		store:             getStore(tx, logger),
 		permissionService: permissionService,
 	}
 }

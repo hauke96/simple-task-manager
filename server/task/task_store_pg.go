@@ -18,22 +18,20 @@ type taskRow struct {
 }
 
 type storePg struct {
-	util.Logger
-	tx           *sql.Tx
-	table        string
+	*util.Logger
+	tx    *sql.Tx
+	table string
 }
 
-var(
+var (
 	returnValues = "id, process_points, max_process_points, geometry, assigned_user"
 )
 
-func getStore(tx *sql.Tx, loggerTraceId int) *storePg {
+func getStore(tx *sql.Tx, logger *util.Logger) *storePg {
 	return &storePg{
-		Logger: util.Logger{
-			LogTraceId: loggerTraceId,
-		},
-		tx:    tx,
-		table: "tasks",
+		Logger: logger,
+		tx:     tx,
+		table:  "tasks",
 	}
 }
 

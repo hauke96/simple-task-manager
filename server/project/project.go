@@ -23,7 +23,7 @@ type Project struct {
 }
 
 type ProjectService struct {
-	util.Logger
+	*util.Logger
 	store             *storePg
 	permissionService *permission.PermissionService
 	taskService       *task.TaskService
@@ -33,12 +33,10 @@ var (
 	maxDescriptionLength = 10000
 )
 
-func Init(tx *sql.Tx, loggerTraceId int, taskService *task.TaskService, permissionService *permission.PermissionService) *ProjectService {
+func Init(tx *sql.Tx, logger *util.Logger, taskService *task.TaskService, permissionService *permission.PermissionService) *ProjectService {
 	return &ProjectService{
-		Logger: util.Logger{
-			LogTraceId: loggerTraceId,
-		},
-		store:             getStore(tx, loggerTraceId),
+		Logger:            logger,
+		store:             getStore(tx, logger),
 		permissionService: permissionService,
 		taskService:       taskService,
 	}

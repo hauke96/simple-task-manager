@@ -87,7 +87,7 @@ func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request,
 			return
 		}
 
-		sender := websocket.Init(*logger)
+		sender := websocket.Init(logger)
 
 		handler(w, r, token, sender)
 	}
@@ -135,7 +135,7 @@ func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(r *ht
 			context.Err(fmt.Sprintf("!! PANIC !! Recover from panic:"))
 			context.Stack(err)
 
-			util.ResponseInternalError(w, &context.Logger, err)
+			util.ResponseInternalError(w, context.Logger, err)
 
 			context.Log("Try to perform rollback")
 			rollbackErr := context.Transaction.Rollback()

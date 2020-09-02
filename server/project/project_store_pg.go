@@ -20,17 +20,15 @@ type projectRow struct {
 }
 
 type storePg struct {
-	util.Logger
+	*util.Logger
 	tx        *sql.Tx
 	table     string
 	taskTable string
 }
 
-func getStore(tx *sql.Tx, loggerTraceId int) *storePg {
+func getStore(tx *sql.Tx, logger *util.Logger) *storePg {
 	return &storePg{
-		Logger: util.Logger{
-			LogTraceId: loggerTraceId,
-		},
+		Logger:    logger,
 		tx:        tx,
 		table:     "projects",
 		taskTable: "tasks",
