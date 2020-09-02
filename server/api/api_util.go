@@ -110,7 +110,7 @@ func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(r *ht
 	}
 
 	// Create context with a new transaction and new service instances
-	context, err := createContext(token, logger.LogTraceId)
+	context, err := createContext(token, logger)
 	if err != nil {
 		logger.Err("Unable to create context for call user from '%s' (%s) to %s %s: %s", token.User, token.UID, r.Method, r.URL.Path, err)
 		logger.Stack(err)

@@ -9,22 +9,20 @@ import (
 )
 
 type PermissionService struct {
-	util.Logger
+	*util.Logger
 	tx *sql.Tx
 }
 
 var (
-	taskTable        = "tasks"
-	projectTable     = "projects"
+	taskTable    = "tasks"
+	projectTable = "projects"
 )
 
 // Init the permission service for the project and task table.
-func Init(tx *sql.Tx, loggerTraceId int) *PermissionService {
+func Init(tx *sql.Tx, logger *util.Logger) *PermissionService {
 	return &PermissionService{
-		Logger: util.Logger{
-			LogTraceId: loggerTraceId,
-		},
-		tx: tx,
+		Logger: logger,
+		tx:     tx,
 	}
 }
 
@@ -107,7 +105,7 @@ func (s *PermissionService) VerifyMembershipTasks(taskIds []string, user string)
 		return errors.Wrap(err, "unable to read task membership result")
 	}
 
-	if taskMemberships != len(taskIds){
+	if taskMemberships != len(taskIds) {
 		return errors.New(fmt.Sprintf("user %s is not a member of all %d tasks (only of %d)", user, len(taskIds), taskMemberships))
 	}
 

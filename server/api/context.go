@@ -23,10 +23,10 @@ type Context struct {
 
 // createContext starts a new Transaction and creates new service instances which use this new Transaction so that all
 // services (also those calling each other) are using the same Transaction.
-func createContext(token *auth.Token, loggerTraceId int) (*Context, error) {
+func createContext(token *auth.Token, logger *util.Logger) (*Context, error) {
 	ctx := &Context{}
 	ctx.Token = token
-	ctx.LogTraceId = loggerTraceId
+	ctx.Logger = logger
 
 	tx, err := database.GetTransaction()
 	if err != nil {
@@ -34,7 +34,7 @@ func createContext(token *auth.Token, loggerTraceId int) (*Context, error) {
 	}
 	ctx.Transaction = tx
 
-	permissionService := permission.Init(tx, ctx.LogTraceId)
+	permissionService := permission.Init(tx, ctx.Logger)
 	ctx.TaskService = task.Init(tx, ctx.Logger, permissionService)
 	ctx.ProjectService = project.Init(tx, ctx.Logger, ctx.TaskService, permissionService)
 	ctx.WebsocketSender = websocket.Init(ctx.Logger)
