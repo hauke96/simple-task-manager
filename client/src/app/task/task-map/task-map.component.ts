@@ -96,11 +96,13 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
     this.task = task;
     this.vectorSource.changed();
 
-    // Center view when the task isn't visible on the map
-    const feature = this.getTaskFeature();
-    const taskGeometryVisible = intersects(this.map.getView().calculateExtent(), feature.getGeometry().getExtent());
-    if (!taskGeometryVisible) {
-      this.map.getView().setCenter(this.getTaskCenter());
+    if (!!this.task) {
+      // Center view when the task isn't visible on the map
+      const feature = this.getTaskFeature();
+      const taskGeometryVisible = intersects(this.map.getView().calculateExtent(), feature.getGeometry().getExtent());
+      if (!taskGeometryVisible) {
+        this.map.getView().setCenter(this.getTaskCenter());
+      }
     }
   }
 
