@@ -11,9 +11,6 @@
 	flex-direction: row;
 	align-items: center;
 }
-.assign-button-container > button {
-	margin-left: $space-large;
-}
 
 .process-point-container {
 	display: flex;
@@ -34,7 +31,8 @@
 	margin-left: $space-base;
 }
 
-.save-button {
+.save-button,
+.assign-button-container > button {
 	margin-left: $space-large;
 }
 
@@ -42,6 +40,7 @@
 	margin-top: $space-large;
 }
 
-.open-osm-button {
+.open-osm-button,
+.done-button {
 	margin-left: $space-base;
 }
