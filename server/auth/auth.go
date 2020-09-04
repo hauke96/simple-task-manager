@@ -28,6 +28,7 @@ var (
 	service *oauth1a.Service
 
 	configs map[string]*oauth1a.UserConfig
+	loggers map[string]*util.Logger
 )
 
 func Init() {
@@ -53,15 +54,17 @@ func Init() {
 	}
 
 	configs = make(map[string]*oauth1a.UserConfig)
+	loggers = make(map[string]*util.Logger)
 }
 
 func OauthLogin(w http.ResponseWriter, r *http.Request) {
+	logger := util.NewLogger()
 	userConfig := &oauth1a.UserConfig{}
 
 	randomBytes, err := getRandomBytes(64)
 	if err != nil {
-		sigolo.Stack(err)
-		util.ResponseInternalError(w, errors.New("Could not get random bytes for config key"))
+		logger.Stack(err)
+		util.ResponseInternalError(w, logger, errors.New("Could not get random bytes for config key"))
 		return
 	}
 
@@ -69,8 +72,8 @@ func OauthLogin(w http.ResponseWriter, r *http.Request) {
 
 	clientRedirectUrl, err := util.GetParam("redirect", r)
 	if err != nil {
-		sigolo.Stack(err)
-		util.ResponseBadRequest(w, err)
+		logger.Stack(err)
+		util.ResponseBadRequest(w, logger, err)
 		return
 	}
 
@@ -78,45 +81,60 @@ func OauthLogin(w http.ResponseWriter, r *http.Request) {
 	// we use this key to retrieve the config back and be able to make proper requests to the OSM server..
 	// The redirect param is the URL of the web application we want to redirect back to, after everything is done.
 	service.ClientConfig.CallbackURL = oauthRedirectUrl + "?redirect=" + clientRedirectUrl + "&config=" + configKey
-	sigolo.Info("%s", service.ClientConfig.CallbackURL)
+	logger.Log("%s", service.ClientConfig.CallbackURL)
 
 	httpClient := new(http.Client)
 	err = userConfig.GetRequestToken(service, httpClient)
 	if err != nil {
 		//sigolo.Error("could not get request token from config: %s", err.Error())
-		sigolo.Stack(err)
+		logger.Stack(err)
 		return
 	}
 
 	url, err := userConfig.GetAuthorizeURL(service)
 	if err != nil {
 		//sigolo.Error("could not get authorization URL from config: %s", err.Error())
-		sigolo.Stack(err)
+		logger.Stack(err)
 		return
 	}
 
-	sigolo.Debug("Redirect to URL: %s", url)
+	logger.Debug("Redirect to URL: %s", url)
 
 	configs[configKey] = userConfig
+	loggers[configKey] = logger
+
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
 
 func OauthCallback(w http.ResponseWriter, r *http.Request) {
-	sigolo.Info("Callback called")
+	sigolo.Debug("Callback called")
 
 	configKey, err := util.GetParam("config", r)
 	if err != nil {
-		sigolo.Stack(err)
-		util.ResponseBadRequest(w, err)
+		logger := util.NewLogger()
+		logger.Err("Could not load config key from request URL")
+		logger.Stack(err)
+		util.ResponseBadRequest(w, logger, err)
 		return
 	}
+
+	// Get the logger for this login process.
+	logger, ok := loggers[configKey]
+	if !ok || logger == nil {
+		err := errors.New(fmt.Sprintf("Logger for config key %s not found", configKey))
+		logger := util.NewLogger()
+		logger.Stack(err)
+		util.ResponseBadRequest(w, logger, err)
+		return
+	}
+	loggers[configKey] = nil // Remove the config, we don't need it  anymore
 
 	// Get the config where the request tokens are stored in. They are needed later to get some basic user information.
 	userConfig, ok := configs[configKey]
 	if !ok || userConfig == nil {
 		err := errors.New("User config not found")
-		sigolo.Stack(err)
-		util.ResponseBadRequest(w, err)
+		logger.Stack(err)
+		util.ResponseBadRequest(w, logger, err)
 		return
 	}
 	configs[configKey] = nil // Remove the config, we don't need it  anymore
@@ -124,38 +142,38 @@ func OauthCallback(w http.ResponseWriter, r *http.Request) {
 	// This gets the redirect URL of the web-client. So e.g. "https://stm-hauke-stieler.de/oauth-landing"
 	clientRedirectUrl, err := util.GetParam("redirect", r)
 	if err != nil {
-		sigolo.Stack(err)
-		util.ResponseBadRequest(w, err)
+		logger.Stack(err)
+		util.ResponseBadRequest(w, logger, err)
 		return
 	}
 
 	// Request access token from the OSM server in order to then get some user information.
 	err = requestAccessToken(r, userConfig)
 	if err != nil {
-		sigolo.Stack(err)
-		util.ResponseInternalError(w, err)
+		logger.Stack(err)
+		util.ResponseInternalError(w, logger, err)
 		return
 	}
 
 	userName, userId, err := requestUserInformation(userConfig)
 	if err != nil {
-		sigolo.Stack(err)
-		util.ResponseInternalError(w, err)
+		logger.Stack(err)
+		util.ResponseInternalError(w, logger, err)
 		return
 	}
 
 	// Until here, the user is considered to be successfully logged in. Now we can create the token used to authenticate
 	// against this server.
 
-	sigolo.Info("Create token for user '%s'", userName)
+	logger.Log("Create token for user '%s'", userName)
 
 	tokenValidDuration, _ := time.ParseDuration("24h")
 	validUntil := time.Now().Add(tokenValidDuration).Unix()
 
-	encodedTokenString, err := createTokenString(err, userName, userId, validUntil)
+	encodedTokenString, err := createTokenString(logger, userName, userId, validUntil)
 	if err != nil {
-		sigolo.Stack(err)
-		util.ResponseInternalError(w, err)
+		logger.Stack(err)
+		util.ResponseInternalError(w, logger, err)
 		return
 	}
 
@@ -221,15 +239,15 @@ func getRandomBytes(count int) ([]byte, error) {
 // verifyRequest checks the integrity of the token and the "validUntil" date. It
 // then returns the token but without the secret part, just the meta information
 // (e.g. user name) is set.
-func VerifyRequest(r *http.Request) (*Token, error) {
+func VerifyRequest(r *http.Request, logger *util.Logger) (*Token, error) {
 	encodedToken := r.Header.Get("Authorization")
 
-	token, err := verifyToken(encodedToken)
+	token, err := verifyToken(logger, encodedToken)
 	if err != nil {
 		return nil, err
 	}
 
-	sigolo.Debug("User '%s' has valid token", token.User)
+	logger.Debug("User '%s' has valid token", token.User)
 
 	token.Secret = ""
 	return token, nil

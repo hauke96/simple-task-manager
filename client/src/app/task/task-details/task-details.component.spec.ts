@@ -99,6 +99,15 @@ describe('TaskDetailsComponent', () => {
     expect(component.task.processPoints).toEqual(50);
   });
 
+  it('should set all process points on done-button', () => {
+    component.task = createTask(10, '123');
+    component.newProcessPoints = 50;
+    component.onDoneButtonClick();
+
+    fixture.detectChanges();
+    expect(component.task.processPoints).toEqual(component.task.maxProcessPoints);
+  });
+
   it('should update tasks on updated project', () => {
     const t: Task = createTask(10);
     const newProcessPoints = 50;
@@ -113,6 +122,6 @@ describe('TaskDetailsComponent', () => {
   });
 
   function createTask(processPoints: number, id: string = '123'): Task {
-    return new Task(id, undefined, processPoints, 100, TestTaskFeature);
+    return new Task(id, undefined, processPoints, 789, TestTaskFeature);
   }
 });

@@ -38,7 +38,7 @@ func setup() {
 	}
 
 	h.Tx = tx
-	s = Init(tx)
+	s = Init(tx, 0)
 }
 
 func TestVerifyOwnership(t *testing.T) {

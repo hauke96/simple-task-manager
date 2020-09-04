@@ -100,6 +100,17 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
         });
   }
 
+  public onDoneButtonClick() {
+    this.taskService.setProcessPoints(this.task.id, this.task.maxProcessPoints)
+      .subscribe(
+        () => {
+        },
+        e => {
+          console.error(e);
+          this.notificationService.addError($localize`:@@ERROR_PROCESS_POINTS:Could not set process points`);
+        });
+  }
+
   public onOpenJosmButtonClicked() {
     this.taskService.openInJosm(this.task, this.projectId)
       .subscribe(() => {

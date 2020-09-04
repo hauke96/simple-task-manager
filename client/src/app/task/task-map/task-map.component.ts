@@ -2,7 +2,7 @@ import { AfterViewInit, Component, Input } from '@angular/core';
 import { TaskService } from '../task.service';
 import { CurrentUserService } from '../../user/current-user.service';
 import { Task } from '../task.material';
-import { Map, View } from 'ol';
+import { Feature, Map, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import { OSM } from 'ol/source';
 import VectorLayer from 'ol/layer/Vector';
@@ -11,6 +11,8 @@ import { Attribution, defaults as defaultControls, ScaleLine } from 'ol/control'
 import { Fill, Stroke, Style, Text } from 'ol/style';
 import { ProcessPointColorService } from '../../common/process-point-color.service';
 import { Unsubscriber } from '../../common/unsubscriber';
+import { intersects } from 'ol/extent';
+import { Coordinate } from 'ol/coordinate';
 
 @Component({
   selector: 'app-task-map',
@@ -93,9 +95,28 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
   private selectTask(task) {
     this.task = task;
     this.vectorSource.changed();
+
+    if (!!this.task) {
+      // Center view when the task isn't visible on the map
+      const feature = this.getTaskFeature();
+      const taskGeometryVisible = intersects(this.map.getView().calculateExtent(), feature.getGeometry().getExtent());
+      if (!taskGeometryVisible) {
+        this.map.getView().setCenter(this.getTaskCenter());
+      }
+    }
   }
 
-  public getStyle(feature) {
+  private getTaskCenter(): Coordinate {
+    const e = this.getTaskFeature().getGeometry().getExtent();
+    const center = [e[0] + (e[2] - e[0]) / 2, e[1] + (e[3] - e[1]) / 2];
+    return center;
+  }
+
+  private getTaskFeature(): Feature {
+    return this.vectorSource.getFeatures().find(f => f.get('task_id') === this.task.id);
+  }
+
+  public getStyle(feature): Style {
     const task = this.tasks.find(t => t.id === feature.get('task_id'));
 
     const hasAssignedUser = !!task.assignedUser && task.assignedUser.uid !== '';

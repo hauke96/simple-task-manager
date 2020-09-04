@@ -3,7 +3,6 @@ package task
 import (
 	"database/sql"
 	"fmt"
-	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/lib/pq"
 	"github.com/pkg/errors"
@@ -19,24 +18,26 @@ type taskRow struct {
 }
 
 type storePg struct {
-	tx           *sql.Tx
-	table        string
+	*util.Logger
+	tx    *sql.Tx
+	table string
 }
 
-var(
+var (
 	returnValues = "id, process_points, max_process_points, geometry, assigned_user"
 )
 
-func getStore(tx *sql.Tx) *storePg {
+func getStore(tx *sql.Tx, logger *util.Logger) *storePg {
 	return &storePg{
-		tx:    tx,
-		table: "tasks",
+		Logger: logger,
+		tx:     tx,
+		table:  "tasks",
 	}
 }
 
 func (s *storePg) getTasks(projectId string) ([]*Task, error) {
 	query := fmt.Sprintf("SELECT id,process_points,max_process_points,geometry,assigned_user FROM %s WHERE project_id = $1;", s.table)
-	util.LogQuery(query, projectId)
+	s.LogQuery(query, projectId)
 
 	rows, err := s.tx.Query(query, projectId)
 	if err != nil {
@@ -64,7 +65,7 @@ func (s *storePg) getTasks(projectId string) ([]*Task, error) {
 
 func (s *storePg) getTask(taskId string) (*Task, error) {
 	query := fmt.Sprintf("SELECT id,process_points,max_process_points,geometry,assigned_user FROM %s WHERE id = $1;", s.table)
-	util.LogQuery(query, taskId)
+	s.LogQuery(query, taskId)
 
 	rows, err := s.tx.Query(query, taskId)
 	if err != nil {
@@ -91,7 +92,7 @@ func (s *storePg) addTasks(newTasks []*Task, projectId string) ([]*Task, error) 
 	for _, t := range newTasks {
 		id, err := s.addTask(t, projectId)
 		if err != nil {
-			sigolo.Error("error adding task '%s'", t.Id)
+			s.Err("error adding task '%s'", t.Id)
 			return nil, err
 		}
 
@@ -103,7 +104,7 @@ func (s *storePg) addTasks(newTasks []*Task, projectId string) ([]*Task, error) 
 
 func (s *storePg) addTask(task *Task, projectId string) (string, error) {
 	query := fmt.Sprintf("INSERT INTO %s(process_points, max_process_points, geometry, assigned_user, project_id) VALUES($1, $2, $3, $4, $5) RETURNING %s;", s.table, returnValues)
-	t, err := execQuery(s.tx, query, task.ProcessPoints, task.MaxProcessPoints, task.Geometry, task.AssignedUser, projectId)
+	t, err := s.execQuery(query, task.ProcessPoints, task.MaxProcessPoints, task.Geometry, task.AssignedUser, projectId)
 
 	if err != nil {
 		return "", err
@@ -114,23 +115,23 @@ func (s *storePg) addTask(task *Task, projectId string) (string, error) {
 
 func (s *storePg) assignUser(taskId, userId string) (*Task, error) {
 	query := fmt.Sprintf("UPDATE %s SET assigned_user=$1 WHERE id=$2 RETURNING %s;", s.table, returnValues)
-	return execQuery(s.tx, query, userId, taskId)
+	return s.execQuery(query, userId, taskId)
 }
 
 func (s *storePg) unassignUser(taskId string) (*Task, error) {
 	query := fmt.Sprintf("UPDATE %s SET assigned_user='' WHERE id=$1 RETURNING %s;", s.table, returnValues)
-	return execQuery(s.tx, query, taskId)
+	return s.execQuery(query, taskId)
 }
 
 func (s *storePg) setProcessPoints(taskId string, newPoints int) (*Task, error) {
 	query := fmt.Sprintf("UPDATE %s SET process_points=$1 WHERE id=$2 RETURNING %s;", s.table, returnValues)
-	return execQuery(s.tx, query, newPoints, taskId)
+	return s.execQuery(query, newPoints, taskId)
 }
 
 func (s *storePg) delete(taskIds []string) error {
 	query := fmt.Sprintf("DELETE FROM %s WHERE id=ANY($1)", s.table)
 
-	util.LogQuery(query, taskIds)
+	s.LogQuery(query, taskIds)
 	_, err := s.tx.Exec(query, pq.Array(taskIds))
 	if err != nil {
 		return err
@@ -140,9 +141,9 @@ func (s *storePg) delete(taskIds []string) error {
 }
 
 // execQuery executed the given query, turns the result into a Task object and closes the query.
-func execQuery(db *sql.Tx, query string, params ...interface{}) (*Task, error) {
-	util.LogQuery(query, params...)
-	rows, err := db.Query(query, params...)
+func (s *storePg) execQuery(query string, params ...interface{}) (*Task, error) {
+	s.LogQuery(query, params...)
+	rows, err := s.tx.Query(query, params...)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not run query")
 	}

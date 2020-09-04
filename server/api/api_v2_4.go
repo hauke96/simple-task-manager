@@ -3,7 +3,6 @@ package api
 import (
 	"encoding/json"
 	"github.com/gorilla/mux"
-	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/auth"
 	"github.com/hauke96/simple-task-manager/server/project"
 	"github.com/hauke96/simple-task-manager/server/task"
@@ -44,12 +43,12 @@ func Init_v2_4(router *mux.Router) (*mux.Router, string) {
 }
 
 func getProjects_v2_4(r *http.Request, context *Context) *ApiResponse {
-	projects, err := context.projectService.GetProjects(context.token.UID)
+	projects, err := context.ProjectService.GetProjects(context.Token.UID)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
-	sigolo.Info("Successfully got projects")
+	context.Log("Successfully got projects")
 
 	return JsonResponse(projects)
 }
@@ -66,14 +65,14 @@ func addProject_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(errors.Wrap(err, "error unmarshalling project draft"))
 	}
 
-	addedProject, err := context.projectService.AddProjectWithTasks(&dto.Project, dto.Tasks)
+	addedProject, err := context.ProjectService.AddProjectWithTasks(&dto.Project, dto.Tasks)
 	if err != nil {
 		return InternalServerError(errors.Wrap(err, "error adding project with tasks"))
 	}
 
-	sendAdd(addedProject)
+	sendAdd(context.WebsocketSender, addedProject)
 
-	sigolo.Info("Successfully added project %s with %d tasks", addedProject.Id, len(dto.Tasks))
+	context.Log("Successfully added project %s with %d tasks", addedProject.Id, len(dto.Tasks))
 
 	return JsonResponse(addedProject)
 }
@@ -85,12 +84,12 @@ func getProject_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return BadRequestError(errors.New("url segment 'id' not set"))
 	}
 
-	project, err := context.projectService.GetProject(projectId, context.token.UID)
+	project, err := context.ProjectService.GetProject(projectId, context.Token.UID)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
-	sigolo.Info("Successfully got project project %s", projectId)
+	context.Log("Successfully got project project %s", projectId)
 
 	return JsonResponse(project)
 }
@@ -102,14 +101,14 @@ func leaveProject_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return BadRequestError(errors.New("url segment 'id' not set"))
 	}
 
-	updatedProject, err := context.projectService.RemoveUser(projectId, context.token.UID, context.token.UID)
+	updatedProject, err := context.ProjectService.RemoveUser(projectId, context.Token.UID, context.Token.UID)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
-	sendUserRemoved(updatedProject, context.token.UID)
+	sendUserRemoved(context.WebsocketSender, updatedProject, context.Token.UID)
 
-	sigolo.Info("Successfully removed user '%s' from project %s (user left)", context.token.UID, projectId)
+	context.Log("Successfully removed user '%s' from project %s (user left)", context.Token.UID, projectId)
 
 	return EmptyResponse()
 }
@@ -126,14 +125,14 @@ func removeUser_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return BadRequestError(errors.New("url segment 'uid' not set"))
 	}
 
-	updatedProject, err := context.projectService.RemoveUser(projectId, context.token.UID, userToRemove)
+	updatedProject, err := context.ProjectService.RemoveUser(projectId, context.Token.UID, userToRemove)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
-	sendUserRemoved(updatedProject, userToRemove)
+	sendUserRemoved(context.WebsocketSender, updatedProject, userToRemove)
 
-	sigolo.Info("Successfully removed user '%s' from project %s", userToRemove, projectId)
+	context.Log("Successfully removed user '%s' from project %s", userToRemove, projectId)
 
 	return JsonResponse(updatedProject)
 }
@@ -145,19 +144,19 @@ func deleteProjects_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return BadRequestError(errors.New("url segment 'id' not set"))
 	}
 
-	projectToDelete, err := context.projectService.GetProject(projectId, context.token.UID)
+	projectToDelete, err := context.ProjectService.GetProject(projectId, context.Token.UID)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
-	err = context.projectService.DeleteProject(projectId, context.token.UID)
+	err = context.ProjectService.DeleteProject(projectId, context.Token.UID)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
-	sendDelete(projectToDelete)
+	sendDelete(context.WebsocketSender, projectToDelete)
 
-	sigolo.Info("Successfully removed project %s", projectId)
+	context.Log("Successfully removed project %s", projectId)
 
 	return EmptyResponse()
 }
@@ -174,14 +173,14 @@ func updateProjectName_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(errors.Wrap(err, "error reading request body"))
 	}
 
-	updatedProject, err := context.projectService.UpdateName(projectId, string(bodyBytes), context.token.UID)
+	updatedProject, err := context.ProjectService.UpdateName(projectId, string(bodyBytes), context.Token.UID)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
-	sendUpdate(updatedProject)
+	sendUpdate(context.WebsocketSender, updatedProject)
 
-	sigolo.Info("Successfully updated name of project %s", projectId)
+	context.Log("Successfully updated name of project %s", projectId)
 
 	return JsonResponse(updatedProject)
 }
@@ -198,14 +197,14 @@ func updateProjectDescription_v2_4(r *http.Request, context *Context) *ApiRespon
 		return InternalServerError(errors.Wrap(err, "error reading request body"))
 	}
 
-	updatedProject, err := context.projectService.UpdateDescription(projectId, string(bodyBytes), context.token.UID)
+	updatedProject, err := context.ProjectService.UpdateDescription(projectId, string(bodyBytes), context.Token.UID)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
-	sendUpdate(updatedProject)
+	sendUpdate(context.WebsocketSender, updatedProject)
 
-	sigolo.Info("Successfully updated description of project %s", projectId)
+	context.Log("Successfully updated description of project %s", projectId)
 
 	return JsonResponse(updatedProject)
 }
@@ -217,12 +216,12 @@ func getProjectTasks_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return BadRequestError(errors.New("url segment 'id' not set"))
 	}
 
-	tasks, err := context.taskService.GetTasks(projectId, context.token.UID)
+	tasks, err := context.TaskService.GetTasks(projectId, context.Token.UID)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
-	sigolo.Info("Successfully got tasks of project %s", projectId)
+	context.Log("Successfully got tasks of project %s", projectId)
 
 	return JsonResponse(tasks)
 }
@@ -239,14 +238,14 @@ func addUserToProject_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return BadRequestError(errors.New("url segment 'id' not set"))
 	}
 
-	updatedProject, err := context.projectService.AddUser(projectId, userToAdd, context.token.UID)
+	updatedProject, err := context.ProjectService.AddUser(projectId, userToAdd, context.Token.UID)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
-	sendUpdate(updatedProject)
+	sendUpdate(context.WebsocketSender, updatedProject)
 
-	sigolo.Info("Successfully added user '%s' to project %s", userToAdd, projectId)
+	context.Log("Successfully added user '%s' to project %s", userToAdd, projectId)
 
 	return JsonResponse(updatedProject)
 }
@@ -258,20 +257,20 @@ func assignUser_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return BadRequestError(errors.New("url segment 'id' not set"))
 	}
 
-	user := context.token.UID
+	user := context.Token.UID
 
-	task, err := context.taskService.AssignUser(taskId, user)
+	task, err := context.TaskService.AssignUser(taskId, user)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
 	// Send via websockets
-	err = sendTaskUpdate(task, user, context)
+	err = sendTaskUpdate(context.WebsocketSender, task, user, context)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
-	sigolo.Info("Successfully assigned user '%s' to task '%s'", user, taskId)
+	context.Log("Successfully assigned user '%s' to task '%s'", user, taskId)
 
 	return JsonResponse(*task)
 }
@@ -283,20 +282,20 @@ func unassignUser_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return BadRequestError(errors.New("url segment 'id' not set"))
 	}
 
-	user := context.token.UID
+	user := context.Token.UID
 
-	task, err := context.taskService.UnassignUser(taskId, user)
+	task, err := context.TaskService.UnassignUser(taskId, user)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
 	// Send via websockets
-	err = sendTaskUpdate(task, user, context)
+	err = sendTaskUpdate(context.WebsocketSender, task, user, context)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
-	sigolo.Info("Successfully unassigned user '%s' from task '%s'", user, taskId)
+	context.Log("Successfully unassigned user '%s' from task '%s'", user, taskId)
 
 	return JsonResponse(*task)
 }
@@ -313,65 +312,65 @@ func setProcessPoints_v2_4(r *http.Request, context *Context) *ApiResponse {
 		return BadRequestError(errors.Wrap(err, "url üarameter 'process_point' not set"))
 	}
 
-	task, err := context.taskService.SetProcessPoints(taskId, processPoints, context.token.UID)
+	task, err := context.TaskService.SetProcessPoints(taskId, processPoints, context.Token.UID)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
 	// Send via websockets
-	err = sendTaskUpdate(task, context.token.UID, context)
+	err = sendTaskUpdate(context.WebsocketSender, task, context.Token.UID, context)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
-	sigolo.Info("Successfully set process points on task '%s' to %d", taskId, processPoints)
+	context.Log("Successfully set process points on task '%s' to %d", taskId, processPoints)
 
 	return JsonResponse(*task)
 }
 
-func getWebsocketConnection(w http.ResponseWriter, r *http.Request, token *auth.Token) {
-	websocket.GetWebsocketConnection(w, r, token.UID)
+func getWebsocketConnection(w http.ResponseWriter, r *http.Request, token *auth.Token, websocketSender *websocket.WebsocketSender) {
+	websocketSender.GetWebsocketConnection(w, r, token.UID)
 }
 
-func sendAdd(addedProject *project.Project) {
-	websocket.Send(websocket.Message{
+func sendAdd(sender *websocket.WebsocketSender, addedProject *project.Project) {
+	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectAdded,
 		Data: addedProject,
 	}, addedProject.Users...)
 }
 
-func sendUpdate(updatedProject *project.Project) {
-	websocket.Send(websocket.Message{
+func sendUpdate(sender *websocket.WebsocketSender, updatedProject *project.Project) {
+	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectUpdated,
 		Data: updatedProject,
 	}, updatedProject.Users...)
 }
 
-func sendUserRemoved(updatedProject *project.Project, removedUser string) {
-	websocket.Send(websocket.Message{
+func sendUserRemoved(sender *websocket.WebsocketSender, updatedProject *project.Project, removedUser string) {
+	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectUpdated,
 		Data: updatedProject,
 	}, updatedProject.Users...)
-	websocket.Send(websocket.Message{
+	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectUserRemoved,
 		Data: updatedProject.Id,
 	}, removedUser)
 }
 
-func sendDelete(removedProject *project.Project) {
-	websocket.Send(websocket.Message{
+func sendDelete(sender *websocket.WebsocketSender, removedProject *project.Project) {
+	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectDeleted,
 		Data: removedProject.Id,
 	}, removedProject.Users...)
 }
 
-func sendTaskUpdate(task *task.Task, userId string, context *Context) error {
-	project, err := context.projectService.GetProjectByTask(task.Id, userId)
+func sendTaskUpdate(sender *websocket.WebsocketSender, task *task.Task, userId string, context *Context) error {
+	project, err := context.ProjectService.GetProjectByTask(task.Id, userId)
 	if err != nil {
 		return err
 	}
 
-	websocket.Send(websocket.Message{
+	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectUpdated,
 		Data: project,
 	}, project.Users...)

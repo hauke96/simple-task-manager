@@ -42,9 +42,9 @@ func setup() {
 	}
 
 	h.Tx = tx
-	permissionService := permission.Init(tx)
-	taskService = task.Init(tx, permissionService)
-	s = Init(tx, taskService, permissionService)
+	permissionService := permission.Init(tx, 0)
+	taskService = task.Init(tx, 0, permissionService)
+	s = Init(tx, 0, taskService, permissionService)
 }
 
 func TestGetProjects(t *testing.T) {
