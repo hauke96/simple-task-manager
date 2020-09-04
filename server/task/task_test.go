@@ -8,6 +8,7 @@ import (
 	"github.com/hauke96/simple-task-manager/server/database"
 	"github.com/hauke96/simple-task-manager/server/permission"
 	"github.com/hauke96/simple-task-manager/server/test"
+	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/pkg/errors"
 	"testing"
 
@@ -34,7 +35,7 @@ func setup() {
 	sigolo.LogLevel = sigolo.LOG_DEBUG
 
 	var err error
-	tx, err = database.GetTransaction()
+	tx, err = database.GetTransaction(util.NewLogger())
 	if err != nil {
 		panic(err)
 	}

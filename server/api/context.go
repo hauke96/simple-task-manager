@@ -28,8 +28,7 @@ func createContext(token *auth.Token, logger *util.Logger) (*Context, error) {
 	ctx.Token = token
 	ctx.Logger = logger
 
-	// TODO pass logger to GetTransaction
-	tx, err := database.GetTransaction()
+	tx, err := database.GetTransaction(logger)
 	if err != nil {
 		return nil, errors.Wrap(err, "error getting Transaction")
 	}

@@ -7,6 +7,7 @@ import (
 	"github.com/hauke96/simple-task-manager/server/config"
 	"github.com/hauke96/simple-task-manager/server/database"
 	"github.com/hauke96/simple-task-manager/server/test"
+	"github.com/hauke96/simple-task-manager/server/util"
 	"testing"
 
 	_ "github.com/lib/pq" // Make driver "postgres" usable
@@ -32,7 +33,7 @@ func setup() {
 	sigolo.LogLevel = sigolo.LOG_DEBUG
 
 	var err error
-	tx, err = database.GetTransaction()
+	tx, err = database.GetTransaction(util.NewLogger())
 	if err != nil {
 		panic(err)
 	}

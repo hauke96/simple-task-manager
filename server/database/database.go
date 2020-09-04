@@ -3,8 +3,8 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/config"
+	"github.com/hauke96/simple-task-manager/server/util"
 	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
 )
@@ -15,24 +15,24 @@ var (
 
 // GetTransaction tries to open to the database and creates a transaction. Only if the initial connection succeeds,
 // a reconnect loop starts.
-func GetTransaction() (*sql.Tx, error) {
+func GetTransaction(logger *util.Logger) (*sql.Tx, error) {
 	if db == nil { // No database connection at all
 		err := open()
 		if err != nil {
-			sigolo.Error("Opening initial DB connection failed")
+			logger.Err("Opening initial DB connection failed")
 			return nil, err
 		}
 	} else if err := db.Ping(); err != nil { // Check the DB connection is broken and try to reconnect
-		sigolo.Error("DB ping check failed with error: %s", err.Error())
-		sigolo.Info("Try to reconnect...")
+		logger.Err("DB ping check failed with error: %s", err.Error())
+		logger.Log("Try to reconnect...")
 
 		err := open()
 		if err != nil {
-			sigolo.Error("Reconnect failed")
+			logger.Err("Reconnect failed")
 			return nil, err
 		}
 
-		sigolo.Info("Successfully created new database connection")
+		logger.Log("Successfully created new database connection")
 	}
 
 	return db.Begin()
