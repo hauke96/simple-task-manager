@@ -9,11 +9,9 @@
 			({{t.processPoints}} / {{t.maxProcessPoints}})
 		</span>
 		</div>
-		<span *ngIf="t.processPoints == t.maxProcessPoints" class="done-label">
-		Done
-	</span>
+		<span *ngIf="t.processPoints == t.maxProcessPoints" class="done-label" i18n>Done</span>
 		<span *ngIf="!!t.assignedUser && !isAssignedToCurrentUser(t)"
 			  class="gray-label">{{t.assignedUser.name}}</span>
-		<span *ngIf="isAssignedToCurrentUser(t)" class="gray-label">(you)</span>
+		<span *ngIf="isAssignedToCurrentUser(t)" class="gray-label" i18n>(you)</span>
 	</div>
 </div>

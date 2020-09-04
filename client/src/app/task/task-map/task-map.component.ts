@@ -144,14 +144,14 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
     const labelWeight = currentUserTask ? 'bold' : 'normal';
     let labelText: string;
     if (task.processPoints === task.maxProcessPoints) {
-      labelText = 'DONE';
+      labelText = $localize`:@@TASK_MAP_DONE:DONE`;
     } else {
       labelText = Math.floor(100 * task.processPoints / task.maxProcessPoints) + '%';
     }
 
     // Add user name
     if (currentUserTask) {
-      labelText += '\n(you)';
+      labelText += '\n(' + $localize`:@@TASK_YOU:you` + ')';
     } else if (hasAssignedUser) {
       labelText += '\n(' + task.assignedUser.name + ')';
     }
