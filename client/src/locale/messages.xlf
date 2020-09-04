@@ -33,19 +33,30 @@
           <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="6d1ba1fe215fa70099bc19567de47d0f05381e2c" datatype="html">
+      <trans-unit id="c1db0c5b6d7fe7d9182cb14c9879cb2d6a6ae518" datatype="html">
         <source>
-					<x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Changes in 1.1.0:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;"/>
+					<x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Changes in 1.1.0-dev:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;"/>
 					New features:
 					<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
 						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Translation of STM into Chinese, German and Japanese<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
 						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Button to open task in iD<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Button to directly set a task as &apos;done&apos;<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+					<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
+					Bug fixes:
+					<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
+						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Missing feedback on overpass error<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
 					<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
 					Minor changes:
 					<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
+						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Zoom to selected task when not visible on the screen<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
 					<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
 					Internals:
 					<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
+						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Store project-ID in task database table<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Create project and tasks within one HTTP request<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Introduce the <x id="START_TAG_CODE" ctype="x-code" equiv-text="&lt;code&gt;"/>context<x id="CLOSE_TAG_CODE" ctype="x-code" equiv-text="&lt;/code&gt;"/> to add a logging trace-ID<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Better server side logging<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Reconnect to database after connection failure<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
 					<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
 				</source>
         <context-group purpose="location">
@@ -137,18 +148,18 @@
         <source>Done</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/task/task-list/task-list.component.html</context>
-          <context context-type="linenumber">12</context>
+          <context context-type="linenumber">9</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/task/task-details/task-details.component.html</context>
-          <context context-type="linenumber">23</context>
+          <context context-type="linenumber">24</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bc545564a19ac8305bff6a4c3f2d0810792b08c4" datatype="html">
         <source>(you)</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/task/task-list/task-list.component.html</context>
-          <context context-type="linenumber">15</context>
+          <context context-type="linenumber">13</context>
         </context-group>
       </trans-unit>
       <trans-unit id="9c95e79714babddbf9f35af7a271f780e6d7589d" datatype="html">
@@ -180,14 +191,14 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/task/task-details/task-details.component.html</context>
-          <context context-type="linenumber">26</context>
+          <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
       <trans-unit id="52c9a103b812f258bcddc3d90a6e3f46871d25fe" datatype="html">
         <source>Save</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/task/task-details/task-details.component.html</context>
-          <context context-type="linenumber">22</context>
+          <context context-type="linenumber">23</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project-settings/project-settings.component.html</context>
@@ -198,14 +209,14 @@
         <source>Open in JOSM</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/task/task-details/task-details.component.html</context>
-          <context context-type="linenumber">35</context>
+          <context context-type="linenumber">37</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4ded01fb65e9e8ffb0cca5b798e24e77eedd9d4d" datatype="html">
         <source>Open in iD</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/task/task-details/task-details.component.html</context>
-          <context context-type="linenumber">36</context>
+          <context context-type="linenumber">38</context>
         </context-group>
       </trans-unit>
       <trans-unit id="462f2f44a9c3615a6e54769b7f73c94f18cf1f55" datatype="html">
