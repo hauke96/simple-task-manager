@@ -14,7 +14,8 @@
     "test": "ng test --browsers=FirefoxHeadless --code-coverage",
     "test-chrome": "ng test --watch=false --browsers=ChromeHeadlessNoSandbox --code-coverage",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "i18n": "ng xi18n --output-path src/locale"
   },
   "private": true,
   "dependencies": {
