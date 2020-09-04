@@ -1,9 +1,9 @@
 <div class="assign-container">
 	<h2>Task {{task?.id}}</h2>
 	<div class="assign-button-container" *ngIf="needUserAssignment">
-		<button *ngIf="!task?.assignedUser?.uid" (click)="onAssignButtonClicked()">Assign to me</button>
-		<span *ngIf="!!task?.assignedUser?.uid && task?.assignedUser?.uid !== currentUserId">Assigned to: {{assignedUserName}}</span>
-		<button *ngIf="task?.assignedUser?.uid === currentUserId" (click)="onUnassignButtonClicked()">Unassign</button>
+		<button *ngIf="!task?.assignedUser?.uid" (click)="onAssignButtonClicked()" i18n>Assign to me</button>
+		<span *ngIf="!!task?.assignedUser?.uid && task?.assignedUser?.uid !== currentUserId" i18n>Assigned to: {{assignedUserName}}</span>
+		<button *ngIf="task?.assignedUser?.uid === currentUserId" (click)="onUnassignButtonClicked()" i18n>Unassign</button>
 	</div>
 </div>
 
