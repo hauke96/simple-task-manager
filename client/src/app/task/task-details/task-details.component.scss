@@ -29,6 +29,14 @@
 
 .of-process-point-label {
 	margin-left: $space-base;
+	white-space: nowrap;
+}
+
+.save-button-row {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	width: 100%;
 }
 
 .save-button,
