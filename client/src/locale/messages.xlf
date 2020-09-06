@@ -588,7 +588,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_USER_ID" datatype="html">
-        <source>Could not load user ID for user &apos;<x id="INTERPOLATION" equiv-text="{{interp}}"/>&apos;</source>
+        <source>Could not load user ID for user &apos;<x id="INTERPOLATION" equiv-text="{{interp}}"/>&apos;. The user must have at least one changeset or note.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">11</context>

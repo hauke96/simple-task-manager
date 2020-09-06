@@ -651,7 +651,7 @@
       </trans-unit>
       <trans-unit id="ERROR_USER_ID" datatype="html">
         <source>Could not load user ID for user '<x id="INTERPOLATION" equiv-text="{{interp}}"/>'</source>
-        <target xml:lang="zh-CN">无法载入使用者"<x id="INTERPOLATION" equiv-text="{{interp}}"/>"的使用者ID</target>
+        <target xml:lang="zh-CN">无法载入使用者"<x id="INTERPOLATION" equiv-text="{{interp}}"/>"的使用者ID. 用户必须至少具有一个变更集或注释.</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">10</context>

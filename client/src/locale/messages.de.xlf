@@ -679,7 +679,7 @@
       </trans-unit>
       <trans-unit id="ERROR_USER_ID" datatype="html">
         <source>Could not load user ID for user '<x id="INTERPOLATION" equiv-text="{{interp}}"/>'</source>
-        <target xml:lang="de-DE" state="translated">Konnte ID für Nutzer '<x id="INTERPOLATION" equiv-text="{{interp}}"/>' nicht laden</target>
+        <target xml:lang="de-DE" state="translated">Konnte ID für Nutzer '<x id="INTERPOLATION" equiv-text="{{interp}}"/>' nicht laden. Es muss mindestens ein Änderungssatz oder Hinweis vom Nutzer existieren.</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">10</context>
