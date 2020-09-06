@@ -41,7 +41,13 @@
               "src/styles.scss",
               "node_modules/ol/ol.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "@turf/square-grid",
+              "@turf/hex-grid",
+              "@turf/triangle-grid",
+              "pbf"
+            ]
           },
           "configurations": {
             "local": {
