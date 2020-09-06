@@ -28,18 +28,14 @@ describe('LanguageSelectionComponent', () => {
   });
 
   it('should set initial language correctly', () => {
-    const urlSegments = ['de', 'manager'];
-
-    component.selectLanguageByUrl(urlSegments);
+    component.selectLanguageByUrl('/de/manager');
 
     expect(component.selectedLanguage.code).toEqual('de');
   });
 
   it('should set initial default language correctly', () => {
     component.selectedLanguage = component.languages[1]; // set a different language to check that this actually changes
-    const urlSegments = ['manager'];
-
-    component.selectLanguageByUrl(urlSegments);
+    component.selectLanguageByUrl('/manager');
 
     expect(component.selectedLanguage.code).toEqual('en-US');
   });
