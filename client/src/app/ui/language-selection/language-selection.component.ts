@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 export class Language {
-  constructor(code: string, name: string) {
+  constructor(public code: string, public name: string) {
   }
 }
 
