@@ -39,9 +39,15 @@
             "styles": [
               "src/colors.scss",
               "src/styles.scss",
-			  "node_modules/ol/ol.css"
+              "node_modules/ol/ol.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "@turf/square-grid",
+              "@turf/hex-grid",
+              "@turf/triangle-grid",
+              "pbf"
+            ]
           },
           "configurations": {
             "local": {
@@ -53,13 +59,19 @@
               ]
             },
             "ja": {
-              "localize": ["ja"]
+              "localize": [
+                "ja"
+              ]
             },
             "de": {
-              "localize": ["de"]
+              "localize": [
+                "de"
+              ]
             },
             "zh-CN": {
-              "localize": ["zh-CN"]
+              "localize": [
+                "zh-CN"
+              ]
             },
             "production": {
               "fileReplacements": [
@@ -163,9 +175,9 @@
               "src/assets"
             ],
             "styles": [
-			  "src/colors.scss",
+              "src/colors.scss",
               "src/styles.scss",
-			  "node_modules/ol/ol.css"
+              "node_modules/ol/ol.css"
             ],
             "scripts": []
           }
@@ -196,6 +208,7 @@
           }
         }
       }
-    }},
+    }
+  },
   "defaultProject": "simple-task-manager"
 }
