@@ -24,7 +24,6 @@ export class LanguageSelectionComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.route.snapshot);
     this.selectLanguageByUrl(location.pathname.split('/'));
   }
 
@@ -39,6 +38,7 @@ export class LanguageSelectionComponent implements OnInit {
   }
 
   onLanguageChange() {
-    location.href = location.origin + '/' + this.selectedLanguage.code;
+    // The trailing '/' is important, otherwise the angular router will say "I don't know this route" and causes an error.
+    location.href = location.origin + '/' + this.selectedLanguage.code + '/';
   }
 }
