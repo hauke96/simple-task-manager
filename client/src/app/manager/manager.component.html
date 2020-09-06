@@ -1,7 +1,10 @@
 <div>
 	<app-toolbar>
 		<p i18n>Welcome {{userName}} :)</p>
-		<button (click)="onLogoutClicked()" i18n="logout button">Logout</button>
+		<div>
+			<app-language-selection></app-language-selection>
+			<button (click)="onLogoutClicked()" i18n="logout button">Logout</button>
+		</div>
 	</app-toolbar>
 	<div class="root-container">
 		<app-project-list></app-project-list>

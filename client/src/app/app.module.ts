@@ -30,6 +30,7 @@ import { MinValidatorDirective } from './ui/min-validator.directive';
 import { ShapeRemoteComponent } from './project/shape-remote/shape-remote.component';
 
 import { TranslationExtractionComponent } from './translation-extraction.component';
+import { LanguageSelectionComponent } from './ui/language-selection/language-selection.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { TranslationExtractionComponent } from './translation-extraction.compone
     MaxValidatorDirective,
     MinValidatorDirective,
     ShapeRemoteComponent,
-    TranslationExtractionComponent
+    TranslationExtractionComponent,
+    LanguageSelectionComponent
   ],
   imports: [
     BrowserModule,
