@@ -140,6 +140,21 @@ describe('ProjectListComponent', () => {
     expect(component.projects.length).toEqual(0);
   });
 
+  it('should calculate percentage correctly', () => {
+    const p = createProject();
+    p.totalProcessPoints = 300;
+    p.doneProcessPoints = 196; // -> 65.33333%
+    expect(component.getProcessPointPercentage(p)).toEqual(65);
+
+    p.totalProcessPoints = 200;
+    p.doneProcessPoints = 1; // -> 0.5%
+    expect(component.getProcessPointPercentage(p)).toEqual(1);
+
+    p.totalProcessPoints = 200;
+    p.doneProcessPoints = 42; // -> 21.0%
+    expect(component.getProcessPointPercentage(p)).toEqual(21);
+  });
+
   function createProject(): Project {
     const t = new Task('567', undefined, 10, 100, TestTaskFeature);
     const u1 = new User('test-user', '123');

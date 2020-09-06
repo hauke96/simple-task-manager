@@ -70,6 +70,6 @@ export class ProjectListComponent extends Unsubscriber implements OnInit {
   }
 
   getProcessPointPercentage(project: Project): number {
-    return (project.doneProcessPoints / project.totalProcessPoints) * 100;
+    return Math.round(project.doneProcessPoints / project.totalProcessPoints * 100);
   }
 }
