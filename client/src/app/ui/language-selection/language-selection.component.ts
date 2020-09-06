@@ -24,17 +24,21 @@ export class LanguageSelectionComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const url = this.route.snapshot.url;
+    console.log(this.route.snapshot);
+    this.selectLanguageByUrl(location.pathname.split('/'));
+  }
+
+  selectLanguageByUrl(url: string[]) {
     const allLangCodes = this.languages.map(l => l.code);
 
-    if (!url || url.length === 0 || !allLangCodes.includes(url[0].path)) {
+    if (!url || url.length === 0 || !allLangCodes.includes(url[0])) {
       this.selectedLanguage = this.languages[0]; // en-US as default
     } else {
-      this.selectedLanguage = this.languages.find(l => l.code === url[0].path);
+      this.selectedLanguage = this.languages.find(l => l.code === url[0]);
     }
   }
 
   onLanguageChange() {
-    location.href = location.origin + '/' + this.selectedLanguage.code + '/manager';
+    location.href = location.origin + '/' + this.selectedLanguage.code;
   }
 }
