@@ -9,11 +9,18 @@
           <context context-type="linenumber">3</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="03ddc67567196cbe377d641f7c8e797af36e4bb1" datatype="html">
+        <source>Language selection:</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/manager/manager.component.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="bb694b49d408265c91c62799c2b3a7e3151c824d" datatype="html">
         <source>Logout</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/manager/manager.component.html</context>
-          <context context-type="linenumber">4</context>
+          <context context-type="linenumber">10</context>
         </context-group>
         <note priority="1" from="description">logout button</note>
       </trans-unit>
@@ -82,21 +89,21 @@
         <source>You currently don&apos;t have any projects.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project-list/project-list.component.html</context>
-          <context context-type="linenumber">18</context>
+          <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ecfa915d62703fa0b8e5787e988f8f379057965b" datatype="html">
         <source>Create project</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project-list/project-list.component.html</context>
-          <context context-type="linenumber">22</context>
+          <context context-type="linenumber">23</context>
         </context-group>
       </trans-unit>
       <trans-unit id="05e16b88c8826cf9aae20fd255f4b6088aadfa2b" datatype="html">
         <source>* you own this project</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project-list/project-list.component.html</context>
-          <context context-type="linenumber">23</context>
+          <context context-type="linenumber">24</context>
         </context-group>
       </trans-unit>
       <trans-unit id="553204f35cd5b8f9d341963cf371cc0439a9fb0a" datatype="html">
@@ -588,7 +595,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_USER_ID" datatype="html">
-        <source>Could not load user ID for user &apos;<x id="INTERPOLATION" equiv-text="{{interp}}"/>&apos;. The user must have at least one changeset or note.</source>
+        <source>Could not load user ID for user &apos;<x id="INTERPOLATION" equiv-text="{{interp}}"/>&apos;</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">11</context>
