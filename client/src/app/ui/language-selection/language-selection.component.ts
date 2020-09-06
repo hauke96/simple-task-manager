@@ -35,6 +35,6 @@ export class LanguageSelectionComponent implements OnInit {
   }
 
   onLanguageChange() {
-    location.href = this.selectedLanguage.code + '/manager';
+    location.href = location.origin + '/' + this.selectedLanguage.code + '/manager';
   }
 }
