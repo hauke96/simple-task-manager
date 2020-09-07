@@ -2,10 +2,13 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LanguageSelectionComponent } from './language-selection.component';
 import { RouterTestingModule } from '@angular/router/testing';
+import { SelectedLanguageService } from '../../common/selected-language.service';
+import { Language } from '../../common/language';
 
 describe('LanguageSelectionComponent', () => {
   let component: LanguageSelectionComponent;
   let fixture: ComponentFixture<LanguageSelectionComponent>;
+  let selectedLanguageService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -15,6 +18,8 @@ describe('LanguageSelectionComponent', () => {
       ]
     })
       .compileComponents();
+
+    selectedLanguageService = TestBed.inject(SelectedLanguageService);
   });
 
   beforeEach(() => {
@@ -27,16 +32,23 @@ describe('LanguageSelectionComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set initial language correctly', () => {
-    component.selectLanguageByUrl('/de/manager');
+  it('should call service to get languages', () => {
+    component.languages = [];
+    const serviceSpy = spyOn(selectedLanguageService, 'getKnownLanguages').and.callThrough();
 
-    expect(component.selectedLanguage.code).toEqual('de');
+    component.ngOnInit();
+
+    expect(serviceSpy).toHaveBeenCalled();
+    expect(component.languages).toBeTruthy();
+    expect(component.languages.length).toEqual(4);
   });
 
-  it('should set initial default language correctly', () => {
-    component.selectedLanguage = component.languages[1]; // set a different language to check that this actually changes
-    component.selectLanguageByUrl('/manager');
+  it('should call service to set language', () => {
+    const serviceSpy = spyOn(selectedLanguageService, 'selectLanguageByCode');
+    component.selectedLanguage = new Language('de', 'Deutsch');
 
-    expect(component.selectedLanguage.code).toEqual('en-US');
+    component.onLanguageChange();
+
+    expect(serviceSpy).toHaveBeenCalledWith('de');
   });
 });
