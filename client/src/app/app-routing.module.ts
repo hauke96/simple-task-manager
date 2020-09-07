@@ -8,19 +8,25 @@ import { ProjectComponent } from './project/project/project.component';
 import { ProjectCreationComponent } from './project/project-creation/project-creation.component';
 import { AllProjectsResolver } from './project/all-projects.resolver';
 import { ProjectResolver } from './project/project.resolver';
+import { SelectedLanguageGuard } from './common/selected-language.guard';
 
 const routes: Routes = [
-  {path: '', component: LoginComponent},
-  {path: 'manager', component: ManagerComponent, canActivate: [AuthGuard], resolve: {projects: AllProjectsResolver}},
+  {path: '', component: LoginComponent, canActivate: [SelectedLanguageGuard]},
+  {
+    path: 'manager',
+    component: ManagerComponent,
+    canActivate: [SelectedLanguageGuard, AuthGuard],
+    resolve: {projects: AllProjectsResolver}
+  },
   {
     path: 'project/:id',
     component: ProjectComponent,
-    canActivate: [AuthGuard],
+    canActivate: [SelectedLanguageGuard, AuthGuard],
     resolve: {
       project: ProjectResolver
     }
   },
-  {path: 'new-project', component: ProjectCreationComponent, canActivate: [AuthGuard]},
+  {path: 'new-project', component: ProjectCreationComponent, canActivate: [SelectedLanguageGuard, AuthGuard]},
   {path: 'oauth-landing', component: OauthLandingComponent},
 ];
 

@@ -8,16 +8,16 @@ export class SelectedLanguageService {
   selectedLanguage: Language;
 
   constructor() {
-    this.loadLanguageFromLocalStorage();
   }
 
-  // Load currently selected language from local storage and set it. If no language is present, the default language is used
-  public loadLanguageFromLocalStorage() {
+  // Load currently selected language from local storage and set it. This might trigger a reload if the current language in the URL is not
+  // the selected language.
+  public loadLanguageFromLocalStorage(): boolean {
     const selectedLanguageCode = localStorage.getItem('selected_language');
     if (!!selectedLanguageCode) {
-      this.selectedLanguage = this.getLanguageByCode(selectedLanguageCode);
+      return this.selectLanguageByCode(selectedLanguageCode);
     } else {
-      this.selectedLanguage = this.getLanguageByCode(this.getDefaultLanguage().code);
+      return this.selectLanguageByCode(this.getDefaultLanguage().code);
     }
   }
 
@@ -44,7 +44,9 @@ export class SelectedLanguageService {
 
   // This sets the "this.selectedLanguage" field and triggers a reload if a different language has been selected as the one currently active
   // within the URL (location.pathname).
+  // Returns true when no redirect took place and false when the language changes so that location.href has been set.
   public selectLanguageByCode(languageCode: string) {
+    console.log('Set lang: ' + languageCode);
     const language = this.getLanguageByCode(languageCode);
 
     if (!!language) {
@@ -52,13 +54,17 @@ export class SelectedLanguageService {
     } else {
       this.selectedLanguage = this.getDefaultLanguage(); // en-US as default
     }
+    localStorage.setItem('selected_language', this.selectedLanguage.code);
 
     // Trigger reload if new language has been selected
     const urlLanguageCode = this.urlToLanguageCode(location.pathname);
     if (urlLanguageCode !== this.selectedLanguage.code) {
       // The trailing '/' is important, otherwise the angular router will say "I don't know this route" and causes an error.
       this.loadUrl(location.origin + '/' + this.selectedLanguage.code + '/');
+      return false;
     }
+
+    return true;
   }
 
   private loadUrl(newUrl: string) {

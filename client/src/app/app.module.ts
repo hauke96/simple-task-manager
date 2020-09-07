@@ -31,6 +31,7 @@ import { ShapeRemoteComponent } from './project/shape-remote/shape-remote.compon
 
 import { TranslationExtractionComponent } from './translation-extraction.component';
 import { LanguageSelectionComponent } from './ui/language-selection/language-selection.component';
+import { SelectedLanguageGuard } from './common/selected-language.guard';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,7 @@ import { LanguageSelectionComponent } from './ui/language-selection/language-sel
     HttpClientModule
   ],
   providers: [
+    SelectedLanguageGuard,
     AuthGuard,
     {
       provide: HTTP_INTERCEPTORS,
