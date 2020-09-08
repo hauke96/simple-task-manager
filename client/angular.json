@@ -108,7 +108,7 @@
                   "with": "src/environments/environment.test.ts"
                 }
               ],
-              "optimization": true,
+              "optimization": false,
               "outputHashing": "all",
               "sourceMap": false,
               "extractCss": true,
@@ -119,8 +119,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
