@@ -8,10 +8,6 @@ export class SelectedLanguageService {
   selectedLanguage: Language;
 
   constructor() {
-    this.selectedLanguage = this.urlToLanguageCode(location.pathname);
-    if (!this.selectedLanguage) {
-      this.selectedLanguage = this.getDefaultLanguage();
-    }
   }
 
   // Load currently selected language from local storage and set it. This might trigger a reload if the current language in the URL is not
