@@ -46,7 +46,7 @@ export class SelectedLanguageService {
   // within the URL (location.pathname).
   // Returns true when no redirect took place and false when the language changes so that location.href has been set.
   public selectLanguageByCode(languageCode: string) {
-    const language = cthis.getLanguageByCode(languageCode);
+    const language = this.getLanguageByCode(languageCode);
 
     if (!!language) {
       this.selectedLanguage = language;
