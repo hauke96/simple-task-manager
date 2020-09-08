@@ -13,13 +13,15 @@ export class LanguageSelectionComponent implements OnInit {
   languages: Language[] = [];
 
   constructor(private route: ActivatedRoute, private selectedLanguageService: SelectedLanguageService) {
+    this.languages = this.selectedLanguageService.getKnownLanguages();
+    this.selectedLanguage = this.selectedLanguageService.getSelectedLanguage();
+    console.log(this.selectedLanguage);
   }
 
   ngOnInit(): void {
-    this.languages = this.selectedLanguageService.getKnownLanguages();
   }
 
-  onLanguageChange() {
-    this.selectedLanguageService.selectLanguageByCode(this.selectedLanguage.code);
+  onLanguageChange(event: any) {
+    this.selectedLanguageService.selectLanguageByCode(event.target.value);
   }
 }

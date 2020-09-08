@@ -8,6 +8,10 @@ export class SelectedLanguageService {
   selectedLanguage: Language;
 
   constructor() {
+    this.selectedLanguage = this.urlToLanguageCode(location.pathname);
+    if (!this.selectedLanguage) {
+      this.selectedLanguage = this.getDefaultLanguage();
+    }
   }
 
   // Load currently selected language from local storage and set it. This might trigger a reload if the current language in the URL is not
@@ -35,11 +39,11 @@ export class SelectedLanguageService {
     return this.selectedLanguage;
   }
 
-  public urlToLanguageCode(url: string): string {
+  public urlToLanguageCode(url: string): Language {
     url = url.replace(/^\/*/g, ''); // remove leading slashes. Turn '//de/manager' into 'de/manager'
     const urlSegments = url.split('/'); // now split e.g. 'de/manager' into ['de', 'manager']
     const languageCode = urlSegments[0];
-    return this.getLanguageByCode(languageCode)?.code; // to make sure the found language code exists
+    return this.getLanguageByCode(languageCode);
   }
 
   // This sets the "this.selectedLanguage" field and triggers a reload if a different language has been selected as the one currently active
@@ -57,8 +61,8 @@ export class SelectedLanguageService {
     localStorage.setItem('selected_language', this.selectedLanguage.code);
 
     // Trigger reload if new language has been selected
-    const urlLanguageCode = this.urlToLanguageCode(location.pathname);
-    if (urlLanguageCode !== this.selectedLanguage.code) {
+    const urlLanguage = this.urlToLanguageCode(location.pathname);
+    if (!urlLanguage || urlLanguage.code !== this.selectedLanguage.code) {
       // The trailing '/' is important, otherwise the angular router will say "I don't know this route" and causes an error.
       this.loadUrl(location.origin + '/' + this.selectedLanguage.code + '/');
       return false;
