@@ -45,9 +45,9 @@ describe('LanguageSelectionComponent', () => {
 
   it('should call service to set language', () => {
     const serviceSpy = spyOn(selectedLanguageService, 'selectLanguageByCode');
-    component.selectedLanguage = new Language('de', 'Deutsch');
+    selectedLanguageService.selectedLanguage = new Language('en-US', 'English');
 
-    component.onLanguageChange();
+    component.onLanguageChange({target: {value: 'de'}});
 
     expect(serviceSpy).toHaveBeenCalledWith('de');
   });

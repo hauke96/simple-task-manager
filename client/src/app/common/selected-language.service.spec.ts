@@ -19,13 +19,14 @@ describe('SelectedLanguageService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should set initial language without local storage entry', () => {
+  it('should load language without local storage entry', () => {
+    localStorage.removeItem('selected_language');
     service.loadLanguageFromLocalStorage();
 
     expect(service.selectedLanguage.code).toEqual('en-US');
   });
 
-  it('should set initial language based on local storage', () => {
+  it('should load language based on local storage', () => {
     localStorage.setItem('selected_language', 'zh-CN');
 
     service.loadLanguageFromLocalStorage();
@@ -56,9 +57,9 @@ describe('SelectedLanguageService', () => {
   });
 
   it('should determine code from URL correctly', () => {
-    expect(service.urlToLanguageCode('//de/manager')).toEqual('de');
-    expect(service.urlToLanguageCode('zh-CN/manager')).toEqual('zh-CN');
-    expect(service.urlToLanguageCode('/manager')).toEqual(undefined);
+    expect(service.urlToLanguage('//de/manager').code).toEqual('de');
+    expect(service.urlToLanguage('zh-CN/manager').code).toEqual('zh-CN');
+    expect(service.urlToLanguage('/manager')).toEqual(undefined);
   });
 
   it('should get all known languages', () => {

@@ -17,7 +17,7 @@ export class SelectedLanguageService {
     if (!!selectedLanguageCode) {
       return this.selectLanguageByCode(selectedLanguageCode);
     } else {
-      return this.selectLanguageByCode(this.getDefaultLanguage().code);
+      return this.selectLanguageByCode(this.urlToLanguage(location.pathname)?.code);
     }
   }
 
@@ -35,7 +35,7 @@ export class SelectedLanguageService {
     return this.selectedLanguage;
   }
 
-  public urlToLanguageCode(url: string): Language {
+  public urlToLanguage(url: string): Language {
     url = url.replace(/^\/*/g, ''); // remove leading slashes. Turn '//de/manager' into 'de/manager'
     const urlSegments = url.split('/'); // now split e.g. 'de/manager' into ['de', 'manager']
     const languageCode = urlSegments[0];
@@ -46,8 +46,7 @@ export class SelectedLanguageService {
   // within the URL (location.pathname).
   // Returns true when no redirect took place and false when the language changes so that location.href has been set.
   public selectLanguageByCode(languageCode: string) {
-    console.log('Set lang: ' + languageCode);
-    const language = this.getLanguageByCode(languageCode);
+    const language = cthis.getLanguageByCode(languageCode);
 
     if (!!language) {
       this.selectedLanguage = language;
@@ -57,7 +56,7 @@ export class SelectedLanguageService {
     localStorage.setItem('selected_language', this.selectedLanguage.code);
 
     // Trigger reload if new language has been selected
-    const urlLanguage = this.urlToLanguageCode(location.pathname);
+    const urlLanguage = this.urlToLanguage(location.pathname);
     if (!urlLanguage || urlLanguage.code !== this.selectedLanguage.code) {
       // The trailing '/' is important, otherwise the angular router will say "I don't know this route" and causes an error.
       this.loadUrl(location.origin + '/' + this.selectedLanguage.code + '/');

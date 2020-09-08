@@ -8,7 +8,6 @@ export class AuthGuard implements CanActivate {
 
   canActivate() {
     // TODO ask server if Token is valid
-    console.log('Check canActivate()');
     return !!localStorage.getItem('auth_token');
   }
 }
