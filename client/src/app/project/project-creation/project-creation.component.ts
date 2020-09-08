@@ -153,6 +153,8 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   }
 
   public onSaveButtonClicked() {
+    let taskNameCounter = 1;
+
     const features: Feature[] = this.vectorSource.getFeatures().map(f => {
       f = f.clone(); // otherwise we would change the polygons on the map
       let polygon = (f.getGeometry() as Polygon);
@@ -160,8 +162,15 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       // Even though we transformed the coordinates after their creation from EPSG:4326 into EPSG:3857, the OSM- and overall Geo-World works
       // with lat/lon values, so we transform it back.
       polygon = polygon.transform('EPSG:3857', 'EPSG:4326') as Polygon;
-
       f.setGeometry(polygon);
+
+      // Set a name as increasing number, if no name exists
+      const name = f.get('name');
+      if (!name || name.trim() === '') {
+        f.set('name', taskNameCounter);
+        taskNameCounter++;
+      }
+
       return f;
     });
 
