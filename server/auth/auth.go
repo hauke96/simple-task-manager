@@ -27,6 +27,8 @@ var (
 
 	service *oauth1a.Service
 
+	tokenValidityDuration time.Duration
+
 	configs map[string]*oauth1a.UserConfig
 	loggers map[string]*util.Logger
 )
@@ -52,6 +54,9 @@ func Init() {
 		},
 		Signer: new(oauth1a.HmacSha1Signer),
 	}
+
+	tokenValidityDuration, err = time.ParseDuration(config.Conf.TokenValidityDuration)
+	sigolo.FatalCheckf(err, "unable to parse token validity duration from config entry '%s'", config.Conf.TokenValidityDuration)
 
 	configs = make(map[string]*oauth1a.UserConfig)
 	loggers = make(map[string]*util.Logger)
@@ -167,8 +172,7 @@ func OauthCallback(w http.ResponseWriter, r *http.Request) {
 
 	logger.Log("Create token for user '%s'", userName)
 
-	tokenValidDuration, _ := time.ParseDuration("24h")
-	validUntil := time.Now().Add(tokenValidDuration).Unix()
+	validUntil := time.Now().Add(tokenValidityDuration).Unix()
 
 	encodedTokenString, err := createTokenString(logger, userName, userId, validUntil)
 	if err != nil {
