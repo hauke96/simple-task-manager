@@ -1,7 +1,7 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from 'rxjs';
 import { concatMap, flatMap, map, mergeAll, mergeMap, switchMap, tap } from 'rxjs/operators';
-import { Project, ProjectDto } from './project.material';
+import { Project, ProjectAddDto, ProjectDto } from './project.material';
 import { Task, TaskDto } from './../task/task.material';
 import { TaskService } from './../task/task.service';
 import { HttpClient } from '@angular/common/http';
@@ -32,7 +32,7 @@ export class ProjectService {
       this.handleReceivedMessage(m);
     }, e => {
       console.error(e);
-      this.notificationService.addError('Could not initialize live-updates');
+      this.notificationService.addError($localize`:@@ERROR_LIVE_UPDATE:Could not initialize live-updates`);
     });
   }
 
@@ -93,15 +93,13 @@ export class ProjectService {
     users: string[],
     owner: string
   ): Observable<Project> {
-    // Create new tasks with the given geometries and collect their IDs
-    return this.taskService.createNewTasks(geometries, maxProcessPoints)
-      .pipe(
-        flatMap(tasks => {
-          const p = new ProjectDto('', name, projectDescription, tasks.map(t => t.id), users, owner);
-          return this.http.post<ProjectDto>(environment.url_projects, JSON.stringify(p))
-            .pipe(flatMap(dto => this.toProject(dto)));
-        })
-      );
+    const p = new ProjectAddDto(
+      new ProjectDto('', name, projectDescription, users, owner),
+      geometries.map(g => new TaskDto('', 0, maxProcessPoints, g))
+    );
+
+    return this.http.post<ProjectDto>(environment.url_projects, JSON.stringify(p))
+      .pipe(mergeMap(dto => this.toProject(dto)));
   }
 
   public inviteUser(projectId: string, userId: string): Observable<void> {

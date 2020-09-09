@@ -1,9 +1,10 @@
-<h1>Projekte</h1>
+<h1 i18n>Projects</h1>
 <div *ngIf="projects?.length !== 0">
 	<div *ngFor="let p of projects" class="list-item" (click)="onProjectListItemClicked(p.id)">
 		<span>{{p.name}}</span>
 		<div class="list-item-column">
 			<span class="light-label">({{p.doneProcessPoints}}/{{p.totalProcessPoints}})</span>
+			<span class="light-label percentage-label">{{getProcessPointPercentage(p)}} %</span>
 			<div class="border-bar">
 				<div class="color-bar" [style.background-color]="getProcessPointColor(p)" [style.border-color]="getProcessPointColor(p)" [style.width]="getProcessPointWidth(p)"></div>
 			</div>
@@ -15,10 +16,10 @@
 </div>
 
 <div *ngIf="projects?.length === 0">
-	<p class="light-label">You currently don't have any projects.</p>
+	<p class="light-label" i18n>You currently don't have any projects.</p>
 </div>
 
 <div class="bottom-line">
-	<button [routerLink]="['/new-project']">Create project</button>
-	<span class="light-label" *ngIf="projects?.length !== 0">* you own this project</span>
+	<button [routerLink]="['/new-project']" i18n>Create project</button>
+	<span class="light-label" *ngIf="projects?.length !== 0" i18n>* you own this project</span>
 </div>

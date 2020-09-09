@@ -69,9 +69,11 @@ export class ProjectSettingsComponent implements OnInit {
     this.projectService.deleteProject(this.projectId)
       .subscribe(() => {
         this.requestConfirmation = false;
+        this.notificationService.addInfo($localize`:@@INFO_REMOVED_PROJ:Project removed successfully`);
+        this.router.navigate(['/manager']);
       }, err => {
         console.error(err);
-        this.notificationService.addError('Could not delete project');
+        this.notificationService.addError($localize`:@@ERROR_ONT_DELETE_PROJ:Could not delete project`);
         this.requestConfirmation = false;
       });
   }
@@ -83,7 +85,7 @@ export class ProjectSettingsComponent implements OnInit {
         this.router.navigate(['/manager']);
       }, err => {
         console.error(err);
-        this.notificationService.addError('Could not leave project');
+        this.notificationService.addError($localize`:@@ERROR_LEAVE_PROJ:Could not leave project`);
         this.requestConfirmation = false;
       });
   }
@@ -100,11 +102,11 @@ export class ProjectSettingsComponent implements OnInit {
 
     forkJoin(calls).subscribe(
       () => {
-        this.notificationService.addInfo('Successfully updated project');
+        this.notificationService.addInfo($localize`:@@INFO_SUCCESS_UPDATE_PROJ:Successfully updated project`);
       },
       e => {
         console.error(e);
-        this.notificationService.addError('Unable to update project title and/or description');
+        this.notificationService.addError($localize`:@@ERROR_UPDATE_PROJ_TITLE:Unable to update project title and/or description`);
       }
     );
   }

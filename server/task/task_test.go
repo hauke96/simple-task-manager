@@ -7,7 +7,8 @@ import (
 	"github.com/hauke96/simple-task-manager/server/config"
 	"github.com/hauke96/simple-task-manager/server/database"
 	"github.com/hauke96/simple-task-manager/server/permission"
-	testHelper "github.com/hauke96/simple-task-manager/server/test"
+	"github.com/hauke96/simple-task-manager/server/test"
+	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/pkg/errors"
 	"testing"
 
@@ -17,46 +18,36 @@ import (
 var (
 	tx *sql.Tx
 	s  *TaskService
+	h  *test.TestHelper
 )
+
+func TestMain(m *testing.M) {
+	h = &test.TestHelper{
+		Setup: setup,
+	}
+
+	m.Run()
+}
 
 func setup() {
 	config.LoadConfig("../config/test.json")
-	testHelper.InitWithDummyData()
+	test.InitWithDummyData()
 	sigolo.LogLevel = sigolo.LOG_DEBUG
 
 	var err error
-	tx, err = database.GetTransaction()
+	tx, err = database.GetTransaction(util.NewLogger())
 	if err != nil {
 		panic(err)
 	}
-	permissionService := permission.Init(tx)
-	s = Init(tx, permissionService)
-}
 
-func run(t *testing.T, testFunc func() error) {
-	setup()
-
-	err := testFunc()
-	if err != nil {
-		t.Errorf("%+v", err)
-		t.Fail()
-	}
-
-	tearDown()
-}
-
-func tearDown() {
-	err := tx.Commit()
-	if err != nil {
-		panic(err)
-	}
+	h.Tx = tx
+	permissionService := permission.Init(tx, 0)
+	s = Init(tx, 0, permissionService)
 }
 
 func TestGetTasks(t *testing.T) {
-	run(t, func() error {
-		ids := []string{"2", "3"}
-
-		tasks, err := s.GetTasks(ids, "Clara")
+	h.Run(t, func() error {
+		tasks, err := s.GetTasks("3", "Otto")
 
 		if err != nil {
 			return errors.New(fmt.Sprintf("Error: %s\n", err.Error()))
@@ -66,32 +57,39 @@ func TestGetTasks(t *testing.T) {
 		fmt.Printf("1: %#v\n", tasks[1])
 
 		t1 := tasks[0]
-		if t1.Id != "2" ||
+		if t1.Id != "5" ||
 			t1.AssignedUser != "" ||
-			t1.MaxProcessPoints != 100 ||
-			t1.ProcessPoints != 100 {
+			t1.MaxProcessPoints != 1000 ||
+			t1.ProcessPoints != 345 {
 			return errors.New(fmt.Sprintf("Task 2 does not match\n"))
 		}
 
 		t2 := tasks[1]
-		if t2.Id != "3" ||
-			t2.AssignedUser != "Maria" ||
-			t2.MaxProcessPoints != 100 ||
-			t2.ProcessPoints != 50 {
+		if t2.Id != "8" ||
+			t2.AssignedUser != "Otto" ||
+			t2.MaxProcessPoints != 1000 ||
+			t2.ProcessPoints != 0 {
 			return errors.New(fmt.Sprintf("Task 3 does not match\n"))
 		}
 
-		// not existing task should cause error
-		_, err = s.GetTasks([]string{"an id", "yet another id"}, "Anna")
-		if err == nil { // database returns just not a task
-			return errors.New(fmt.Sprintf("Should not be able to get not existing tasks\n"))
+		return nil
+	})
+}
+
+func TestGetTasksUnknownProject(t *testing.T) {
+	h.Run(t, func() error {
+		_, err := s.GetTasks("42", "Clara")
+
+		if err == nil {
+			return errors.New("Project 42 doesn't exist, getting tasks should not work")
 		}
+
 		return nil
 	})
 }
 
 func TestAddTasks(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		rawTask := &Task{
 			ProcessPoints:    5,
 			MaxProcessPoints: 250,
@@ -99,23 +97,23 @@ func TestAddTasks(t *testing.T) {
 			AssignedUser:     "Mark",
 		}
 
-		addedTasks, err := s.AddTasks([]*Task{rawTask})
+		addedTasks, err := s.AddTasks([]*Task{rawTask}, "1")
 		if err != nil {
 			return errors.New(fmt.Sprintf("Error: %s\n", err.Error()))
 		}
 
-		validTaskWithId := addedTasks[0]
-		if validTaskWithId.AssignedUser != "Mark" ||
-			validTaskWithId.MaxProcessPoints != 250 ||
-			validTaskWithId.ProcessPoints != 5 {
-			return errors.New(fmt.Sprintf("Added task does not match\n"))
+		addedTask := addedTasks[1] // [0] is the original task from the dummy data
+		if addedTask.AssignedUser != "Mark" ||
+			addedTask.MaxProcessPoints != 250 ||
+			addedTask.ProcessPoints != 5 {
+			return errors.New(fmt.Sprintf("Added task does not match:\n%v\n%v\n", rawTask, addedTask))
 		}
 		return nil
 	})
 }
 
 func TestAddTasksInvalidProcessPoints(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		// Max points = 0 is not allowed
 		rawTask := &Task{
 			ProcessPoints:    0,
@@ -124,7 +122,7 @@ func TestAddTasksInvalidProcessPoints(t *testing.T) {
 			AssignedUser:     "Mark",
 		}
 
-		_, err := s.AddTasks([]*Task{rawTask})
+		_, err := s.AddTasks([]*Task{rawTask}, "1")
 		if err == nil {
 			return errors.New(fmt.Sprintf("Adding task with maxProcessPoints=0 should not be possible"))
 		}
@@ -133,7 +131,7 @@ func TestAddTasksInvalidProcessPoints(t *testing.T) {
 		rawTask.ProcessPoints = 20
 		rawTask.MaxProcessPoints = 10
 
-		_, err = s.AddTasks([]*Task{rawTask})
+		_, err = s.AddTasks([]*Task{rawTask}, "1")
 		if err == nil {
 			return errors.New(fmt.Sprintf("Adding task with more than maxProcessPoints should not be possible"))
 		}
@@ -142,7 +140,7 @@ func TestAddTasksInvalidProcessPoints(t *testing.T) {
 		rawTask.ProcessPoints = 0
 		rawTask.MaxProcessPoints = -5
 
-		_, err = s.AddTasks([]*Task{rawTask})
+		_, err = s.AddTasks([]*Task{rawTask}, "1")
 		if err == nil {
 			return errors.New(fmt.Sprintf("Adding task with negative maxProcessPoints should not be possible"))
 		}
@@ -151,7 +149,7 @@ func TestAddTasksInvalidProcessPoints(t *testing.T) {
 		rawTask.ProcessPoints = -5
 		rawTask.MaxProcessPoints = 10
 
-		_, err = s.AddTasks([]*Task{rawTask})
+		_, err = s.AddTasks([]*Task{rawTask}, "1")
 		if err == nil {
 			return errors.New(fmt.Sprintf("Adding task with negative processPoints should not be possible"))
 		}
@@ -160,7 +158,7 @@ func TestAddTasksInvalidProcessPoints(t *testing.T) {
 }
 
 func TestAssignUser(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		task, err := s.AssignUser("2", "assigned-user")
 		if err != nil {
 			return errors.New(fmt.Sprintf("Error: %s\n", err.Error()))
@@ -186,7 +184,7 @@ func TestAssignUser(t *testing.T) {
 }
 
 func TestAssignUserTwice(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		_, err := s.AssignUser("4", "foo-bar")
 		if err != nil {
 			return errors.New(fmt.Sprintf("Error: %s\n", err.Error()))
@@ -201,7 +199,7 @@ func TestAssignUserTwice(t *testing.T) {
 }
 
 func TestUnassignUser(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		s.AssignUser("2", "assigned-user")
 
 		task, err := s.UnassignUser("2", "assigned-user")
@@ -229,7 +227,7 @@ func TestUnassignUser(t *testing.T) {
 }
 
 func TestSetProcessPoints(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		// Test Increase number
 		task, err := s.SetProcessPoints("3", 70, "Maria")
 		if err != nil {
@@ -278,7 +276,7 @@ func TestSetProcessPoints(t *testing.T) {
 }
 
 func TestDelete(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		// tasks of project 2
 		taskIds := []string{"6", "7"}
 
@@ -287,15 +285,15 @@ func TestDelete(t *testing.T) {
 			return errors.New(fmt.Sprintf("error deleting tasks: %s", err.Error()))
 		}
 
-		for i := 0; i < len(taskIds); i++ {
-			tasks, err := s.GetTasks([]string{taskIds[i]}, "Maria")
-			if tasks != nil && len(tasks) > 0 {
-				return errors.New(fmt.Sprintf("It should not be possible to read task '%s': %#v", taskIds[i], tasks[0]))
-			}
-			if err == nil {
-				return errors.New(fmt.Sprintf("The task %s should not exist anymore", taskIds[i]))
-			}
+		remainingTasks,err := s.GetTasks("2", "Maria")
+		if err != nil {
+			return errors.New("Getting remaining tasks should work")
 		}
+
+		if len(remainingTasks) != 3 {
+			return errors.New(fmt.Sprintf("Expect 3 remaining tasks but found %d", len(remainingTasks)))
+		}
+
 		return nil
 	})
 }

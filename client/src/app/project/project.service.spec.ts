@@ -65,8 +65,8 @@ describe('ProjectService', () => {
       throw  new Error('unknown project ID ' + projectId);
     });
 
-    const dto1 = new ProjectDto('123', 'Project 123', 'foo', ['7'], ['1'], '1', false);
-    const dto2 = new ProjectDto('124', 'Project 124', 'bar', ['8'], ['2'], '2', false);
+    const dto1 = new ProjectDto('123', 'Project 123', 'foo', ['1'], '1', false);
+    const dto2 = new ProjectDto('124', 'Project 124', 'bar', ['2'], '2', false);
     spyOn(httpClient, 'get').and.returnValue(of([dto1, dto2]));
 
     service.getProjects().subscribe((projects: Project[]) => {
@@ -93,7 +93,7 @@ describe('ProjectService', () => {
       return of([tasks[0]]);
     });
 
-    const dto = new ProjectDto('123', 'Project 123', 'foo', ['7'], ['1', '3'], '1', false);
+    const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '3'], '1', false);
     spyOn(httpClient, 'get').and.returnValue(of(dto));
 
     service.getProject('123').subscribe((project: Project) => {
@@ -120,7 +120,7 @@ describe('ProjectService', () => {
       return of(tasks);
     });
 
-    const dto = new ProjectDto('123', 'Project 123', 'foo', ['7', '8', '9'], ['1', '2'], '2', true);
+    const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2'], '2', true);
     spyOn(httpClient, 'post').and.returnValue(of(dto));
   });
 
@@ -145,7 +145,7 @@ describe('ProjectService', () => {
       return of(tasks);
     });
 
-    const dto = new ProjectDto('123', 'Project 123', 'foo', ['7', '8', '9'], ['1', '2'], '2', true);
+    const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2'], '2', true);
     spyOn(httpClient, 'delete').and.returnValue(of(dto));
     const changeSpy = spyOn(service.projectChanged, 'emit');
 
@@ -176,7 +176,7 @@ describe('ProjectService', () => {
       return of(tasks);
     });
 
-    const dto: ProjectDto = new ProjectDto('123', 'Project 123', 'foo', ['7', '8', '9'], ['1', '2', '3'], '2', true);
+    const dto: ProjectDto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2', '3'], '2', true);
 
     // Execute
     service.toProject(dto).subscribe((project: Project) => {

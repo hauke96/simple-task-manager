@@ -13,6 +13,14 @@
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
+      "i18n": {
+        "sourceLocale": "en-US",
+        "locales": {
+          "ja": "src/locale/messages.ja.xlf",
+          "de": "src/locale/messages.de.xlf",
+          "zh-CN": "src/locale/messages.zh-CN.xlf"
+        }
+      },
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -22,6 +30,7 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
+            "localize": false,
             "aot": true,
             "assets": [
               "src/favicon.ico",
@@ -30,9 +39,15 @@
             "styles": [
               "src/colors.scss",
               "src/styles.scss",
-			  "node_modules/ol/ol.css"
+              "node_modules/ol/ol.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "@turf/square-grid",
+              "@turf/hex-grid",
+              "@turf/triangle-grid",
+              "pbf"
+            ]
           },
           "configurations": {
             "local": {
@@ -41,6 +56,21 @@
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.local.ts"
                 }
+              ]
+            },
+            "ja": {
+              "localize": [
+                "ja"
+              ]
+            },
+            "de": {
+              "localize": [
+                "de"
+              ]
+            },
+            "zh-CN": {
+              "localize": [
+                "zh-CN"
               ]
             },
             "production": {
@@ -78,7 +108,7 @@
                   "with": "src/environments/environment.test.ts"
                 }
               ],
-              "optimization": true,
+              "optimization": false,
               "outputHashing": "all",
               "sourceMap": false,
               "extractCss": true,
@@ -89,8 +119,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -115,6 +145,15 @@
             },
             "production": {
               "browserTarget": "simple-task-manager:build:production"
+            },
+            "ja": {
+              "browserTarget": "simple-task-manager:build:ja"
+            },
+            "de": {
+              "browserTarget": "simple-task-manager:build:de"
+            },
+            "zh-CN": {
+              "browserTarget": "simple-task-manager:build:zh-CN"
             }
           }
         },
@@ -136,9 +175,9 @@
               "src/assets"
             ],
             "styles": [
-			  "src/colors.scss",
+              "src/colors.scss",
               "src/styles.scss",
-			  "node_modules/ol/ol.css"
+              "node_modules/ol/ol.css"
             ],
             "scripts": []
           }
@@ -169,6 +208,7 @@
           }
         }
       }
-    }},
+    }
+  },
   "defaultProject": "simple-task-manager"
 }

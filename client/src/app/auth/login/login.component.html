@@ -4,25 +4,38 @@
 		<div class="center logo">
 			<img src="./assets/icon.png">
 		</div>
-		<div class="center heading">
+		<div class="center heading" i18n>
 			Welcome to the SimpleTaskManager for <a href="https://openstreetmap.org" target="_blank">OpenStreetMap</a>
 		</div>
 		<div class="center login-button">
-			<button (click)="onLoginButtonClick()">Login</button>
+			<button (click)="onLoginButtonClick()" i18n>Login</button>
 		</div>
 		<div class="notice">
 			<div class="notice-container">
 				<div class="notice-bar"></div>
-				<div class="notice-text">
-					<p><b>Changes in 1.1.0:</b></p>
+				<div class="notice-text" i18n>
+					<p><b>Changes in 1.1.0-dev:</b></p>
 					New features:
 					<ul>
+						<li>Translation of STM into Chinese, German and Japanese</li>
+						<li>Button to open task in iD</li>
+						<li>Button to directly set a task as 'done'</li>
+					</ul>
+					Bug fixes:
+					<ul>
+						<li>Missing feedback on overpass error</li>
 					</ul>
 					Minor changes:
 					<ul>
+						<li>Zoom to selected task when not visible on the screen</li>
 					</ul>
 					Internals:
 					<ul>
+						<li>Store project-ID in task database table</li>
+						<li>Create project and tasks within one HTTP request</li>
+						<li>Introduce the <code>context</code> to add a logging trace-ID</li>
+						<li>Better server side logging</li>
+						<li>Reconnect to database after connection failure</li>
 					</ul>
 				</div>
 			</div>

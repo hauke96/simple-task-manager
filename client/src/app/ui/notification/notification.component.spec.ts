@@ -35,10 +35,10 @@ describe('NotificationComponent', () => {
   });
 
   it('should get loading state correctly', () => {
-    loadingService.loading = true;
+    loadingService.start();
     expect(component.isLoading).toEqual(true);
 
-    loadingService.loading = false;
+    loadingService.end();
     expect(component.isLoading).toEqual(false);
   });
 

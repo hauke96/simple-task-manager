@@ -47,7 +47,7 @@ describe('TaskMapComponent', () => {
   });
 
   it('should update the task on change', () => {
-    const task = new Task('id123', undefined, 10, 100, getFeature(), new User('Miriam', '14'));
+    const task = component.tasks[2];
 
     taskService.selectTask(task);
 

@@ -20,12 +20,13 @@ The `{cfg}` parameter value is the key to the user configuration which was set f
 The `{url}` parameter value is the URL of the Simple-Task-Manager landing page, where this call redirects to after successful authentication.
 When redirecting to `{url}`, the `token={token}` query parameter is set so that the client can get the token from within the URL.
 
-# v2.3
+# v2.4
 
-**New in v2.3**
-* Websockets under `/v2.3/updates`
+**New in v2.4**
+* Removed endpoint `POST /v2.4/tasks`
+* Add tasks to endpoint `POST /v2.4/project`
 
-Everything else is the same as in v2.2.
+Everything else is the same as in v2.3.
 
 ### Authentication
 
@@ -37,7 +38,7 @@ Authorization: eyJ2...In0=
 
 ### Updates via websockets
 
-Connect to `/v2.3/updates` and receive updates for the requesting user.
+Connect to `/v2.4/updates` and receive updates for the requesting user.
 
 #### Authentication
 
@@ -61,91 +62,42 @@ Every update is packed into a message of the following format:
 
 ### Projects
 
-##### GET  `/v2.3/projects`
+##### GET  `/v2.4/projects`
 
 Gets all projects for the requesting user.
 
-##### POST  `/v2.3/projects`
+##### POST  `/v2.4/projects`
 
-Adds the project as given in the body:
+Adds the project and tasks as given in the body:
 
 ```json
 {
-  "id":"",
-  "name":"foo",
-  "description":"Lorem ipsum ...",
-  "taskIds":["25"],
-  "users":["1234"],
-  "owner":"1234",
-  "needsAssignment":true
+  "project": {
+      "name":"foo",
+      "description":"Lorem ipsum ...",
+      "users":["12","42"],
+      "owner":"12"
+  },
+  "tasks": [
+      {
+        "id":"",
+        "processPoints":0,
+        "maxProcessPoints":100,
+        "geometry":"{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[9.9,53.5],[9.92,53.55],[9.94,53.55]]]},\"properties\":{\"name\":\"Atlantis\"}}}"
+      }
+  ]
 }
 ```
 
-The `id` field must stay empty, it's filled by the server.
+**The `project` object**:
 
-The `needsAssignment` flag enables/disables the need for users to assign to a task in order to set process points on a task.
-When set to `false` users can modify a task without being assigned to it.
+The `owner`, `users` and `name` fields *must* be set.
 
-##### GET  `/v2.3/projects/{id}`
+The `description` has a maximum possible length of 10000 characters.
 
-Returns the project with the given ID. The requesting user (specified by the token) must be **member** of the project.
+**The `tasks` array**:
 
-##### DELETE  `/v2.3/projects/{id}`
-
-Deletes the project with the given ID. The requesting user (specified by the token) must be **owner** of the project.
-
-##### PUT `/v2.3/project/{id}/name`
-
-Updates the name of the given project. The name must be in the request body. The requesting user (specified by the token) must be **owner** of the project.
-
-##### PUT`/v2.3/project/{id}/description`
-         
-Updates the description of the given project. The description must be in the request body. The requesting user (specified by the token) must be **owner** of the project.
-
-##### POST `/v2.3/projects/{id}/users?uid={uid}`
-
-Adds the user with id `{uid}` to the project. The requesting user (specified by the token) must be **owner** of the project.
-
-##### DELETE `/v2.3/projects/{id}/users`
-
-Removes the requesting user (specified by the token) from the project. The requesting user (specified by the token) must be **member** of the project.
-
-##### DELETE `/v2.3/projects/{id}/users/{uid}`
-
-Removes the user with the id `{uid}` from the project. The requesting user (specified by the token) must either be the **owner** of the project or must be removing himself.
-
-### Tasks
-
-##### GET  `/v2.3/projects/{id}/tasks`
-
-Gets the tasks of project `{id}`. The requesting user (specified by the token) must be **member** of the project.
-
-##### POST `/v2.3/tasks/{id}/assignedUser`
-
-Assigns the requesting user (specified by the token) to the task with id `{id}`. The requesting user (specified by the token) must be **member** of the project.
-
-##### DELETE `/v2.3/tasks/{id}/assignedUser`
-
-Unassigns the requesting user (specified by the token) from the task with id `{id}`. When `needsAssignment=true`: Only the **assigned** user can unassign himself, you cannot unassign other users.
-
-##### POST `/v2.3/tasks/{id}/processPoints?process_points={points}`
-
-Sets the amount of process points of the task with id `{id}` to `{points}` which must be an integer. When `needsAssignment=true`:  Only the currently **assigned** user can do this.
-
-##### POST `/v2.3/tasks`
-
-Adds the task specified by the body.
-
-```json
-[
-  {
-    "id":"",
-    "processPoints":0,
-    "maxProcessPoints":100,
-    "geometry": "{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[9.9,53.5],[9.92,53.55],[9.94,53.55]]]},\"properties\":{\"name\":\"Atlantis\"}}}"
-  }
-]
-```
+At least one task has to be part of this array.
 
 The `id` field must stay empty, it's filled by the server.
 
@@ -153,6 +105,52 @@ The `geometry` must be a valid GeoJSON string.
 The `name` value in the `properties` is optional but will be displayed the clients task list.
 It's okay to not specify the `properties` field, to set it to `null` or `{}`.
 Only Polygons are supported, there's no guarantee that anything else will work at all.
+
+##### GET  `/v2.4/projects/{id}`
+
+Returns the project with the given ID. The requesting user (specified by the token) must be **member** of the project.
+
+##### DELETE  `/v2.4/projects/{id}`
+
+Deletes the project with the given ID. The requesting user (specified by the token) must be **owner** of the project.
+
+##### PUT `/v2.4/project/{id}/name`
+
+Updates the name of the given project. The name must be in the request body. The requesting user (specified by the token) must be **owner** of the project.
+
+##### PUT`/v2.4/project/{id}/description`
+         
+Updates the description of the given project. The description must be in the request body. The requesting user (specified by the token) must be **owner** of the project.
+
+##### POST `/v2.4/projects/{id}/users?uid={uid}`
+
+Adds the user with id `{uid}` to the project. The requesting user (specified by the token) must be **owner** of the project.
+
+##### DELETE `/v2.4/projects/{id}/users`
+
+Removes the requesting user (specified by the token) from the project. The requesting user (specified by the token) must be **member** of the project.
+
+##### DELETE `/v2.4/projects/{id}/users/{uid}`
+
+Removes the user with the id `{uid}` from the project. The requesting user (specified by the token) must either be the **owner** of the project or must be removing himself.
+
+### Tasks
+
+##### GET  `/v2.4/projects/{id}/tasks`
+
+Gets the tasks of project `{id}`. The requesting user (specified by the token) must be **member** of the project.
+
+##### POST `/v2.4/tasks/{id}/assignedUser`
+
+Assigns the requesting user (specified by the token) to the task with id `{id}`. The requesting user (specified by the token) must be **member** of the project.
+
+##### DELETE `/v2.4/tasks/{id}/assignedUser`
+
+Unassigns the requesting user (specified by the token) from the task with id `{id}`. When `needsAssignment=true`: Only the **assigned** user can unassign himself, you cannot unassign other users.
+
+##### POST `/v2.4/tasks/{id}/processPoints?process_points={points}`
+
+Sets the amount of process points of the task with id `{id}` to `{points}` which must be an integer. When `needsAssignment=true`:  Only the currently **assigned** user can do this.
 
 # Developer information
 

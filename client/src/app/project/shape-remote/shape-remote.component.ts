@@ -4,6 +4,7 @@ import { Feature } from 'ol';
 import OSMXML from 'ol/format/OSMXML';
 import { NotificationService } from '../../common/notification.service';
 import { GeometryService } from '../../common/geometry.service';
+import { LoadingService } from '../../common/loading.service';
 
 @Component({
   selector: 'app-shape-remote',
@@ -18,7 +19,8 @@ export class ShapeRemoteComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private notificationService: NotificationService,
-    private geometryService: GeometryService
+    private geometryService: GeometryService,
+    private loadingService: LoadingService
   ) {
   }
 
@@ -26,22 +28,32 @@ export class ShapeRemoteComponent implements OnInit {
   }
 
   onLoadButtonClicked() {
+    this.loadingService.start();
+
     this.http.get(this.queryUrl, {responseType: 'text', headers: {ContentType: 'text/xml'}}).subscribe(
       data => {
+        this.loadingService.end();
+
         try {
           let features = (new OSMXML().readFeatures(data) as Feature[]);
           features = [].concat(...features.map(f => this.geometryService.toUsableTaskFeature(f)));
-          this.featuresLoaded.emit(features);
+
+          if (!features || features.length !== 0) {
+            this.featuresLoaded.emit(features);
+          } else {
+            this.notificationService.addError($localize`:@@ERROR_OVERPASS_NO_POLYGONS:No usable polygons have been found. Make sure the output format is set to 'out:xml' and the result contains actual polygons.`);
+          }
         } catch (e) {
           console.error('Error parsing loaded OSM-XML');
           console.log(data);
           console.error(e);
-          this.notificationService.addError('Error parsing loaded OSM data');
+          this.notificationService.addError($localize`:@@ERROR_PARSING_OSM_DATA:Error parsing loaded OSM data`);
         }
       }, e => {
+        this.loadingService.end();
         console.error('Error loading OSM-XML from remote URL');
         console.error(e);
-        this.notificationService.addError('Unable to load data from remote URL');
+        this.notificationService.addError($localize`:@@ERROR_UNABLE_LOAD_URL:Unable to load data from remote URL`);
       });
   }
 }

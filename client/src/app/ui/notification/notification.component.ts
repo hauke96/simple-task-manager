@@ -18,7 +18,7 @@ export class NotificationComponent implements OnInit {
   }
 
   public get isLoading(): boolean {
-    return this.loadingService.loading;
+    return this.loadingService.isLoading();
   }
 
   //

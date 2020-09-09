@@ -68,4 +68,8 @@ export class ProjectListComponent extends Unsubscriber implements OnInit {
   getProcessPointWidth(project: Project): string {
     return Math.floor(project.doneProcessPoints / project.totalProcessPoints * 100) + 'px';
   }
+
+  getProcessPointPercentage(project: Project): number {
+    return Math.round(project.doneProcessPoints / project.totalProcessPoints * 100);
+  }
 }

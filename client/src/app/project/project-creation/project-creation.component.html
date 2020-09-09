@@ -1,7 +1,7 @@
 <app-toolbar>
 	<div>
-		<button [routerLink]="['/manager']">&#60; Cancel</button>
-		<button class="save-button" (click)="onSaveButtonClicked()" [disabled]="!creationForm.form.valid || !hasTasks">
+		<button [routerLink]="['/manager']" i18n>&#60; Cancel</button>
+		<button class="save-button" (click)="onSaveButtonClicked()" [disabled]="!creationForm.form.valid || !hasTasks" i18n>
 			Save
 		</button>
 	</div>
@@ -9,13 +9,13 @@
 <div class="root-container">
 	<div class="project-properties-container">
 		<form #creationForm="ngForm">
-			<h2 class="properties-label">Properties:</h2>
+			<h2 class="properties-label" i18n>Properties:</h2>
 			<div class="form-entry flex-line">
-				<span class="input-field-label">Name:</span>
+				<span class="input-field-label" i18n>Name:</span>
 				<input [(ngModel)]="newProjectName" required name="nameField">
 			</div>
 			<div class="form-entry flex-line">
-				<span class="input-field-label">Max. points per task:</span>
+				<span class="input-field-label" i18n>Max. points per task:</span>
 				<input type="number"
 					   [(ngModel)]="newMaxProcessPoints"
 					   required
@@ -23,14 +23,14 @@
 					   appMinValidator="1">
 			</div>
 			<div class="form-entry">
-				<p>Description:</p>
+				<p i18n>Description:</p>
 				<textarea name="description-text-area" class="description-text-area" [(ngModel)]="projectDescription"></textarea>
 			</div>
 		</form>
 
-		<h2>Create shapes:</h2>
+		<h2 i18n>Create shapes:</h2>
 		<!-- Different shape creation methods: Divide, Upload -->
-		<app-tabs [tabs]="['Draw', 'Upload', 'Remote', 'Remove']" #tabs (tabSelected)="onTabSelected($event)">
+		<app-tabs [tabs]="tabTitles" #tabs (tabSelected)="onTabSelected($event)">
 			<div *ngIf="tabs.tabIndex === 0">
 				<div class="tab-container">
 					<app-shape-divide [gridCellShape]="gridCellShape"
@@ -52,7 +52,7 @@
 			</div>
 			<div *ngIf="tabs.tabIndex === 3">
 				<div class="tab-container">
-					<span>Click on a polygon to delete it.</span>
+					<span i18n>Click on a polygon to delete it.</span>
 				</div>
 			</div>
 		</app-tabs>

@@ -56,7 +56,8 @@ psql -h localhost -U $STM_DB_USERNAME -lqt | cut -d \| -f 1 | grep -qw "stm"
 DATABASE_EXISTS=$?
 
 # Loop over all relevant files
-FILES=$(ls $SCRIPT_PREFIX)
+FILES=$(ls $SCRIPT_PREFIX | tr " " "\n" | grep --color=never -P "^[[:digit:]]{3}" | tr "\n" " ")
+
 for FILE in $FILES
 do
   VERSION=$(echo $FILE | grep --color=never -Po "^[[:digit:]]{3}")

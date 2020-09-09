@@ -2,7 +2,6 @@ package websocket
 
 import (
 	"github.com/gorilla/websocket"
-	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/util"
 	"net/http"
 )
@@ -34,12 +33,22 @@ var (
 	connections = make(map[string][]*websocket.Conn, 0)
 )
 
-func GetWebsocketConnection(w http.ResponseWriter, r *http.Request, uid string) {
+type WebsocketSender struct {
+	*util.Logger
+}
+
+func Init(logger *util.Logger) *WebsocketSender {
+	return &WebsocketSender{
+		Logger: logger,
+	}
+}
+
+func (s *WebsocketSender) GetWebsocketConnection(w http.ResponseWriter, r *http.Request, uid string) {
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		//sigolo.Error("Could not upgrade response writer and request to websocket connection")
-		sigolo.Stack(err)
-		util.ResponseInternalError(w, err)
+		s.Stack(err)
+		util.ResponseInternalError(w, s.Logger, err)
 		return
 	}
 
@@ -50,11 +59,11 @@ func GetWebsocketConnection(w http.ResponseWriter, r *http.Request, uid string) 
 	connections[uid] = append(connections[uid], ws)
 }
 
-func Send(message Message, uids ...string) {
-	SendAll([]Message{message}, uids...)
+func (s *WebsocketSender) Send(message Message, uids ...string) {
+	s.SendAll([]Message{message}, uids...)
 }
 
-func SendAll(messages []Message, uids ...string) {
+func (s *WebsocketSender) SendAll(messages []Message, uids ...string) {
 	for _, uid := range uids {
 		userConnections := connections[uid]
 
@@ -66,13 +75,18 @@ func SendAll(messages []Message, uids ...string) {
 
 			if err != nil {
 				// Use Debug logging because this will happen a lot (e.g. every time someone reloads the web client)
-				sigolo.Debug("ERROR: Unable to send to websocket")
-				sigolo.Debug("ERROR: " + err.Error())
+				s.Debug("ERROR: Unable to send to websocket")
+				s.Debug("ERROR: " + err.Error())
+
+				//sigolo.Error("Unable to send to websocket, close it. Error: %s", err.Error())
+				s.Stack(err)
 
 				err := conn.Close()
 				if err != nil {
-					sigolo.Debug("ERROR: Wasn't even able to close it")
-					sigolo.Debug("ERROR: " + err.Error())
+					s.Debug("ERROR: Wasn't even able to close it")
+					s.Debug("ERROR: " + err.Error())
+					//sigolo.Error("Wasn't even able to close it: %s", err.Error())
+					s.Stack(err)
 				}
 
 				// Remove the closed connection from the list of connections:

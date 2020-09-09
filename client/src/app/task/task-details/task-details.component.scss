@@ -11,9 +11,6 @@
 	flex-direction: row;
 	align-items: center;
 }
-.assign-button-container > button {
-	margin-left: $space-large;
-}
 
 .process-point-container {
 	display: flex;
@@ -26,10 +23,32 @@
 	margin-right: $space-small;
 }
 
-.of-process-point-label {
-	margin-left: $space-base;
+.process-point-input {
+	max-width: 70px;
 }
 
-.save-button {
+.of-process-point-label {
+	margin-left: $space-base;
+	white-space: nowrap;
+}
+
+.save-button-row {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	width: 100%;
+}
+
+.save-button,
+.assign-button-container > button {
 	margin-left: $space-large;
+}
+
+.open-button-row {
+	margin-top: $space-large;
+}
+
+.open-osm-button,
+.done-button {
+	margin-left: $space-base;
 }

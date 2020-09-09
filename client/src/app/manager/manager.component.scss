@@ -14,3 +14,24 @@
 	margin-top: $space-large;
 	margin-bottom: $space-large;
 }
+
+.toolbar-left {
+	display: flex;
+	flex-direction: row;
+}
+
+.language-selection {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+.language-selection-label {
+	margin-right: $space-base;
+}
+
+.separator {
+	margin-right: $space-large;
+	margin-left: $space-large;
+	border-left: solid 1px $color-gray-very-light;
+}
