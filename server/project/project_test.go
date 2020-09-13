@@ -36,16 +36,18 @@ func setup() {
 	test.InitWithDummyData()
 	sigolo.LogLevel = sigolo.LOG_DEBUG
 
+	logger := util.NewLogger()
+
 	var err error
-	tx, err = database.GetTransaction(util.NewLogger())
+	tx, err = database.GetTransaction(logger)
 	if err != nil {
 		panic(err)
 	}
 
 	h.Tx = tx
-	permissionService := permission.Init(tx, 0)
-	taskService = task.Init(tx, 0, permissionService)
-	s = Init(tx, 0, taskService, permissionService)
+	permissionService := permission.Init(tx, logger)
+	taskService = task.Init(tx, logger, permissionService)
+	s = Init(tx, logger, taskService, permissionService)
 }
 
 func TestGetProjects(t *testing.T) {
@@ -140,7 +142,7 @@ func TestAddWithTasks(t *testing.T) {
 		t := task.Task{
 			ProcessPoints:    5,
 			MaxProcessPoints: 100,
-			Geometry:         "{}",
+			Geometry:         "{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[0,0],[1,0]]]},\"properties\":null}",
 			AssignedUser:     "user2",
 		}
 
@@ -182,7 +184,7 @@ func TestAddWithTasks(t *testing.T) {
 		if task.AssignedUser != "user2" ||
 			task.MaxProcessPoints != 100 ||
 			task.ProcessPoints != 5 ||
-			task.Geometry != "{}" {
+			task.Geometry != "{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[0,0],[1,0]]]},\"properties\":null}" {
 			return errors.New(fmt.Sprintf("Added task does not match:\n%v\n%v\n", t, task))
 		}
 

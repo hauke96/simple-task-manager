@@ -89,8 +89,6 @@ func (s *ProjectService) AddProjectWithTasks(projectDraft *Project, taskDrafts [
 	}
 	s.Log("Added project %s", addedProject.Id)
 
-	// TODO check for correct GeoJson format in task geometries
-
 	//
 	// Store tasks
 	//

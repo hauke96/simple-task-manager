@@ -50,9 +50,14 @@ func (s *TaskService) AddTasks(newTasks []*Task, projectId string) ([]*Task, err
 		}
 
 		// Check for valid geojson
-		_, err := geojson.UnmarshalFeature([]byte(t.Geometry))
+		feature, err := geojson.UnmarshalFeature([]byte(t.Geometry))
 		if err != nil {
 			return nil, errors.Wrap(err, fmt.Sprintf("invalid GeoJSON: %s", t.Geometry))
+		}
+
+		s.Log("%#v", feature)
+		if feature.Type != "Feature" || feature.Geometry == nil || feature.Geometry.Type != "Polygon" {
+			return nil, errors.New(fmt.Sprintf("task Geometry is neither a feature nor a polygon: %s", t.Geometry))
 		}
 	}
 

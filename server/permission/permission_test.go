@@ -32,14 +32,16 @@ func setup() {
 	test.InitWithDummyData()
 	sigolo.LogLevel = sigolo.LOG_DEBUG
 
+	logger := util.NewLogger()
+
 	var err error
-	tx, err = database.GetTransaction(util.NewLogger())
+	tx, err = database.GetTransaction(logger)
 	if err != nil {
 		panic(err)
 	}
 
 	h.Tx = tx
-	s = Init(tx, 0)
+	s = Init(tx, logger)
 }
 
 func TestVerifyOwnership(t *testing.T) {
