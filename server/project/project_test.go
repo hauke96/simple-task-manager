@@ -240,6 +240,64 @@ func TestAddProjectWithUsedTasks(t *testing.T) {
 	})
 }
 
+func TestAddProjectWithInvalidParameters(t *testing.T) {
+	h.Run(t, func() error {
+		// ID must not be set
+		p := Project{
+			Id: "foobar",
+		}
+		_, err := s.AddProject(&p)
+		if err == nil {
+			return errors.New("adding project with set ID is not allowed")
+		}
+
+		// Owner must be set
+		p = Project{
+			Owner: "",
+		}
+		_, err = s.AddProject(&p)
+		if err == nil {
+			return errors.New("adding project without owner not allowed")
+		}
+
+		// Owner must be in users array
+		p = Project{
+			Owner: "foo",
+			Users:[]string{"bar"},
+		}
+		_, err = s.AddProject(&p)
+		if err == nil {
+			return errors.New("adding project with owner not in users array not allowed")
+		}
+
+		// Name must be set
+		p = Project{
+			Owner:"foo",
+			Users:[]string{"foo"},
+			Name: "",
+		}
+		_, err = s.AddProject(&p)
+		if err == nil {
+			return errors.New("adding project without name not allowed")
+		}
+
+		// Too long description not allowed
+		maxDescriptionLength = 10 // lower the border for test purposes
+		p = Project{
+			Owner:"foo",
+			Users:[]string{"foo"},
+			Name: "some name",
+			Description:"This is a very very long description",
+		}
+		_, err = s.AddProject(&p)
+		if err == nil {
+			return errors.New("adding project with too long description not allowed")
+		}
+
+		return nil
+	})
+}
+
 func TestAddUser(t *testing.T) {
 	h.Run(t, func() error {
 		newUser := "new user"
@@ -438,6 +496,28 @@ func TestRemoveUserUnassignsHim(t *testing.T) {
 			if t.AssignedUser == "Donny" {
 				return errors.New(fmt.Sprintf("User %s still assigned to task %s", "Donny", t.Id))
 			}
+		}
+
+		return nil
+	})
+}
+
+func TestRemoveOwnerNotAllowed(t *testing.T) {
+	h.Run(t, func() error {
+		_, err := s.RemoveUser("2", "Maria", "Maria")
+		if err == nil {
+			return errors.New("removing owner not allowed")
+		}
+
+		return nil
+	})
+}
+
+func TestRemoveDifferentUserNotAllowed(t *testing.T) {
+	h.Run(t, func() error {
+		_, err := s.RemoveUser("2", "Donny", "Anna")
+		if err == nil {
+			return errors.New("removing other user not allowed")
 		}
 
 		return nil

@@ -72,6 +72,6 @@ func (h *TestHelper) tearDown() {
 func (h *TestHelper) tearDownFail() {
 	err := h.Tx.Commit()
 	if err == nil {
-		panic(errors.New("database error and rollback expected but not occurred"))
+		panic(errors.New("expected database error and rollback but not occurred"))
 	}
 }
