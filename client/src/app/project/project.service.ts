@@ -1,6 +1,6 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from 'rxjs';
-import { concatMap, mergeMap, map, mergeAll, mergeMap, switchMap, tap } from 'rxjs/operators';
+import { map, mergeMap, tap } from 'rxjs/operators';
 import { Project, ProjectAddDto, ProjectDto } from './project.material';
 import { Task, TaskDto } from './../task/task.material';
 import { TaskService } from './../task/task.service';
