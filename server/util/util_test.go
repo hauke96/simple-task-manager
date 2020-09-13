@@ -1,9 +1,37 @@
 package util
 
 import (
+	"errors"
 	"net/http"
 	"testing"
 )
+
+type DummyResponseWriter struct {
+	header       http.Header
+	writtenBytes []byte
+	statusCode   int
+}
+
+func newResponseWriter() *DummyResponseWriter {
+	return &DummyResponseWriter{
+		header:       http.Header{},
+		writtenBytes: nil,
+		statusCode:   0,
+	}
+}
+
+func (r *DummyResponseWriter) Header() http.Header {
+	return r.header
+}
+
+func (r *DummyResponseWriter) Write(b []byte) (int, error) {
+	r.writtenBytes = b
+	return len(b), nil
+}
+
+func (r *DummyResponseWriter) WriteHeader(statusCode int) {
+	r.statusCode = statusCode
+}
 
 func TestGetParam(t *testing.T) {
 	params := make(map[string][]string)
@@ -76,5 +104,31 @@ func TestGetIntParam(t *testing.T) {
 		t.Errorf("Param for key 'utini' should be '0''")
 		t.Fail()
 		return
+	}
+}
+
+func TestResponseErrors(t *testing.T) {
+	logger := NewLogger()
+
+	w := newResponseWriter()
+	err := errors.New("foo bar")
+	ResponseBadRequest(w, logger, err)
+	if w.statusCode != http.StatusBadRequest ||
+		string(w.writtenBytes) != "foo bar" {
+		t.Errorf("response not matching: %#v", w)
+	}
+
+	w = newResponseWriter()
+	ResponseInternalError(w, logger, err)
+	if w.statusCode != http.StatusInternalServerError ||
+		string(w.writtenBytes) != "foo bar" {
+		t.Errorf("response not matching: %#v", w)
+	}
+
+	w = newResponseWriter()
+	ResponseUnauthorized(w, logger, err)
+	if w.statusCode != http.StatusUnauthorized ||
+		string(w.writtenBytes) != "foo bar" {
+		t.Errorf("response not matching: %#v", w)
 	}
 }
