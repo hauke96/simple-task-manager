@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ShapeRemoteComponent } from './shape-remote.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -34,7 +34,7 @@ describe('ShapeRemoteComponent', () => {
   let geometryService: GeometryService;
   let loadingService: LoadingService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ShapeRemoteComponent],
       imports: [

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { TaskMapComponent } from './task-map.component';
 import { Task } from '../task.material';
@@ -15,7 +15,7 @@ describe('TaskMapComponent', () => {
   let taskService: TaskService;
   let currentUserService: CurrentUserService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [TaskMapComponent],
       imports: [HttpClientTestingModule],

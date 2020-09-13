@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ShapeUploadComponent } from './shape-upload.component';
 import { NotificationService } from '../../common/notification.service';
@@ -189,7 +189,7 @@ describe('ShapeUploadComponent', () => {
   let fixture: ComponentFixture<ShapeUploadComponent>;
   let notificationService: NotificationService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ShapeUploadComponent]
     })

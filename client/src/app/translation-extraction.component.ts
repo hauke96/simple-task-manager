@@ -10,7 +10,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
-    selector: 'translation-extraction',
+    selector: 'app-translation-extraction',
     template: `
         <span i18n="@@WARN_AUTH_FAIL">Logout because authorization was not successful</span>
         <span i18n="@@ERROR_NOT_CREATE_PROJ">Could not create project</span>
@@ -51,5 +51,5 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 })
 
 export class TranslationExtractionComponent {
-  public interp : any;
+  public interp: any;
 }

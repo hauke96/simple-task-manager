@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { TaskDetailsComponent } from './task-details.component';
 import { CurrentUserService } from '../../user/current-user.service';
@@ -20,7 +20,7 @@ describe('TaskDetailsComponent', () => {
   let userService: UserService;
   const testUserId = '123';
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [TaskDetailsComponent],
       imports: [

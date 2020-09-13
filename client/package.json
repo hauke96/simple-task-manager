@@ -14,6 +14,7 @@
     "test-firefox": "ng test --browsers=FirefoxHeadless --code-coverage",
     "test": "ng test --source-map --watch=false --browsers=ChromeHeadlessNoSandbox --code-coverage",
     "lint": "ng lint",
+    "lint": "ng lint --fix",
     "e2e": "ng e2e",
     "i18n": "ng xi18n --output-path src/locale"
   },

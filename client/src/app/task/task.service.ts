@@ -3,7 +3,7 @@ import { Task, TaskDto } from './task.material';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
 import { from, Observable, of, throwError } from 'rxjs';
-import { concatMap, flatMap, map, tap } from 'rxjs/operators';
+import { concatMap, mergeMap, map, tap } from 'rxjs/operators';
 import { Polygon } from 'ol/geom';
 import { Extent } from 'ol/extent';
 import { User } from '../user/user.material';
@@ -56,7 +56,7 @@ export class TaskService {
     });
     return this.http.post<TaskDto[]>(environment.url_tasks, JSON.stringify(draftTasks))
       .pipe(
-        flatMap((tasks: TaskDto[]) => this.addUserNames(tasks)),
+        mergeMap((tasks: TaskDto[]) => this.addUserNames(tasks)),
         map(dtos => dtos.map(dto => this.toTask(dto))),
         tap(tasks => tasks.forEach(t => this.selectedTaskChanged.emit(t)))
       );
@@ -69,7 +69,7 @@ export class TaskService {
 
     return this.http.post<TaskDto>(environment.url_task_processPoints.replace('{id}', taskId) + '?process_points=' + newProcessPoints, '')
       .pipe(
-        flatMap(task => this.addUserName(task)),
+        mergeMap(task => this.addUserName(task)),
         map(dto => this.toTask(dto)),
         tap(t => this.selectedTaskChanged.emit(t))
       );
@@ -82,7 +82,7 @@ export class TaskService {
 
     return this.http.post<TaskDto>(environment.url_task_assignedUser.replace('{id}', taskId), '')
       .pipe(
-        flatMap(task => this.addUserName(task)),
+        mergeMap(task => this.addUserName(task)),
         map(dto => this.toTask(dto)),
         tap(t => this.selectedTaskChanged.emit(t))
       );

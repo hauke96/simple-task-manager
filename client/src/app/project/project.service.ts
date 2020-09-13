@@ -1,6 +1,6 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from 'rxjs';
-import { concatMap, flatMap, map, mergeAll, mergeMap, switchMap, tap } from 'rxjs/operators';
+import { concatMap, mergeMap, map, mergeAll, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { Project, ProjectAddDto, ProjectDto } from './project.material';
 import { Task, TaskDto } from './../task/task.material';
 import { TaskService } from './../task/task.service';
@@ -77,12 +77,12 @@ export class ProjectService {
 
   public getProjects(): Observable<Project[]> {
     return this.http.get<ProjectDto[]>(environment.url_projects)
-      .pipe(flatMap(dtos => this.toProjects(dtos)));
+      .pipe(mergeMap(dtos => this.toProjects(dtos)));
   }
 
   public getProject(projectId: string): Observable<Project> {
     return this.http.get<ProjectDto>(environment.url_projects_by_id.replace('{id}', projectId))
-      .pipe(flatMap(dto => this.toProject(dto)));
+      .pipe(mergeMap(dto => this.toProject(dto)));
   }
 
   public createNewProject(
@@ -114,7 +114,7 @@ export class ProjectService {
   public getTasks(projectId: string): Observable<Task[]> {
     return this.http.get<TaskDto[]>(environment.url_projects_task.replace('{id}', projectId))
       .pipe(
-        flatMap((tasks: TaskDto[]) => this.taskService.addUserNames(tasks)),
+        mergeMap((tasks: TaskDto[]) => this.taskService.addUserNames(tasks)),
         map(dtos => dtos.map(dto => this.taskService.toTask(dto)))
       );
   }
@@ -122,7 +122,7 @@ export class ProjectService {
   public removeUser(projectId: string, userId: string): Observable<Project> {
     return this.http.delete<ProjectDto>(environment.url_projects_users.replace('{id}', projectId) + '/' + userId)
       .pipe(
-        flatMap(dto => this.toProject(dto)),
+        mergeMap(dto => this.toProject(dto)),
         tap(p => this.projectChanged.emit(p))
       );
   }
@@ -130,7 +130,7 @@ export class ProjectService {
   public updateName(projectId: string, newName: string) {
     return this.http.put<ProjectDto>(environment.url_projects_name.replace('{id}', projectId), newName)
       .pipe(
-        flatMap(dto => this.toProject(dto)),
+        mergeMap(dto => this.toProject(dto)),
         tap(p => this.projectChanged.emit(p))
       );
   }
@@ -138,7 +138,7 @@ export class ProjectService {
   public updateDescription(projectId: string, newDescription: string) {
     return this.http.put<ProjectDto>(environment.url_projects_description.replace('{id}', projectId), newDescription)
       .pipe(
-        flatMap(dto => this.toProject(dto)),
+        mergeMap(dto => this.toProject(dto)),
         tap(p => this.projectChanged.emit(p))
       );
   }

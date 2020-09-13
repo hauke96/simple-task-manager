@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ProjectListComponent } from './project-list.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -6,7 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { CurrentUserService } from '../../user/current-user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MockRouter } from '../../common/mock-router';
-import { Task, TestTaskFeature, TestTaskGeometry } from '../../task/task.material';
+import { Task, TestTaskFeature } from '../../task/task.material';
 import { User } from '../../user/user.material';
 import { Project, ProjectDto } from '../project.material';
 import { WebsocketClientService } from '../../common/websocket-client.service';
@@ -22,7 +22,7 @@ describe('ProjectListComponent', () => {
   let projectService: ProjectService;
   let websocketService: WebsocketClientService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ProjectListComponent],
       imports: [

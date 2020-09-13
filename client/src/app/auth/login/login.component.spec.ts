@@ -1,11 +1,10 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { LoginComponent } from './login.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AuthService } from '../auth.service';
 import { CurrentUserService } from '../../user/current-user.service';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
 import { NgZone } from '@angular/core';
 import { MockRouter } from '../../common/mock-router';
 
@@ -15,7 +14,7 @@ describe('AuthComponent', () => {
   let authService: AuthService;
   let routerMock: MockRouter;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     const mockNgZone = jasmine.createSpyObj('mockNgZone', ['run', 'runOutsideAngular']);
     mockNgZone.run.and.callFake(fn => fn());
 

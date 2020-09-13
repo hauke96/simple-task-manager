@@ -1,8 +1,8 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { TaskListComponent } from './task-list.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Task, TestTaskFeature, TestTaskGeometry } from '../task.material';
+import { Task, TestTaskFeature } from '../task.material';
 import { TaskService } from '../task.service';
 import { CurrentUserService } from '../../user/current-user.service';
 import { User } from '../../user/user.material';
@@ -13,7 +13,7 @@ describe('TaskListComponent', () => {
   let taskService: TaskService;
   let currentUserService: CurrentUserService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [TaskListComponent],
       imports: [HttpClientTestingModule],
@@ -79,7 +79,9 @@ describe('TaskListComponent', () => {
     currentUserService.setUser('Mr. Answer', '42');
 
     expect(component.isAssignedToCurrentUser(new Task('1', undefined, 10, 100, TestTaskFeature))).toEqual(false);
-    expect(component.isAssignedToCurrentUser(new Task('2', undefined, 10, 100, TestTaskFeature, new User('foo', '1')))).toEqual(false);
-    expect(component.isAssignedToCurrentUser(new Task('3', undefined, 10, 100, TestTaskFeature, new User('Mr. Answer', '42')))).toEqual(true);
+    expect(component.isAssignedToCurrentUser(new Task('2', undefined, 10, 100, TestTaskFeature,
+      new User('foo', '1')))).toEqual(false);
+    expect(component.isAssignedToCurrentUser(new Task('3', undefined, 10, 100, TestTaskFeature,
+      new User('Mr. Answer', '42')))).toEqual(true);
   });
 });

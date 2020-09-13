@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { UserInvitationComponent } from './user-invitation.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -14,7 +14,7 @@ describe('UserInvitationComponent', () => {
   let notificationService: NotificationService;
   let userService: UserService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [UserInvitationComponent],
       imports: [
@@ -78,5 +78,5 @@ describe('UserInvitationComponent', () => {
 
     expect(userServiceSpy).toHaveBeenCalledTimes(1);
     expect(inviteUserSpy).toHaveBeenCalledTimes(1);
-  })
+  });
 });
