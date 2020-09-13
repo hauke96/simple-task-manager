@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/hauke96/simple-task-manager/server/permission"
 	"github.com/hauke96/simple-task-manager/server/util"
+	geojson "github.com/paulmach/go.geojson"
 	"github.com/pkg/errors"
 	"strings"
 )
@@ -46,6 +47,12 @@ func (s *TaskService) AddTasks(newTasks []*Task, projectId string) ([]*Task, err
 	for _, t := range newTasks {
 		if t.ProcessPoints < 0 || t.MaxProcessPoints < 1 || t.MaxProcessPoints < t.ProcessPoints {
 			return nil, errors.New(fmt.Sprintf("process points of task are out of range (%d / %d)", t.ProcessPoints, t.MaxProcessPoints))
+		}
+
+		// Check for valid geojson
+		_, err := geojson.UnmarshalFeature([]byte(t.Geometry))
+		if err != nil {
+			return nil, errors.Wrap(err, fmt.Sprintf("invalid GeoJSON: %s", t.Geometry))
 		}
 	}
 
@@ -136,7 +143,7 @@ func (s *TaskService) SetProcessPoints(taskId string, newPoints int, requestingU
 	if err != nil {
 		return nil, err
 	}
-	s.Log("Set process points of task %s to %d", taskId)
+	s.Log("Set process points of task %s to %d", taskId, newPoints)
 
 	return task, nil
 }
