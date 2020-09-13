@@ -110,7 +110,7 @@ select {
 	appearance: none;
 	background-image: url('/assets/arrow-down.svg');
 	background-size: $space-base * 1.5;
-	background-position: calc(100% - 8px) $space-base * 1.25;
+	background-position: calc(100% - 8px) $space-base;
 	background-repeat: no-repeat;
 }
 
