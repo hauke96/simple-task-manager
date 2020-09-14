@@ -71,8 +71,7 @@ The file `/lib/systemd/system/certbot.timer`:
 Description=Certbot renewal
 
 [Timer]
-OnBootSec=5m
-OnUnitActiveSec=1d
+OnCalendar=Mon *-*-* 00:00:00
 
 [Install]
 WantedBy=multi-user.target
@@ -81,7 +80,9 @@ WantedBy=multi-user.target
 ## Systemd service
 
 Specified how the certbot should renew the certificate.
-Here the post-hook also restarts all the docker container.
+Here the pre- and post-hooks also restarts all the docker container.
+You need an `.env` file within the projects root folder, otherwise the docker containers won't get the necessary configs (e.g. database credentials) to start up.
+See the server deployment documentation for more information.
 
 The file `/lib/systemd/system/certbot.service`:
 
@@ -92,7 +93,10 @@ Description=Certbot
 [Service]
 Type=oneshot
 PrivateTmp=true
-ExecStart=/usr/bin/certbot renew --post-hook "bash -c \"cd /root/simple-task-manager && docker-compose restart\""
+ExecStart=/usr/bin/certbot renew --pre-hook "bash -c \"cd /root/simple-task-manager && docker-compose stop\"" --post-hook "bash -c \"cd /root/simple-task-manager && docker-compose stop\""
+
+# For custom docker-file
+#ExecStart=/usr/bin/certbot renew --pre-hook "bash -c \"cd /root/simple-task-manager && docker-compose -f docker-compose.test.yml stop\"" --post-hook "bash -c \"cd /root/simple-task-manager && docker-compose -f docker-compose.test.yml stop\""
 
 [Install]
 WantedBy=multi-user.target
