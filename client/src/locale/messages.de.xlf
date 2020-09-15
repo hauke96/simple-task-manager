@@ -20,7 +20,7 @@
       </trans-unit>
       <trans-unit id="bb694b49d408265c91c62799c2b3a7e3151c824d" datatype="html">
         <source>Logout</source>
-        <target xml:lang="de-DE">Logout</target>
+        <target xml:lang="de-DE" state="translated">Abmelden</target>
 <note from="description" priority="1">logout button</note><context-group purpose="location">
           <context context-type="sourcefile">src/app/manager/manager.component.html</context>
           <context context-type="linenumber">4</context>
@@ -37,7 +37,7 @@
       </trans-unit>
       <trans-unit id="6765b4c916060f6bc42d9bb69e80377dbcb5e4e9" datatype="html">
         <source>Login</source>
-        <target xml:lang="de-DE">Login</target>
+        <target xml:lang="de-DE" state="translated">Anmelden</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/login/login.component.html</context>
           <context context-type="linenumber">11</context>
@@ -45,76 +45,76 @@
       </trans-unit>
       <trans-unit id="4950f54bb4ede49f04041e3778dc574500d4eb0b" datatype="html">
         <source>
-					<x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Changes in 1.1.0:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;"/>
+					<x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b>"/>Changes in 1.1.0:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b>"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
 					New features:
-					<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Internationalization:<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-							<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Translation of STM into Chinese, German and Japanese<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-							<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Selection dialog to change the language<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-							<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Selected language stored in the browsers local storage<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Button to open task in iD<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Button to directly set a task as &apos;done&apos;<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Longer token validity (your login is now valid for one week)<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Check GeoJSON format of each new task<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-					<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
+					<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/>
+						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Internationalization:<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+						<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/>
+							<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Translation of STM into Chinese, German and Japanese<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+							<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Selection dialog to change the language<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+							<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Selected language stored in the browsers local storage<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+						<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/>
+						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Button to open task in iD<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Button to directly set a task as 'done'<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Longer token validity (your login is now valid for one week)<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Check GeoJSON format of each new task<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+					<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/>
 					Bug fixes:
-					<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Missing feedback on overpass error<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Reconnect on broken websocket connection<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-					<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
+					<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/>
+						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Missing feedback on overpass error<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Reconnect on broken websocket connection<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+					<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/>
 					Minor changes:
-					<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Zoom to selected task when not visible on the screen<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Progress percentage in project list<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Automatic names of tasks (the numbers of unnamed now start at 1 in each new project)<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-					<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
+					<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/>
+						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Zoom to selected task when not visible on the screen<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Progress percentage in project list<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Automatic names of tasks (the numbers of unnamed now start at 1 in each new project)<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+					<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/>
 					Internals:
-					<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Store project-ID in task database table<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Create project and tasks within one HTTP request<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Introduce the <x id="START_TAG_CODE" ctype="x-code" equiv-text="&lt;code&gt;"/>context<x id="CLOSE_TAG_CODE" ctype="x-code" equiv-text="&lt;/code&gt;"/> to add a logging trace-ID<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Better server side logging<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Reconnect to database after connection failure<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Source maps in karma tests<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-					<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
+					<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/>
+						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Store project-ID in task database table<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Create project and tasks within one HTTP request<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Introduce the <x id="START_TAG_CODE" ctype="x-code" equiv-text="&lt;code>"/>context<x id="CLOSE_TAG_CODE" ctype="x-code" equiv-text="&lt;/code>"/> to add a logging trace-ID<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Better server side logging<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Reconnect to database after connection failure<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Source maps in karma tests<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+					<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/>
 				</source>
         <target>
-            <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Änderungen in 1.1.0-dev:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;"/>
+            <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b>"/>Änderungen in 1.1.0-dev:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b>"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
             Neue Funktionen:
-            <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Internationalization:<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-                    <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Übersetzung vom STM ins Chinesische, Deutsche und Japanische<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                    <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Auswahlmenü zum Andern der Sprache<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                    <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Speichern der Sprache im local storage vom Browser<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Button zum Öffnen eines Tasks iD<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Button um einen Task direkt als &apos;fertig&apos; zu markieren<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Längere Login-Dauer (man ist nun eine Woche lang eingeloggt)<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Prüfe GeoJSON-Format jedes neuen Tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-            <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
+            <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/>
+                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Internationalization:<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+                <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/>
+                    <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Übersetzung vom STM ins Chinesische, Deutsche und Japanische<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+                    <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Auswahlmenü zum Andern der Sprache<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+                    <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Speichern der Sprache im local storage vom Browser<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+                <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/>
+                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Button zum Öffnen eines Tasks iD<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Button um einen Task direkt als 'fertig' zu markieren<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Längere Login-Dauer (man ist nun eine Woche lang eingeloggt)<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Prüfe GeoJSON-Format jedes neuen Tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+            <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/>
             Behobene Fehler:
-            <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Fehlende Rückmeldung bei einem Overpass-Fehler<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Wiederaufbau kaputter Websocket-Verbindungen<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-            <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
+            <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/>
+                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Fehlende Rückmeldung bei einem Overpass-Fehler<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Wiederaufbau kaputter Websocket-Verbindungen<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+            <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/>
             Kleinere Änderungen:
-            <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Zoom auf ausgewählten Task, wenn dieser nicht sichtbar ist<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Prozentualer Fortschritt in Projektliste<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Automatische Namen für Tasks (die Nummern der Tasks beginnen bei jedem neuen Projekt nun bei 1)<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-            <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
+            <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/>
+                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Zoom auf ausgewählten Task, wenn dieser nicht sichtbar ist<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Prozentualer Fortschritt in Projektliste<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Automatische Namen für Tasks (die Nummern der Tasks beginnen bei jedem neuen Projekt nun bei 1)<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+            <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/>
             Internes:
-            <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Die Projekt-ID wird nun in der Task-Tabelle gespeichert<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Projekte samt Tasks werden nun in einer HTTP-Anfrage erstellt<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Einführung eines <x id="START_TAG_CODE" ctype="x-code" equiv-text="&lt;code&gt;"/>context<x id="CLOSE_TAG_CODE" ctype="x-code" equiv-text="&lt;/code&gt;"/> um eine Trace-ID zum logging zu haben<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Besseres Logging im Server<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Erneutes Verbinden mit der Datenbank, wenn die Verbindung kaputt gegangen ist<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Source-Maps in karma Tests<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-            <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
+            <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/>
+                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Die Projekt-ID wird nun in der Task-Tabelle gespeichert<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Projekte samt Tasks werden nun in einer HTTP-Anfrage erstellt<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Einführung eines <x id="START_TAG_CODE" ctype="x-code" equiv-text="&lt;code>"/>context<x id="CLOSE_TAG_CODE" ctype="x-code" equiv-text="&lt;/code>"/> um eine Trace-ID zum logging zu haben<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Besseres Logging im Server<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Erneutes Verbinden mit der Datenbank, wenn die Verbindung kaputt gegangen ist<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+                <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>Source-Maps in karma Tests<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+            <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/>
         </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/login/login.component.html</context>
@@ -273,7 +273,7 @@
       </trans-unit>
       <trans-unit id="4ded01fb65e9e8ffb0cca5b798e24e77eedd9d4d" datatype="html">
         <source>Open in iD</source>
-        <target xml:lang="de-DE">Open in iD</target>
+        <target xml:lang="de-DE">In iD öffnen</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/task/task-details/task-details.component.html</context>
           <context context-type="linenumber">35</context>
@@ -861,7 +861,7 @@
       </trans-unit>
       <trans-unit id="TABS_DRAW" datatype="html">
         <source>Draw</source>
-        <target xml:lang="de-DE">Draw</target>
+        <target xml:lang="de-DE" state="translated">Zeichnen</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">29</context>
@@ -869,7 +869,7 @@
       </trans-unit>
       <trans-unit id="TABS_UPLOAD" datatype="html">
         <source>Upload</source>
-        <target xml:lang="de-DE">Upload</target>
+        <target xml:lang="de-DE" state="translated">Hochladen</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">30</context>
@@ -877,7 +877,7 @@
       </trans-unit>
       <trans-unit id="TABS_REMOTE" datatype="html">
         <source>Remote</source>
-        <target xml:lang="de-DE">Remote</target>
+        <target xml:lang="de-DE" state="translated">Remote</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">31</context>
