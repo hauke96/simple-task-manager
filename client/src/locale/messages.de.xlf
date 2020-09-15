@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
-  <file source-language="en-US" datatype="plaintext" original="ng2.template" target-language="de-DE">
+  <file source-language="en-US" datatype="plaintext" original="ng2.template" target-language="de">
     <body>
       <trans-unit id="b12abc47005741b160538ec891a6915beadde39e" datatype="html">
         <source>Welcome <x id="INTERPOLATION" equiv-text="{{userName}}"/> :)</source>
