@@ -5,9 +5,11 @@ import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Rout
   providedIn: 'root'
 })
 export class LoadingService {
-  private loading = false;
+  private loading: boolean;
 
   constructor(private router: Router) {
+    this.loading = false;
+
     router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
         this.loading = true;

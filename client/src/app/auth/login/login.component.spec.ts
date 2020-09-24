@@ -55,30 +55,6 @@ describe('AuthComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should redirect authenticated user to manager', () => {
-    spyOn(authService, 'requestLogin').and.callFake((f: () => void) => {
-      f();
-    });
-    spyOn(authService, 'isAuthenticated').and.returnValue(true);
-    spyOn(routerMock, 'navigate').and.callThrough();
-
-    component.ngOnInit();
-
-    expect(routerMock.navigate).toHaveBeenCalledWith(['/manager']);
-  });
-
-  it('should not redirect unauthenticated user to manager', () => {
-    spyOn(authService, 'requestLogin').and.callFake((f: () => void) => {
-      f();
-    });
-    spyOn(authService, 'isAuthenticated').and.returnValue(false);
-    spyOn(routerMock, 'navigate').and.callThrough();
-
-    component.ngOnInit();
-
-    expect(routerMock.navigate).not.toHaveBeenCalledWith(['/manager']);
-  });
-
   it('should redirect user to manager after login', () => {
     spyOn(authService, 'requestLogin').and.callFake((f: () => void) => {
       f();
