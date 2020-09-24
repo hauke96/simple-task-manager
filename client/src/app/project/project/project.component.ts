@@ -43,7 +43,7 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
         }
 
         if (!this.isOwner()) {
-          this.notificationService.addWarning($localize`:@@WARN_PROJECT_REMOVED:This project has been removed`);
+          this.notificationService.addInfo($localize`:@@WARN_PROJECT_REMOVED:This project has been removed`);
         }
 
         this.router.navigate(['/manager']);
