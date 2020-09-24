@@ -53,7 +53,7 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
           return;
         }
 
-        this.notificationService.addWarning($localize`:@@WARN_REMOVED_USER:You have been removed from this project`);
+        this.notificationService.addInfo($localize`:@@WARN_REMOVED_USER_PROJECT:You have been removed from project '${this.project.name}:INTERPOLATION:'`);
         this.router.navigate(['/manager']);
       })
     );
