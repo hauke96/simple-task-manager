@@ -6,8 +6,6 @@ import { ProcessPointColorService } from '../../common/process-point-color.servi
 import { ProjectService } from '../project.service';
 import { Unsubscriber } from '../../common/unsubscriber';
 import { NotificationService } from '../../common/notification.service';
-import { catchError } from 'rxjs/operators';
-import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-project-list',
@@ -52,6 +50,9 @@ export class ProjectListComponent extends Unsubscriber implements OnInit {
         }
       }),
       this.projectService.projectDeleted.subscribe((removedProjectId: string) => {
+        const project = this.projects.find(p => p.id === removedProjectId);
+        this.notificationService.addInfo($localize`:@@WARN_PROJECT_REMOVED:The project '${project.name}:INTERPOLATION:' has been removed`);
+
         this.projects = this.projects.filter(p => p.id !== removedProjectId);
       }),
       this.projectService.projectUserRemoved.subscribe((projectId: string) => {
@@ -61,6 +62,7 @@ export class ProjectListComponent extends Unsubscriber implements OnInit {
 
         const project = this.projects.find(p => p.id === projectId);
         this.notificationService.addInfo($localize`:@@WARN_REMOVED_USER_PROJECT:You have been removed from project '${project.name}:INTERPOLATION:'`);
+
         this.projects = this.projects.filter(p => p.id !== projectId);
       })
     );
