@@ -43,9 +43,9 @@
           <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="56cd020ee54cd31e153cef8af1a830c70299bc9c" datatype="html">
+      <trans-unit id="4950f54bb4ede49f04041e3778dc574500d4eb0b" datatype="html">
         <source>
-					<x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Changes in 1.1.0-dev:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;"/>
+					<x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Changes in 1.1.0:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;"/>
 					New features:
 					<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
 						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Internationalization:<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
@@ -804,19 +804,19 @@
         </context-group>
       </trans-unit>
       <trans-unit id="WARN_PROJECT_REMOVED" datatype="html">
-        <source>This project has been removed</source>
-        <target xml:lang="ja">このプロジェクトは削除されました</target>
+        <source>The project &apos;<x id="INTERPOLATION" equiv-text="{{interp}}"/>&apos; has been removed</source>
+        <target>The project &apos;<x id="INTERPOLATION" equiv-text="{{interp}}"/>&apos; has been removed</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">22</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="WARN_REMOVED_USER" datatype="html">
-        <source>You have been removed from this project</source>
-        <target xml:lang="ja">あなたは、このプロジェクトからすでに退場しています</target>
-<context-group purpose="location">
+      <trans-unit id="WARN_REMOVED_USER_PROJECT" datatype="html">
+        <source>You have been removed from project '<x id="INTERPOLATION" equiv-text="{{interp}}"/>'</source>
+        <target>You have been removed from project '<x id="INTERPOLATION" equiv-text="{{interp}}"/>'</target>
+        <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">23</context>
+          <context context-type="linenumber">25</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_NOT_REMOVE_USER" datatype="html">

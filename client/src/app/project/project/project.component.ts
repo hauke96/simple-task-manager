@@ -43,7 +43,7 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
         }
 
         if (!this.isOwner()) {
-          this.notificationService.addWarning($localize`:@@WARN_PROJECT_REMOVED:This project has been removed`);
+          this.notificationService.addInfo($localize`:@@WARN_PROJECT_REMOVED:The project '${this.project.name}:INTERPOLATION:' has been removed`);
         }
 
         this.router.navigate(['/manager']);
@@ -53,7 +53,7 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
           return;
         }
 
-        this.notificationService.addWarning($localize`:@@WARN_REMOVED_USER:You have been removed from this project`);
+        this.notificationService.addInfo($localize`:@@WARN_REMOVED_USER_PROJECT:You have been removed from project '${this.project.name}:INTERPOLATION:'`);
         this.router.navigate(['/manager']);
       })
     );

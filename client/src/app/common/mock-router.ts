@@ -7,4 +7,8 @@ export class MockRouter {
   navigate(commands: any[]) {
     return of(true).toPromise();
   }
+
+  navigateByUrl(url: string): Promise<boolean> {
+    return of(true).toPromise();
+  }
 }

@@ -11,23 +11,24 @@ import { ProjectResolver } from './project/project.resolver';
 import { SelectedLanguageGuard } from './common/selected-language.guard';
 
 const routes: Routes = [
-  {path: '', component: LoginComponent, canActivate: [SelectedLanguageGuard]},
+  {path: '', component: LoginComponent, canActivate: [AuthGuard, SelectedLanguageGuard]},
   {
     path: 'manager',
     component: ManagerComponent,
-    canActivate: [SelectedLanguageGuard, AuthGuard],
+    canActivate: [AuthGuard, SelectedLanguageGuard],
     resolve: {projects: AllProjectsResolver}
   },
   {
     path: 'project/:id',
     component: ProjectComponent,
-    canActivate: [SelectedLanguageGuard, AuthGuard],
+    canActivate: [AuthGuard, SelectedLanguageGuard],
     resolve: {
       project: ProjectResolver
     }
   },
-  {path: 'new-project', component: ProjectCreationComponent, canActivate: [SelectedLanguageGuard, AuthGuard]},
+  {path: 'new-project', component: ProjectCreationComponent, canActivate: [AuthGuard, SelectedLanguageGuard]},
   {path: 'oauth-landing', component: OauthLandingComponent},
+  {path: '**', redirectTo: ''},
 ];
 
 @NgModule({

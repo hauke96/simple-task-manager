@@ -87,17 +87,17 @@ func (s *WebsocketSender) SendAll(messages []Message, uids ...string) {
 					s.Debug("ERROR: " + err.Error())
 					//sigolo.Error("Wasn't even able to close it: %s", err.Error())
 					s.Stack(err)
+
+					// Remove the closed connection from the list of connections:
+					userConnections[i] = userConnections[len(userConnections)-1] // overwrite i-th element by the last element
+					userConnections[len(userConnections)-1] = nil                // delete the now duplicate last element from slice
+					userConnections = userConnections[:len(userConnections)-1]   // reduce slice size by 1
+					i--                                                          // fix index so that we don't skip the i-th connection we just copied
 				}
-
-				// Remove the closed connection from the list of connections:
-				userConnections[i] = userConnections[len(userConnections)-1] // overwrite i-th element by the last element
-				userConnections[len(userConnections)-1] = nil                // delete the now duplicate last element from slice
-				userConnections = userConnections[:len(userConnections)-1]   // reduce slice size by 1
-				i--                                                          // fix index so that we don't skip the i-th connection we just copied
 			}
-		}
 
-		// Update connection list in case some connections have been removed
-		connections[uid] = userConnections
+			// Update connection list in case some connections have been removed
+			connections[uid] = userConnections
+		}
 	}
 }

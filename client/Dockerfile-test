@@ -1,5 +1,5 @@
 ## STAGE 1 : Build the client
-FROM simpletaskmanager/stm-client-base:1.1.0-dev as builder
+FROM simpletaskmanager/stm-client-base:1.1.0 as builder
 
 COPY ./ /stm-client/
 WORKDIR /stm-client/

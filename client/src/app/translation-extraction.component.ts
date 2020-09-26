@@ -33,8 +33,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
         <span i18n="@@ERROR_LEAVE_PROJ">Could not leave project</span>
         <span i18n="@@INFO_SUCCESS_UPDATE_PROJ">Successfully updated project</span>
         <span i18n="@@ERROR_UPDATE_PROJ_TITLE">Unable to update project title and/or description</span>
-        <span i18n="@@WARN_PROJECT_REMOVED">This project has been removed</span>
-        <span i18n="@@WARN_REMOVED_USER">You have been removed from this project</span>
+        <span i18n="@@WARN_PROJECT_REMOVED">The project '{{interp}}' has been removed</span>
+        <span i18n="@@WARN_REMOVED_USER_PROJECT">You have been removed from project '{{interp}}'</span>
         <span i18n="@@ERROR_NOT_REMOVE_USER">Could not remove user</span>
         <span i18n="@@ERROR_NOT_INVITE_USER">Could not invite user{{interp}}</span>
 		    <span i18n="@@TABS_TASKS">Tasks</span>
