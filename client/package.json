@@ -10,7 +10,7 @@
     "dev-local": "ng serve --watch -c local",
     "build": "ng build --localize",
     "build-prod": "ng build --prod --localize",
-    "build-test": "ng build -c test --localize",
+    "build-test": "ng build -c test --prod --localize",
     "test-firefox": "ng test --browsers=FirefoxHeadless --code-coverage",
     "test": "ng test --source-map --watch=false --browsers=ChromeHeadlessNoSandbox --code-coverage",
     "lint": "ng lint --fix",
