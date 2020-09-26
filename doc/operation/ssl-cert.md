@@ -93,7 +93,7 @@ Description=Certbot
 [Service]
 Type=oneshot
 PrivateTmp=true
-ExecStart=/usr/bin/certbot renew --pre-hook "bash -c \"cd /root/simple-task-manager && docker-compose stop\"" --post-hook "bash -c \"cd /root/simple-task-manager && docker-compose stop\""
+ExecStart=/usr/bin/certbot renew --pre-hook "bash -c \"cd /home/stm/simple-task-manager && docker-compose stop\"" --post-hook "bash -c \"cd /home/stm/simple-task-manager && docker-compose start\""
 
 # For custom docker-file
 #ExecStart=/usr/bin/certbot renew --pre-hook "bash -c \"cd /root/simple-task-manager && docker-compose -f docker-compose.test.yml stop\"" --post-hook "bash -c \"cd /root/simple-task-manager && docker-compose -f docker-compose.test.yml stop\""
