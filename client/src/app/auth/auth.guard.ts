@@ -13,11 +13,11 @@ export class AuthGuard implements CanActivate {
 
     if (requestLoginComponent && !!localStorage.getItem('auth_token')) {
       // Token exists and login component should be loaded -> redirect to manager
-      // this.router.navigateByUrl('/manager');
+      this.router.navigateByUrl('/manager');
       return false;
     } else if (!requestLoginComponent && !localStorage.getItem('auth_token')) {
       // No token -> not logged in -> redirect to login page
-      // this.router.navigateByUrl('/');
+      this.router.navigateByUrl('/');
       return false;
     }
 
