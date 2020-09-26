@@ -8,9 +8,10 @@ require (
 	github.com/gorilla/mux v1.7.4
 	github.com/gorilla/websocket v1.4.2
 	github.com/hauke96/kingpin v2.2.6+incompatible
-	github.com/hauke96/sigolo v0.0.0-20200624184945-7f806de57802
+	github.com/hauke96/sigolo v0.0.0-20200831155049-d5b5ab2a608f
 	github.com/kurrik/oauth1a v0.0.0-20151019171716-cb1b80e32dd4
-	github.com/lib/pq v1.3.0
+	github.com/lib/pq v1.7.0
+	github.com/paulmach/go.geojson v1.4.0
 	github.com/pkg/errors v0.9.1
-	github.com/stretchr/testify v1.5.1 // indirect
+	github.com/stretchr/testify v1.6.1 // indirect
 )

@@ -2,6 +2,7 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { WebsocketMessage } from './websocket-message';
 import { WebSocketSubject } from 'rxjs/webSocket';
+import { delay, retryWhen, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -23,10 +24,22 @@ export class WebsocketClientService {
       url: environment.url_updates + '?token=' + encodeURIComponent(authToken)
     });
 
-    ws.subscribe((messages: WebsocketMessage[]) => {
-      for (const msg of messages) {
-        this.messageReceived.emit(msg);
-      }
-    }, err => console.error(err));
+    ws
+      .pipe(
+        retryWhen(err => { // In case of a connection loss, reconnect using the "retryWhen" pipe
+          return err.pipe(
+            tap(e => {
+              console.error('WebSocket connection lost');
+              console.error(e);
+            }),
+            delay(1000)
+          );
+        })
+      )
+      .subscribe((messages: WebsocketMessage[]) => {
+        for (const msg of messages) {
+          this.messageReceived.emit(msg);
+        }
+      }, err => console.error(err));
   }
 }

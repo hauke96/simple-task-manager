@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ShapeRemoteComponent } from './shape-remote.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -8,6 +8,8 @@ import { Feature } from 'ol';
 import { Polygon } from 'ol/geom';
 import { NotificationService } from '../../common/notification.service';
 import { GeometryService } from '../../common/geometry.service';
+import { LoadingService } from '../../common/loading.service';
+import { RouterTestingModule } from '@angular/router/testing';
 
 const remoteGeometry = `<?xml version="1.0" encoding="UTF-8"?>
 <osm version="0.6" generator="Overpass API 0.7.56.3 eb200aeb">
@@ -30,12 +32,14 @@ describe('ShapeRemoteComponent', () => {
   let httpClient: HttpClient;
   let notificationService: NotificationService;
   let geometryService: GeometryService;
+  let loadingService: LoadingService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ShapeRemoteComponent],
       imports: [
-        HttpClientTestingModule
+        HttpClientTestingModule,
+        RouterTestingModule.withRoutes([])
       ]
     })
       .compileComponents();
@@ -43,6 +47,7 @@ describe('ShapeRemoteComponent', () => {
     httpClient = TestBed.inject(HttpClient);
     notificationService = TestBed.inject(NotificationService);
     geometryService = TestBed.inject(GeometryService);
+    loadingService = TestBed.inject(LoadingService);
   }));
 
   beforeEach(() => {
@@ -53,6 +58,12 @@ describe('ShapeRemoteComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should show loading spinner on load', () => {
+    const spy = spyOn(loadingService, 'start');
+    component.onLoadButtonClicked();
+    expect(spy).toHaveBeenCalled();
   });
 
   it('should emit feature after load', () => {
@@ -75,11 +86,13 @@ describe('ShapeRemoteComponent', () => {
 
     const notificationSpy = spyOn(notificationService, 'addError');
     const emitSpy = spyOn(component.featuresLoaded, 'emit');
+    const loadingSpy = spyOn(loadingService, 'end');
 
     component.onLoadButtonClicked();
 
     expect(notificationSpy).toHaveBeenCalled();
     expect(emitSpy).not.toHaveBeenCalled();
+    expect(loadingSpy).toHaveBeenCalled();
   });
 
   it('should notify but not emit on http error', () => {
@@ -87,10 +100,12 @@ describe('ShapeRemoteComponent', () => {
 
     const notificationSpy = spyOn(notificationService, 'addError');
     const emitSpy = spyOn(component.featuresLoaded, 'emit');
+    const loadingSpy = spyOn(loadingService, 'end');
 
     component.onLoadButtonClicked();
 
     expect(notificationSpy).toHaveBeenCalled();
     expect(emitSpy).not.toHaveBeenCalled();
+    expect(loadingSpy).toHaveBeenCalled();
   });
 });

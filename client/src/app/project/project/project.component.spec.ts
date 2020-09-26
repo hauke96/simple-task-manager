@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ProjectComponent } from './project.component';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -22,7 +22,7 @@ describe('ProjectComponent', () => {
   let routerMock: MockRouter;
   let notificationService: NotificationService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ProjectComponent],
       imports: [
@@ -68,7 +68,7 @@ describe('ProjectComponent', () => {
     // Trigger all needed events
     websocketService.messageReceived.emit(new WebsocketMessage(
       WebsocketMessageType.MessageType_ProjectUpdated,
-      new ProjectDto(p.id, p.name, p.description, p.tasks.map(t => t.id), p.users.map(u => u.uid), p.owner.uid, p.needsAssignment)
+      new ProjectDto(p.id, p.name, p.description, p.users.map(u => u.uid), p.owner.uid, p.needsAssignment)
     ));
 
     expect(component.project).toEqual(p);

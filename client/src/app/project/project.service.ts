@@ -1,7 +1,7 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from 'rxjs';
-import { concatMap, flatMap, map, mergeAll, mergeMap, switchMap, tap } from 'rxjs/operators';
-import { Project, ProjectDto } from './project.material';
+import { map, mergeMap, tap } from 'rxjs/operators';
+import { Project, ProjectAddDto, ProjectDto } from './project.material';
 import { Task, TaskDto } from './../task/task.material';
 import { TaskService } from './../task/task.service';
 import { HttpClient } from '@angular/common/http';
@@ -32,7 +32,7 @@ export class ProjectService {
       this.handleReceivedMessage(m);
     }, e => {
       console.error(e);
-      this.notificationService.addError('Could not initialize live-updates');
+      this.notificationService.addError($localize`:@@ERROR_LIVE_UPDATE:Could not initialize live-updates`);
     });
   }
 
@@ -77,12 +77,12 @@ export class ProjectService {
 
   public getProjects(): Observable<Project[]> {
     return this.http.get<ProjectDto[]>(environment.url_projects)
-      .pipe(flatMap(dtos => this.toProjects(dtos)));
+      .pipe(mergeMap(dtos => this.toProjects(dtos)));
   }
 
   public getProject(projectId: string): Observable<Project> {
     return this.http.get<ProjectDto>(environment.url_projects_by_id.replace('{id}', projectId))
-      .pipe(flatMap(dto => this.toProject(dto)));
+      .pipe(mergeMap(dto => this.toProject(dto)));
   }
 
   public createNewProject(
@@ -93,15 +93,13 @@ export class ProjectService {
     users: string[],
     owner: string
   ): Observable<Project> {
-    // Create new tasks with the given geometries and collect their IDs
-    return this.taskService.createNewTasks(geometries, maxProcessPoints)
-      .pipe(
-        flatMap(tasks => {
-          const p = new ProjectDto('', name, projectDescription, tasks.map(t => t.id), users, owner);
-          return this.http.post<ProjectDto>(environment.url_projects, JSON.stringify(p))
-            .pipe(flatMap(dto => this.toProject(dto)));
-        })
-      );
+    const p = new ProjectAddDto(
+      new ProjectDto('', name, projectDescription, users, owner),
+      geometries.map(g => new TaskDto('', 0, maxProcessPoints, g))
+    );
+
+    return this.http.post<ProjectDto>(environment.url_projects, JSON.stringify(p))
+      .pipe(mergeMap(dto => this.toProject(dto)));
   }
 
   public inviteUser(projectId: string, userId: string): Observable<void> {
@@ -116,7 +114,7 @@ export class ProjectService {
   public getTasks(projectId: string): Observable<Task[]> {
     return this.http.get<TaskDto[]>(environment.url_projects_task.replace('{id}', projectId))
       .pipe(
-        flatMap((tasks: TaskDto[]) => this.taskService.addUserNames(tasks)),
+        mergeMap((tasks: TaskDto[]) => this.taskService.addUserNames(tasks)),
         map(dtos => dtos.map(dto => this.taskService.toTask(dto)))
       );
   }
@@ -124,7 +122,7 @@ export class ProjectService {
   public removeUser(projectId: string, userId: string): Observable<Project> {
     return this.http.delete<ProjectDto>(environment.url_projects_users.replace('{id}', projectId) + '/' + userId)
       .pipe(
-        flatMap(dto => this.toProject(dto)),
+        mergeMap(dto => this.toProject(dto)),
         tap(p => this.projectChanged.emit(p))
       );
   }
@@ -132,7 +130,7 @@ export class ProjectService {
   public updateName(projectId: string, newName: string) {
     return this.http.put<ProjectDto>(environment.url_projects_name.replace('{id}', projectId), newName)
       .pipe(
-        flatMap(dto => this.toProject(dto)),
+        mergeMap(dto => this.toProject(dto)),
         tap(p => this.projectChanged.emit(p))
       );
   }
@@ -140,7 +138,7 @@ export class ProjectService {
   public updateDescription(projectId: string, newDescription: string) {
     return this.http.put<ProjectDto>(environment.url_projects_description.replace('{id}', projectId), newDescription)
       .pipe(
-        flatMap(dto => this.toProject(dto)),
+        mergeMap(dto => this.toProject(dto)),
         tap(p => this.projectChanged.emit(p))
       );
   }

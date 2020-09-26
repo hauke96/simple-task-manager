@@ -8,7 +8,8 @@ import (
 	"github.com/hauke96/simple-task-manager/server/database"
 	"github.com/hauke96/simple-task-manager/server/permission"
 	"github.com/hauke96/simple-task-manager/server/task"
-	testHelper "github.com/hauke96/simple-task-manager/server/test"
+	"github.com/hauke96/simple-task-manager/server/test"
+	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/pkg/errors"
 	"testing"
 
@@ -19,44 +20,38 @@ var (
 	tx          *sql.Tx
 	s           *ProjectService
 	taskService *task.TaskService
+	h           *test.TestHelper
 )
+
+func TestMain(m *testing.M) {
+	h = &test.TestHelper{
+		Setup: setup,
+	}
+
+	m.Run()
+}
 
 func setup() {
 	config.LoadConfig("../config/test.json")
-	testHelper.InitWithDummyData()
+	test.InitWithDummyData()
 	sigolo.LogLevel = sigolo.LOG_DEBUG
 
+	logger := util.NewLogger()
+
 	var err error
-	tx, err = database.GetTransaction()
+	tx, err = database.GetTransaction(logger)
 	if err != nil {
 		panic(err)
 	}
-	permissionService := permission.Init(tx)
-	taskService = task.Init(tx, permissionService)
-	s = Init(tx, taskService, permissionService)
-}
 
-func run(t *testing.T, testFunc func() error) {
-	setup()
-
-	err := testFunc()
-	if err != nil {
-		t.Errorf("%+v", err)
-		t.Fail()
-	}
-
-	tearDown()
-}
-
-func tearDown() {
-	err := tx.Commit()
-	if err != nil {
-		panic(err)
-	}
+	h.Tx = tx
+	permissionService := permission.Init(tx, logger)
+	taskService = task.Init(tx, logger, permissionService)
+	s = Init(tx, logger, taskService, permissionService)
 }
 
 func TestGetProjects(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		// For Maria (being part of project 1 and 2)
 		userProjects, err := s.GetProjects("Maria")
 		if err != nil {
@@ -89,12 +84,37 @@ func TestGetProjects(t *testing.T) {
 		if userProjects[0].TotalProcessPoints != 10 || userProjects[0].DoneProcessPoints != 0 {
 			return errors.New("Process points on project not set correctly")
 		}
+
+		return nil
+	})
+}
+
+func TestGetProjectsInvalidUser(t *testing.T) {
+	h.Run(t, func() error {
+		// User "Worf" does not exist
+		projects, err := s.GetProjects("Worf")
+		if err != nil {
+			return errors.New("Getting projects for 'Worf' should work")
+		}
+		if len(projects) != 0 {
+			return errors.New("User 'Worf' has no project")
+		}
+
+		// This should not fail but should also not return anything
+		projects, err = s.GetProjects("")
+		if err != nil {
+			return errors.New("Getting projects for empty user should work")
+		}
+		if len(projects) != 0 {
+			return errors.New("Empty user has no project")
+		}
+
 		return nil
 	})
 }
 
 func TestGetProjectByTask(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		project, err := s.GetProjectByTask("4", "John")
 		if err != nil {
 			return err
@@ -110,67 +130,75 @@ func TestGetProjectByTask(t *testing.T) {
 	})
 }
 
-func TestGetTasks(t *testing.T) {
-	run(t, func() error {
-		tasks, err := s.GetTasks("1", "Peter")
-		if err != nil {
-			return errors.New(fmt.Sprintf("Get should work: %s", err.Error()))
+func TestAddWithTasks(t *testing.T) {
+	h.Run(t, func() error {
+		user := "Jack"
+		p := Project{
+			Name:  "Test name",
+			Users: []string{user, "user2"},
+			Owner: user,
 		}
 
-		sigolo.Debug("Tasks: %#v", tasks)
+		t := task.Task{
+			ProcessPoints:    5,
+			MaxProcessPoints: 100,
+			Geometry:         "{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[0,0],[1,0]]]},\"properties\":null}",
+			AssignedUser:     "user2",
+		}
 
-		if len(tasks) != 1 {
-			return errors.New("There should be exactly one task")
+		newProject, err := s.AddProjectWithTasks(&p, []*task.Task{&t})
+		if err != nil {
+			return errors.New(fmt.Sprintf("Adding should work: %s", err.Error()))
+		}
+
+		// Check project
+
+		if len(newProject.Users) != 2 {
+			return errors.New(fmt.Sprintf("User amount should be 2 but was %d", len(newProject.Users)))
+		}
+		if newProject.Users[0] != user || newProject.Users[1] != "user2" {
+			return errors.New("User not matching")
+		}
+		if newProject.Name != p.Name {
+			return errors.New(fmt.Sprintf("Name should be '%s' but was '%s'", newProject.Name, p.Name))
+		}
+		if newProject.Owner != user {
+			return errors.New(fmt.Sprintf("Owner should be '%s' but was '%s'", user, newProject.Owner))
+		}
+		if newProject.TotalProcessPoints != 100 || newProject.DoneProcessPoints != 5 {
+			return errors.New("Process points on project not set correctly")
+		}
+
+		// Check task
+
+		tasks, err := s.taskService.GetTasks(newProject.Id, newProject.Owner)
+		if err != nil {
+			return errors.Wrap(err, "Getting tasks after adding project should work")
+		}
+
+		if tasks == nil || len(tasks) != 1 {
+			return errors.New("Expect to have exactly one task")
 		}
 
 		task := tasks[0]
-		sigolo.Debug("Task: %#v", task)
-
-		if task.Id != "1" {
-			return errors.New("id not matching")
+		if task.AssignedUser != "user2" ||
+			task.MaxProcessPoints != 100 ||
+			task.ProcessPoints != 5 ||
+			task.Geometry != "{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[0,0],[1,0]]]},\"properties\":null}" {
+			return errors.New(fmt.Sprintf("Added task does not match:\n%v\n%v\n", t, task))
 		}
 
-		if task.ProcessPoints != 0 {
-			return errors.New("process points not matching")
-		}
-
-		if task.MaxProcessPoints != 10 {
-			return errors.New("max process points not matching")
-		}
-
-		if task.AssignedUser != "Peter" {
-			return errors.New("assigned user not matching")
-		}
-
-		// Part of project but not owning
-		_, err = s.GetTasks("1", "Maria")
-		if err != nil {
-			return errors.New("This should work, Maria is part of the project")
-		}
-
-		// Not part of project
-		_, err = s.GetTasks("1", "Unknown user")
-		if err == nil {
-			return errors.New("Get tasks of not owned project should not work")
-		}
-
-		// Not existing project
-		_, err = s.GetTasks("28745276", "Peter")
-		if err == nil {
-			return errors.New("Get should not work")
-		}
 		return nil
 	})
 }
 
 func TestAddAndGetProject(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		user := "Jack"
 		p := Project{
-			Name:    "Test name",
-			TaskIDs: []string{"8"},
-			Users:   []string{user, "user2"},
-			Owner:   user,
+			Name:  "Test name",
+			Users: []string{user, "user2"},
+			Owner: user,
 		}
 
 		newProject, err := s.AddProject(&p)
@@ -184,24 +212,18 @@ func TestAddAndGetProject(t *testing.T) {
 		if newProject.Users[0] != user || newProject.Users[1] != "user2" {
 			return errors.New(fmt.Sprintf("User not matching"))
 		}
-		if len(newProject.TaskIDs) != len(p.TaskIDs) || newProject.TaskIDs[0] != p.TaskIDs[0] {
-			return errors.New(fmt.Sprintf("Task ID should be '%s' but was '%s'", newProject.TaskIDs[0], p.TaskIDs[0]))
-		}
 		if newProject.Name != p.Name {
 			return errors.New(fmt.Sprintf("Name should be '%s' but was '%s'", newProject.Name, p.Name))
 		}
 		if newProject.Owner != user {
 			return errors.New(fmt.Sprintf("Owner should be '%s' but was '%s'", user, newProject.Owner))
 		}
-		if newProject.TotalProcessPoints != 100 || newProject.DoneProcessPoints != 5 {
-			return errors.New(fmt.Sprintf("Process points on project not set correctly"))
-		}
 		return nil
 	})
 }
 
 func TestAddProjectWithUsedTasks(t *testing.T) {
-	run(t, func() error {
+	h.RunFail(t, func() error {
 		user := "Jen"
 		p := Project{
 			Name:    "Test name",
@@ -218,8 +240,66 @@ func TestAddProjectWithUsedTasks(t *testing.T) {
 	})
 }
 
+func TestAddProjectWithInvalidParameters(t *testing.T) {
+	h.Run(t, func() error {
+		// ID must not be set
+		p := Project{
+			Id: "foobar",
+		}
+		_, err := s.AddProject(&p)
+		if err == nil {
+			return errors.New("adding project with set ID is not allowed")
+		}
+
+		// Owner must be set
+		p = Project{
+			Owner: "",
+		}
+		_, err = s.AddProject(&p)
+		if err == nil {
+			return errors.New("adding project without owner not allowed")
+		}
+
+		// Owner must be in users array
+		p = Project{
+			Owner: "foo",
+			Users:[]string{"bar"},
+		}
+		_, err = s.AddProject(&p)
+		if err == nil {
+			return errors.New("adding project with owner not in users array not allowed")
+		}
+
+		// Name must be set
+		p = Project{
+			Owner:"foo",
+			Users:[]string{"foo"},
+			Name: "",
+		}
+		_, err = s.AddProject(&p)
+		if err == nil {
+			return errors.New("adding project without name not allowed")
+		}
+
+		// Too long description not allowed
+		maxDescriptionLength = 10 // lower the border for test purposes
+		p = Project{
+			Owner:"foo",
+			Users:[]string{"foo"},
+			Name: "some name",
+			Description:"This is a very very long description",
+		}
+		_, err = s.AddProject(&p)
+		if err == nil {
+			return errors.New("adding project with too long description not allowed")
+		}
+
+		return nil
+	})
+}
+
 func TestAddUser(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		newUser := "new user"
 
 		p, err := s.AddUser("1", newUser, "Peter")
@@ -255,7 +335,7 @@ func TestAddUser(t *testing.T) {
 }
 
 func TestAddUserTwice(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		newUser := "another-new-user"
 
 		_, err := s.AddUser("1", newUser, "Peter")
@@ -273,7 +353,7 @@ func TestAddUserTwice(t *testing.T) {
 }
 
 func TestRemoveUser(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		userToRemove := "Maria"
 
 		p, err := s.RemoveUser("1", "Peter", userToRemove)
@@ -295,7 +375,7 @@ func TestRemoveUser(t *testing.T) {
 			return errors.New(fmt.Sprintf("Process points on project not set correctly"))
 		}
 
-		tasks, err := taskService.GetTasks(p.TaskIDs, "Peter")
+		tasks, err := taskService.GetTasks(p.Id, "Peter")
 		if err != nil {
 			return errors.New(fmt.Sprintf("Getting tasks should still work"))
 		}
@@ -323,7 +403,7 @@ func TestRemoveUser(t *testing.T) {
 }
 
 func TestRemoveNonOwnerUser(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		userToRemove := "Carl"
 
 		// Carl is not owner and removes himself, which is ok
@@ -347,7 +427,7 @@ func TestRemoveNonOwnerUser(t *testing.T) {
 }
 
 func TestRemoveArbitraryUserNotAllowed(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		userToRemove := "Anna"
 
 		// Michael is not member of the project and should not be allowed to remove anyone
@@ -384,7 +464,7 @@ func TestRemoveArbitraryUserNotAllowed(t *testing.T) {
 }
 
 func TestRemoveUserTwice(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		_, err := s.RemoveUser("2", "Maria", "John")
 		if err != nil {
 			t.Error("This should work: ", err)
@@ -399,58 +479,53 @@ func TestRemoveUserTwice(t *testing.T) {
 	})
 }
 
-func TestLeaveProject(t *testing.T) {
-	run(t, func() error {
-		userToRemove := "Anna"
-
-		p, err := s.LeaveProject("2", userToRemove)
+func TestRemoveUserUnassignsHim(t *testing.T) {
+	h.Run(t, func() error {
+		_, err := s.RemoveUser("2", "Donny", "Donny")
 		if err != nil {
-			return errors.New(fmt.Sprintf("This should work: %s", err.Error()))
+			return errors.New("Removing user should work")
 		}
 
-		containsUser := false
-		for _, u := range p.Users {
-			if u == userToRemove {
-				containsUser = true
-				break
+		tasks, err := s.taskService.GetTasks("2", "Maria")
+		if err != nil {
+			return errors.New("Getting tasks should work")
+		}
+
+		// No task should be assigned to "Donny"
+		for _, t := range tasks {
+			if t.AssignedUser == "Donny" {
+				return errors.New(fmt.Sprintf("User %s still assigned to task %s", "Donny", t.Id))
 			}
 		}
-		if containsUser {
-			return errors.New("Project should not contain user anymore")
-		}
-		if p.TotalProcessPoints != 308 || p.DoneProcessPoints != 154 {
-			return errors.New(fmt.Sprintf("Process points on project not set correctly"))
+
+		return nil
+	})
+}
+
+func TestRemoveOwnerNotAllowed(t *testing.T) {
+	h.Run(t, func() error {
+		_, err := s.RemoveUser("2", "Maria", "Maria")
+		if err == nil {
+			return errors.New("removing owner not allowed")
 		}
 
-		// Owner should not be allowed to leave
-		p, err = s.LeaveProject("2", "Maria")
+		return nil
+	})
+}
+
+func TestRemoveDifferentUserNotAllowed(t *testing.T) {
+	h.Run(t, func() error {
+		_, err := s.RemoveUser("2", "Donny", "Anna")
 		if err == nil {
-			return errors.New("This should not work: The owner is not allowed to leave")
+			return errors.New("removing other user not allowed")
 		}
 
-		// Invalid project id
-		p, err = s.LeaveProject("2284527", "Peter")
-		if err == nil {
-			return errors.New("This should not work: The project does not exist")
-		}
-
-		// Not existing user wants to leave
-		p, err = s.LeaveProject("1", "Not-Existing-User")
-		if err == nil {
-			return errors.New("This should not work: A non-existing user should be removed")
-		}
-
-		// "Maria" was removed above to we remove her here the second time
-		_, err = s.LeaveProject("2", userToRemove)
-		if err == nil {
-			return errors.New("Leaving a project twice should not work")
-		}
 		return nil
 	})
 }
 
 func TestDeleteProject(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		id := "1" // owned by "Peter"
 
 		// Try to remove with now-owning user
@@ -467,12 +542,6 @@ func TestDeleteProject(t *testing.T) {
 
 		// Actually remove project
 
-		project, err := s.GetProject(id, "Peter")
-		if err != nil {
-			return errors.New(fmt.Sprintf("Error getting project to relete: %s", err.Error()))
-		}
-		taskIds := project.TaskIDs
-
 		err = s.DeleteProject(id, "Peter") // Maria does not own this project
 		if err != nil {
 			return errors.New(fmt.Sprintf("Peter owns this project, this should work: %s", err.Error()))
@@ -483,7 +552,7 @@ func TestDeleteProject(t *testing.T) {
 			return errors.New("The project should not exist anymore")
 		}
 
-		_, err = taskService.GetTasks(taskIds, "Peter")
+		_, err = taskService.GetTasks(id, "Peter")
 		if err == nil {
 			return errors.New("The tasks should not exist anymore")
 		}
@@ -499,7 +568,7 @@ func TestDeleteProject(t *testing.T) {
 }
 
 func TestUpdateName(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		oldProject, err := s.GetProject("1", "Peter")
 		if err != nil {
 			return errors.New(fmt.Sprintf("Error getting project to update: %s", err))
@@ -546,7 +615,7 @@ func TestUpdateName(t *testing.T) {
 }
 
 func TestUpdateDescription(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		oldProject, _ := s.GetProject("1", "Peter")
 
 		newDescription := "flubby dubby\n foo bar"

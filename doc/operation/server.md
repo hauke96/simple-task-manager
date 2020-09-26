@@ -89,10 +89,22 @@ However, this should block the most basic things: SSH on 22,
 * `git clone https://github.com/hauke96/simple-task-manager.git`
     * Optional: Switch to the branch/tag/commit you want to deploy
 * `./deploy.sh`
-    * Important: This uses the production configs (`/client/src/environments/environment.prod.ts` and `/server/configs/prod.json`) so make sure they contain the right settings. 
-    * This script asks for the OSM OAuth credentials and starts everything. It even sets up the database from scratch! Amazing right? :D
-    
+    * Important: Per default, this uses the production configs (`/client/src/environments/environment.prod.ts` and `/server/configs/prod.json`) so make sure they contain the right values. 
+    * Per default this expects an docker-compose `.env` file next to the script. Specifying `-e` makes the script ask you for all the needed values instead of using the env-file.
+    * If no database exists, it will set up the database from scratch! Amazing right? :D
+
 That's it. Now everything should run properly.
+
+## The `.env` file
+
+This is just a simple file next to the deployment script (so in the projects root folder) containing the following information:
+
+```
+OAUTH_CONSUMER_KEY=abc123
+OAUTH_SECRET=def234
+STM_DB_USERNAME=postgres
+STM_DB_PASSWORD=supersecurepassword123
+```
 
 # Verify setup
 

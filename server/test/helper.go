@@ -4,8 +4,15 @@ import (
 	"database/sql"
 	"github.com/hauke96/sigolo"
 	_ "github.com/lib/pq" // Make driver "postgres" usable
+	"github.com/pkg/errors"
 	"io/ioutil"
+	"testing"
 )
+
+type TestHelper struct {
+	Tx    *sql.Tx
+	Setup func()
+}
 
 // Load dummy data into the database.
 func InitWithDummyData() {
@@ -29,4 +36,42 @@ func InitWithDummyData() {
 	}
 
 	sigolo.Info("Adding dummy data completed")
+}
+
+func (h *TestHelper) Run(t *testing.T, testFunc func() error) {
+	h.Setup()
+
+	err := testFunc()
+	if err != nil {
+		t.Errorf("%+v", err)
+		t.Fail()
+	}
+
+	h.tearDown()
+}
+
+func (h *TestHelper) RunFail(t *testing.T, testFunc func() error) {
+	h.Setup()
+
+	err := testFunc()
+	if err != nil {
+		t.Errorf("%+v", err)
+		t.Fail()
+	}
+
+	h.tearDownFail()
+}
+
+func (h *TestHelper) tearDown() {
+	err := h.Tx.Commit()
+	if err != nil {
+		panic(err)
+	}
+}
+
+func (h *TestHelper) tearDownFail() {
+	err := h.Tx.Commit()
+	if err == nil {
+		panic(errors.New("expected database error and rollback but not occurred"))
+	}
 }

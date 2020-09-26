@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { OauthLandingComponent } from './oauth-landing.component';
 import { ActivatedRoute } from '@angular/router';
@@ -8,7 +8,7 @@ describe('OauthLandingComponent', () => {
   let component: OauthLandingComponent;
   let fixture: ComponentFixture<OauthLandingComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [OauthLandingComponent],
       providers: [

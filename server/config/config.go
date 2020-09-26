@@ -15,16 +15,17 @@ var (
 )
 
 type Config struct {
-	ServerUrl        string `json:"server-url"`
-	Port             int    `json:"port"`
-	OauthConsumerKey string
-	OauthSecret      string
-	OsmBaseUrl       string `json:"osm-base-url"`
-	DebugLogging     bool   `json:"debug-logging"`
-	SslCertFile      string `json:"ssl-cert-file"`
-	SslKeyFile       string `json:"ssl-key-file"`
-	DbUsername       string
-	DbPassword       string
+	ServerUrl             string `json:"server-url"`
+	Port                  int    `json:"port"`
+	SslCertFile           string `json:"ssl-cert-file"`
+	SslKeyFile            string `json:"ssl-key-file"`
+	OauthConsumerKey      string
+	OauthSecret           string
+	OsmBaseUrl            string `json:"osm-base-url"`
+	DebugLogging          bool   `json:"debug-logging"`
+	DbUsername            string
+	DbPassword            string
+	TokenValidityDuration string `json:"token-validity"`
 }
 
 func LoadConfig(file string) {
@@ -36,6 +37,7 @@ func LoadConfig(file string) {
 	}
 
 	Conf = &Config{}
+	Conf.TokenValidityDuration = "24h"
 
 	err = json.Unmarshal([]byte(fileContent), Conf)
 	if err != nil {
@@ -86,7 +88,7 @@ func PrintConfig() {
 		} else {
 			propertyValue = strings.Join(strings.Split(p, ":")[1:], ":") // Join remaining parts back together
 		}
-
-		sigolo.Info("  %-*s = %s", 20, propertyName, propertyValue)
+		
+		sigolo.Info("  %-*s = %s", 21, propertyName, propertyValue)
 	}
 }

@@ -6,7 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/hauke96/sigolo"
+	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/pkg/errors"
 	"time"
 )
@@ -29,7 +29,7 @@ func tokenInit() error {
 	return err
 }
 
-func createTokenString(err error, userName string, userId string, validUntil int64) (string, error) {
+func createTokenString(logger *util.Logger, userName string, userId string, validUntil int64) (string, error) {
 	secret := createSecret(userName, userId, validUntil)
 
 	// Create actual token
@@ -43,7 +43,7 @@ func createTokenString(err error, userName string, userId string, validUntil int
 	jsonBytes, err := json.Marshal(token)
 	if err != nil {
 		msg := "error marshalling token object"
-		sigolo.Error("%s. Token object: %#v", msg, token)
+		logger.Err("%s. Token object: %#v", msg, token)
 		return "", errors.Wrap(err, msg)
 	}
 
@@ -63,10 +63,10 @@ func createSecret(user string, uid string, expirationTime int64) string {
 	return base64.StdEncoding.EncodeToString(secretEncryptedHashedBytes[:])
 }
 
-func verifyToken(encodedToken string) (*Token, error) {
+func verifyToken(logger *util.Logger, encodedToken string) (*Token, error) {
 	tokenBytes, err := base64.StdEncoding.DecodeString(encodedToken)
 	if err != nil {
-		sigolo.Error("Failed to decode this token: %s", encodedToken)
+		logger.Err("Failed to decode this token: %s", encodedToken)
 		return nil, errors.Wrap(err, "error decoding encoded token")
 	}
 
@@ -74,7 +74,7 @@ func verifyToken(encodedToken string) (*Token, error) {
 	err = json.Unmarshal(tokenBytes, &token)
 	if err != nil {
 		msg := "error marshalling token object"
-		sigolo.Error("%s. Token bytes: %s", msg, string(tokenBytes))
+		logger.Err("%s. Token bytes: %s", msg, string(tokenBytes))
 		return nil, errors.Wrap(err, msg)
 	}
 

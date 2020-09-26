@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { TaskMapComponent } from './task-map.component';
 import { Task } from '../task.material';
@@ -15,7 +15,7 @@ describe('TaskMapComponent', () => {
   let taskService: TaskService;
   let currentUserService: CurrentUserService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [TaskMapComponent],
       imports: [HttpClientTestingModule],
@@ -47,7 +47,7 @@ describe('TaskMapComponent', () => {
   });
 
   it('should update the task on change', () => {
-    const task = new Task('id123', undefined, 10, 100, getFeature(), new User('Miriam', '14'));
+    const task = component.tasks[2];
 
     taskService.selectTask(task);
 

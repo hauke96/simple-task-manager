@@ -1,5 +1,5 @@
 ## STAGE 1 : Build the client
-FROM simpletaskmanager/stm-client-base:1.0.0 as builder
+FROM simpletaskmanager/stm-client-base:1.1.0 as builder
 
 COPY ./ /stm-client/
 WORKDIR /stm-client/
@@ -7,7 +7,7 @@ WORKDIR /stm-client/
 RUN NODE_OPTIONS="--max_old_space_size=4096" npm run build-prod
 
 ## STAGE 2 : Configure nginx and run client
-FROM nginx:1.18.0
+FROM nginx:1.19.0
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 

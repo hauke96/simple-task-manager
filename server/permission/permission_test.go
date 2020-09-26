@@ -6,7 +6,8 @@ import (
 	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/config"
 	"github.com/hauke96/simple-task-manager/server/database"
-	testHelper "github.com/hauke96/simple-task-manager/server/test"
+	"github.com/hauke96/simple-task-manager/server/test"
+	"github.com/hauke96/simple-task-manager/server/util"
 	"testing"
 
 	_ "github.com/lib/pq" // Make driver "postgres" usable
@@ -15,42 +16,36 @@ import (
 var (
 	tx *sql.Tx
 	s  *PermissionService
+	h  *test.TestHelper
 )
+
+func TestMain(m *testing.M) {
+	h = &test.TestHelper{
+		Setup: setup,
+	}
+
+	m.Run()
+}
 
 func setup() {
 	config.LoadConfig("../config/test.json")
-	testHelper.InitWithDummyData()
+	test.InitWithDummyData()
 	sigolo.LogLevel = sigolo.LOG_DEBUG
 
+	logger := util.NewLogger()
+
 	var err error
-	tx, err = database.GetTransaction()
+	tx, err = database.GetTransaction(logger)
 	if err != nil {
 		panic(err)
 	}
-	s = Init(tx)
-}
 
-func run(t *testing.T, testFunc func() error) {
-	setup()
-
-	err := testFunc()
-	if err != nil {
-		t.Errorf("%+v", err)
-		t.Fail()
-	}
-
-	tearDown()
-}
-
-func tearDown() {
-	err := tx.Commit()
-	if err != nil {
-		panic(err)
-	}
+	h.Tx = tx
+	s = Init(tx, logger)
 }
 
 func TestVerifyOwnership(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		err := s.VerifyOwnership("1", "Peter")
 		if err != nil {
 			return fmt.Errorf("This should work: %s", err.Error())
@@ -82,7 +77,7 @@ func TestVerifyOwnership(t *testing.T) {
 }
 
 func TestVerifyMembershipProject(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		err := s.VerifyMembershipProject("1", "Peter")
 		if err != nil {
 			return fmt.Errorf("Peter is indeed a member: %s", err.Error())
@@ -114,7 +109,7 @@ func TestVerifyMembershipProject(t *testing.T) {
 }
 
 func TestVerifyMembershipTask(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		err := s.VerifyMembershipTask("2", "Maria")
 		if err != nil {
 			return fmt.Errorf("Maria is indeed a member: %s", err.Error())
@@ -146,7 +141,7 @@ func TestVerifyMembershipTask(t *testing.T) {
 }
 
 func TestVerifyMembershipTasks(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		err := s.VerifyMembershipTasks([]string{"2", "3"}, "Clara")
 		if err != nil {
 			return fmt.Errorf("User 'Clara' is in deed a member of the project of tasks '2' and '3': %s", err.Error())
@@ -171,7 +166,7 @@ func TestVerifyMembershipTasks(t *testing.T) {
 }
 
 func TestVerifyAssignment(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		err := s.VerifyAssignment("1", "Peter")
 		if err != nil {
 			return fmt.Errorf("User 'Peter' is in deed assigned to task '1': %s", err.Error())
@@ -194,7 +189,7 @@ func TestVerifyAssignment(t *testing.T) {
 }
 
 func TestAssignmentInProjectNeeded(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		assignmentNeeded, err := s.AssignmentInProjectNeeded("3")
 		if err != nil {
 			return fmt.Errorf("Error getting assignment requirement")
@@ -220,7 +215,7 @@ func TestAssignmentInProjectNeeded(t *testing.T) {
 }
 
 func TestAssignmentInTaskNeeded(t *testing.T) {
-	run(t, func() error {
+	h.Run(t, func() error {
 		// Assignment not needed
 		needed, err := s.AssignmentInTaskNeeded("5")
 		if needed {

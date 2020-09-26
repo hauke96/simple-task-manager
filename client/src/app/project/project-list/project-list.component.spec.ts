@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ProjectListComponent } from './project-list.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -6,7 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { CurrentUserService } from '../../user/current-user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MockRouter } from '../../common/mock-router';
-import { Task, TestTaskFeature, TestTaskGeometry } from '../../task/task.material';
+import { Task, TestTaskFeature } from '../../task/task.material';
 import { User } from '../../user/user.material';
 import { Project, ProjectDto } from '../project.material';
 import { WebsocketClientService } from '../../common/websocket-client.service';
@@ -22,7 +22,7 @@ describe('ProjectListComponent', () => {
   let projectService: ProjectService;
   let websocketService: WebsocketClientService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ProjectListComponent],
       imports: [
@@ -84,7 +84,7 @@ describe('ProjectListComponent', () => {
     // Trigger all needed events
     websocketService.messageReceived.emit(new WebsocketMessage(
       WebsocketMessageType.MessageType_ProjectAdded,
-      new ProjectDto(p.id, p.name, p.description, p.tasks.map(t => t.id), p.users.map(u => u.uid), p.owner.uid, p.needsAssignment)
+      new ProjectDto(p.id, p.name, p.description, p.users.map(u => u.uid), p.owner.uid, p.needsAssignment)
     ));
 
     expect(component.projects).toContain(p);
@@ -105,7 +105,7 @@ describe('ProjectListComponent', () => {
     // Trigger all needed events
     websocketService.messageReceived.emit(new WebsocketMessage(
       WebsocketMessageType.MessageType_ProjectUpdated,
-      new ProjectDto(p.id, p.name, p.description, p.tasks.map(t => t.id), p.users.map(u => u.uid), p.owner.uid, p.needsAssignment)
+      new ProjectDto(p.id, p.name, p.description, p.users.map(u => u.uid), p.owner.uid, p.needsAssignment)
     ));
 
     expect(component.projects).toContain(p);
@@ -121,7 +121,7 @@ describe('ProjectListComponent', () => {
     // Trigger all needed events
     websocketService.messageReceived.emit(new WebsocketMessage(
       WebsocketMessageType.MessageType_ProjectUpdated,
-      new ProjectDto(p.id, p.name, p.description, p.tasks.map(t => t.id), p.users.map(u => u.uid), p.owner.uid, p.needsAssignment)
+      new ProjectDto(p.id, p.name, p.description, p.users.map(u => u.uid), p.owner.uid, p.needsAssignment)
     ));
 
     expect(component.projects[0]).toEqual(p);
@@ -138,6 +138,21 @@ describe('ProjectListComponent', () => {
     ));
 
     expect(component.projects.length).toEqual(0);
+  });
+
+  it('should calculate percentage correctly', () => {
+    const p = createProject();
+    p.totalProcessPoints = 300;
+    p.doneProcessPoints = 196; // -> 65.33333%
+    expect(component.getProcessPointPercentage(p)).toEqual(65);
+
+    p.totalProcessPoints = 200;
+    p.doneProcessPoints = 1; // -> 0.5%
+    expect(component.getProcessPointPercentage(p)).toEqual(1);
+
+    p.totalProcessPoints = 200;
+    p.doneProcessPoints = 42; // -> 21.0%
+    expect(component.getProcessPointPercentage(p)).toEqual(21);
   });
 
   function createProject(): Project {

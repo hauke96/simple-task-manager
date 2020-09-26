@@ -2,7 +2,6 @@ package util
 
 import (
 	"fmt"
-	"github.com/hauke96/sigolo"
 	"github.com/pkg/errors"
 	"net/http"
 	"strconv"
@@ -10,7 +9,7 @@ import (
 )
 
 const (
-	VERSION = "1.0.1"
+	VERSION = "1.1.0"
 )
 
 func GetParam(param string, r *http.Request) (string, error) {
@@ -31,28 +30,20 @@ func GetIntParam(param string, r *http.Request) (int, error) {
 	return strconv.Atoi(valueString)
 }
 
-func ResponseBadRequest(w http.ResponseWriter, err error) {
-	ErrorResponse(w, err, http.StatusBadRequest)
+func ResponseBadRequest(w http.ResponseWriter, logger *Logger, err error) {
+	ErrorResponse(w, logger, err, http.StatusBadRequest)
 }
 
-func ResponseInternalError(w http.ResponseWriter, err error) {
-	ErrorResponse(w, err, http.StatusInternalServerError)
+func ResponseInternalError(w http.ResponseWriter, logger *Logger, err error) {
+	ErrorResponse(w, logger, err, http.StatusInternalServerError)
 }
 
-func ResponseUnauthorized(w http.ResponseWriter, err error) {
-	ErrorResponse(w, err, http.StatusUnauthorized)
+func ResponseUnauthorized(w http.ResponseWriter, logger *Logger, err error) {
+	ErrorResponse(w, logger, err, http.StatusUnauthorized)
 }
 
-func ErrorResponse(w http.ResponseWriter, err error, status int) {
-	sigolo.Error("ErrorResponse with status %d: %s", status, err.Error())
+func ErrorResponse(w http.ResponseWriter, logger *Logger, err error, status int) {
+	logger.Err("ErrorResponse with status %d: %s", status, err.Error())
 	w.WriteHeader(status)
 	w.Write([]byte(err.Error()))
-}
-
-func LogQuery(query string, args ...interface{}) {
-	for i, a := range args {
-		query = strings.Replace(query, fmt.Sprintf("$%d", i+1), fmt.Sprintf("%v", a), 1)
-	}
-
-	sigolo.Debug(query)
 }

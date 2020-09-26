@@ -4,5 +4,6 @@
 	"osm-base-url": "https://www.openstreetmap.org",
 	"debug-logging": false,
 	"ssl-cert-file": "/etc/letsencrypt/live/stm.hauke-stieler.de/fullchain.pem",
-	"ssl-key-file": "/etc/letsencrypt/live/stm.hauke-stieler.de/privkey.pem"
+	"ssl-key-file": "/etc/letsencrypt/live/stm.hauke-stieler.de/privkey.pem",
+	"token-validity": "168h"
 }

@@ -1,6 +1,6 @@
 <app-toolbar>
 	<div class="back-button-container">
-		<button [routerLink]="['/manager']">&#60; Back</button>
+		<button [routerLink]="['/manager']" i18n="Back button">&#60; Back</button>
 		<p class="project-label">Project: {{project?.name}}</p>
 	</div>
 </app-toolbar>
@@ -8,10 +8,10 @@
 <div class="root-container">
 	<div class="task-list-details-container">
 		<div class="description-container" *ngIf="project?.description.trim().length !== 0">
-			<h2 class="description-label">Description:</h2>
+			<h2 class="description-label" i18n="Description label">Description:</h2>
 			<div class="description-text">{{project?.description}}</div>
 		</div>
-		<app-tabs [tabs]="['Tasks', 'Users', 'Settings']" #tabs>
+		<app-tabs [tabs]="tabTitles" #tabs>
 			<div *ngIf="tabs.tabIndex === 0" class="task-tab">
 				<div class="tab-container">
 					<app-task-details [needUserAssignment]="project?.needsAssignment"
@@ -21,7 +21,7 @@
 			</div>
 			<div *ngIf="tabs.tabIndex === 1" class="user-tab">
 				<div class="tab-container">
-					<h2>Users</h2>
+					<h2 i18n>Users</h2>
 					<app-user-invitation *ngIf="isOwner()"
 										 class="tab-container-item"
 										 (userInvited)="onUserInvited($event)"
@@ -36,7 +36,7 @@
 			</div>
 			<div *ngIf="tabs.tabIndex === 2">
 				<div class="tab-container">
-					<h2>Settings</h2>
+					<h2 i18n>Settings</h2>
 					<app-project-settings [projectId]="project.id"
 										  [projectOwner]="project.owner"
 										  [projectName]="project.name"

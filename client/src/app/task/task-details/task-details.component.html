@@ -1,28 +1,31 @@
 <div class="assign-container">
 	<h2>Task {{task?.id}}</h2>
 	<div class="assign-button-container" *ngIf="needUserAssignment">
-		<button *ngIf="!task?.assignedUser?.uid" (click)="onAssignButtonClicked()">Assign to me</button>
-		<span *ngIf="!!task?.assignedUser?.uid && task?.assignedUser?.uid !== currentUserId">Assigned to: {{assignedUserName}}</span>
-		<button *ngIf="task?.assignedUser?.uid === currentUserId" (click)="onUnassignButtonClicked()">Unassign</button>
+		<button *ngIf="!task?.assignedUser?.uid" (click)="onAssignButtonClicked()" i18n>Assign to me</button>
+		<span *ngIf="!!task?.assignedUser?.uid && task?.assignedUser?.uid !== currentUserId" i18n>Assigned to: {{assignedUserName}}</span>
+		<button *ngIf="task?.assignedUser?.uid === currentUserId" (click)="onUnassignButtonClicked()" i18n>Unassign</button>
 	</div>
 </div>
 
 <!-- Process points row -->
 <div class="process-point-container">
 	<form class="flex-line" *ngIf="task?.assignedUser?.uid === currentUserId || !needUserAssignment; else currentUserElse" #processPointsForm="ngForm">
-		<span class="points-label">Points:</span>
+		<span class="points-label" i18n>Points:</span>
 		<input name="processPointInput"
+			   class="process-point-input"
 			   [(ngModel)]="newProcessPoints"
 			   type="number"
 			   required
 			   appMinValidator="0"
 			   appMaxValidator="{{task?.maxProcessPoints}}">
 		<span class="of-process-point-label">/ {{task?.maxProcessPoints}}</span>
-		<button class="save-button" (click)="onSaveButtonClick()" [disabled]="!processPointsForm.form.valid">Save
-		</button>
+		<div class="save-button-row">
+			<button class="save-button" (click)="onSaveButtonClick()" [disabled]="!processPointsForm.form.valid" i18n>Save</button>
+			<button class="done-button" (click)="onDoneButtonClick()" [disabled]="!processPointsForm.form.valid" i18n>Done</button>
+		</div>
 	</form>
 	<ng-template #currentUserElse>
-		<span class="points-label">Points:</span>
+		<span class="points-label" i18n>Points:</span>
 		{{task?.processPoints}}
 		/
 		{{task?.maxProcessPoints}}
@@ -30,4 +33,7 @@
 </div>
 
 <!-- Open in JOSM row -->
-<button (click)="onOpenJosmButtonClicked()">Open in JOSM</button>
+<div class="open-button-row">
+	<button (click)="onOpenJosmButtonClicked()" i18n>Open in JOSM</button>
+	<button (click)="onOpenOsmOrgButtonClicked()" class="open-osm-button" i18n>Open in iD</button>
+</div>

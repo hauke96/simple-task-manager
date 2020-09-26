@@ -3,7 +3,7 @@ import { Task, TaskDto } from './task.material';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
 import { from, Observable, of, throwError } from 'rxjs';
-import { concatMap, flatMap, map, tap } from 'rxjs/operators';
+import { concatMap, mergeMap, map, tap } from 'rxjs/operators';
 import { Polygon } from 'ol/geom';
 import { Extent } from 'ol/extent';
 import { User } from '../user/user.material';
@@ -56,7 +56,7 @@ export class TaskService {
     });
     return this.http.post<TaskDto[]>(environment.url_tasks, JSON.stringify(draftTasks))
       .pipe(
-        flatMap((tasks: TaskDto[]) => this.addUserNames(tasks)),
+        mergeMap((tasks: TaskDto[]) => this.addUserNames(tasks)),
         map(dtos => dtos.map(dto => this.toTask(dto))),
         tap(tasks => tasks.forEach(t => this.selectedTaskChanged.emit(t)))
       );
@@ -69,7 +69,7 @@ export class TaskService {
 
     return this.http.post<TaskDto>(environment.url_task_processPoints.replace('{id}', taskId) + '?process_points=' + newProcessPoints, '')
       .pipe(
-        flatMap(task => this.addUserName(task)),
+        mergeMap(task => this.addUserName(task)),
         map(dto => this.toTask(dto)),
         tap(t => this.selectedTaskChanged.emit(t))
       );
@@ -82,7 +82,7 @@ export class TaskService {
 
     return this.http.post<TaskDto>(environment.url_task_assignedUser.replace('{id}', taskId), '')
       .pipe(
-        flatMap(task => this.addUserName(task)),
+        mergeMap(task => this.addUserName(task)),
         map(dto => this.toTask(dto)),
         tap(t => this.selectedTaskChanged.emit(t))
       );
@@ -115,6 +115,76 @@ export class TaskService {
           return this.http.get(url, {responseType: 'text'});
         })
       );
+  }
+
+  public openInOsmOrg(task: Task, projectId: string) {
+    const e = this.getExtent(task);
+    const mapView = this.fitExtentToScreen(e, window.screen.availWidth, window.screen.availHeight);
+
+    const comment = encodeURIComponent('#stm #stm-project-' + projectId + ' ');
+    const hashtags = encodeURIComponent('#stm,#stm-project-' + projectId);
+
+    window.open('https://openstreetmap.org/edit?editor=id#map=' + mapView.zoom + '/' + mapView.centerLat + '/' + mapView.centerLon + '&comment=' + comment + '&hashtags=' + hashtags);
+  }
+
+  /**
+   * Calculates the center of the map as well as the zoom-level so that the given bounding box fits into the map view. The zoom-level is the
+   * XYZ specific Z value (so something between 1 and 20).
+   *
+   * @param bounds The bounding box of the part of the world to look at. This must have the array value format [E, N, W, S].
+   * @param mapWidth The width of the screen/map.
+   * @param mapHeight The height of the screen/map.
+   */
+  public fitExtentToScreen(bounds: Extent, mapWidth: number, mapHeight: number): { centerLat: number, centerLon: number, zoom: number } {
+    if (bounds == null || bounds.length < 4) {
+      return {
+        centerLat: 0,
+        centerLon: 0,
+        zoom: 1
+      };
+    }
+
+    // Padding around bounding-box in map in pixels
+    const padding = 20;
+
+    // Size of each tile in pixels
+    const tileSize = 256;
+
+    let boundsDeltaX: number;
+    let centerLat: number;
+    let centerLon: number;
+
+    // Check if east value is greater than west value which would indicate that bounding box crosses the antimeridian.
+    if (bounds[2] > bounds[0]) {
+      boundsDeltaX = bounds[2] - bounds[0];
+      centerLon = (bounds[2] + bounds[0]) / 2;
+    } else {
+      boundsDeltaX = 360 - (bounds[0] - bounds[2]);
+      centerLon = ((bounds[2] + bounds[0]) / 2 + 360) % 360 - 180;
+    }
+
+    const ry1 = Math.log((Math.sin(bounds[1] * Math.PI / 180) + 1) / Math.cos(bounds[1] * Math.PI / 180));
+    const ry2 = Math.log((Math.sin(bounds[3] * Math.PI / 180) + 1) / Math.cos(bounds[3] * Math.PI / 180));
+    const ryc = (ry1 + ry2) / 2;
+
+    centerLat = Math.atan(Math.sinh(ryc)) * 180 / Math.PI;
+
+    const resolutionHorizontal = boundsDeltaX / (mapWidth - padding * 2);
+
+    const vy0 = Math.log(Math.tan(Math.PI * (0.25 + centerLat / 360)));
+    const vy1 = Math.log(Math.tan(Math.PI * (0.25 + bounds[3] / 360)));
+    const zoomFactorPowered = (mapHeight * 0.5 - padding) / (40.7436654315252 * (vy1 - vy0));
+    const resolutionVertical = 360.0 / (zoomFactorPowered * tileSize);
+
+    const resolution = Math.max(resolutionHorizontal, resolutionVertical);
+
+    const zoom = Math.log2(360 / (resolution * tileSize));
+
+    return {
+      centerLon,
+      centerLat,
+      zoom
+    };
   }
 
   public getExtent(task: Task): Extent {

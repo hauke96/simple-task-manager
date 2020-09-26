@@ -29,6 +29,10 @@ import { MaxValidatorDirective } from './ui/max-validator.directive';
 import { MinValidatorDirective } from './ui/min-validator.directive';
 import { ShapeRemoteComponent } from './project/shape-remote/shape-remote.component';
 
+import { TranslationExtractionComponent } from './translation-extraction.component';
+import { LanguageSelectionComponent } from './ui/language-selection/language-selection.component';
+import { SelectedLanguageGuard } from './common/selected-language.guard';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -52,7 +56,9 @@ import { ShapeRemoteComponent } from './project/shape-remote/shape-remote.compon
     ShapeUploadComponent,
     MaxValidatorDirective,
     MinValidatorDirective,
-    ShapeRemoteComponent
+    ShapeRemoteComponent,
+    TranslationExtractionComponent,
+    LanguageSelectionComponent
   ],
   imports: [
     BrowserModule,
@@ -61,6 +67,7 @@ import { ShapeRemoteComponent } from './project/shape-remote/shape-remote.compon
     HttpClientModule
   ],
   providers: [
+    SelectedLanguageGuard,
     AuthGuard,
     {
       provide: HTTP_INTERCEPTORS,

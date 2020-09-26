@@ -25,7 +25,7 @@ export class UserInvitationComponent implements OnInit {
 
   public onInvitationButtonClicked() {
     if (this.users.map(u => u.name).includes(this.enteredUserName)) {
-      this.notificationService.addWarning('User ' + this.enteredUserName + ' is already a member of this project');
+      this.notificationService.addWarning($localize`:@@WARN_ALREADY_MEMBER:User '${this.enteredUserName}:INTERPOLATION:' is already a member of this project`);
       return;
     }
 
@@ -34,7 +34,7 @@ export class UserInvitationComponent implements OnInit {
         this.userInvited.emit(user);
       }, err => {
         console.error(err);
-        this.notificationService.addError('Could not load user ID for user \'' + this.enteredUserName + '\'');
+        this.notificationService.addError($localize`:@@ERROR_USER_ID:Could not load user ID for user '${this.enteredUserName}:INTERPOLATION:'. The user must have at least one changeset or note.`);
       });
   }
 }

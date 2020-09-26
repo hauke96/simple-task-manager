@@ -62,7 +62,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
       },
       e => {
         console.error(e);
-        this.notificationService.addError('Unable to load assigned user');
+        this.notificationService.addError($localize`:@@ERROR_UNABLE_LOAD_USER:Unable to load assigned user`);
       }
     );
   }
@@ -74,7 +74,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
         },
         e => {
           console.error(e);
-          this.notificationService.addError('Could not assign user');
+          this.notificationService.addError($localize`:@@ERROR_ASSIGN_USER:Could not assign user`);
         });
   }
 
@@ -85,7 +85,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
         },
         e => {
           console.error(e);
-          this.notificationService.addError('Could not unassign user');
+          this.notificationService.addError($localize`:@@ERROR_UNASSIGN_USER:Could not unassign user`);
         });
   }
 
@@ -96,7 +96,18 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
         },
         e => {
           console.error(e);
-          this.notificationService.addError('Could not set process points');
+          this.notificationService.addError($localize`:@@ERROR_PROCESS_POINTS:Could not set process points`);
+        });
+  }
+
+  public onDoneButtonClick() {
+    this.taskService.setProcessPoints(this.task.id, this.task.maxProcessPoints)
+      .subscribe(
+        () => {
+        },
+        e => {
+          console.error(e);
+          this.notificationService.addError($localize`:@@ERROR_PROCESS_POINTS:Could not set process points`);
         });
   }
 
@@ -105,7 +116,11 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
       .subscribe(() => {
         },
         err => {
-          this.notificationService.addError('Unable to open JOSM. Is it running?');
+          this.notificationService.addError($localize`:@@ERROR_OPEN_JOSM:Unable to open JOSM. Is it running?`);
         });
+  }
+
+  public onOpenOsmOrgButtonClicked() {
+    this.taskService.openInOsmOrg(this.task, this.projectId);
   }
 }

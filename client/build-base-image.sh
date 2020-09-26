@@ -14,7 +14,7 @@ then
   exit 1
 fi
 
-docker-compose -f ../docker-compose.base.yml build stm-client-base
+docker-compose -f ../docker-compose.base.yml build --no-cache stm-client-base
 docker tag simple-task-manager_stm-client-base simpletaskmanager/stm-client-base:$1
 
 echo

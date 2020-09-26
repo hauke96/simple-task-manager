@@ -1,7 +1,14 @@
 <div>
 	<app-toolbar>
-		<p>Welcome {{userName}} :)</p>
-		<button (click)="onLogoutClicked()">Logout</button>
+		<p i18n>Welcome {{userName}} :)</p>
+		<div class="toolbar-left">
+			<div class="language-selection">
+				<span class="language-selection-label" i18n>Language selection:</span>
+				<app-language-selection></app-language-selection>
+			</div>
+			<div class="separator"></div>
+			<button (click)="onLogoutClicked()" i18n="logout button">Logout</button>
+		</div>
 	</app-toolbar>
 	<div class="root-container">
 		<app-project-list></app-project-list>
