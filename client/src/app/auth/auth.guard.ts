@@ -8,11 +8,14 @@ export class AuthGuard implements CanActivate {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    if ((route.component as Type<any>).name === 'LoginComponent' && !!localStorage.getItem('auth_token')) {
+    // The login component has the route '/' and therefore the path is ''
+    const requestLoginComponent = route.routeConfig.path === '';
+
+    if (requestLoginComponent && !!localStorage.getItem('auth_token')) {
       // Token exists and login component should be loaded -> redirect to manager
       this.router.navigateByUrl('/manager');
       return false;
-    } else if ((route.component as Type<any>).name !== 'LoginComponent' && !localStorage.getItem('auth_token')) {
+    } else if (!requestLoginComponent && !localStorage.getItem('auth_token')) {
       // No token -> not logged in -> redirect to login page
       this.router.navigateByUrl('/');
       return false;

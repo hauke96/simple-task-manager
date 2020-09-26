@@ -30,8 +30,8 @@ describe('AuthGuard', () => {
     localStorage.setItem('auth_token', 'foo'); // -> logged-in user
 
     const canActivate = guard.canActivate({
-      component: {
-        name: 'LoginComponent'
+      routeConfig: {
+        path: ''
       }
     } as ActivatedRouteSnapshot, undefined);
 
@@ -44,8 +44,8 @@ describe('AuthGuard', () => {
     localStorage.setItem('auth_token', 'foo'); // -> logged-in user
 
     guard.canActivate({
-      component: {
-        name: 'LoginComponent'
+      routeConfig: {
+        path: ''
       }
     } as ActivatedRouteSnapshot, undefined);
 
@@ -56,8 +56,8 @@ describe('AuthGuard', () => {
     localStorage.removeItem('auth_token'); // -> not logged-in user
 
     const canActivate = guard.canActivate({
-      component: {
-        name: 'TestComponent'
+      routeConfig: {
+        path: 'manager'
       }
     } as ActivatedRouteSnapshot, undefined);
 
@@ -70,8 +70,8 @@ describe('AuthGuard', () => {
     localStorage.removeItem('auth_token'); // -> not logged-in user
 
     guard.canActivate({
-      component: {
-        name: 'TestComponent'
+      routeConfig: {
+        path: 'manager'
       }
     } as ActivatedRouteSnapshot, undefined);
 
@@ -84,8 +84,8 @@ describe('AuthGuard', () => {
     localStorage.setItem('auth_token', 'foo'); // -> logged-in user
 
     const canActivate = guard.canActivate({
-      component: {
-        name: 'TestComponent'
+      routeConfig: {
+        path: 'manager'
       }
     } as ActivatedRouteSnapshot, undefined);
 
