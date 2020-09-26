@@ -87,7 +87,6 @@ func (s *WebsocketSender) SendAll(messages []Message, uids ...string) {
 					s.Debug("ERROR: " + err.Error())
 					//sigolo.Error("Wasn't even able to close it: %s", err.Error())
 					s.Stack(err)
-				}
 
 				// Remove the closed connection from the list of connections:
 				userConnections[i] = userConnections[len(userConnections)-1] // overwrite i-th element by the last element
