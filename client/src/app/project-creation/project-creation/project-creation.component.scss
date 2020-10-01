@@ -19,9 +19,13 @@
 .project-properties-container {
 	display: flex;
 	flex-direction: column;
-	margin: $space-base;
+	padding-top: $space-base;
+	padding-right: $space-large;
+	padding-left: $space-base;
+	padding-bottom: $space-base;
 	min-width: 400px;
 	max-width: 400px;
+	border-right: 1px solid $color-light;
 }
 
 // Also apply style to divs in child components using ::ng-deep

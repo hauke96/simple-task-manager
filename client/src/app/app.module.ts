@@ -32,6 +32,7 @@ import { ShapeRemoteComponent } from './project-creation/shape-remote/shape-remo
 import { TranslationExtractionComponent } from './translation-extraction.component';
 import { LanguageSelectionComponent } from './ui/language-selection/language-selection.component';
 import { SelectedLanguageGuard } from './common/selected-language.guard';
+import { DrawingToolbarComponent } from './project-creation/drawing-toolbar/drawing-toolbar.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import { SelectedLanguageGuard } from './common/selected-language.guard';
     MinValidatorDirective,
     ShapeRemoteComponent,
     TranslationExtractionComponent,
-    LanguageSelectionComponent
+    LanguageSelectionComponent,
+    DrawingToolbarComponent
   ],
   imports: [
     BrowserModule,

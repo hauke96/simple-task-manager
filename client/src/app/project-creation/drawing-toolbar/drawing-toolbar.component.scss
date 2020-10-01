@@ -1,0 +1,23 @@
+@import '../../../styles';
+@import '../../../icons';
+
+:host {
+	display: flex;
+	flex-direction: column;
+	margin: $space-small;
+}
+
+button {
+	background-color: unset;
+	width: $space-huge;
+	height: $space-huge;
+	padding: unset;
+	margin-bottom: -1px; // Get rid of double border
+}
+button:hover {
+	background-color: $color-very-light-transparent;
+}
+
+.sep {
+	height: $space-base;
+}
