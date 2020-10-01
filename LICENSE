@@ -1,3 +1,33 @@
+SimpleTaskManager License
+-------------------------
+
+This project contains files under different licenses:
+
+* All files in the folder "client/src/assets/fonts/" and the file
+  "client/src/icons.scss" are licenced under the "Creative Commons
+  Attribution-ShareAlike 4.0 International License"
+* All other files are licenced under the "GNU General Public License"
+
+This project is released as free and open source code, you may use it for
+commercial, educational, private and any other way you want. Sharing,
+distributing and changing the content of this project - with respect to the
+according licences - is explicitly approved.
+
+
+Creative Commons Attribution-ShareAlike 4.0 International License
+-----------------------------------------------------------------
+
+This work is partly (as described above) licensed under the Creative Commons
+Attribution-ShareAlike 4.0 International License. To view a copy of this
+license, visit http://creativecommons.org/licenses/by-sa/4.0/ or send a letter
+to Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
+
+
+
+GNU General Public License:
+---------------------------
+
+
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 
