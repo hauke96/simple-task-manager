@@ -39,6 +39,7 @@
             "styles": [
               "src/colors.scss",
               "src/styles.scss",
+              "src/icons.scss",
               "node_modules/ol/ol.css"
             ],
             "scripts": [],
