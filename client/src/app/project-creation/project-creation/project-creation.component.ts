@@ -109,8 +109,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     return [
       $localize`:@@TABS_DRAW:Draw`,
       $localize`:@@TABS_UPLOAD:Upload`,
-      $localize`:@@TABS_REMOTE:Remote`,
-      $localize`:@@TABS_REMOVE:Remove`
+      $localize`:@@TABS_REMOTE:Remote`
     ];
   }
 

@@ -298,13 +298,6 @@
           <context context-type="linenumber">31</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="13e1e8c52a8f94d794a3a35e025a51e3cfa8458e" datatype="html">
-        <source>Click on a polygon to delete it.</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/project-creation/project-creation.component.html</context>
-          <context context-type="linenumber">55</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="3d243a75c1a16642d9d887827bdaa8e97a8e6e5c" datatype="html">
         <source>Invite</source>
         <context-group purpose="location">
@@ -757,13 +750,6 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">32</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="TABS_REMOVE" datatype="html">
-        <source>Remove</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">33</context>
         </context-group>
       </trans-unit>
       <trans-unit id="TASK_MAP_DONE" datatype="html">
