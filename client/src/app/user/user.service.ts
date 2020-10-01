@@ -25,9 +25,10 @@ export class UserService {
     const url = environment.osm_api_url + '/users?users=' + uncachedUsers.join(',');
 
     // TODO handle case of removed account: Here a comma separated list of users will return a 404 when one UID doesn't exist anymore
-    return this.http.get(url, {responseType: 'text'}).pipe(
+    // The users API support JSON
+    return this.http.get(url, {headers: {ContentType: 'application/json'}}).pipe(
       map(result => {
-        const loadedUsers = this.extractUserFromXmlAttributes(result, 'user', 'display_name', 'id');
+        const loadedUsers = this.extractUserFromJsonResult(result);
         loadedUsers.forEach(u => this.cache.set(u.uid, u));
         return cachedUsers.concat(loadedUsers);
       })
@@ -40,12 +41,13 @@ export class UserService {
       return of(cachedUser);
     }
 
+    // Unfortunately these endpoints to not support JSON as response format
     const changesetUrl = environment.osm_api_url + '/changesets?display_name=' + userName;
     const notesUrl = environment.osm_api_url + '/notes/search?display_name=' + userName;
 
-    return this.http.get(changesetUrl, {responseType: 'text'}).pipe(
+    return this.http.get(changesetUrl, {responseType: 'text', headers: {ContentType: 'application/xml'}}).pipe(
       map(result => {
-        const user = this.extractUserFromXmlAttributes(result, 'changeset', 'user', 'uid')[0];
+        const user = this.extractUserFromXmlResult(result, 'changeset', 'user', 'uid')[0];
         if (!user) {
           throw new Error('User \'' + userName + '\' not found in changesets');
         }
@@ -58,7 +60,7 @@ export class UserService {
         console.error(e);
 
         // Second try, this time via the notes API
-        return this.http.get(notesUrl, {responseType: 'text'}).pipe(
+        return this.http.get(notesUrl, {responseType: 'text', headers: {ContentType: 'application/xml'}}).pipe(
           map(result => {
             const user = this.extractDataFromComment(result, userName);
             if (!user) {
@@ -73,7 +75,7 @@ export class UserService {
   }
 
   // Takes the name of a XML-node (e.g. "user" or "changeset" and finds the according attribute
-  private extractUserFromXmlAttributes(xmlString: string, nodeQualifier: string, nameQualifier: string, idQualifier: string): User[] {
+  private extractUserFromXmlResult(xmlString: string, nodeQualifier: string, nameQualifier: string, idQualifier: string): User[] {
     if (window.DOMParser) {
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString('' + xmlString, 'application/xml');
@@ -89,6 +91,16 @@ export class UserService {
       return userNames;
     }
     return null;
+  }
+
+  private extractUserFromJsonResult(result: any): User[] {
+    const users = [];
+    for (const u of result.users) {
+      const name = u?.user?.display_name;
+      const uid = u?.user?.id;
+      users.push(new User(name, '' + uid));
+    }
+    return users;
   }
 
   private extractDataFromComment(xmlString: string, userName: string): User {
