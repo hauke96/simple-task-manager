@@ -26,7 +26,7 @@ describe('DrawingToolbarComponent', () => {
   });
 
   it('should fire zoom in event', () => {
-    const spy = spyOn(component.buttonZoomIn, 'next');
+    const spy = spyOn(component.buttonZoomIn, 'emit');
 
     component.onButtonZoomIn();
 
@@ -35,7 +35,7 @@ describe('DrawingToolbarComponent', () => {
   });
 
   it('should fire zoom out event', () => {
-    const spy = spyOn(component.buttonZoomOut, 'next');
+    const spy = spyOn(component.buttonZoomOut, 'emit');
 
     component.onButtonZoomOut();
 
@@ -44,7 +44,7 @@ describe('DrawingToolbarComponent', () => {
   });
 
   it('should fire draw event', () => {
-    const spy = spyOn(component.buttonDraw, 'next');
+    const spy = spyOn(component.buttonDraw, 'emit');
 
     component.onButtonDraw();
 
@@ -53,7 +53,7 @@ describe('DrawingToolbarComponent', () => {
   });
 
   it('should fire delete event', () => {
-    const spy = spyOn(component.buttonDelete, 'next');
+    const spy = spyOn(component.buttonDelete, 'emit');
 
     component.onButtonDelete();
 

@@ -50,6 +50,10 @@ export class ProjectListComponent extends Unsubscriber implements OnInit {
         }
       }),
       this.projectService.projectDeleted.subscribe((removedProjectId: string) => {
+        if (!this.projects.map(p => p.id).includes(removedProjectId)) {
+          return;
+        }
+
         const project = this.projects.find(p => p.id === removedProjectId);
         this.notificationService.addInfo($localize`:@@WARN_PROJECT_REMOVED:The project '${project.name}:INTERPOLATION:' has been removed`);
 

@@ -27,7 +27,6 @@ describe('LoadingService', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
-    expect(service.isLoading()).toBeFalse();
   });
 
   it('should set loading state correctly', () => {
