@@ -228,19 +228,10 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     this.onShapesCreated(features);
   }
 
-  onTabSelected(tabIndex: number) {
-    switch (tabIndex) {
-      case 0: // Tab: Draw
-        break;
-      case 1: // Tab: Upload
-      case 2: // Tab: Remote
-        break;
-      default:
-        throw new Error('Unknown tab index ' + tabIndex);
-    }
-
+  onTabSelected() {
+    // Disable all interactions and also notify the toolbar that all interactions are disabled (-> toolbar will remove any selection)
     this.drawInteraction.setActive(false);
-    this.modifyInteraction.setActive(true);
+    this.modifyInteraction.setActive(false);
     this.selectInteraction.setActive(false);
     this.resetToolbarSelectionSubject.next();
   }

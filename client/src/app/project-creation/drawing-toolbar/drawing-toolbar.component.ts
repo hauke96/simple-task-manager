@@ -12,7 +12,7 @@ export class DrawingToolbarComponent implements OnInit {
 
   public selectedButton: string;
 
-  @Input public resetSelection: Subject<void>;
+  @Input() public resetSelection: Subject<void>;
 
   @Output() public buttonZoomIn: EventEmitter<void> = new EventEmitter<void>();
   @Output() public buttonZoomOut: EventEmitter<void> = new EventEmitter<void>();
