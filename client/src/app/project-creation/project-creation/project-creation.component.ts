@@ -37,7 +37,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   // public for tests
   public modifyInteraction: Modify;
   public drawInteraction: Draw;
-  public selectInteraction: Select;
+  public selectInteraction: Select; // TODO rename to "removeInteraction"
   public vectorSource: VectorSource;
 
   private map: Map;
@@ -241,5 +241,27 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       default:
         throw new Error('Unknown tab index ' + tabIndex);
     }
+  }
+
+  onZoomIn() {
+    this.map.getView().setZoom(this.map.getView().getZoom() + 1);
+  }
+
+  onZoomOut() {
+    this.map.getView().setZoom(this.map.getView().getZoom() - 1);
+  }
+
+  onToggleDraw() {
+    this.selectInteraction.setActive(false);
+
+    this.drawInteraction.setActive(!this.drawInteraction.getActive());
+    this.modifyInteraction.setActive(!this.modifyInteraction.getActive());
+  }
+
+  onToggleDelete() {
+    this.drawInteraction.setActive(false);
+    this.modifyInteraction.setActive(false);
+
+    this.selectInteraction.setActive(!this.selectInteraction.getActive());
   }
 }

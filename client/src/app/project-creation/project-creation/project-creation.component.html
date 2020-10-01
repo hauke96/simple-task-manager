@@ -57,7 +57,12 @@
 			</div>
 		</app-tabs>
 	</div>
-	<app-drawing-toolbar></app-drawing-toolbar>
+	<app-drawing-toolbar
+			(buttonZoomIn)="onZoomIn()"
+			(buttonZoomOut)="onZoomOut()"
+			(buttonDraw)="onToggleDraw()"
+			(buttonDelete)="onToggleDelete()"
+	></app-drawing-toolbar>
 	<div class="map-container">
 		<div id="map"></div>
 	</div>

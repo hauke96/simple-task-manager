@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-drawing-toolbar',
@@ -7,11 +7,11 @@ import { Component, EventEmitter, OnInit } from '@angular/core';
 })
 export class DrawingToolbarComponent implements OnInit {
 
-  public buttonZoomIn: EventEmitter<void> = new EventEmitter<void>();
-  public buttonZoomOut: EventEmitter<void> = new EventEmitter<void>();
+  @Output() public buttonZoomIn: EventEmitter<void> = new EventEmitter<void>();
+  @Output() public buttonZoomOut: EventEmitter<void> = new EventEmitter<void>();
 
-  public buttonDraw: EventEmitter<void> = new EventEmitter<void>();
-  public buttonDelete: EventEmitter<void> = new EventEmitter<void>();
+  @Output() public buttonDraw: EventEmitter<void> = new EventEmitter<void>();
+  @Output() public buttonDelete: EventEmitter<void> = new EventEmitter<void>();
 
   constructor() { }
 
