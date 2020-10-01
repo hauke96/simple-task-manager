@@ -17,6 +17,7 @@ import Snap from 'ol/interaction/Snap';
 import Modify from 'ol/interaction/Modify';
 import Select, { SelectEvent } from 'ol/interaction/Select';
 import GeoJSON from 'ol/format/GeoJSON';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-project-creation',
@@ -41,6 +42,9 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   public vectorSource: VectorSource;
 
   private map: Map;
+
+  // For the toolbar
+  public resetToolbarSelectionSubject: Subject<void> = new Subject<void>();
 
   constructor(
     private projectService: ProjectService,
@@ -114,6 +118,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   }
 
   private addMapInteractions() {
+    // DRAW
     this.drawInteraction = new Draw({
       source: this.vectorSource,
       type: GeometryType.POLYGON
@@ -126,8 +131,10 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       // Disable modify interaction, otherwise it's not possible to click on existing nodes when drawing
       this.modifyInteraction.setActive(false);
     });
+    this.drawInteraction.setActive(false);
     this.map.addInteraction(this.drawInteraction);
 
+    // MODIFY
     const snap = new Snap({
       source: this.vectorSource
     });
@@ -136,13 +143,15 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     this.modifyInteraction = new Modify({
       source: this.vectorSource
     });
+    this.modifyInteraction.setActive(false);
     this.map.addInteraction(this.modifyInteraction);
 
+    // DELETE
     this.selectInteraction = new Select();
-    this.selectInteraction.setActive(false);
     this.selectInteraction.on('select', (e: SelectEvent) => {
       this.vectorSource.removeFeature(e.selected[0]);
     });
+    this.selectInteraction.setActive(false);
     this.map.addInteraction(this.selectInteraction);
   }
 
@@ -222,24 +231,18 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   onTabSelected(tabIndex: number) {
     switch (tabIndex) {
       case 0: // Tab: Draw
-        this.drawInteraction.setActive(true);
-        this.modifyInteraction.setActive(true);
-        this.selectInteraction.setActive(false);
         break;
       case 1: // Tab: Upload
       case 2: // Tab: Remote
-        this.drawInteraction.setActive(false);
-        this.modifyInteraction.setActive(true);
-        this.selectInteraction.setActive(false);
-        break;
-      case 3: // Tab: Remove
-        this.drawInteraction.setActive(false);
-        this.modifyInteraction.setActive(false);
-        this.selectInteraction.setActive(true);
         break;
       default:
         throw new Error('Unknown tab index ' + tabIndex);
     }
+
+    this.drawInteraction.setActive(false);
+    this.modifyInteraction.setActive(true);
+    this.selectInteraction.setActive(false);
+    this.resetToolbarSelectionSubject.next();
   }
 
   onZoomIn() {

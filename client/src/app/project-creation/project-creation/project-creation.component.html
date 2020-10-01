@@ -53,6 +53,7 @@
 		</app-tabs>
 	</div>
 	<app-drawing-toolbar
+			[resetSelection]="resetToolbarSelectionSubject"
 			(buttonZoomIn)="onZoomIn()"
 			(buttonZoomOut)="onZoomOut()"
 			(buttonDraw)="onToggleDraw()"

@@ -1,4 +1,5 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-drawing-toolbar',
@@ -6,6 +7,12 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
   styleUrls: ['./drawing-toolbar.component.scss']
 })
 export class DrawingToolbarComponent implements OnInit {
+  public readonly SELECTION_DRAW = 'draw';
+  public readonly SELECTION_DELETE = 'delete';
+
+  public selectedButton: string;
+
+  @Input public resetSelection: Subject<void>;
 
   @Output() public buttonZoomIn: EventEmitter<void> = new EventEmitter<void>();
   @Output() public buttonZoomOut: EventEmitter<void> = new EventEmitter<void>();
@@ -13,9 +20,13 @@ export class DrawingToolbarComponent implements OnInit {
   @Output() public buttonDraw: EventEmitter<void> = new EventEmitter<void>();
   @Output() public buttonDelete: EventEmitter<void> = new EventEmitter<void>();
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit(): void {
+    this.resetSelection.subscribe(() => {
+      this.selectedButton = undefined;
+    });
   }
 
   public onButtonZoomIn() {
@@ -28,9 +39,21 @@ export class DrawingToolbarComponent implements OnInit {
 
   public onButtonDraw() {
     this.buttonDraw.emit();
+
+    if (this.selectedButton !== this.SELECTION_DRAW) {
+      this.selectedButton = this.SELECTION_DRAW;
+    } else {
+      this.selectedButton = undefined;
+    }
   }
 
   public onButtonDelete() {
     this.buttonDelete.emit();
+
+    if (this.selectedButton !== this.SELECTION_DELETE) {
+      this.selectedButton = this.SELECTION_DELETE;
+    } else {
+      this.selectedButton = undefined;
+    }
   }
 }
