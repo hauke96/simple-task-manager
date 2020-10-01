@@ -5,7 +5,7 @@ import { AuthGuard } from './auth/auth.guard';
 import { OauthLandingComponent } from './auth/oauth-landing/oauth-landing.component';
 import { ManagerComponent } from './manager/manager.component';
 import { ProjectComponent } from './project/project/project.component';
-import { ProjectCreationComponent } from './project/project-creation/project-creation.component';
+import { ProjectCreationComponent } from './project-creation/project-creation/project-creation.component';
 import { AllProjectsResolver } from './project/all-projects.resolver';
 import { ProjectResolver } from './project/project.resolver';
 import { SelectedLanguageGuard } from './common/selected-language.guard';
