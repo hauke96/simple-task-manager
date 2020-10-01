@@ -3,7 +3,7 @@ import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/r
 import { Project } from './project.material';
 import { ProjectService } from './project.service';
 import { Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, share, tap } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NotificationService } from '../common/notification.service';
 
@@ -16,7 +16,7 @@ export class AllProjectsResolver implements Resolve<Project[]> {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Project[]> {
-    return this.projectService.getProjects().pipe(
+    return this.projectService.getProjects().pipe(tap(p => console.log(p)),
       catchError((e: HttpErrorResponse) => {
         this.notificationService.addError($localize`:@@ERROR_LOAD_PROJECTS:Could not load projects`);
         throw e;
