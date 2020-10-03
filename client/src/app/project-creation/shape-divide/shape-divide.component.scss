@@ -1,9 +1,14 @@
 @import '../../../styles';
+@import '../../../icons';
 
 .field-label {
 	width: 100px;
 }
 
 .meter-label {
+	margin-left: $space-base;
+}
+
+.task-selected-label {
 	margin-left: $space-base;
 }

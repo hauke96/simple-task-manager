@@ -3,7 +3,10 @@
 
 	<div class="hline"></div>
 
-	<button (click)="onSelectTaskClicked()">Select task</button>
+	<div>
+		<button class="form-entry" (click)="onSelectTaskClicked()">Select task</button>
+		<span class="task-selected-label" *ngIf="hasSelectedPolygon">Task selected </span><i class="lnr lnr-checkmark-circle" *ngIf="hasSelectedPolygon"></i>
+	</div>
 
 	<div class="form-entry flex-line">
 		<span class="field-label" i18n>Shape size:</span>
