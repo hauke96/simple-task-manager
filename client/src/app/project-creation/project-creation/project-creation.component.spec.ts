@@ -136,7 +136,7 @@ describe('ProjectCreationComponent', () => {
 
     expect(component.drawInteraction.getActive()).toEqual(false);
     expect(component.modifyInteraction.getActive()).toEqual(false);
-    expect(component.selectInteraction.getActive()).toEqual(false);
+    expect(component.removeInteraction.getActive()).toEqual(false);
   });
 
   it('should fire reset subject on tab select', () => {
@@ -172,21 +172,21 @@ describe('ProjectCreationComponent', () => {
 
     expect(component.drawInteraction.getActive()).toEqual(true);
     expect(component.modifyInteraction.getActive()).toEqual(true);
-    expect(component.selectInteraction.getActive()).toEqual(false);
+    expect(component.removeInteraction.getActive()).toEqual(false);
 
     component.onToggleDraw();
 
     expect(component.drawInteraction.getActive()).toEqual(false);
     expect(component.modifyInteraction.getActive()).toEqual(false);
-    expect(component.selectInteraction.getActive()).toEqual(false);
+    expect(component.removeInteraction.getActive()).toEqual(false);
   });
 
   it('should deactivate delete interaction on draw', () => {
-    component.selectInteraction.setActive(true);
+    component.removeInteraction.setActive(true);
 
     component.onToggleDraw();
 
-    expect(component.selectInteraction.getActive()).toEqual(false);
+    expect(component.removeInteraction.getActive()).toEqual(false);
   });
 
   it('should toggle delete interactions correctly', () => {
@@ -194,13 +194,13 @@ describe('ProjectCreationComponent', () => {
 
     expect(component.drawInteraction.getActive()).toEqual(false);
     expect(component.modifyInteraction.getActive()).toEqual(false);
-    expect(component.selectInteraction.getActive()).toEqual(true);
+    expect(component.removeInteraction.getActive()).toEqual(true);
 
     component.onToggleDelete();
 
     expect(component.drawInteraction.getActive()).toEqual(false);
     expect(component.modifyInteraction.getActive()).toEqual(false);
-    expect(component.selectInteraction.getActive()).toEqual(false);
+    expect(component.removeInteraction.getActive()).toEqual(false);
   });
 
   it('should deactivate draw and modify interaction on delete', () => {

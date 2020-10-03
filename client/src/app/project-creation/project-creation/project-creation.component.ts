@@ -38,7 +38,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   // public for tests
   public modifyInteraction: Modify;
   public drawInteraction: Draw;
-  public selectInteraction: Select; // TODO rename to "removeInteraction"
+  public removeInteraction: Select;
   public vectorSource: VectorSource;
 
   private map: Map;
@@ -142,12 +142,12 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     this.map.addInteraction(this.modifyInteraction);
 
     // DELETE
-    this.selectInteraction = new Select();
-    this.selectInteraction.on('select', (e: SelectEvent) => {
+    this.removeInteraction = new Select();
+    this.removeInteraction.on('select', (e: SelectEvent) => {
       this.vectorSource.removeFeature(e.selected[0]);
     });
-    this.selectInteraction.setActive(false);
-    this.map.addInteraction(this.selectInteraction);
+    this.removeInteraction.setActive(false);
+    this.map.addInteraction(this.removeInteraction);
   }
 
   // See if the vector layer has some features.
@@ -227,7 +227,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     // Disable all interactions and also notify the toolbar that all interactions are disabled (-> toolbar will remove any selection)
     this.drawInteraction.setActive(false);
     this.modifyInteraction.setActive(false);
-    this.selectInteraction.setActive(false);
+    this.removeInteraction.setActive(false);
     this.resetToolbarSelectionSubject.next();
   }
 
@@ -240,14 +240,14 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   }
 
   onToggleDraw() {
-    this.selectInteraction.setActive(false);
+    this.removeInteraction.setActive(false);
     this.modifyInteraction.setActive(false);
 
     this.drawInteraction.setActive(!this.drawInteraction.getActive());
   }
 
   onToggleEdit() {
-    this.selectInteraction.setActive(false);
+    this.removeInteraction.setActive(false);
     this.drawInteraction.setActive(false);
 
     this.modifyInteraction.setActive(!this.modifyInteraction.getActive());
@@ -257,6 +257,6 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     this.drawInteraction.setActive(false);
     this.modifyInteraction.setActive(false);
 
-    this.selectInteraction.setActive(!this.selectInteraction.getActive());
+    this.removeInteraction.setActive(!this.removeInteraction.getActive());
   }
 }
