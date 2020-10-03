@@ -16,9 +16,9 @@ export class ShapeDivideComponent implements OnInit {
   @Input() public gridCellSize: number;
   @Input() public gridCellShape: string;
   @Input() public selectedPolygon: Feature;
-  @Input() public hasTasks: boolean;
 
   @Output() public shapesCreated: EventEmitter<Feature[]> = new EventEmitter();
+  @Output() public shapeSelectionRequested: EventEmitter<Feature[]> = new EventEmitter();
 
   constructor(
     private notificationService: NotificationService
@@ -26,6 +26,10 @@ export class ShapeDivideComponent implements OnInit {
   }
 
   ngOnInit(): void {
+  }
+
+  public get hasSelectedPolygon(): boolean {
+    return !!this.selectedPolygon;
   }
 
   public onDivideButtonClicked() {
@@ -67,5 +71,9 @@ export class ShapeDivideComponent implements OnInit {
     });
 
     this.shapesCreated.emit(newFeatures);
+  }
+
+  onSelectTaskClicked() {
+    this.shapeSelectionRequested.emit();
   }
 }

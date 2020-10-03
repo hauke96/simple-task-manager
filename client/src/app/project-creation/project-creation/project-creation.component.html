@@ -36,7 +36,8 @@
 									  [gridCellSize]="gridCellSize"
 									  [selectedPolygon]="selectedPolygon"
 									  [hasTasks]="hasTasks"
-									  (shapesCreated)="onShapesCreated($event)"></app-shape-divide>
+									  (shapesCreated)="onShapesCreated($event)"
+									  (shapeSelectionRequested)="onShapeSelectionRequested()"></app-shape-divide>
 				</div>
 			</div>
 			<div *ngIf="tabs.tabIndex === 1">

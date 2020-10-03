@@ -18,6 +18,7 @@ import Modify from 'ol/interaction/Modify';
 import Select, { SelectEvent } from 'ol/interaction/Select';
 import GeoJSON from 'ol/format/GeoJSON';
 import { Subject } from 'rxjs';
+import Interaction from 'ol/interaction/Interaction';
 
 @Component({
   selector: 'app-project-creation',
@@ -39,6 +40,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   public modifyInteraction: Modify;
   public drawInteraction: Draw;
   public removeInteraction: Select;
+  public selectInteraction: Select;
   public vectorSource: VectorSource;
 
   private map: Map;
@@ -123,9 +125,6 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       source: this.vectorSource,
       type: GeometryType.POLYGON
     });
-    this.drawInteraction.on('drawend', evt => {
-      this.selectedPolygon = evt.feature;
-    });
     this.drawInteraction.setActive(false);
     this.map.addInteraction(this.drawInteraction);
 
@@ -148,6 +147,14 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     });
     this.removeInteraction.setActive(false);
     this.map.addInteraction(this.removeInteraction);
+
+    // SELECT
+    this.selectInteraction = new Select();
+    this.selectInteraction.on('select', (e: SelectEvent) => {
+      this.selectedPolygon = e.selected[0];
+    });
+    this.selectInteraction.setActive(false);
+    this.map.addInteraction(this.selectInteraction);
   }
 
   // See if the vector layer has some features.
@@ -228,6 +235,8 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     this.drawInteraction.setActive(false);
     this.modifyInteraction.setActive(false);
     this.removeInteraction.setActive(false);
+    this.selectInteraction.setActive(false);
+
     this.resetToolbarSelectionSubject.next();
   }
 
@@ -240,23 +249,28 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   }
 
   onToggleDraw() {
-    this.removeInteraction.setActive(false);
-    this.modifyInteraction.setActive(false);
-
-    this.drawInteraction.setActive(!this.drawInteraction.getActive());
+    this.setInteraction(this.drawInteraction, !this.drawInteraction.getActive());
   }
 
   onToggleEdit() {
-    this.removeInteraction.setActive(false);
-    this.drawInteraction.setActive(false);
-
-    this.modifyInteraction.setActive(!this.modifyInteraction.getActive());
+    this.setInteraction(this.modifyInteraction, !this.modifyInteraction.getActive());
   }
 
   onToggleDelete() {
+    this.setInteraction(this.removeInteraction, !this.removeInteraction.getActive());
+  }
+
+  onShapeSelectionRequested() {
+    this.resetToolbarSelectionSubject.next();
+    this.setInteraction(this.selectInteraction, !this.selectInteraction.getActive());
+  }
+
+  setInteraction(interaction: Interaction, active: boolean) {
     this.drawInteraction.setActive(false);
     this.modifyInteraction.setActive(false);
+    this.removeInteraction.setActive(false);
+    this.selectInteraction.setActive(false);
 
-    this.removeInteraction.setActive(!this.removeInteraction.getActive());
+    interaction.setActive(active);
   }
 }
