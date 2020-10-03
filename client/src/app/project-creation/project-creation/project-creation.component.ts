@@ -269,8 +269,12 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     this.drawInteraction.setActive(false);
     this.modifyInteraction.setActive(false);
     this.removeInteraction.setActive(false);
+
+    this.selectInteraction.getFeatures().clear();
     this.selectInteraction.setActive(false);
 
     interaction.setActive(active);
+
+    this.selectedPolygon = undefined;
   }
 }
