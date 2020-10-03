@@ -15,7 +15,7 @@ import { NotificationService } from '../../common/notification.service';
 export class ShapeDivideComponent implements OnInit {
   @Input() public gridCellSize: number;
   @Input() public gridCellShape: string;
-  @Input() public lastDrawnPolygon: Feature;
+  @Input() public selectedPolygon: Feature;
   @Input() public hasTasks: boolean;
 
   @Output() public shapesCreated: EventEmitter<Feature[]> = new EventEmitter();
@@ -29,7 +29,7 @@ export class ShapeDivideComponent implements OnInit {
   }
 
   public onDivideButtonClicked() {
-    const polygon = this.lastDrawnPolygon.getGeometry() as Polygon;
+    const polygon = this.selectedPolygon.getGeometry() as Polygon;
     const extent = polygon.transform('EPSG:3857', 'EPSG:4326').getExtent();
 
     // Use meters and only show grid cells within the original polygon (-> mask)

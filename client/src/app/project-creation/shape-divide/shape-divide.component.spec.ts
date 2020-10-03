@@ -31,7 +31,7 @@ describe('ShapeDivideComponent', () => {
 
   it('should emit event when clicked on divide button', () => {
     const spy = spyOn(component.shapesCreated, 'emit');
-    component.lastDrawnPolygon = new Feature(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]]));
+    component.selectedPolygon = new Feature(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]]));
     component.gridCellSize = 100;
 
     // Execute the same test for all supported shapes
@@ -45,7 +45,7 @@ describe('ShapeDivideComponent', () => {
 
   it('should emit event when clicked on divide button', () => {
     const spy = spyOn(component.shapesCreated, 'emit');
-    component.lastDrawnPolygon = new Feature(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]]));
+    component.selectedPolygon = new Feature(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]]));
     component.gridCellSize = 100;
 
     // Execute the same test for these NOT supported shapes

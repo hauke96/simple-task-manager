@@ -33,7 +33,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   // Polygon division values
   public gridCellSize: number;
   public gridCellShape: string;
-  public lastDrawnPolygon: Feature;
+  public selectedPolygon: Feature;
 
   // public for tests
   public modifyInteraction: Modify;
@@ -124,7 +124,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       type: GeometryType.POLYGON
     });
     this.drawInteraction.on('drawend', evt => {
-      this.lastDrawnPolygon = evt.feature;
+      this.selectedPolygon = evt.feature;
     });
     this.drawInteraction.setActive(false);
     this.map.addInteraction(this.drawInteraction);
