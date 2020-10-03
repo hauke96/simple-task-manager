@@ -8,6 +8,7 @@ import { Subject } from 'rxjs';
 })
 export class DrawingToolbarComponent implements OnInit {
   public readonly SELECTION_DRAW = 'draw';
+  public readonly SELECTION_EDIT = 'edit';
   public readonly SELECTION_DELETE = 'delete';
 
   public selectedButton: string;
@@ -18,6 +19,7 @@ export class DrawingToolbarComponent implements OnInit {
   @Output() public buttonZoomOut: EventEmitter<void> = new EventEmitter<void>();
 
   @Output() public buttonDraw: EventEmitter<void> = new EventEmitter<void>();
+  @Output() public buttonEdit: EventEmitter<void> = new EventEmitter<void>();
   @Output() public buttonDelete: EventEmitter<void> = new EventEmitter<void>();
 
   constructor() {
@@ -42,6 +44,16 @@ export class DrawingToolbarComponent implements OnInit {
 
     if (this.selectedButton !== this.SELECTION_DRAW) {
       this.selectedButton = this.SELECTION_DRAW;
+    } else {
+      this.selectedButton = undefined;
+    }
+  }
+
+  public onButtonEdit() {
+    this.buttonEdit.emit();
+
+    if (this.selectedButton !== this.SELECTION_EDIT) {
+      this.selectedButton = this.SELECTION_EDIT;
     } else {
       this.selectedButton = undefined;
     }

@@ -125,11 +125,6 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     });
     this.drawInteraction.on('drawend', evt => {
       this.lastDrawnPolygon = evt.feature;
-      this.modifyInteraction.setActive(true);
-    });
-    this.drawInteraction.on('drawstart', evt => {
-      // Disable modify interaction, otherwise it's not possible to click on existing nodes when drawing
-      this.modifyInteraction.setActive(false);
     });
     this.drawInteraction.setActive(false);
     this.map.addInteraction(this.drawInteraction);
@@ -246,8 +241,15 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
 
   onToggleDraw() {
     this.selectInteraction.setActive(false);
+    this.modifyInteraction.setActive(false);
 
     this.drawInteraction.setActive(!this.drawInteraction.getActive());
+  }
+
+  onToggleEdit() {
+    this.selectInteraction.setActive(false);
+    this.drawInteraction.setActive(false);
+
     this.modifyInteraction.setActive(!this.modifyInteraction.getActive());
   }
 
