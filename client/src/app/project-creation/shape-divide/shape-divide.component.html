@@ -4,8 +4,8 @@
 	<div class="hline"></div>
 
 	<div>
-		<button class="form-entry" (click)="onSelectTaskClicked()">Select task</button>
-		<span class="task-selected-label" *ngIf="hasSelectedPolygon">Task selected </span><i class="lnr lnr-checkmark-circle" *ngIf="hasSelectedPolygon"></i>
+		<button class="form-entry" (click)="onSelectTaskClicked()" i18n>Select task</button>
+		<span class="task-selected-label" *ngIf="hasSelectedPolygon" i18n>Task selected </span><i class="lnr lnr-checkmark-circle" *ngIf="hasSelectedPolygon"></i>
 	</div>
 
 	<div class="form-entry flex-line">
