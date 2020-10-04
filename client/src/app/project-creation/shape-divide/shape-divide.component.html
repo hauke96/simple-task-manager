@@ -1,4 +1,4 @@
-<form class="form-container" #divisionForm="ngForm">
+<form #divisionForm="ngForm">
 	<span i18n>This divides the last drawn polygon into the selected shape. Beware, all other shapes will be removed.</span>
 
 	<div class="hline"></div>
@@ -8,14 +8,16 @@
 		<span class="task-selected-label" *ngIf="hasSelectedPolygon" i18n>Task selected </span><i class="lnr lnr-checkmark-circle" *ngIf="hasSelectedPolygon"></i>
 	</div>
 
-	<div class="form-entry flex-line">
-		<span class="field-label" i18n>Shape size:</span>
-		<input type="number" [(ngModel)]="gridCellSize" [disabled]="!hasSelectedPolygon" required name="shapeSizeField">
-		<span class="meter-label" i18n>meters</span>
+	<div class="form-entry flex-line space-between">
+		<span class="input-field-label" i18n>Shape size:</span>
+		<div class="flex-line">
+			<input class="meter-input" type="number" [(ngModel)]="gridCellSize" [disabled]="!hasSelectedPolygon" required name="shapeSizeField">
+			<span class="meter-label" i18n>meters</span>
+		</div>
 	</div>
 
-	<div class="form-entry flex-line">
-		<span class="field-label" i18n>Shape:</span>
+	<div class="form-entry flex-line space-between">
+		<span class="input-field-label" i18n>Shape:</span>
 		<select [(ngModel)]="gridCellShape" [disabled]="!hasSelectedPolygon" required name="shapeSelection">
 			<option value="squareGrid" i18n>square</option>
 			<option value="hexGrid" i18n>hexagon</option>
