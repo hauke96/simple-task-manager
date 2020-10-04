@@ -178,7 +178,7 @@
           <context context-type="linenumber">11</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/project-creation/project-creation.component.html</context>
+          <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">26</context>
         </context-group>
         <context-group purpose="location">
@@ -279,9 +279,13 @@
           <context context-type="linenumber">35</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="462f2f44a9c3615a6e54769b7f73c94f18cf1f55" datatype="html">
-        <source>SimpleTaskManager <x id="INTERPOLATION" equiv-text="{{version}}"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/>Code: <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>github.com/hauke96/simple-task-manager<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/>Licensed under <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a>"/>GPLv3<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/></source>
-        <target xml:lang="zh-CN">SimpleTaskManager <x id="INTERPOLATION" equiv-text="{{version}}"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/>Code: <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>github.com/hauke96/simple-task-manager<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/>Licensed under <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a>"/>GPLv3<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/></target>
+      <trans-unit id="ab3e799adeb088d5437f0bb15e321ba9c1c7ff58" datatype="html">
+        <source>
+          Version: <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/><x id="INTERPOLATION" equiv-text="{{version}}"/><x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>Code: <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a&gt;"/>GitHub<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>License: <x id="START_LINK_2" ctype="x-a" equiv-text="&lt;a&gt;"/>GPLv3<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>Icons: <x id="START_LINK_3" ctype="x-a" equiv-text="&lt;a&gt;"/>Linearicons<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>
+        </source>
+        <target>
+          版本: <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/><x id="INTERPOLATION" equiv-text="{{version}}"/><x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>编码: <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a&gt;"/>GitHub<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>许可证: <x id="START_LINK_2" ctype="x-a" equiv-text="&lt;a&gt;"/>GPLv3<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>图标: <x id="START_LINK_3" ctype="x-a" equiv-text="&lt;a&gt;"/>Linearicons<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>
+        </target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/ui/footer/footer.component.html</context>
           <context context-type="linenumber">1</context>
@@ -291,7 +295,7 @@
         <source>&lt; Cancel</source>
         <target xml:lang="zh-CN">&lt;取消</target>
 <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/project-creation/project-creation.component.html</context>
+          <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">3</context>
         </context-group>
       </trans-unit>
@@ -299,7 +303,7 @@
         <source>Save</source>
         <target xml:lang="zh-CN">储存</target>
 <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/project-creation/project-creation.component.html</context>
+          <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">4</context>
         </context-group>
       </trans-unit>
@@ -307,7 +311,7 @@
         <source>Properties:</source>
         <target xml:lang="zh-CN">特性:</target>
 <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/project-creation/project-creation.component.html</context>
+          <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">12</context>
         </context-group>
         <context-group purpose="location">
@@ -319,7 +323,7 @@
         <source>Name:</source>
         <target xml:lang="zh-CN">名称:</target>
 <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/project-creation/project-creation.component.html</context>
+          <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">14</context>
         </context-group>
         <context-group purpose="location">
@@ -331,7 +335,7 @@
         <source>Max. points per task:</source>
         <target xml:lang="zh-CN">麦克斯每个任务的点:</target>
 <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/project-creation/project-creation.component.html</context>
+          <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
@@ -339,7 +343,7 @@
         <source>Create shapes:</source>
         <target xml:lang="zh-CN">建立形状:</target>
 <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/project-creation/project-creation.component.html</context>
+          <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">31</context>
         </context-group>
       </trans-unit>
@@ -493,6 +497,22 @@
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/shape-divide/shape-divide.component.html</context>
           <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="40b26d9e421469f2c3f08f1291550a27dd86ba4d" datatype="html">
+        <source>Select task</source>
+        <target>Select task</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="44408118c125445318294c7a1ec080166993294c" datatype="html">
+        <source>Task selected </source>
+        <target>Task selected </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
+          <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1c1d1f8a90a0d951c07eff3863b48ab97377d8a4" datatype="html">
@@ -889,6 +909,46 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="e28ee80cd3a124e109793180dfd1f8d8067dcc6b" datatype="html">
+        <source>Zoom in</source>
+        <target>Zoom in</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
+          <context context-type="linenumber">1</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="a3dfc58748f790fa096cf3c5fc331f90846e1772" datatype="html">
+        <source>Zoom out</source>
+        <target>Zoom out</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4f5724e5ad8f6385d335b6705c780eae7110ec70" datatype="html">
+        <source>Draw new polygon</source>
+        <target>Draw new polygon</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="46205b8c134572eadf2daeea8c8dce5974a32216" datatype="html">
+        <source>Edit polygon</source>
+        <target>Edit polygon</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="07719975214d77aa88d781887c00cd217dec8be8" datatype="html">
+        <source>Remove polygon</source>
+        <target>Remove polygon</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
+          <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
     </body>

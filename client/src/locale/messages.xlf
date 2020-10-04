@@ -132,7 +132,7 @@
           <context context-type="linenumber">11</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/project-creation/project-creation.component.html</context>
+          <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">26</context>
         </context-group>
         <context-group purpose="location">
@@ -237,9 +237,9 @@
           <context context-type="linenumber">38</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="462f2f44a9c3615a6e54769b7f73c94f18cf1f55" datatype="html">
+      <trans-unit id="ab3e799adeb088d5437f0bb15e321ba9c1c7ff58" datatype="html">
         <source>
-  SimpleTaskManager <x id="INTERPOLATION" equiv-text="{{version}}"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>Code: <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>github.com/hauke96/simple-task-manager<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>Licensed under <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a&gt;"/>GPLv3<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>
+  Version: <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/><x id="INTERPOLATION" equiv-text="{{version}}"/><x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>Code: <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a&gt;"/>GitHub<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>License: <x id="START_LINK_2" ctype="x-a" equiv-text="&lt;a&gt;"/>GPLv3<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>Icons: <x id="START_LINK_3" ctype="x-a" equiv-text="&lt;a&gt;"/>Linearicons<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>
 </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/ui/footer/footer.component.html</context>
@@ -249,7 +249,7 @@
       <trans-unit id="5c5cd4f8e377c2f2bad0d4e26e401f83d777dbfc" datatype="html">
         <source>&lt; Cancel</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/project-creation/project-creation.component.html</context>
+          <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">3</context>
         </context-group>
       </trans-unit>
@@ -258,14 +258,14 @@
 			Save
 		</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/project-creation/project-creation.component.html</context>
+          <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">4</context>
         </context-group>
       </trans-unit>
       <trans-unit id="647cbc795a270aec8cc5703618774909673b0b78" datatype="html">
         <source>Properties:</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/project-creation/project-creation.component.html</context>
+          <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">12</context>
         </context-group>
         <context-group purpose="location">
@@ -276,7 +276,7 @@
       <trans-unit id="616e206cb4f25bd5885fc35925365e43cf5fb929" datatype="html">
         <source>Name:</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/project-creation/project-creation.component.html</context>
+          <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">14</context>
         </context-group>
         <context-group purpose="location">
@@ -287,14 +287,14 @@
       <trans-unit id="d46dcf6ff2f4a17168e3bdb14102b9ba787ba741" datatype="html">
         <source>Max. points per task:</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/project-creation/project-creation.component.html</context>
+          <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
       <trans-unit id="aa330ce457e46e40a8ac4d743c8959dcd046d15d" datatype="html">
         <source>Create shapes:</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/project-creation/project-creation.component.html</context>
+          <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">31</context>
         </context-group>
       </trans-unit>
@@ -415,98 +415,112 @@
       <trans-unit id="17770785becab6addbe53d2a058e553ceec4ff9b" datatype="html">
         <source>This divides the last drawn polygon into the selected shape. Beware, all other shapes will be removed.</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/shape-divide/shape-divide.component.html</context>
+          <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
           <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="40b26d9e421469f2c3f08f1291550a27dd86ba4d" datatype="html">
+        <source>Select task</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="44408118c125445318294c7a1ec080166993294c" datatype="html">
+        <source>Task selected </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
+          <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1c1d1f8a90a0d951c07eff3863b48ab97377d8a4" datatype="html">
         <source>Shape size:</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/shape-divide/shape-divide.component.html</context>
-          <context context-type="linenumber">7</context>
+          <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
+          <context context-type="linenumber">12</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7886c0ba80624ae271468582a0ea743cc157fa2e" datatype="html">
         <source>meters</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/shape-divide/shape-divide.component.html</context>
-          <context context-type="linenumber">9</context>
+          <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
+          <context context-type="linenumber">14</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1f672a38e8b9e8fc29a0ce0a4f926c00e8da15a3" datatype="html">
         <source>Shape:</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/shape-divide/shape-divide.component.html</context>
-          <context context-type="linenumber">13</context>
+          <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
+          <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6e644e34744b7ab4dae805ec4fb40a7fa50c8cb5" datatype="html">
         <source>square</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/shape-divide/shape-divide.component.html</context>
-          <context context-type="linenumber">15</context>
+          <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
+          <context context-type="linenumber">20</context>
         </context-group>
       </trans-unit>
       <trans-unit id="99dafbec7a39a738b6672303e7dacc04cd343352" datatype="html">
         <source>hexagon</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/shape-divide/shape-divide.component.html</context>
-          <context context-type="linenumber">16</context>
+          <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
+          <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
       <trans-unit id="579b21eef0e6bdd79af799ade0059691149f324e" datatype="html">
         <source>triangle</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/shape-divide/shape-divide.component.html</context>
-          <context context-type="linenumber">17</context>
+          <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
+          <context context-type="linenumber">22</context>
         </context-group>
       </trans-unit>
       <trans-unit id="64da6b784c67223a7ce9517cbd42c453e652df2a" datatype="html">
         <source>Divide</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/shape-divide/shape-divide.component.html</context>
-          <context context-type="linenumber">21</context>
+          <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
+          <context context-type="linenumber">26</context>
         </context-group>
       </trans-unit>
       <trans-unit id="b9ea859581d68175d3d3159a9fa8378254a173a5" datatype="html">
         <source>Upload a GPX, OSM or GeoJSON file, which contains polygons. Each polygon will result in a single task.</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/shape-upload/shape-upload.component.html</context>
+          <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.html</context>
           <context context-type="linenumber">1</context>
         </context-group>
       </trans-unit>
       <trans-unit id="30425abcb2ca17bc7f74857afd2d4a74e31b9b2b" datatype="html">
         <source>Upload file</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/shape-upload/shape-upload.component.html</context>
+          <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.html</context>
           <context context-type="linenumber">6</context>
         </context-group>
       </trans-unit>
       <trans-unit id="9f5f51918c7795228c656cb38264073903f9bd6a" datatype="html">
         <source>URL to OSM-XML:</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/shape-remote/shape-remote.component.html</context>
+          <context context-type="sourcefile">src/app/project-creation/shape-remote/shape-remote.component.html</context>
           <context context-type="linenumber">1</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8d7fb36ea2bff6fd8a53c1676d45e63ab624ad16" datatype="html">
         <source>Load</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/shape-remote/shape-remote.component.html</context>
+          <context context-type="sourcefile">src/app/project-creation/shape-remote/shape-remote.component.html</context>
           <context context-type="linenumber">3</context>
         </context-group>
       </trans-unit>
       <trans-unit id="fa89153d30285e65b4d70bd5682f2d4f4ad5bc0a" datatype="html">
         <source>Loading data from Overpass:</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/shape-remote/shape-remote.component.html</context>
+          <context context-type="sourcefile">src/app/project-creation/shape-remote/shape-remote.component.html</context>
           <context context-type="linenumber">7</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bfdb093a9e1328895ad703094e1ad85ca530ce30" datatype="html">
         <source>Create your query</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/shape-remote/shape-remote.component.html</context>
+          <context context-type="sourcefile">src/app/project-creation/shape-remote/shape-remote.component.html</context>
           <context context-type="linenumber">9</context>
         </context-group>
         <note priority="1" from="description">loading data from overpass</note>
@@ -514,7 +528,7 @@
       <trans-unit id="622e64f6296a7467dd7da977bee29f2dc726fdea" datatype="html">
         <source>Click on &quot;Export&quot;</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/shape-remote/shape-remote.component.html</context>
+          <context context-type="sourcefile">src/app/project-creation/shape-remote/shape-remote.component.html</context>
           <context context-type="linenumber">10</context>
         </context-group>
         <note priority="1" from="description">loading data from overpass</note>
@@ -522,7 +536,7 @@
       <trans-unit id="485a698b86f89dca935c8d6c92f695e6ae0c93c8" datatype="html">
         <source>Copy the link after &quot;raw data directly from&quot; (right click and &quot;copy link&quot;)</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/shape-remote/shape-remote.component.html</context>
+          <context context-type="sourcefile">src/app/project-creation/shape-remote/shape-remote.component.html</context>
           <context context-type="linenumber">11</context>
         </context-group>
         <note priority="1" from="description">loading data from overpass</note>
@@ -530,7 +544,7 @@
       <trans-unit id="bb8915a54f561863ae3d67bfb1593724ca320c8e" datatype="html">
         <source>Paste this URL in here</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/shape-remote/shape-remote.component.html</context>
+          <context context-type="sourcefile">src/app/project-creation/shape-remote/shape-remote.component.html</context>
           <context context-type="linenumber">12</context>
         </context-group>
         <note priority="1" from="description">loading data from overpass</note>
@@ -756,14 +770,49 @@
         <source>DONE</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">34</context>
+          <context context-type="linenumber">33</context>
         </context-group>
       </trans-unit>
       <trans-unit id="TASK_YOU" datatype="html">
         <source>you</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">35</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="e28ee80cd3a124e109793180dfd1f8d8067dcc6b" datatype="html">
+        <source>Zoom in</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
+          <context context-type="linenumber">1</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="a3dfc58748f790fa096cf3c5fc331f90846e1772" datatype="html">
+        <source>Zoom out</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4f5724e5ad8f6385d335b6705c780eae7110ec70" datatype="html">
+        <source>Draw new polygon</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="46205b8c134572eadf2daeea8c8dce5974a32216" datatype="html">
+        <source>Edit polygon</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="07719975214d77aa88d781887c00cd217dec8be8" datatype="html">
+        <source>Remove polygon</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
+          <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
     </body>
