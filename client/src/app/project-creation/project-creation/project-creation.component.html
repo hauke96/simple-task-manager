@@ -35,13 +35,13 @@
 					<app-shape-divide [gridCellShape]="gridCellShape"
 									  [gridCellSize]="gridCellSize"
 									  [selectedPolygon]="selectedPolygon"
-									  (shapesCreated)="onShapesCreated($event)"
+									  (shapesCreated)="onSelectedShapeSubdivided($event)"
 									  (shapeSelectionRequested)="onShapeSelectionRequested()"></app-shape-divide>
 				</div>
 			</div>
 			<div *ngIf="tabs.tabIndex === 1">
 				<div class="tab-container">
-					<app-shape-upload (featuresUploaded)="onShapesUploaded($event)"></app-shape-upload>
+					<app-shape-upload (featuresUploaded)="onShapesCreated($event)"></app-shape-upload>
 				</div>
 			</div>
 			<div *ngIf="tabs.tabIndex === 2">

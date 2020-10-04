@@ -214,7 +214,6 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       f.getGeometry().transform('EPSG:4326', 'EPSG:3857');
     });
 
-    this.vectorSource.refresh(); // clears the source
     features.forEach(f => this.vectorSource.addFeature(f));
 
     this.map.getView().fit(this.vectorSource.getExtent(), {
@@ -223,10 +222,8 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     });
   }
 
-  // This function expects the geometry to be in the EPSG:4326 projection.
-  public onShapesUploaded(features: Feature[]) {
-    this.vectorSource.clear();
-
+  onSelectedShapeSubdivided(features: Feature[]) {
+    this.vectorSource.removeFeature(this.selectedPolygon);
     this.onShapesCreated(features);
   }
 
