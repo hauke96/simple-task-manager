@@ -491,9 +491,9 @@
           <context context-type="linenumber">27</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="17770785becab6addbe53d2a058e553ceec4ff9b" datatype="html">
-        <source>This divides the last drawn polygon into the selected shape. Beware, all other shapes will be removed.</source>
-        <target xml:lang="ja">これは、最後に描画したポリゴンを選択した形状へ分割します。他の全てのシェイプは削除されることに留意してください。</target>
+      <trans-unit id="44c5e061b706fbeb3816fd860ed5eab87bafcb5d" datatype="html">
+        <source>This divides the last drawn polygon into the selected shape.</source>
+        <target xml:lang="ja">これは、最後に描画したポリゴンを選択した形状へ分割します。</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/shape-divide/shape-divide.component.html</context>
           <context context-type="linenumber">2</context>
