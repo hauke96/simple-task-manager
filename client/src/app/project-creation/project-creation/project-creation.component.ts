@@ -113,7 +113,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
 
   public get tabTitles(): string[] {
     return [
-      $localize`:@@TABS_DRAW:Draw`,
+      $localize`:@@TABS_SUBDIVIDE:Subdivide`,
       $localize`:@@TABS_UPLOAD:Upload`,
       $localize`:@@TABS_REMOTE:Remote`
     ];
