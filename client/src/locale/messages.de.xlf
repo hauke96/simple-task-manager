@@ -341,7 +341,7 @@
       </trans-unit>
       <trans-unit id="31a60780d9cf64bacecb8c3156076ad009988e62" datatype="html">
         <source>Subdivide task:</source>
-        <target>Tasks aufteilen:</target>
+        <target xml:lang="de-DE" state="translated">Tasks aufteilen:</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">38</context>
@@ -491,17 +491,17 @@
           <context context-type="linenumber">27</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="44c5e061b706fbeb3816fd860ed5eab87bafcb5d" datatype="html">
-        <source>This divides the last drawn polygon into the selected shape.</source>
-        <target xml:lang="de-DE">Dies teilt das letzte gezeichnete Polygon in die ausgewählte Form.</target>
-<context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/shape-divide/shape-divide.component.html</context>
+      <trans-unit id="ae9555ed661c4fc9adf8c6ec71e39c67f05513fe" datatype="html">
+        <source>This divides the selected task into smaller tasks of the selected shape and size.</source>
+        <target xml:lang="de-DE" state="translated">Dies teilt den ausgewählten Task in kleinere Tasks der ausgewählten Form und Größe auf.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
           <context context-type="linenumber">2</context>
         </context-group>
       </trans-unit>
       <trans-unit id="40b26d9e421469f2c3f08f1291550a27dd86ba4d" datatype="html">
         <source>Select task</source>
-        <target>Task auswählen</target>
+        <target xml:lang="de-DE" state="translated">Task auswählen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
           <context context-type="linenumber">7</context>
@@ -509,7 +509,7 @@
       </trans-unit>
       <trans-unit id="44408118c125445318294c7a1ec080166993294c" datatype="html">
         <source>Task selected </source>
-        <target>Task ausgewählt </target>
+        <target xml:lang="de-DE" state="translated">Task ausgewählt </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
           <context context-type="linenumber">8</context>
@@ -889,7 +889,7 @@
       </trans-unit>
       <trans-unit id="TABS_PROPERTIES" datatype="html">
         <source>Properties</source>
-        <target>Eigenschaften</target>
+        <target xml:lang="de-DE" state="translated">Eigenschaften</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">32</context>
