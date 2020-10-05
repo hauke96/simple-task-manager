@@ -120,12 +120,6 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     ];
   }
 
-  public get tabTitles(): string[] {
-    return [
-      $localize`:@@TABS_SUBDIVIDE:Subdivide`
-    ];
-  }
-
   private addMapInteractions() {
     // DRAW
     this.drawInteraction = new Draw({

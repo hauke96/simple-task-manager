@@ -31,18 +31,19 @@
 				</div>
 
 				<div *ngIf="rootTabs.tabIndex === 1">
-					<h2 i18n>Create shapes:</h2>
-					<app-tabs [tabs]="tabTitles" #tabs (tabSelected)="onTabSelected()">
-						<div *ngIf="tabs.tabIndex === 0">
-							<div class="tab-container">
-								<app-shape-divide [gridCellShape]="gridCellShape"
-												  [gridCellSize]="gridCellSize"
-												  [selectedPolygon]="selectedPolygon"
-												  (shapesCreated)="onSelectedShapeSubdivided($event)"
-												  (shapeSelectionRequested)="onShapeSelectionRequested()"></app-shape-divide>
-							</div>
+					<div>
+						(TODO: list of tasks)
+					</div>
+					<div>
+						<h2 i18n>Subdivide task:</h2>
+						<div class="tab-container">
+							<app-shape-divide [gridCellShape]="gridCellShape"
+											  [gridCellSize]="gridCellSize"
+											  [selectedPolygon]="selectedPolygon"
+											  (shapesCreated)="onSelectedShapeSubdivided($event)"
+											  (shapeSelectionRequested)="onShapeSelectionRequested()"></app-shape-divide>
 						</div>
-					</app-tabs>
+					</div>
 				</div>
 
 				<div *ngIf="rootTabs.tabIndex === 2">

@@ -871,14 +871,6 @@
           <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="TABS_SUBDIVIDE" datatype="html">
-        <source>Draw</source>
-        <target xml:lang="zh-CN">分支</target>
-<context-group purpose="location">
-          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">29</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="TABS_UPLOAD" datatype="html">
         <source>Upload</source>
         <target xml:lang="zh-CN">上传</target>
