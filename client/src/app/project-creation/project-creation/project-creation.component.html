@@ -9,7 +9,7 @@
 <div class="root-container">
 	<div class="project-properties-container">
 		<form #creationForm="ngForm" class="root-form">
-			<app-tabs #rootTabs [tabs]="['Properties', 'Tasks']" [borderless]="true" class="root-tabs">
+			<app-tabs #rootTabs [tabs]="rootTabTitles" [borderless]="true" class="root-tabs">
 				<div *ngIf="rootTabs.tabIndex === 0">
 					<h2 class="properties-label" i18n>Properties:</h2>
 					<div class="form-entry flex-line">
@@ -42,17 +42,19 @@
 												  (shapeSelectionRequested)="onShapeSelectionRequested()"></app-shape-divide>
 							</div>
 						</div>
-						<div *ngIf="tabs.tabIndex === 1">
-							<div class="tab-container">
-								<app-shape-upload (featuresUploaded)="onShapesCreated($event)"></app-shape-upload>
-							</div>
-						</div>
-						<div *ngIf="tabs.tabIndex === 2">
-							<div class="tab-container">
-								<app-shape-remote (featuresLoaded)="onShapesCreated($event)"></app-shape-remote>
-							</div>
-						</div>
 					</app-tabs>
+				</div>
+
+				<div *ngIf="rootTabs.tabIndex === 2">
+					<div class="tab-container">
+						<app-shape-upload (featuresUploaded)="onShapesCreated($event)"></app-shape-upload>
+					</div>
+				</div>
+
+				<div *ngIf="rootTabs.tabIndex === 3">
+					<div class="tab-container">
+						<app-shape-remote (featuresLoaded)="onShapesCreated($event)"></app-shape-remote>
+					</div>
 				</div>
 			</app-tabs>
 		</form>

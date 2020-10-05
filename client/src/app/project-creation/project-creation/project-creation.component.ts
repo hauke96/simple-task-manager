@@ -111,11 +111,18 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     this.addMapInteractions();
   }
 
-  public get tabTitles(): string[] {
+  public get rootTabTitles(): string[] {
     return [
-      $localize`:@@TABS_SUBDIVIDE:Subdivide`,
+      'Properties',
+      'Tasks',
       $localize`:@@TABS_UPLOAD:Upload`,
       $localize`:@@TABS_REMOTE:Remote`
+    ];
+  }
+
+  public get tabTitles(): string[] {
+    return [
+      $localize`:@@TABS_SUBDIVIDE:Subdivide`
     ];
   }
 
