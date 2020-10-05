@@ -27,11 +27,17 @@ button:hover {
 
 .tab-content {
 	margin-top: -1px;
-	border: 1px solid $color-light;
+	border-top: 1px solid $color-light;
 	padding: $space-base;
 	min-height: 0px;
 	display: flex;
 	flex-direction: column;
 	overflow: auto;
 	flex-grow: 1;
+}
+
+.tab-content-border {
+	border-right: 1px solid $color-light;
+	border-left: 1px solid $color-light;
+	border-bottom: 1px solid $color-light;
 }
