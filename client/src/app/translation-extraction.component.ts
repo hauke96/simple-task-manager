@@ -42,6 +42,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 		    <span i18n="@@TABS_SETTINGS">Settings</span>
 		    <span i18n="@@TABS_UPLOAD">Upload</span>
 		    <span i18n="@@TABS_REMOTE">Remote</span>
+		    <span i18n="@@TABS_PROPERTIES">Properties</span>
 		    <span i18n="@@TASK_MAP_DONE">DONE</span>
 		    <span i18n="@@TASK_YOU">you</span>
     `,

@@ -339,12 +339,12 @@
           <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="aa330ce457e46e40a8ac4d743c8959dcd046d15d" datatype="html">
-        <source>Create shapes:</source>
-        <target xml:lang="zh-CN">建立形状:</target>
-<context-group purpose="location">
+      <trans-unit id="31a60780d9cf64bacecb8c3156076ad009988e62" datatype="html">
+        <source>Subdivide task:</source>
+        <target>Subdivide task:</target>
+        <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
-          <context context-type="linenumber">31</context>
+          <context context-type="linenumber">38</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3d243a75c1a16642d9d887827bdaa8e97a8e6e5c" datatype="html">
@@ -885,6 +885,14 @@
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="TABS_PROPERTIES" datatype="html">
+        <source>Properties</source>
+        <target>特点</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">32</context>
         </context-group>
       </trans-unit>
       <trans-unit id="TASK_MAP_DONE" datatype="html">
