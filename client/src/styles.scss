@@ -166,6 +166,7 @@ textarea{
 	padding: $space-small;
 	margin: 0px;
 	flex-grow: 1;
+	min-width: 0px;
 }
 
 input {

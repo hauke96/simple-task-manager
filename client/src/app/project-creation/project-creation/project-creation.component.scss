@@ -4,27 +4,25 @@
 	height: 100%;
 	display: flex;
 	flex-direction: column;
-	justify-content: stretch;
 }
 
 .root-container {
 	display: flex;
 	flex-direction: row;
-	justify-content: space-between;
 	flex-grow: 1;
-	margin-top: 0px;
-	min-height: 0px; // important for scrolling (for whatever reason, s. above)
+	min-height: 0px; // important for scrolling (for whatever reason)
+}
+
+.root-tabs,
+.root-form {
+	height: 100%;
 }
 
 .project-properties-container {
-	display: flex;
-	flex-direction: column;
-	padding-top: $space-base;
-	padding-right: $space-large;
-	padding-left: $space-base;
-	padding-bottom: $space-base;
-	min-width: 400px;
-	max-width: 400px;
+	padding: $space-base;
+	min-width: 350px;
+	max-width: 450px;
+	width: 50%;
 	border-right: 1px solid $color-light;
 }
 

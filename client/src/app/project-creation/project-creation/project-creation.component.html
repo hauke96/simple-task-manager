@@ -8,48 +8,54 @@
 </app-toolbar>
 <div class="root-container">
 	<div class="project-properties-container">
-		<form #creationForm="ngForm">
-			<h2 class="properties-label" i18n>Properties:</h2>
-			<div class="form-entry flex-line">
-				<span class="input-field-label" i18n>Name:</span>
-				<input [(ngModel)]="newProjectName" required name="nameField">
-			</div>
-			<div class="form-entry flex-line">
-				<span class="input-field-label" i18n>Max. points per task:</span>
-				<input type="number"
-					   [(ngModel)]="newMaxProcessPoints"
-					   required
-					   name="maxProcessPointsField"
-					   appMinValidator="1">
-			</div>
-			<div class="form-entry">
-				<p i18n>Description:</p>
-				<textarea name="description-text-area" class="description-text-area" [(ngModel)]="projectDescription"></textarea>
-			</div>
-		</form>
+		<form #creationForm="ngForm" class="root-form">
+			<app-tabs #rootTabs [tabs]="['Properties', 'Tasks']" class="root-tabs">
+				<div *ngIf="rootTabs.tabIndex === 0">
+					<h2 class="properties-label" i18n>Properties:</h2>
+					<div class="form-entry flex-line">
+						<span class="input-field-label" i18n>Name:</span>
+						<input [(ngModel)]="newProjectName" required name="nameField">
+					</div>
+					<div class="form-entry flex-line">
+						<span class="input-field-label" i18n>Max. points per task:</span>
+						<input type="number"
+							   [(ngModel)]="newMaxProcessPoints"
+							   required
+							   name="maxProcessPointsField"
+							   appMinValidator="1">
+					</div>
+					<div class="form-entry">
+						<p i18n>Description:</p>
+						<textarea name="description-text-area" class="description-text-area" [(ngModel)]="projectDescription"></textarea>
+					</div>
+				</div>
 
-		<h2 i18n>Create shapes:</h2>
-		<app-tabs [tabs]="tabTitles" #tabs (tabSelected)="onTabSelected()">
-			<div *ngIf="tabs.tabIndex === 0">
-				<div class="tab-container">
-					<app-shape-divide [gridCellShape]="gridCellShape"
-									  [gridCellSize]="gridCellSize"
-									  [selectedPolygon]="selectedPolygon"
-									  (shapesCreated)="onSelectedShapeSubdivided($event)"
-									  (shapeSelectionRequested)="onShapeSelectionRequested()"></app-shape-divide>
+				<div *ngIf="rootTabs.tabIndex === 1">
+					<h2 i18n>Create shapes:</h2>
+					<app-tabs [tabs]="tabTitles" #tabs (tabSelected)="onTabSelected()">
+						<div *ngIf="tabs.tabIndex === 0">
+							<div class="tab-container">
+								<app-shape-divide [gridCellShape]="gridCellShape"
+												  [gridCellSize]="gridCellSize"
+												  [selectedPolygon]="selectedPolygon"
+												  (shapesCreated)="onSelectedShapeSubdivided($event)"
+												  (shapeSelectionRequested)="onShapeSelectionRequested()"></app-shape-divide>
+							</div>
+						</div>
+						<div *ngIf="tabs.tabIndex === 1">
+							<div class="tab-container">
+								<app-shape-upload (featuresUploaded)="onShapesCreated($event)"></app-shape-upload>
+							</div>
+						</div>
+						<div *ngIf="tabs.tabIndex === 2">
+							<div class="tab-container">
+								<app-shape-remote (featuresLoaded)="onShapesCreated($event)"></app-shape-remote>
+							</div>
+						</div>
+					</app-tabs>
 				</div>
-			</div>
-			<div *ngIf="tabs.tabIndex === 1">
-				<div class="tab-container">
-					<app-shape-upload (featuresUploaded)="onShapesCreated($event)"></app-shape-upload>
-				</div>
-			</div>
-			<div *ngIf="tabs.tabIndex === 2">
-				<div class="tab-container">
-					<app-shape-remote (featuresLoaded)="onShapesCreated($event)"></app-shape-remote>
-				</div>
-			</div>
-		</app-tabs>
+			</app-tabs>
+		</form>
 	</div>
 	<app-drawing-toolbar
 			[resetSelection]="resetToolbarSelectionSubject"
