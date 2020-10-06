@@ -32,7 +32,12 @@
 
 				<div *ngIf="rootTabs.tabIndex === 1">
 					<div>
-						(TODO: list of tasks)
+						<div *ngFor="let t of taskDrafts" class="list-item"
+							 [ngClass]="{'list-item-selected': t.id === selectedPolygon?.get('id')}">
+							<div>
+								{{t.name}}
+							</div>
+						</div>
 					</div>
 					<div>
 						<h2 i18n>Subdivide task:</h2>

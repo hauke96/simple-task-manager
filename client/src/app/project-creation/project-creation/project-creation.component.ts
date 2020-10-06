@@ -120,6 +120,14 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     ];
   }
 
+  // TODO create TaskDraft class
+  public get taskDrafts(): any {
+    return this.vectorSource.getFeatures().map(f => ({
+      id: f.get('id'),
+      name: !!f.get('name') ? f.get('name') : f.get('id')
+    }));
+  }
+
   private addMapInteractions() {
     // DRAW
     this.drawInteraction = new Draw({
