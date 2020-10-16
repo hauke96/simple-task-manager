@@ -1,7 +1,8 @@
 <app-toolbar>
 	<div>
 		<button [routerLink]="['/manager']" i18n>&#60; Cancel</button>
-		<button class="save-button" (click)="onSaveButtonClicked()" [disabled]="!creationForm.form.valid || !hasTasks" i18n>
+		<button class="save-button" (click)="onSaveButtonClicked()" [disabled]="!creationForm.form.valid || !hasTasks"
+				i18n>
 			Save
 		</button>
 	</div>
@@ -26,22 +27,16 @@
 					</div>
 					<div class="form-entry">
 						<p i18n>Description:</p>
-						<textarea name="description-text-area" class="description-text-area" [(ngModel)]="projectDescription"></textarea>
+						<textarea name="description-text-area" class="description-text-area"
+								  [(ngModel)]="projectDescription"></textarea>
 					</div>
 				</div>
 
 				<div *ngIf="rootTabs.tabIndex === 1">
 					<h2 class="properties-label" i18n>Tasks:</h2>
 					<div>
-						<div *ngIf="taskDrafts?.length === 0">
-							<span i18n>There are no tasks here yet. Use the pencil-tool to draw tasks or import tasks via the "Upload" or "Remote" tab.</span>
-						</div>
-						<div *ngFor="let t of taskDrafts" class="list-item"
-							 [ngClass]="{'list-item-selected': t.id === selectedPolygon?.get('id')}">
-							<div>
-								{{t.name}}
-							</div>
-						</div>
+						<app-task-draft-list [taskDrafts]="taskDrafts"
+											 [selectedPolygon]="selectedPolygon"></app-task-draft-list>
 					</div>
 					<div>
 						<h2 i18n>Subdivide task:</h2>

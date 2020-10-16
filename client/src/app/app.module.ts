@@ -33,6 +33,7 @@ import { TranslationExtractionComponent } from './translation-extraction.compone
 import { LanguageSelectionComponent } from './ui/language-selection/language-selection.component';
 import { SelectedLanguageGuard } from './common/selected-language.guard';
 import { DrawingToolbarComponent } from './project-creation/drawing-toolbar/drawing-toolbar.component';
+import { TaskDraftListComponent } from './project-creation/task-draft-list/task-draft-list.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +61,8 @@ import { DrawingToolbarComponent } from './project-creation/drawing-toolbar/draw
     ShapeRemoteComponent,
     TranslationExtractionComponent,
     LanguageSelectionComponent,
-    DrawingToolbarComponent
+    DrawingToolbarComponent,
+    TaskDraftListComponent
   ],
   imports: [
     BrowserModule,
