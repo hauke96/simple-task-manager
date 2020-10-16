@@ -13,8 +13,9 @@ import { NotificationService } from '../../common/notification.service';
   styleUrls: ['./shape-divide.component.scss']
 })
 export class ShapeDivideComponent implements OnInit {
-  @Input() public gridCellSize: number;
-  @Input() public gridCellShape: string;
+  public gridCellSize: number;
+  public gridCellShape: string;
+
   @Input() public selectedPolygon: Feature;
 
   @Output() public shapesCreated: EventEmitter<Feature[]> = new EventEmitter();
@@ -26,6 +27,8 @@ export class ShapeDivideComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.gridCellShape = 'squareGrid';
+    this.gridCellSize = 1000;
   }
 
   public get hasSelectedPolygon(): boolean {

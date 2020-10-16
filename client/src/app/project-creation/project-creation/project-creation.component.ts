@@ -29,8 +29,6 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   public projectProperties: ProjectProperties;
 
   // Polygon division values
-  public gridCellSize: number;
-  public gridCellShape: string;
   public selectedPolygon: Feature;
 
   // public for tests
@@ -60,8 +58,6 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       maxProcessPoints: 100,
       projectDescription: ''
     };
-    this.gridCellShape = 'squareGrid';
-    this.gridCellSize = 1000;
   }
 
   ngAfterViewInit(): void {

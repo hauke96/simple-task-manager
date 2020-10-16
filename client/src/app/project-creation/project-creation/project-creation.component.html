@@ -22,9 +22,7 @@
 											 [selectedPolygon]="selectedPolygon"></app-task-draft-list>
 
 						<h2 i18n>Subdivide task:</h2>
-						<app-shape-divide [gridCellShape]="gridCellShape"
-										  [gridCellSize]="gridCellSize"
-										  [selectedPolygon]="selectedPolygon"
+						<app-shape-divide [selectedPolygon]="selectedPolygon"
 										  (shapesCreated)="onSelectedShapeSubdivided($event)"
 										  (shapeSelectionRequested)="onShapeSelectionRequested()"></app-shape-divide>
 				</div>
