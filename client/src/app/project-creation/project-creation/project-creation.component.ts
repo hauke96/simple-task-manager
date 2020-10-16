@@ -19,6 +19,7 @@ import Select, { SelectEvent } from 'ol/interaction/Select';
 import { Subject } from 'rxjs';
 import Interaction from 'ol/interaction/Interaction';
 import { ProjectProperties } from '../project-properties';
+import { DrawEvent } from 'ol/interaction/Draw';
 
 @Component({
   selector: 'app-project-creation',
@@ -38,10 +39,10 @@ export class ProjectCreationComponent implements AfterViewInit {
   public selectInteraction: Select;
   public vectorSource: VectorSource;
 
-  private map: Map;
-
   // For the toolbar
   public resetToolbarSelectionSubject: Subject<void> = new Subject<void>();
+
+  private map: Map;
 
   constructor(
     private projectService: ProjectService,
@@ -108,7 +109,6 @@ export class ProjectCreationComponent implements AfterViewInit {
     ];
   }
 
-  // TODO create TaskDraft class
   public get taskFeatures(): Feature[] {
     return this.vectorSource.getFeatures();
   }
@@ -116,10 +116,13 @@ export class ProjectCreationComponent implements AfterViewInit {
   private addMapInteractions() {
     // DRAW
     this.drawInteraction = new Draw({
-      source: this.vectorSource,
+      // source: this.vectorSource,
       type: GeometryType.POLYGON
     });
     this.drawInteraction.setActive(false);
+    this.drawInteraction.on('drawend', (e: DrawEvent) => {
+      this.onShapesCreated([e.feature], false);
+    });
     this.map.addInteraction(this.drawInteraction);
 
     // MODIFY
@@ -156,8 +159,6 @@ export class ProjectCreationComponent implements AfterViewInit {
   }
 
   public onSaveButtonClicked() {
-    let taskNameCounter = 1;
-
     const features: Feature[] = this.vectorSource.getFeatures().map(f => {
       f = f.clone(); // otherwise we would change the polygons on the map
       let polygon = (f.getGeometry() as Polygon);
@@ -166,13 +167,6 @@ export class ProjectCreationComponent implements AfterViewInit {
       // with lat/lon values, so we transform it back.
       polygon = polygon.transform('EPSG:3857', 'EPSG:4326') as Polygon;
       f.setGeometry(polygon);
-
-      // Set a name as increasing number, if no name exists
-      const name = f.get('name');
-      if (!name || name.trim() === '') {
-        f.set('name', taskNameCounter);
-        taskNameCounter++;
-      }
 
       return f;
     });
@@ -197,19 +191,62 @@ export class ProjectCreationComponent implements AfterViewInit {
   }
 
   // This function expects the geometry to be in the EPSG:4326 projection.
-  public onShapesCreated(features: Feature[]) {
+  public onShapesCreated(features: Feature[], transformGeometry = true) {
     console.log(features.map(f => f.getProperties()));
     // Transform geometries into the correct projection
     features.forEach(f => {
-      f.getGeometry().transform('EPSG:4326', 'EPSG:3857');
+      if (transformGeometry) {
+        f.getGeometry().transform('EPSG:4326', 'EPSG:3857');
+      }
+
+      // The ID should be a string in general, so the else-clause turns a number into a string.
+      const id = f.get('id');
+      if (!this.hasIntegerId(f)) {
+        f.set('id', this.findSmallestId(features.concat(this.vectorSource.getFeatures())));
+      } else {
+        f.set('id', id + '');
+      }
+
+      const name = f.get('name');
+      if (!name || name.trim() === '') {
+        f.set('name', f.get('id'));
+      }
     });
 
+    console.log(features);
     features.forEach(f => this.vectorSource.addFeature(f));
 
     this.map.getView().fit(this.vectorSource.getExtent(), {
       size: this.map.getSize(),
       padding: [25, 25, 25, 25] // in pixels
     });
+  }
+
+  findSmallestId(features: Feature[]): string {
+    let currentId = 0;
+
+    this.sortFeaturesById(features).forEach(f => {
+      if (+f.get('id') === currentId) {
+        currentId++;
+      }
+    });
+
+    return currentId + '';
+  }
+
+  sortFeaturesById(features: Feature[]): Feature[] {
+    return features
+      .filter(f => {
+        return this.hasIntegerId(f);
+      })
+      .sort((f1: Feature, f2: Feature) => {
+        return f1.get('id') - f2.get('id');
+      });
+  }
+
+  private hasIntegerId(f: Feature): boolean {
+    const id: number = parseFloat(f.get('id'));
+    return Number.isInteger(id) && id >= 0;
   }
 
   onSelectedShapeSubdivided(features: Feature[]) {
@@ -245,11 +282,6 @@ export class ProjectCreationComponent implements AfterViewInit {
 
   onToggleDelete() {
     this.setInteraction(this.removeInteraction, !this.removeInteraction.getActive());
-  }
-
-  onShapeSelectionRequested() {
-    this.resetToolbarSelectionSubject.next();
-    this.setInteraction(this.selectInteraction, !this.selectInteraction.getActive());
   }
 
   setInteraction(interaction: Interaction, active: boolean) {
