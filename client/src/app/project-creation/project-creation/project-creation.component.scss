@@ -58,3 +58,10 @@
 app-tabs {
 	flex-grow: 1;
 }
+
+.tab-container {
+	display: flex;
+	flex-direction: column;
+	min-height: 0px; // important for scrolling (for whatever reason, s. above)
+	height: 100%; // To enable scrolling within the tab containers
+}

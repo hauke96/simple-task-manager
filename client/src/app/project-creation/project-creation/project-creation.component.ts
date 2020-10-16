@@ -7,7 +7,7 @@ import { OSM } from 'ol/source';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import { Attribution, defaults as defaultControls, ScaleLine } from 'ol/control';
-import { Geometry, Polygon } from 'ol/geom';
+import { Polygon } from 'ol/geom';
 import { Fill, Stroke, Style } from 'ol/style';
 import { Draw } from 'ol/interaction';
 import { NotificationService } from '../../common/notification.service';
@@ -16,7 +16,6 @@ import { CurrentUserService } from '../../user/current-user.service';
 import Snap from 'ol/interaction/Snap';
 import Modify from 'ol/interaction/Modify';
 import Select, { SelectEvent } from 'ol/interaction/Select';
-import GeoJSON from 'ol/format/GeoJSON';
 import { Subject } from 'rxjs';
 import Interaction from 'ol/interaction/Interaction';
 
@@ -121,11 +120,8 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   }
 
   // TODO create TaskDraft class
-  public get taskDrafts(): any[] {
-    return this.vectorSource.getFeatures().map(f => ({
-      id: f.get('id'),
-      name: !!f.get('name') ? f.get('name') : f.get('id')
-    }));
+  public get taskFeatures(): Feature[] {
+    return this.vectorSource.getFeatures();
   }
 
   private addMapInteractions() {

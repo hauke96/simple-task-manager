@@ -7,8 +7,15 @@ import { Feature } from 'ol';
   styleUrls: ['./task-draft-list.component.scss']
 })
 export class TaskDraftListComponent {
-  @Input() public taskDrafts: any[];
+  @Input() public features: Feature[];
   @Input() public selectedPolygon: Feature;
 
   constructor() { }
+
+  public get taskDrafts(): any[] {
+    return this.features.map(f => ({
+      id: f.get('id'),
+      name: !!f.get('name') ? f.get('name') : f.get('id')
+    }));
+  }
 }

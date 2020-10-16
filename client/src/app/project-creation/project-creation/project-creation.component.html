@@ -32,22 +32,17 @@
 					</div>
 				</div>
 
-				<div *ngIf="rootTabs.tabIndex === 1">
-					<h2 class="properties-label" i18n>Tasks:</h2>
-					<div>
-						<app-task-draft-list [taskDrafts]="taskDrafts"
+				<div *ngIf="rootTabs.tabIndex === 1" class="tab-container">
+						<h2 class="properties-label" i18n>Tasks:</h2>
+						<app-task-draft-list [features]="taskFeatures"
 											 [selectedPolygon]="selectedPolygon"></app-task-draft-list>
-					</div>
-					<div>
+
 						<h2 i18n>Subdivide task:</h2>
-						<div class="tab-container">
-							<app-shape-divide [gridCellShape]="gridCellShape"
-											  [gridCellSize]="gridCellSize"
-											  [selectedPolygon]="selectedPolygon"
-											  (shapesCreated)="onSelectedShapeSubdivided($event)"
-											  (shapeSelectionRequested)="onShapeSelectionRequested()"></app-shape-divide>
-						</div>
-					</div>
+						<app-shape-divide [gridCellShape]="gridCellShape"
+										  [gridCellSize]="gridCellSize"
+										  [selectedPolygon]="selectedPolygon"
+										  (shapesCreated)="onSelectedShapeSubdivided($event)"
+										  (shapeSelectionRequested)="onShapeSelectionRequested()"></app-shape-divide>
 				</div>
 
 				<div *ngIf="rootTabs.tabIndex === 2">
