@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProjectService } from '../../project/project.service';
 import { Feature, Map, View } from 'ol';
@@ -18,6 +18,7 @@ import Modify from 'ol/interaction/Modify';
 import Select, { SelectEvent } from 'ol/interaction/Select';
 import { Subject } from 'rxjs';
 import Interaction from 'ol/interaction/Interaction';
+import { ProjectPropertiesComponent } from '../project-properties/project-properties.component';
 
 @Component({
   selector: 'app-project-creation',
@@ -25,10 +26,7 @@ import Interaction from 'ol/interaction/Interaction';
   styleUrls: ['./project-creation.component.scss']
 })
 export class ProjectCreationComponent implements OnInit, AfterViewInit {
-  // Project values
-  public newProjectName: string;
-  public newMaxProcessPoints: number;
-  public projectDescription: string;
+  public projectProperties: any;
 
   // Polygon division values
   public gridCellSize: number;
@@ -57,7 +55,11 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     // Choose some default values
-    this.newMaxProcessPoints = 100;
+    this.projectProperties = {
+      projectName: '',
+      maxProcessPoints: 100,
+      projectDescription: ''
+    };
     this.gridCellShape = 'squareGrid';
     this.gridCellSize = 1000;
   }
@@ -189,7 +191,12 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       return f;
     });
 
-    this.createProject(this.newProjectName, this.newMaxProcessPoints, this.projectDescription, features);
+    this.createProject(
+      this.projectProperties.projectName,
+      this.projectProperties.maxProcessPoints,
+      this.projectProperties.projectDescription,
+      features
+    );
   }
 
   public createProject(name: string, maxProcessPoints: number, projectDescription: string, features: Feature[]) {

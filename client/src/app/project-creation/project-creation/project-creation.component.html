@@ -13,23 +13,7 @@
 			<app-tabs #rootTabs [tabs]="rootTabTitles" [borderless]="true" class="root-tabs">
 				<div *ngIf="rootTabs.tabIndex === 0">
 					<h2 class="properties-label" i18n>Properties:</h2>
-					<div class="form-entry flex-line">
-						<span class="input-field-label" i18n>Name:</span>
-						<input [(ngModel)]="newProjectName" required name="nameField">
-					</div>
-					<div class="form-entry flex-line">
-						<span class="input-field-label" i18n>Max. points per task:</span>
-						<input type="number"
-							   [(ngModel)]="newMaxProcessPoints"
-							   required
-							   name="maxProcessPointsField"
-							   appMinValidator="1">
-					</div>
-					<div class="form-entry">
-						<p i18n>Description:</p>
-						<textarea name="description-text-area" class="description-text-area"
-								  [(ngModel)]="projectDescription"></textarea>
-					</div>
+					<app-project-properties [projectProperties]="projectProperties"></app-project-properties>
 				</div>
 
 				<div *ngIf="rootTabs.tabIndex === 1" class="tab-container">
