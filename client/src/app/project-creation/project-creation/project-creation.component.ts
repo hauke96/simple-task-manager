@@ -7,7 +7,7 @@ import { OSM } from 'ol/source';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import { Attribution, defaults as defaultControls, ScaleLine } from 'ol/control';
-import { Polygon } from 'ol/geom';
+import { Geometry, Polygon } from 'ol/geom';
 import { Fill, Stroke, Style } from 'ol/style';
 import { Draw } from 'ol/interaction';
 import { NotificationService } from '../../common/notification.service';
@@ -121,7 +121,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   }
 
   // TODO create TaskDraft class
-  public get taskDrafts(): any {
+  public get taskDrafts(): any[] {
     return this.vectorSource.getFeatures().map(f => ({
       id: f.get('id'),
       name: !!f.get('name') ? f.get('name') : f.get('id')

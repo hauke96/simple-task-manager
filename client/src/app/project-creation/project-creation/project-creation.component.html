@@ -31,7 +31,11 @@
 				</div>
 
 				<div *ngIf="rootTabs.tabIndex === 1">
+					<h2 class="properties-label" i18n>Tasks:</h2>
 					<div>
+						<div *ngIf="taskDrafts?.length === 0">
+							<span i18n>There are no tasks here yet. Use the pencil-tool to draw tasks or import tasks via the "Upload" or "Remote" tab.</span>
+						</div>
 						<div *ngFor="let t of taskDrafts" class="list-item"
 							 [ngClass]="{'list-item-selected': t.id === selectedPolygon?.get('id')}">
 							<div>
