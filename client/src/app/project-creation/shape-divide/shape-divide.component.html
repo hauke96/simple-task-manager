@@ -3,9 +3,9 @@
 
 	<div class="hline"></div>
 
-	<div>
-		<button class="form-entry" (click)="onSelectTaskClicked()" i18n>Select task</button>
-		<span class="task-selected-label" *ngIf="hasSelectedPolygon" i18n>Task selected </span><i class="lnr lnr-checkmark-circle" *ngIf="hasSelectedPolygon"></i>
+	<div class="selected-task-label">
+		<i class="lnr lnr-checkmark-circle selected-task-label-icon" *ngIf="hasSelectedPolygon"></i><span *ngIf="hasSelectedPolygon" i18n>Task selected </span>
+		<i class="lnr lnr-cross-circle selected-task-label-icon" *ngIf="!hasSelectedPolygon"></i><span *ngIf="!hasSelectedPolygon" i18n>Click on the map to select a task.</span>
 	</div>
 
 	<div class="form-entry flex-line space-between">

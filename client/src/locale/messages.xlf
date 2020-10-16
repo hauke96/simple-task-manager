@@ -419,13 +419,6 @@
           <context context-type="linenumber">2</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="40b26d9e421469f2c3f08f1291550a27dd86ba4d" datatype="html">
-        <source>Select task</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
-          <context context-type="linenumber">7</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="44408118c125445318294c7a1ec080166993294c" datatype="html">
         <source>Task selected </source>
         <context-group purpose="location">
