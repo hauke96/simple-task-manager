@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProjectService } from '../../project/project.service';
 import { Feature, Map, View } from 'ol';
@@ -18,7 +18,7 @@ import Modify from 'ol/interaction/Modify';
 import Select, { SelectEvent } from 'ol/interaction/Select';
 import { Subject } from 'rxjs';
 import Interaction from 'ol/interaction/Interaction';
-import { ProjectPropertiesComponent } from '../project-properties/project-properties.component';
+import { ProjectProperties } from '../project-properties';
 
 @Component({
   selector: 'app-project-creation',
@@ -26,7 +26,7 @@ import { ProjectPropertiesComponent } from '../project-properties/project-proper
   styleUrls: ['./project-creation.component.scss']
 })
 export class ProjectCreationComponent implements OnInit, AfterViewInit {
-  public projectProperties: any;
+  public projectProperties: ProjectProperties;
 
   // Polygon division values
   public gridCellSize: number;

@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { ProjectProperties } from '../project-properties';
 
 @Component({
   selector: 'app-project-properties',
@@ -6,7 +7,7 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./project-properties.component.scss']
 })
 export class ProjectPropertiesComponent {
-  @Input() projectProperties: any;
+  @Input() projectProperties: ProjectProperties;
 
   constructor() {
   }
