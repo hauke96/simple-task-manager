@@ -117,9 +117,9 @@ describe('ProjectCreationComponent', () => {
     const p = new Polygon([[[0, 0]]]);
     const feature = new Feature(p);
 
-    component.projectDescription = description;
-    component.newMaxProcessPoints = maxProcessPoints;
-    component.newProjectName = name;
+    component.projectProperties.projectDescription = description;
+    component.projectProperties.maxProcessPoints = maxProcessPoints;
+    component.projectProperties.projectName = name;
     component.vectorSource.addFeature(feature);
 
     component.onSaveButtonClicked();

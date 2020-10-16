@@ -13,7 +13,7 @@ export class TaskDraftListComponent {
   constructor() { }
 
   public get taskDrafts(): any[] {
-    return this.features.map(f => ({
+    return this.features?.map(f => ({
       id: f.get('id'),
       name: !!f.get('name') ? f.get('name') : f.get('id')
     }));

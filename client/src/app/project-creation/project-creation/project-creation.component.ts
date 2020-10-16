@@ -25,8 +25,8 @@ import { ProjectProperties } from '../project-properties';
   templateUrl: './project-creation.component.html',
   styleUrls: ['./project-creation.component.scss']
 })
-export class ProjectCreationComponent implements OnInit, AfterViewInit {
-  public projectProperties: ProjectProperties;
+export class ProjectCreationComponent implements AfterViewInit {
+  public projectProperties: ProjectProperties = new ProjectProperties('', 100, '');
 
   // Polygon division values
   public selectedPolygon: Feature;
@@ -49,15 +49,6 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     private currentUserService: CurrentUserService,
     private router: Router
   ) {
-  }
-
-  ngOnInit(): void {
-    // Choose some default values
-    this.projectProperties = {
-      projectName: '',
-      maxProcessPoints: 100,
-      projectDescription: ''
-    };
   }
 
   ngAfterViewInit(): void {
