@@ -19,7 +19,6 @@ export class ShapeDivideComponent implements OnInit {
   @Input() public selectedPolygon: Feature;
 
   @Output() public shapesCreated: EventEmitter<Feature[]> = new EventEmitter();
-  @Output() public shapeSelectionRequested: EventEmitter<Feature[]> = new EventEmitter();
 
   constructor(
     private notificationService: NotificationService
@@ -74,9 +73,5 @@ export class ShapeDivideComponent implements OnInit {
     });
 
     this.shapesCreated.emit(newFeatures);
-  }
-
-  onSelectTaskClicked() {
-    this.shapeSelectionRequested.emit();
   }
 }

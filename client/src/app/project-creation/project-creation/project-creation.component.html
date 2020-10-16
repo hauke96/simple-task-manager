@@ -23,8 +23,7 @@
 
 						<h2 i18n>Subdivide task:</h2>
 						<app-shape-divide [selectedPolygon]="selectedPolygon"
-										  (shapesCreated)="onSelectedShapeSubdivided($event)"
-										  (shapeSelectionRequested)="onShapeSelectionRequested()"></app-shape-divide>
+										  (shapesCreated)="onSelectedShapeSubdivided($event)"></app-shape-divide>
 				</div>
 
 				<div *ngIf="rootTabs.tabIndex === 2">
