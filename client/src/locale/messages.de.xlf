@@ -319,6 +319,14 @@
           <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="ed9b07e91b831a27867345b0555adb38712cfff3" datatype="html">
+        <source>Tasks:</source>
+        <target>Aufgaben:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="616e206cb4f25bd5885fc35925365e43cf5fb929" datatype="html">
         <source>Name:</source>
         <target xml:lang="de-DE">Name:</target>
@@ -333,7 +341,7 @@
       </trans-unit>
       <trans-unit id="d46dcf6ff2f4a17168e3bdb14102b9ba787ba741" datatype="html">
         <source>Max. points per task:</source>
-        <target xml:lang="de-DE" state="translated">Max. Punkte pro Task:</target>
+        <target xml:lang="de-DE" state="translated">Max. Punkte pro Aufgabe:</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">18</context>
@@ -341,7 +349,7 @@
       </trans-unit>
       <trans-unit id="31a60780d9cf64bacecb8c3156076ad009988e62" datatype="html">
         <source>Subdivide task:</source>
-        <target xml:lang="de-DE" state="translated">Tasks aufteilen:</target>
+        <target xml:lang="de-DE" state="translated">Aufgaben aufteilen:</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">38</context>
@@ -493,7 +501,7 @@
       </trans-unit>
       <trans-unit id="ae9555ed661c4fc9adf8c6ec71e39c67f05513fe" datatype="html">
         <source>This divides the selected task into smaller tasks of the selected shape and size.</source>
-        <target xml:lang="de-DE" state="translated">Dies teilt den ausgewählten Task in kleinere Tasks der ausgewählten Form und Größe auf.</target>
+        <target xml:lang="de-DE" state="translated">Dies teilt die ausgewählte Aufgabe in kleinere der ausgewählten Form und Größe auf.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
           <context context-type="linenumber">2</context>
@@ -501,7 +509,15 @@
       </trans-unit>
       <trans-unit id="44408118c125445318294c7a1ec080166993294c" datatype="html">
         <source>Task selected </source>
-        <target xml:lang="de-DE" state="translated">Task ausgewählt </target>
+        <target xml:lang="de-DE" state="translated">Aufgabe ausgewählt </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4d8c72b8aa088152b8fe08fb52e7668731501ed5" datatype="html">
+        <source>Click on the map to select a task.</source>
+        <target xml:lang="de-DE" state="translated">Klicke auf die Karte um eine Aufgabe auszuwählen.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
           <context context-type="linenumber">8</context>
@@ -565,7 +581,7 @@
       </trans-unit>
       <trans-unit id="b9ea859581d68175d3d3159a9fa8378254a173a5" datatype="html">
         <source>Upload a GPX, OSM or GeoJSON file, which contains polygons. Each polygon will result in a single task.</source>
-        <target xml:lang="de-DE" state="translated">Eine GPX-, OSM- oder GeoJSON-Datei hochladen, die Polygone enthält. Jedes Polygon wird zu einem eigenen Task.</target>
+        <target xml:lang="de-DE" state="translated">Eine GPX-, OSM- oder GeoJSON-Datei hochladen, die Polygone enthält. Jedes Polygon wird zu einer eigenen Aufgabe.</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/shape-upload/shape-upload.component.html</context>
           <context context-type="linenumber">1</context>
@@ -941,6 +957,14 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
           <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="628b295733edba52d46466df62992b41b162a162" datatype="html">
+        <source>There are no tasks here yet. Use the pencil-tool to draw tasks or import tasks via the &quot;Upload&quot; or &quot;Remote&quot; tab.</source>
+        <target>Es existieren noch keine Aufgaben. Nutze das Stift-Werkzeug um welche zu erstellen oder importiere welche über den "Hochladen" oder "Remote" Tab.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/task-draft-list/task-draft-list.component.html</context>
+          <context context-type="linenumber">2</context>
         </context-group>
       </trans-unit>
     </body>

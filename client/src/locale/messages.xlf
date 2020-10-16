@@ -132,12 +132,12 @@
           <context context-type="linenumber">11</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
-          <context context-type="linenumber">28</context>
-        </context-group>
-        <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project-settings/project-settings.component.html</context>
           <context context-type="linenumber">34</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/project-properties/project-properties.component.html</context>
+          <context context-type="linenumber">14</context>
         </context-group>
         <note priority="1" from="description">Description label</note>
       </trans-unit>
@@ -259,33 +259,22 @@
 		</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
-          <context context-type="linenumber">4</context>
+          <context context-type="linenumber">5</context>
         </context-group>
       </trans-unit>
       <trans-unit id="647cbc795a270aec8cc5703618774909673b0b78" datatype="html">
         <source>Properties:</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
-          <context context-type="linenumber">14</context>
+          <context context-type="linenumber">15</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project-settings/project-settings.component.html</context>
           <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="616e206cb4f25bd5885fc35925365e43cf5fb929" datatype="html">
-        <source>Name:</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
-          <context context-type="linenumber">16</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/project-settings/project-settings.component.html</context>
-          <context context-type="linenumber">30</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="d46dcf6ff2f4a17168e3bdb14102b9ba787ba741" datatype="html">
-        <source>Max. points per task:</source>
+      <trans-unit id="ed9b07e91b831a27867345b0555adb38712cfff3" datatype="html">
+        <source>Tasks:</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">20</context>
@@ -295,7 +284,7 @@
         <source>Subdivide task:</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
-          <context context-type="linenumber">38</context>
+          <context context-type="linenumber">24</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3d243a75c1a16642d9d887827bdaa8e97a8e6e5c" datatype="html">
@@ -353,6 +342,17 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project-settings/project-settings.component.html</context>
           <context context-type="linenumber">18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="616e206cb4f25bd5885fc35925365e43cf5fb929" datatype="html">
+        <source>Name:</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project/project-settings/project-settings.component.html</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/project-properties/project-properties.component.html</context>
+          <context context-type="linenumber">2</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6d5f426f02915905607a0e40b46ca25e89f9ac90" datatype="html">
@@ -421,6 +421,13 @@
       </trans-unit>
       <trans-unit id="44408118c125445318294c7a1ec080166993294c" datatype="html">
         <source>Task selected </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4d8c72b8aa088152b8fe08fb52e7668731501ed5" datatype="html">
+        <source>Click on the map to select a task.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
           <context context-type="linenumber">8</context>
@@ -806,6 +813,20 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
           <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="628b295733edba52d46466df62992b41b162a162" datatype="html">
+        <source>There are no tasks here yet. Use the pencil-tool to draw tasks or import tasks via the &quot;Upload&quot; or &quot;Remote&quot; tab.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/task-draft-list/task-draft-list.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="d46dcf6ff2f4a17168e3bdb14102b9ba787ba741" datatype="html">
+        <source>Max. points per task:</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/project-properties/project-properties.component.html</context>
+          <context context-type="linenumber">6</context>
         </context-group>
       </trans-unit>
     </body>
