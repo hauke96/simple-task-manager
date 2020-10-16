@@ -9,6 +9,7 @@ import { Task, TestTaskFeature, TestTaskGeometry } from '../task/task.material';
 import { UserService } from '../user/user.service';
 import { User } from '../user/user.material';
 import { Project, ProjectDto } from './project.material';
+import GeoJSON from 'ol/format/GeoJSON';
 
 describe('ProjectService', () => {
   let service: ProjectService;
@@ -41,7 +42,14 @@ describe('ProjectService', () => {
       return of(tasks);
     });
 
-    service.createNewProject('project name', 100, 'lorem ipsum', [TestTaskGeometry, TestTaskGeometry, TestTaskGeometry], ['user'], 'user')
+    const format = new GeoJSON();
+
+    service.createNewProject('project name', 100, 'lorem ipsum',
+      [
+        format.readFeature(TestTaskGeometry),
+        format.readFeature(TestTaskGeometry),
+        format.readFeature(TestTaskGeometry)
+      ], ['user'], 'user')
       .subscribe(p => {
         // Only these properties can be checked. All others (like 'owner') are set by the server, which we don't use here
         expect(p.id).toEqual('');

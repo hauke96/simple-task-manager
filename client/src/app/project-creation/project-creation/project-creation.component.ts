@@ -197,16 +197,8 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   }
 
   public createProject(name: string, maxProcessPoints: number, projectDescription: string, features: Feature[]) {
-    const format = new GeoJSON();
-    // We want features to attach attributes and to not be bound to one single Polygon.
-    // Furthermore the escaping in the string breaks the format as the "\" character is actually transmitted as "\" character
-    const geometries: string[] = [];
-    for (const feature of features) {
-      geometries.push(format.writeFeature(feature));
-    }
-
     const owner = this.currentUserService.getUserId();
-    this.projectService.createNewProject(name, maxProcessPoints, projectDescription, geometries, [owner], owner)
+    this.projectService.createNewProject(name, maxProcessPoints, projectDescription, features, [owner], owner)
       .subscribe(project => {
         this.router.navigate(['/manager']);
       }, e => {

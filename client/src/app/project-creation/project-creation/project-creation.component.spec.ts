@@ -55,9 +55,7 @@ describe('ProjectCreationComponent', () => {
     const spyService = spyOn(projectService, 'createNewProject').and.returnValue(of(createProject()));
     const spyRouter = spyOn(routerMock, 'navigate').and.callThrough();
 
-    const feature: Feature[] = [];
-    feature.push(new Feature(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]])));
-    feature.push(new Feature(new Polygon([[[4000, 4000], [5000, 6000], [6000, 4000], [4000, 4000]]])));
+    const feature = getDummyFeatures();
 
     component.createProject(name, 100, 'lorem ipsum', feature);
 
@@ -69,9 +67,7 @@ describe('ProjectCreationComponent', () => {
     const spyService = spyOn(projectService, 'createNewProject').and.returnValue(throwError('BOOM'));
     const spyRouter = spyOn(routerMock, 'navigate').and.callThrough();
 
-    const feature: Feature[] = [];
-    feature.push(new Feature(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]])));
-    feature.push(new Feature(new Polygon([[[4000, 4000], [5000, 6000], [6000, 4000], [4000, 4000]]])));
+    const feature = getDummyFeatures();
 
     component.createProject(name, 100, 'lorem ipsum', feature);
 
@@ -104,9 +100,9 @@ describe('ProjectCreationComponent', () => {
     const spyView = spyOn(component.map.getView(), 'fit');
 
     const feature = new Feature(new Polygon([[[0, 0]]]));
-    component.onShapesUploaded([feature]);
+    component.onShapesCreated([feature]);
 
-    expect(vectorSourceClearSpy).toHaveBeenCalled();
+    expect(vectorSourceClearSpy).not.toHaveBeenCalled();
     expect(vectorSourceAddSpy).toHaveBeenCalledWith(feature);
     expect(spyView).toHaveBeenCalled();
   });
@@ -171,22 +167,13 @@ describe('ProjectCreationComponent', () => {
     component.onToggleDraw();
 
     expect(component.drawInteraction.getActive()).toEqual(true);
-    expect(component.modifyInteraction.getActive()).toEqual(true);
-    expect(component.removeInteraction.getActive()).toEqual(false);
-
-    component.onToggleDraw();
-
-    expect(component.drawInteraction.getActive()).toEqual(false);
     expect(component.modifyInteraction.getActive()).toEqual(false);
     expect(component.removeInteraction.getActive()).toEqual(false);
-  });
-
-  it('should deactivate delete interaction on draw', () => {
-    component.removeInteraction.setActive(true);
+    expect(component.selectInteraction.getActive()).toEqual(false);
 
     component.onToggleDraw();
 
-    expect(component.removeInteraction.getActive()).toEqual(false);
+    allInteractionsDisabled();
   });
 
   it('should toggle delete interactions correctly', () => {
@@ -195,23 +182,49 @@ describe('ProjectCreationComponent', () => {
     expect(component.drawInteraction.getActive()).toEqual(false);
     expect(component.modifyInteraction.getActive()).toEqual(false);
     expect(component.removeInteraction.getActive()).toEqual(true);
+    expect(component.selectInteraction.getActive()).toEqual(false);
 
     component.onToggleDelete();
 
+    allInteractionsDisabled();
+  });
+
+  it('should toggle edit interactions correctly', () => {
+    component.onToggleEdit();
+
+    expect(component.drawInteraction.getActive()).toEqual(false);
+    expect(component.modifyInteraction.getActive()).toEqual(true);
+    expect(component.removeInteraction.getActive()).toEqual(false);
+    expect(component.selectInteraction.getActive()).toEqual(false);
+
+    component.onToggleEdit();
+
+    allInteractionsDisabled();
+  });
+
+  it('should handle divided shape correctly', () => {
+    // @ts-ignore
+    const spyView = spyOn(component.map.getView(), 'fit');
+    component.selectedPolygon = new Feature();
+    component.selectedPolygon.setGeometry(new Polygon([[[0, 0], [2, 0], [1, 1]]]));
+    component.vectorSource.addFeature(component.selectedPolygon);
+
+    const features = getDummyFeatures();
+
+    component.onSelectedShapeSubdivided(features);
+
+    expect(component.vectorSource.getFeatures().length).toEqual(2);
+    expect(component.vectorSource.getFeatures()).toContain(features[0]);
+    expect(component.vectorSource.getFeatures()).toContain(features[1]);
+    expect(spyView).toHaveBeenCalled();
+  });
+
+  function allInteractionsDisabled() {
     expect(component.drawInteraction.getActive()).toEqual(false);
     expect(component.modifyInteraction.getActive()).toEqual(false);
     expect(component.removeInteraction.getActive()).toEqual(false);
-  });
-
-  it('should deactivate draw and modify interaction on delete', () => {
-    component.drawInteraction.setActive(true);
-    component.modifyInteraction.setActive(true);
-
-    component.onToggleDraw();
-
-    expect(component.drawInteraction.getActive()).toEqual(false);
-    expect(component.modifyInteraction.getActive()).toEqual(false);
-  });
+    expect(component.selectInteraction.getActive()).toEqual(false);
+  }
 
   function createProject() {
     const t = new Task('567', undefined, 10, 100, TestTaskFeature);
@@ -219,5 +232,12 @@ describe('ProjectCreationComponent', () => {
     const u2 = new User('test-user2', '234');
     const u3 = new User('test-user3', '345');
     return new Project('1', 'test project', 'lorem ipsum', [t], [u1, u2, u3], u1);
+  }
+
+  function getDummyFeatures() {
+    const feature: Feature[] = [];
+    feature.push(new Feature(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]])));
+    feature.push(new Feature(new Polygon([[[4000, 4000], [5000, 6000], [6000, 4000], [4000, 4000]]])));
+    return feature;
   }
 });
