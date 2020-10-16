@@ -12,6 +12,7 @@ import { Feature } from 'ol';
 import { MockRouter } from '../../common/mock-router';
 import { Task, TestTaskFeature } from '../../task/task.material';
 import { User } from '../../user/user.material';
+import { SelectEvent } from 'ol/interaction/Select';
 
 describe('ProjectCreationComponent', () => {
   let component: ProjectCreationComponent;
@@ -217,6 +218,34 @@ describe('ProjectCreationComponent', () => {
     expect(component.vectorSource.getFeatures()).toContain(features[0]);
     expect(component.vectorSource.getFeatures()).toContain(features[1]);
     expect(spyView).toHaveBeenCalled();
+  });
+
+  it('should remove feature on remove interaction', () => {
+    const features = getDummyFeatures();
+    component.vectorSource.addFeatures(features);
+    expect(component.vectorSource.getFeatures().length).toEqual(2);
+
+    component.removeInteraction.dispatchEvent({
+      type: 'select',
+      selected: [features[0]],
+      deselected: []
+    } as SelectEvent);
+
+    expect(component.vectorSource.getFeatures().length).toEqual(1);
+    expect(component.vectorSource.getFeatures()[0]).toEqual(features[1]);
+  });
+
+  it('should select feature on select interaction', () => {
+    const features = getDummyFeatures();
+    expect(component.selectedPolygon).toBeUndefined();
+
+    component.selectInteraction.dispatchEvent({
+      type: 'select',
+      selected: [features[0]],
+      deselected: []
+    } as SelectEvent);
+
+    expect(component.selectedPolygon).toEqual(features[0]);
   });
 
   function allInteractionsDisabled() {

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProjectService } from '../../project/project.service';
 import { Feature, Map, View } from 'ol';
@@ -147,7 +147,6 @@ export class ProjectCreationComponent implements AfterViewInit {
     this.selectInteraction.on('select', (e: SelectEvent) => {
       this.selectedPolygon = e.selected[0];
     });
-    this.selectInteraction.setActive(false);
     this.map.addInteraction(this.selectInteraction);
   }
 
@@ -223,7 +222,7 @@ export class ProjectCreationComponent implements AfterViewInit {
     this.drawInteraction.setActive(false);
     this.modifyInteraction.setActive(false);
     this.removeInteraction.setActive(false);
-    this.selectInteraction.setActive(false);
+    this.selectInteraction.setActive(true);
 
     this.resetToolbarSelectionSubject.next();
   }
@@ -258,10 +257,15 @@ export class ProjectCreationComponent implements AfterViewInit {
     this.modifyInteraction.setActive(false);
     this.removeInteraction.setActive(false);
 
-    this.selectInteraction.getFeatures().clear();
-    this.selectInteraction.setActive(false);
-
     interaction.setActive(active);
+
+    // When no button active -> Activate select interaction
+    this.selectInteraction.getFeatures().clear();
+    this.selectInteraction.setActive(
+      !this.drawInteraction.getActive() &&
+      !this.modifyInteraction.getActive() &&
+      !this.removeInteraction.getActive()
+    );
 
     this.selectedPolygon = undefined;
   }

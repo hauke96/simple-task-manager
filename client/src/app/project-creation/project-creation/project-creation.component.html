@@ -10,7 +10,7 @@
 <div class="root-container">
 	<div class="project-properties-container">
 		<form #creationForm="ngForm" class="root-form">
-			<app-tabs #rootTabs [tabs]="rootTabTitles" [borderless]="true" class="root-tabs">
+			<app-tabs #rootTabs [tabs]="rootTabTitles" [borderless]="true" class="root-tabs" (tabSelected)="onTabSelected()">
 				<div *ngIf="rootTabs.tabIndex === 0">
 					<h2 class="properties-label" i18n>Properties:</h2>
 					<app-project-properties [projectProperties]="projectProperties"></app-project-properties>
