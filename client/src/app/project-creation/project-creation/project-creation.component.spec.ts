@@ -225,7 +225,7 @@ describe('ProjectCreationComponent', () => {
     expect(component.vectorSource.getFeatures().length).toEqual(2);
     expect(component.vectorSource.getFeatures()).toContain(features[0]);
     expect(component.vectorSource.getFeatures()).toContain(features[1]);
-    expect(spyView).toHaveBeenCalled();
+    expect(spyView).not.toHaveBeenCalled();
   });
 
   it('should add feature on draw interaction', () => {
