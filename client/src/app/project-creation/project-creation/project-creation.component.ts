@@ -190,7 +190,19 @@ export class ProjectCreationComponent implements AfterViewInit {
       });
   }
 
-  // This function expects the geometry to be in the EPSG:4326 projection.
+  /**
+   * This function takes the features and puts them on the map. Use the 'transformGeometry' parameter to control whether the geometry
+   * projection should be adjusted or not.
+   *
+   * All features without any valid ID (check 'hasIntegerId()') will get a new valid ID. If the name is not set, the name property will also
+   * be filled (with the ID of that feature).
+   *
+   * After this pre-processing, each feature is added to the map and the view will be changes so that all features are visible.
+   *
+   * @param features The new feature that should be added to the map
+   * @param transformGeometry Set to false if all feature are already in 'EPSG:3857' (no transformation needed) and to true if the features
+   * are in 'EPSG:4326' projection. Default: true.
+   */
   public onShapesCreated(features: Feature[], transformGeometry = true) {
     console.log(features.map(f => f.getProperties()));
     // Transform geometries into the correct projection
@@ -222,6 +234,15 @@ export class ProjectCreationComponent implements AfterViewInit {
     });
   }
 
+  /**
+   * Goes through all features and finds the smallest non-negative number that's not currently an ID of one of these features.
+   *
+   * ### Example:
+   *
+   * The IDs of the given features are: 4, 1, 2, 0
+   *
+   * The output of this function would be: 3
+   */
   findSmallestId(features: Feature[]): string {
     let currentId = 0;
 
@@ -234,6 +255,9 @@ export class ProjectCreationComponent implements AfterViewInit {
     return currentId + '';
   }
 
+  /**
+   * This does two things: Filter the features by an valid integer ID (see 'hasIntegerId()') and sorts the remaining features by their ID.
+   */
   sortFeaturesById(features: Feature[]): Feature[] {
     return features
       .filter(f => {
@@ -244,6 +268,13 @@ export class ProjectCreationComponent implements AfterViewInit {
       });
   }
 
+  /**
+   * Returns true when the ID of the feature is a non-negative integer.
+   *
+   * Examples when this function will return *true*: 0, 1, '1'
+   *
+   * Examples when this function will return *false*: -1, '-1, undefined, null, 'one', ''
+   */
   private hasIntegerId(f: Feature): boolean {
     const id: number = parseFloat(f.get('id'));
     return Number.isInteger(id) && id >= 0;
