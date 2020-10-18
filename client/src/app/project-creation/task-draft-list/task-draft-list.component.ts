@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Feature } from 'ol';
+import { Component, Input } from '@angular/core';
+import { TaskDraft } from '../task-draft';
 
 @Component({
   selector: 'app-task-draft-list',
@@ -7,15 +7,8 @@ import { Feature } from 'ol';
   styleUrls: ['./task-draft-list.component.scss']
 })
 export class TaskDraftListComponent {
-  @Input() public features: Feature[];
-  @Input() public selectedPolygon: Feature;
+  @Input() public tasks: TaskDraft[];
+  @Input() public selectedTask: TaskDraft;
 
   constructor() { }
-
-  public get taskDrafts(): any[] {
-    return this.features?.map(f => ({
-      id: f.get('id'),
-      name: !!f.get('name') ? f.get('name') : f.get('id')
-    }));
-  }
 }

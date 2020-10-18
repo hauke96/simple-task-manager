@@ -1,11 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { polygon as turfPolygon, Units } from '@turf/helpers';
 import squareGrid from '@turf/square-grid';
 import hexGrid from '@turf/hex-grid';
 import triangleGrid from '@turf/triangle-grid';
 import { Polygon } from 'ol/geom';
-import { Feature } from 'ol';
 import { NotificationService } from '../../common/notification.service';
+import { TaskDraft } from '../task-draft';
+import { TaskDraftService } from '../task-draft.service';
 
 @Component({
   selector: 'app-shape-divide',
@@ -16,12 +17,11 @@ export class ShapeDivideComponent implements OnInit {
   public gridCellSize: number;
   public gridCellShape: string;
 
-  @Input() public selectedPolygon: Feature;
-
-  @Output() public shapesCreated: EventEmitter<Feature[]> = new EventEmitter();
+  @Input() public selectedTask: TaskDraft;
 
   constructor(
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private taskDraftService: TaskDraftService
   ) {
   }
 
@@ -31,11 +31,11 @@ export class ShapeDivideComponent implements OnInit {
   }
 
   public get hasSelectedPolygon(): boolean {
-    return !!this.selectedPolygon;
+    return !!this.selectedTask;
   }
 
   public onDivideButtonClicked() {
-    const polygon = this.selectedPolygon.getGeometry() as Polygon;
+    const polygon = this.selectedTask.geometry as Polygon;
     const extent = polygon.transform('EPSG:3857', 'EPSG:4326').getExtent();
 
     // Use meters and only show grid cells within the original polygon (-> mask)
@@ -44,16 +44,24 @@ export class ShapeDivideComponent implements OnInit {
       mask: turfPolygon(polygon.getCoordinates())
     };
 
+    const cellSize = this.gridCellSize;
+    if (!(cellSize > 0)) {
+      const e = `Invalid cell size ${this.gridCellSize}`;
+      console.error(e);
+      this.notificationService.addError(e);
+      return;
+    }
+
     let grid;
     switch (this.gridCellShape) {
       case 'squareGrid':
-        grid = squareGrid(extent, this.gridCellSize, options);
+        grid = squareGrid(extent, cellSize, options);
         break;
       case 'hexGrid':
-        grid = hexGrid(extent, this.gridCellSize, options);
+        grid = hexGrid(extent, cellSize, options);
         break;
       case 'triangleGrid':
-        grid = triangleGrid(extent, this.gridCellSize, options);
+        grid = triangleGrid(extent, cellSize, options);
         break;
       default:
         const e = `Unknown shape type ${this.gridCellShape}`;
@@ -62,16 +70,14 @@ export class ShapeDivideComponent implements OnInit {
         return;
     }
 
-    const newFeatures = grid.features.map(g => {
-      // Turn geo GeoJSON polygon from turf.js into an openlayers polygon and
-      // transform it into the used coordinate system.
+    const newTasks: TaskDraft[] = grid.features.map(g => {
+      // Turn geo GeoJSON polygon from turf.js into an openlayers polygon
       const geometry = new Polygon(g.geometry.coordinates);
 
-      // create the map feature and set the task-id to select the task when the
-      // polygon has been clicked
-      return new Feature(geometry);
+      return new TaskDraft(undefined, undefined, geometry);
     });
 
-    this.shapesCreated.emit(newFeatures);
+    this.taskDraftService.removeTask(this.taskDraftService.getSelectedTask().id);
+    this.taskDraftService.addTasks(newTasks, true);
   }
 }

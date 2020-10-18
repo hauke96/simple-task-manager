@@ -19,28 +19,27 @@
 
 				<div *ngIf="rootTabs.tabIndex === 1" class="tab-container">
 					<h2 class="properties-label" i18n>Tasks:</h2>
-					<app-task-draft-list [features]="taskFeatures"
-										 [selectedPolygon]="selectedPolygon"></app-task-draft-list>
+					<app-task-draft-list [tasks]="taskDrafts"
+										 [selectedTask]="selectedTask"></app-task-draft-list>
 
-					<div *ngIf="!!selectedPolygon">
+					<div *ngIf="!!selectedTask">
 						<h2 i18n>Task properties:</h2>
 						<app-task-edit></app-task-edit>
 
 						<h2 i18n>Subdivide task:</h2>
-						<app-shape-divide [selectedPolygon]="selectedPolygon"
-										  (shapesCreated)="onSelectedShapeSubdivided($event)"></app-shape-divide>
+						<app-shape-divide [selectedTask]="selectedTask"></app-shape-divide>
 					</div>
 				</div>
 
 				<div *ngIf="rootTabs.tabIndex === 2">
 					<div class="tab-container">
-						<app-shape-upload (featuresUploaded)="onShapesCreated($event)"></app-shape-upload>
+						<app-shape-upload></app-shape-upload>
 					</div>
 				</div>
 
 				<div *ngIf="rootTabs.tabIndex === 3">
 					<div class="tab-container">
-						<app-shape-remote (featuresLoaded)="onShapesCreated($event)"></app-shape-remote>
+						<app-shape-remote></app-shape-remote>
 					</div>
 				</div>
 			</app-tabs>

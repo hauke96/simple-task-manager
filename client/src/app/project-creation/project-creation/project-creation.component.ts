@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProjectService } from '../../project/project.service';
 import { Feature, Map, View } from 'ol';
@@ -20,17 +20,16 @@ import { Subject } from 'rxjs';
 import Interaction from 'ol/interaction/Interaction';
 import { ProjectProperties } from '../project-properties';
 import { DrawEvent } from 'ol/interaction/Draw';
+import { TaskDraftService } from '../task-draft.service';
+import { TaskDraft } from '../task-draft';
 
 @Component({
   selector: 'app-project-creation',
   templateUrl: './project-creation.component.html',
   styleUrls: ['./project-creation.component.scss']
 })
-export class ProjectCreationComponent implements AfterViewInit {
+export class ProjectCreationComponent implements OnInit, AfterViewInit {
   public projectProperties: ProjectProperties = new ProjectProperties('', 100, '');
-
-  // Polygon division values
-  public selectedPolygon: Feature;
 
   // public for tests
   public modifyInteraction: Modify;
@@ -46,10 +45,22 @@ export class ProjectCreationComponent implements AfterViewInit {
 
   constructor(
     private projectService: ProjectService,
+    private taskDraftService: TaskDraftService,
     private notificationService: NotificationService,
     private currentUserService: CurrentUserService,
     private router: Router
   ) {
+  }
+
+  ngOnInit(): void {
+    // TODO unsubscribable
+    this.taskDraftService.tasksAdded.subscribe((tasks: TaskDraft[]) => {
+      this.addTasks(tasks);
+    });
+
+    this.taskDraftService.taskRemoved.subscribe((id: string) => {
+      this.removeTask(id);
+    });
   }
 
   ngAfterViewInit(): void {
@@ -109,8 +120,29 @@ export class ProjectCreationComponent implements AfterViewInit {
     ];
   }
 
-  public get taskFeatures(): Feature[] {
-    return this.vectorSource.getFeatures();
+  public get taskDrafts(): TaskDraft[] {
+    return this.taskDraftService.getTasks();
+  }
+
+  public get selectedTask(): TaskDraft {
+    return this.taskDraftService.getSelectedTask();
+  }
+
+  private addTasks(tasks: TaskDraft[]) {
+    this.vectorSource.addFeatures(tasks.map(t => this.toFeature(t)));
+
+    // TODO check is anythin/everythin? already visible. If not -> fit view
+    // if (fitViewToFeatures) {
+    this.map.getView().fit(this.vectorSource.getExtent(), {
+      size: this.map.getSize(),
+      padding: [25, 25, 25, 25] // in pixels
+    });
+    // }
+  }
+
+  private removeTask(id: string) {
+    const featureToRemove = this.vectorSource.getFeatures().find(f => f.get('id') === id);
+    this.vectorSource.removeFeature(featureToRemove);
   }
 
   private addMapInteractions() {
@@ -121,7 +153,7 @@ export class ProjectCreationComponent implements AfterViewInit {
     this.drawInteraction.setActive(false);
     this.drawInteraction.on('drawend', (e: DrawEvent) => {
       // Add shaped but do not transform them (first *false*) and do not move map view (second *false)
-      this.onShapesCreated([e.feature], false, false);
+      this.taskDraftService.addTasks([this.taskDraftService.toTaskDraft(e.feature)], false);
     });
     this.map.addInteraction(this.drawInteraction);
 
@@ -129,6 +161,7 @@ export class ProjectCreationComponent implements AfterViewInit {
     const snap = new Snap({
       source: this.vectorSource
     });
+    // TODO modify on taskDraftService and create according event
     this.map.addInteraction(snap);
 
     this.modifyInteraction = new Modify({
@@ -140,7 +173,9 @@ export class ProjectCreationComponent implements AfterViewInit {
     // DELETE
     this.removeInteraction = new Select();
     this.removeInteraction.on('select', (e: SelectEvent) => {
-      this.vectorSource.removeFeature(e.selected[0]);
+      if (!!e.selected[0]) {
+        this.taskDraftService.removeTask(e.selected[0].get('id'));
+      }
     });
     this.removeInteraction.setActive(false);
     this.map.addInteraction(this.removeInteraction);
@@ -148,16 +183,21 @@ export class ProjectCreationComponent implements AfterViewInit {
     // SELECT
     this.selectInteraction = new Select();
     this.selectInteraction.on('select', (e: SelectEvent) => {
-      this.selectedPolygon = e.selected[0];
+      if (!!e.selected[0]) {
+        this.taskDraftService.selectTask(e.selected[0].get('id'));
+      } else {
+        this.taskDraftService.deselectTask();
+      }
     });
     this.map.addInteraction(this.selectInteraction);
   }
 
   // See if the vector layer has some features.
   public get hasTasks(): boolean {
-    return !!this.vectorSource && this.vectorSource.getFeatures().length !== 0;
+    return this.taskDraftService.hasTasks();
   }
 
+  // TODO pass TaskDrafts here to "createProject"
   public onSaveButtonClicked() {
     const features: Feature[] = this.vectorSource.getFeatures().map(f => {
       f = f.clone(); // otherwise we would change the polygons on the map
@@ -188,106 +228,6 @@ export class ProjectCreationComponent implements AfterViewInit {
         console.error(e);
         this.notificationService.addError($localize`:@@ERROR_NOT_CREATE_PROJ:Could not create project`);
       });
-  }
-
-  /**
-   * This function takes the features and puts them on the map. Use the *transformGeometry* parameter to control whether the geometry
-   * projection should be adjusted or not.
-   *
-   * All features without any valid ID (check *hasIntegerId()*) will get a new valid ID. If the name is not set, the name property will also
-   * be filled (with the ID of that feature).
-   *
-   * After this pre-processing, each feature is added to the map and - if fitViewToFeatures is *true* - the view will be changes so that all
-   * features are visible.
-   *
-   * @param features The new feature that should be added to the map
-   * @param transformGeometry Default: true. Set to false if all feature are already in 'EPSG:3857' (no transformation needed) and to true
-   * if the features are in 'EPSG:4326' projection.
-   * @param fitViewToFeatures Default: true. Moves the map view so that all features are visible.
-   */
-  public onShapesCreated(features: Feature[], transformGeometry = true, fitViewToFeatures = true) {
-    console.log(features.map(f => f.getProperties()));
-    // Transform geometries into the correct projection
-    features.forEach(f => {
-      if (transformGeometry) {
-        f.getGeometry().transform('EPSG:4326', 'EPSG:3857');
-      }
-
-      // The ID should be a string in general, so the else-clause turns a number into a string.
-      const id = f.get('id');
-      if (!this.hasIntegerId(f)) {
-        f.set('id', this.findSmallestId(features.concat(this.vectorSource.getFeatures())));
-      } else {
-        f.set('id', id + '');
-      }
-
-      const name = f.get('name');
-      if (!name || name.trim() === '') {
-        f.set('name', f.get('id'));
-      }
-    });
-
-    features.forEach(f => this.vectorSource.addFeature(f));
-
-    if (fitViewToFeatures) {
-      this.map.getView().fit(this.vectorSource.getExtent(), {
-        size: this.map.getSize(),
-        padding: [25, 25, 25, 25] // in pixels
-      });
-    }
-  }
-
-  /**
-   * Goes through all features and finds the smallest non-negative number that's not currently an ID of one of these features.
-   *
-   * ### Example:
-   *
-   * The IDs of the given features are: 4, 1, 2, 0
-   *
-   * The output of this function would be: 3
-   */
-  findSmallestId(features: Feature[]): string {
-    let currentId = 0;
-
-    this.sortFeaturesById(features).forEach(f => {
-      if (+f.get('id') === currentId) {
-        currentId++;
-      }
-    });
-
-    return currentId + '';
-  }
-
-  /**
-   * This does two things: Filter the features by an valid integer ID (see *hasIntegerId()*) and sorts the remaining features by their ID.
-   */
-  sortFeaturesById(features: Feature[]): Feature[] {
-    return features
-      .filter(f => {
-        return this.hasIntegerId(f);
-      })
-      .sort((f1: Feature, f2: Feature) => {
-        return f1.get('id') - f2.get('id');
-      });
-  }
-
-  /**
-   * Returns true when the ID of the feature is a non-negative integer.
-   *
-   * Examples when this function will return *true*: 0, 1, '1'
-   *
-   * Examples when this function will return *false*: -1, '-1, undefined, null, 'one', ''
-   */
-  private hasIntegerId(f: Feature): boolean {
-    const id: number = parseFloat(f.get('id'));
-    return Number.isInteger(id) && id >= 0;
-  }
-
-  onSelectedShapeSubdivided(features: Feature[]) {
-    this.vectorSource.removeFeature(this.selectedPolygon);
-    // Do not move the map view because the subdivided polygon is already in the visible area of the map (because the user selected the
-    // polygon manually).
-    this.onShapesCreated(features, true, false);
   }
 
   onTabSelected() {
@@ -335,6 +275,13 @@ export class ProjectCreationComponent implements AfterViewInit {
       !this.removeInteraction.getActive()
     );
 
-    this.selectedPolygon = undefined;
+    this.taskDraftService.deselectTask();
+  }
+
+  public toFeature(task: TaskDraft): Feature {
+    const f = new Feature(task.geometry);
+    f.set('id', task.id);
+    f.set('name', task.name);
+    return f;
   }
 }

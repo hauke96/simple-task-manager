@@ -10,6 +10,8 @@ import { NotificationService } from '../../common/notification.service';
 import { GeometryService } from '../../common/geometry.service';
 import { LoadingService } from '../../common/loading.service';
 import { RouterTestingModule } from '@angular/router/testing';
+import { TaskDraftService } from '../task-draft.service';
+import { TaskDraft } from '../task-draft';
 
 const remoteGeometry = `<?xml version="1.0" encoding="UTF-8"?>
 <osm version="0.6" generator="Overpass API 0.7.56.3 eb200aeb">
@@ -33,6 +35,7 @@ describe('ShapeRemoteComponent', () => {
   let notificationService: NotificationService;
   let geometryService: GeometryService;
   let loadingService: LoadingService;
+  let taskDraftService: TaskDraftService;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -48,6 +51,7 @@ describe('ShapeRemoteComponent', () => {
     notificationService = TestBed.inject(NotificationService);
     geometryService = TestBed.inject(GeometryService);
     loadingService = TestBed.inject(LoadingService);
+    taskDraftService = TestBed.inject(TaskDraftService);
   }));
 
   beforeEach(() => {
@@ -70,9 +74,9 @@ describe('ShapeRemoteComponent', () => {
     const expectedCoordinates = [[[0, 0], [2, 0], [1, 1], [0, 0]]];
 
     spyOn(httpClient, 'get').and.returnValue(of(remoteGeometry));
-    const eventSpy = spyOn(component.featuresLoaded, 'emit').and.callFake((f: Feature[]) => {
-      expect(f.length).toEqual(1);
-      expect((f[0].getGeometry() as Polygon).getCoordinates()).toEqual(expectedCoordinates);
+    const eventSpy = spyOn(taskDraftService, 'addTasks').and.callFake((t: TaskDraft[]) => {
+      expect(t.length).toEqual(1);
+      expect((t[0].geometry as Polygon).getCoordinates()).toEqual(expectedCoordinates);
     });
 
     component.onLoadButtonClicked();
@@ -85,13 +89,13 @@ describe('ShapeRemoteComponent', () => {
     spyOn(geometryService, 'toUsableTaskFeature').and.throwError('Intended test error');
 
     const notificationSpy = spyOn(notificationService, 'addError');
-    const emitSpy = spyOn(component.featuresLoaded, 'emit');
+    const addSpy = spyOn(taskDraftService, 'addTasks');
     const loadingSpy = spyOn(loadingService, 'end');
 
     component.onLoadButtonClicked();
 
     expect(notificationSpy).toHaveBeenCalled();
-    expect(emitSpy).not.toHaveBeenCalled();
+    expect(addSpy).not.toHaveBeenCalled();
     expect(loadingSpy).toHaveBeenCalled();
   });
 
@@ -99,13 +103,13 @@ describe('ShapeRemoteComponent', () => {
     spyOn(httpClient, 'get').and.returnValue(throwError('Intended test error'));
 
     const notificationSpy = spyOn(notificationService, 'addError');
-    const emitSpy = spyOn(component.featuresLoaded, 'emit');
+    const addSpy = spyOn(taskDraftService, 'addTasks');
     const loadingSpy = spyOn(loadingService, 'end');
 
     component.onLoadButtonClicked();
 
     expect(notificationSpy).toHaveBeenCalled();
-    expect(emitSpy).not.toHaveBeenCalled();
+    expect(addSpy).not.toHaveBeenCalled();
     expect(loadingSpy).toHaveBeenCalled();
   });
 });

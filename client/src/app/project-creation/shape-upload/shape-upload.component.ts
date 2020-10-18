@@ -1,10 +1,11 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NotificationService } from '../../common/notification.service';
 import { Feature } from 'ol';
 import { GeoJSON, GPX } from 'ol/format';
 import OSMXML from 'ol/format/OSMXML';
 import FeatureFormat from 'ol/format/Feature';
 import { GeometryService } from '../../common/geometry.service';
+import { TaskDraftService } from '../task-draft.service';
 
 @Component({
   selector: 'app-shape-upload',
@@ -12,11 +13,10 @@ import { GeometryService } from '../../common/geometry.service';
   styleUrls: ['./shape-upload.component.scss']
 })
 export class ShapeUploadComponent implements OnInit {
-  @Output() public featuresUploaded = new EventEmitter<Feature[]>();
-
   constructor(
     private notificationService: NotificationService,
-    private geometryService: GeometryService
+    private geometryService: GeometryService,
+    private taskDraftService: TaskDraftService
   ) {
   }
 
@@ -32,14 +32,14 @@ export class ShapeUploadComponent implements OnInit {
     reader.onload = (evt) => {
       try {
         const features = this.fileToFeatures(file.name, evt.target.result);
-        this.featuresUploaded.emit(features);
+        this.taskDraftService.addTasks(features.map(f => this.taskDraftService.toTaskDraft(f)));
       } catch (e) {
         this.notificationService.addError(e);
       }
     };
     reader.onerror = (evt) => {
       console.error(evt);
-      this.notificationService.addError($localize`:@@ERROR_COULD_NOT_UPLOAD:Could not upload file '${ (evt.target as any).files[0] }:INTERPOLATION:'`);
+      this.notificationService.addError($localize`:@@ERROR_COULD_NOT_UPLOAD:Could not upload file '${(evt.target as any).files[0]}:INTERPOLATION:'`);
     };
   }
 
