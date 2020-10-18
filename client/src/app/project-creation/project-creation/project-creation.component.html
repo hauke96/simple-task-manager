@@ -10,20 +10,21 @@
 <div class="root-container">
 	<div class="project-properties-container">
 		<form #creationForm="ngForm" class="root-form">
-			<app-tabs #rootTabs [tabs]="rootTabTitles" [borderless]="true" class="root-tabs" (tabSelected)="onTabSelected()">
+			<app-tabs #rootTabs [tabs]="rootTabTitles" [borderless]="true" class="root-tabs"
+					  (tabSelected)="onTabSelected()">
 				<div *ngIf="rootTabs.tabIndex === 0">
 					<h2 class="properties-label" i18n>Properties:</h2>
 					<app-project-properties [projectProperties]="projectProperties"></app-project-properties>
 				</div>
 
 				<div *ngIf="rootTabs.tabIndex === 1" class="tab-container">
-						<h2 class="properties-label" i18n>Tasks:</h2>
-						<app-task-draft-list [features]="taskFeatures"
-											 [selectedPolygon]="selectedPolygon"></app-task-draft-list>
+					<h2 class="properties-label" i18n>Tasks:</h2>
+					<app-task-draft-list [features]="taskFeatures"
+										 [selectedPolygon]="selectedPolygon"></app-task-draft-list>
 
-						<h2 i18n>Subdivide task:</h2>
-						<app-shape-divide [selectedPolygon]="selectedPolygon"
-										  (shapesCreated)="onSelectedShapeSubdivided($event)"></app-shape-divide>
+					<h2 i18n>Subdivide task:</h2>
+					<app-shape-divide [selectedPolygon]="selectedPolygon"
+									  (shapesCreated)="onSelectedShapeSubdivided($event)"></app-shape-divide>
 				</div>
 
 				<div *ngIf="rootTabs.tabIndex === 2">
