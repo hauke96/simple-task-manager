@@ -285,7 +285,8 @@ export class ProjectCreationComponent implements AfterViewInit {
 
   onSelectedShapeSubdivided(features: Feature[]) {
     this.vectorSource.removeFeature(this.selectedPolygon);
-    // Do not move the map view because the subdivided polygon is already in the visible area of the map (because the user selected the polygon manually).
+    // Do not move the map view because the subdivided polygon is already in the visible area of the map (because the user selected the
+    // polygon manually).
     this.onShapesCreated(features, true, false);
   }
 
