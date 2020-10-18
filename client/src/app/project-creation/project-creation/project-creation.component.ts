@@ -116,12 +116,12 @@ export class ProjectCreationComponent implements AfterViewInit {
   private addMapInteractions() {
     // DRAW
     this.drawInteraction = new Draw({
-      // source: this.vectorSource,
       type: GeometryType.POLYGON
     });
     this.drawInteraction.setActive(false);
     this.drawInteraction.on('drawend', (e: DrawEvent) => {
-      this.onShapesCreated([e.feature], false);
+      // Add shaped but do not transform them (first *false*) and do not move map view (second *false)
+      this.onShapesCreated([e.feature], false, false);
     });
     this.map.addInteraction(this.drawInteraction);
 
@@ -191,19 +191,21 @@ export class ProjectCreationComponent implements AfterViewInit {
   }
 
   /**
-   * This function takes the features and puts them on the map. Use the 'transformGeometry' parameter to control whether the geometry
+   * This function takes the features and puts them on the map. Use the *transformGeometry* parameter to control whether the geometry
    * projection should be adjusted or not.
    *
-   * All features without any valid ID (check 'hasIntegerId()') will get a new valid ID. If the name is not set, the name property will also
+   * All features without any valid ID (check *hasIntegerId()*) will get a new valid ID. If the name is not set, the name property will also
    * be filled (with the ID of that feature).
    *
-   * After this pre-processing, each feature is added to the map and the view will be changes so that all features are visible.
+   * After this pre-processing, each feature is added to the map and - if fitViewToFeatures is *true* - the view will be changes so that all
+   * features are visible.
    *
    * @param features The new feature that should be added to the map
-   * @param transformGeometry Set to false if all feature are already in 'EPSG:3857' (no transformation needed) and to true if the features
-   * are in 'EPSG:4326' projection. Default: true.
+   * @param transformGeometry Default: true. Set to false if all feature are already in 'EPSG:3857' (no transformation needed) and to true
+   * if the features are in 'EPSG:4326' projection.
+   * @param fitViewToFeatures Default: true. Moves the map view so that all features are visible.
    */
-  public onShapesCreated(features: Feature[], transformGeometry = true) {
+  public onShapesCreated(features: Feature[], transformGeometry = true, fitViewToFeatures = true) {
     console.log(features.map(f => f.getProperties()));
     // Transform geometries into the correct projection
     features.forEach(f => {
@@ -225,13 +227,14 @@ export class ProjectCreationComponent implements AfterViewInit {
       }
     });
 
-    console.log(features);
     features.forEach(f => this.vectorSource.addFeature(f));
 
-    this.map.getView().fit(this.vectorSource.getExtent(), {
-      size: this.map.getSize(),
-      padding: [25, 25, 25, 25] // in pixels
-    });
+    if (fitViewToFeatures) {
+      this.map.getView().fit(this.vectorSource.getExtent(), {
+        size: this.map.getSize(),
+        padding: [25, 25, 25, 25] // in pixels
+      });
+    }
   }
 
   /**
@@ -256,7 +259,7 @@ export class ProjectCreationComponent implements AfterViewInit {
   }
 
   /**
-   * This does two things: Filter the features by an valid integer ID (see 'hasIntegerId()') and sorts the remaining features by their ID.
+   * This does two things: Filter the features by an valid integer ID (see *hasIntegerId()*) and sorts the remaining features by their ID.
    */
   sortFeaturesById(features: Feature[]): Feature[] {
     return features
@@ -282,7 +285,8 @@ export class ProjectCreationComponent implements AfterViewInit {
 
   onSelectedShapeSubdivided(features: Feature[]) {
     this.vectorSource.removeFeature(this.selectedPolygon);
-    this.onShapesCreated(features);
+    // Do not move the map view because the subdivided polygon is already in the visible area of the map (because the user selected the polygon manually).
+    this.onShapesCreated(features, true, false);
   }
 
   onTabSelected() {
