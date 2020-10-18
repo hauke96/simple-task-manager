@@ -2,15 +2,18 @@ import { TestBed } from '@angular/core/testing';
 import { AuthGuard } from './auth.guard';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { MockRouter } from '../common/mock-router';
+import { AuthService } from './auth.service';
 
 describe('AuthGuard', () => {
   let guard: AuthGuard;
+  let authService: AuthService;
 
   const mockRouter = new MockRouter();
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
+        AuthService,
         AuthGuard,
         {
           provide: Router,
@@ -20,6 +23,7 @@ describe('AuthGuard', () => {
     });
 
     guard = TestBed.inject(AuthGuard);
+    authService = TestBed.inject(AuthService);
   });
 
   it('should be created', () => {
@@ -27,6 +31,8 @@ describe('AuthGuard', () => {
   });
 
   it('should not activate LoginComponent for logged-in user', () => {
+    spyOn(authService, 'isAuthenticated').and.returnValue(true);
+
     localStorage.setItem('auth_token', 'foo'); // -> logged-in user
 
     const canActivate = guard.canActivate({
@@ -40,6 +46,7 @@ describe('AuthGuard', () => {
 
   it('should route from login to manager for logged-in user', () => {
     const routerSpy = spyOn(mockRouter, 'navigateByUrl');
+    spyOn(authService, 'isAuthenticated').and.returnValue(true);
 
     localStorage.setItem('auth_token', 'foo'); // -> logged-in user
 
@@ -80,6 +87,7 @@ describe('AuthGuard', () => {
 
   it('should activate any component for logged-in user', () => {
     const routerSpy = spyOn(mockRouter, 'navigateByUrl');
+    spyOn(authService, 'isAuthenticated').and.returnValue(true);
 
     localStorage.setItem('auth_token', 'foo'); // -> logged-in user
 

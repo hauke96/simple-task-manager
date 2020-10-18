@@ -13,25 +13,13 @@ export class AuthService {
     private router: Router,
     private notificationService: NotificationService
   ) {
-    // if already logged in, then get the user name and store it locally in the user service
-    if (this.isAuthenticated()) {
-      this.setUserNameFromToken();
-    } else {
-      this.logout();
-    }
   }
 
   public setUserNameFromToken() {
-    try {
-      const encodedToken = localStorage.getItem('auth_token');
-      const decodedToken = atob(encodedToken);
-      const token = JSON.parse(decodedToken);
-      this.currentUserService.setUser(token.user, token.uid);
-    } catch (e) {
-      console.error(e);
-      this.notificationService.addError('Unable to get user name from token');
-      this.logout();
-    }
+    const encodedToken = localStorage.getItem('auth_token');
+    const decodedToken = atob(encodedToken);
+    const token = JSON.parse(decodedToken);
+    this.currentUserService.setUser(token.user, token.uid);
   }
 
   public isAuthenticated(): boolean {
@@ -67,7 +55,12 @@ export class AuthService {
     // Is authenticated and the timer exists (otherwise we'll get an error when
     // we try to reset it)
     if (this.isAuthenticated() && !!timer) {
-      this.setUserNameFromToken();
+      try {
+        this.setUserNameFromToken();
+      } catch (e) {
+        console.error(e);
+        this.notificationService.addError('Unable to get user name from token');
+      }
 
       clearInterval(timer);
 
