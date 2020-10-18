@@ -35,6 +35,7 @@ import { SelectedLanguageGuard } from './common/selected-language.guard';
 import { DrawingToolbarComponent } from './project-creation/drawing-toolbar/drawing-toolbar.component';
 import { TaskDraftListComponent } from './project-creation/task-draft-list/task-draft-list.component';
 import { ProjectPropertiesComponent } from './project-creation/project-properties/project-properties.component';
+import { TaskEditComponent } from './project-creation/task-edit/task-edit.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +65,8 @@ import { ProjectPropertiesComponent } from './project-creation/project-propertie
     LanguageSelectionComponent,
     DrawingToolbarComponent,
     TaskDraftListComponent,
-    ProjectPropertiesComponent
+    ProjectPropertiesComponent,
+    TaskEditComponent
   ],
   imports: [
     BrowserModule,

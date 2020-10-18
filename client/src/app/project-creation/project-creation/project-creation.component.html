@@ -22,9 +22,14 @@
 					<app-task-draft-list [features]="taskFeatures"
 										 [selectedPolygon]="selectedPolygon"></app-task-draft-list>
 
-					<h2 i18n>Subdivide task:</h2>
-					<app-shape-divide [selectedPolygon]="selectedPolygon"
-									  (shapesCreated)="onSelectedShapeSubdivided($event)"></app-shape-divide>
+					<div *ngIf="!!selectedPolygon">
+						<h2 i18n>Task properties:</h2>
+						<app-task-edit></app-task-edit>
+
+						<h2 i18n>Subdivide task:</h2>
+						<app-shape-divide [selectedPolygon]="selectedPolygon"
+										  (shapesCreated)="onSelectedShapeSubdivided($event)"></app-shape-divide>
+					</div>
 				</div>
 
 				<div *ngIf="rootTabs.tabIndex === 2">
