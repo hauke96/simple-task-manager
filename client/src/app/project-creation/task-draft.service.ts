@@ -11,6 +11,7 @@ export class TaskDraftService {
 
   public tasksAdded: EventEmitter<TaskDraft[]> = new EventEmitter<TaskDraft[]>();
   public taskRemoved: EventEmitter<string> = new EventEmitter<string>();
+  public taskChanged: EventEmitter<TaskDraft> = new EventEmitter<TaskDraft>();
 
   constructor() {
   }
@@ -42,6 +43,17 @@ export class TaskDraftService {
 
       this.taskRemoved.emit(id);
     }
+  }
+
+  public changeTaskName(id: string, name: string) {
+    const task = this.tasks.find(t => t.id === id);
+    task.name = name;
+
+    if (this.selectedTask.id === id) {
+      this.selectedTask = task;
+    }
+
+    this.taskChanged.emit(task);
   }
 
   public toTaskDraft(feature: Feature): TaskDraft {

@@ -24,7 +24,7 @@
 
 					<div *ngIf="!!selectedTask">
 						<h2 i18n>Task properties:</h2>
-						<app-task-edit></app-task-edit>
+						<app-task-edit [task]="selectedTask"></app-task-edit>
 
 						<h2 i18n>Subdivide task:</h2>
 						<app-shape-divide [selectedTask]="selectedTask"></app-shape-divide>

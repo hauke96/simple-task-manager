@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { TaskDraft } from '../task-draft';
+import { TaskDraftService } from '../task-draft.service';
 
 @Component({
   selector: 'app-task-edit',
@@ -9,9 +10,15 @@ import { TaskDraft } from '../task-draft';
 export class TaskEditComponent implements OnInit {
   @Input() task: TaskDraft;
 
-  constructor() { }
+  constructor(
+    private taskDraftService: TaskDraftService
+  ) {
+  }
 
   ngOnInit(): void {
   }
 
+  onTaskNameChanged(enteredName: any) {
+    this.taskDraftService.changeTaskName(this.task.id, enteredName);
+  }
 }

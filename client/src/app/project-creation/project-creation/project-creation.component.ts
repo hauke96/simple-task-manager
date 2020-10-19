@@ -61,6 +61,11 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     this.taskDraftService.taskRemoved.subscribe((id: string) => {
       this.removeTask(id);
     });
+
+    this.taskDraftService.taskChanged.subscribe((task: TaskDraft) => {
+      this.removeTask(task.id);
+      this.addTasks([task]);
+    });
   }
 
   ngAfterViewInit(): void {
