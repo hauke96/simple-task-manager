@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { TaskDraft } from '../task-draft';
+import { TaskDraftService } from '../task-draft.service';
 
 @Component({
   selector: 'app-task-draft-list',
@@ -10,5 +11,12 @@ export class TaskDraftListComponent {
   @Input() public tasks: TaskDraft[];
   @Input() public selectedTask: TaskDraft;
 
-  constructor() { }
+  constructor(
+    private taskDraftService: TaskDraftService
+  ) {
+  }
+
+  onTaskClicked(id: string) {
+    this.taskDraftService.selectTask(id);
+  }
 }
