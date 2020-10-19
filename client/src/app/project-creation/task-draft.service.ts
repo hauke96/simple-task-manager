@@ -10,7 +10,7 @@ export class TaskDraftService {
   public tasksAdded: EventEmitter<TaskDraft[]> = new EventEmitter<TaskDraft[]>();
   public taskRemoved: EventEmitter<string> = new EventEmitter<string>();
   public taskChanged: EventEmitter<TaskDraft> = new EventEmitter<TaskDraft>();
-  public taskSelected: EventEmitter<string> = new EventEmitter<string>();
+  public taskSelected: EventEmitter<void> = new EventEmitter();
 
   constructor() {
   }
@@ -21,7 +21,7 @@ export class TaskDraftService {
 
   public selectTask(id: string) {
     this.selectedTask = this.tasks.find(t => t.id === id);
-    this.taskSelected.emit(id);
+    this.taskSelected.emit();
   }
 
   public deselectTask() {

@@ -68,7 +68,8 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       this.removeTask(id);
     });
 
-    this.taskDraftService.taskSelected.subscribe((id: string) => {
+    this.taskDraftService.taskSelected.subscribe(() => {
+      this.previewVectorSource.clear();
       this.vectorLayer.changed();
     });
 
@@ -279,6 +280,8 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     this.modifyInteraction.setActive(false);
     this.removeInteraction.setActive(false);
     this.selectInteraction.setActive(true);
+
+    this.previewVectorSource.clear();
 
     this.resetToolbarSelectionSubject.next();
   }
