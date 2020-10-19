@@ -22,6 +22,7 @@ import { ProjectProperties } from '../project-properties';
 import { DrawEvent } from 'ol/interaction/Draw';
 import { TaskDraftService } from '../task-draft.service';
 import { TaskDraft } from '../task-draft';
+import { FeatureLike } from 'ol/Feature';
 
 @Component({
   selector: 'app-project-creation',
@@ -39,7 +40,9 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   public selectInteraction: Select;
 
   public vectorSource: VectorSource;
+  private vectorLayer: VectorLayer;
   public previewVectorSource: VectorSource;
+  private previewVectorLayer: VectorLayer;
 
   // For the toolbar
   public resetToolbarSelectionSubject: Subject<void> = new Subject<void>();
@@ -65,6 +68,10 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       this.removeTask(id);
     });
 
+    this.taskDraftService.taskSelected.subscribe((id: string) => {
+      this.vectorLayer.changed();
+    });
+
     this.taskDraftService.taskChanged.subscribe((task: TaskDraft) => {
       this.removeTask(task.id);
       this.addTasks([task]);
@@ -72,33 +79,18 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // Simple style function the the polygons
-    const style = (feature, resolution) => {
-      const borderColor = '#26a69a90';
-      const fillColor = '#80cbc430';
-
-      return new Style({
-        stroke: new Stroke({
-          color: borderColor,
-          width: 2,
-        }),
-        fill: new Fill({
-          color: fillColor
-        })
-      });
-    };
-
     // this vector source contains all the task geometries
     this.vectorSource = new VectorSource();
-    const vectorLayer = new VectorLayer({
+    this.vectorLayer = new VectorLayer({
       source: this.vectorSource,
-      style
+      style: (f, r) => this.getStyle(f)
     });
 
     // this vector source contains all the task geometries for a preview
     this.previewVectorSource = new VectorSource();
-    const previewVectorLayer = new VectorLayer({
-      source: this.previewVectorSource // TODO style
+    this.previewVectorLayer = new VectorLayer({
+      source: this.previewVectorSource,
+      style: this.getPreviewStyle()
     });
 
     this.map = new Map({
@@ -111,8 +103,8 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
         new TileLayer({
           source: new OSM()
         }),
-        vectorLayer,
-        previewVectorLayer
+        this.vectorLayer,
+        this.previewVectorLayer
       ],
       view: new View({
         center: [1110161, 7085688],
@@ -124,6 +116,39 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     });
 
     this.addMapInteractions();
+  }
+
+  private getStyle(feature: FeatureLike): Style {
+    const borderColor = '#00968890';
+    let fillColor = '#80cbc4';
+
+    // Less opaque, when selected
+    if (!!this.selectedTask && feature.get('id') === this.selectedTask.id) {
+      fillColor += '80';
+    } else {
+      fillColor += '40';
+    }
+
+    return new Style({
+      stroke: new Stroke({
+        color: borderColor,
+        width: 2,
+      }),
+      fill: new Fill({
+        color: fillColor
+      })
+    });
+  }
+
+  private getPreviewStyle(): Style {
+    const borderColor = '#009688';
+
+    return new Style({
+      stroke: new Stroke({
+        color: borderColor,
+        width: 2,
+      })
+    });
   }
 
   public get rootTabTitles(): string[] {
@@ -196,7 +221,10 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     this.map.addInteraction(this.removeInteraction);
 
     // SELECT
-    this.selectInteraction = new Select();
+    this.selectInteraction = new Select({
+      layers: [this.vectorLayer],
+      style: null
+    });
     this.selectInteraction.on('select', (e: SelectEvent) => {
       if (!!e.selected[0]) {
         this.taskDraftService.selectTask(e.selected[0].get('id'));
