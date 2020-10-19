@@ -2,9 +2,7 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { TaskDraft } from './task-draft';
 import { Feature } from 'ol';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class TaskDraftService {
   private tasks: TaskDraft[] = [];
   private selectedTask: TaskDraft;

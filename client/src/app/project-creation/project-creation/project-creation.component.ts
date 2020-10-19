@@ -26,7 +26,8 @@ import { TaskDraft } from '../task-draft';
 @Component({
   selector: 'app-project-creation',
   templateUrl: './project-creation.component.html',
-  styleUrls: ['./project-creation.component.scss']
+  styleUrls: ['./project-creation.component.scss'],
+  providers: [TaskDraftService]
 })
 export class ProjectCreationComponent implements OnInit, AfterViewInit {
   public projectProperties: ProjectProperties = new ProjectProperties('', 100, '');
