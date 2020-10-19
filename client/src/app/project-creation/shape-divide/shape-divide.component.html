@@ -25,5 +25,6 @@
 		</select>
 	</div>
 
-	<button (click)="onDivideButtonClicked()" [disabled]="!divisionForm.form.valid && !hasSelectedPolygon" i18n>Divide</button>
+	<button (click)="onPreviewButtonClicked()" [disabled]="!divisionForm.form.valid && !hasSelectedPolygon" i18n>Preview</button>
+	<button (click)="onDivideButtonClicked()" [disabled]="!divisionForm.form.valid && !hasSelectedPolygon" class="divide-button" i18n>Divide</button>
 </form>

@@ -37,7 +37,9 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   public drawInteraction: Draw;
   public removeInteraction: Select;
   public selectInteraction: Select;
+
   public vectorSource: VectorSource;
+  public previewVectorSource: VectorSource;
 
   // For the toolbar
   public resetToolbarSelectionSubject: Subject<void> = new Subject<void>();
@@ -93,6 +95,12 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       style
     });
 
+    // this vector source contains all the task geometries for a preview
+    this.previewVectorSource = new VectorSource();
+    const previewVectorLayer = new VectorLayer({
+      source: this.previewVectorSource // TODO style
+    });
+
     this.map = new Map({
       target: 'map',
       controls: defaultControls().extend([
@@ -103,7 +111,8 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
         new TileLayer({
           source: new OSM()
         }),
-        vectorLayer
+        vectorLayer,
+        previewVectorLayer
       ],
       view: new View({
         center: [1110161, 7085688],
@@ -282,6 +291,11 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     );
 
     this.taskDraftService.deselectTask();
+  }
+
+  onDividePreviewClicked(taskDrafts: TaskDraft[]) {
+    this.previewVectorSource.clear();
+    this.previewVectorSource.addFeatures(taskDrafts.map(t => this.toFeature(t)));
   }
 
   public toFeature(task: TaskDraft): Feature {
