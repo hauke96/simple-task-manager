@@ -687,17 +687,9 @@
           <context context-type="linenumber">6</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ERROR_PARSING_OSM_DATA" datatype="html">
-        <source>Error parsing loaded OSM data</source>
-        <target xml:lang="de-DE">Fehler beim Einlesen von geladenen OSM-Daten</target>
-<context-group purpose="location">
-          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">7</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="ERROR_OVERPASS_NO_POLYGONS" datatype="html">
-        <source>No usable polygons have been found. Make sure the output format is set to 'out:xml' and the result contains actual polygons.</source>
-        <target state="translated">Keine Polygone gefunden. Es müssen der Parameter 'out:xml' gesetzt und tatsächliche Polygone vorhanden sein.</target>
+        <source>No polygons exist or data has unknown format. Supported formats are: GeoJson, OSM-XML, GPX, KML, EsriJson and WKT.</source>
+        <target state="translated">Kein Polygon gefunden oder Daten sind in einem unbekannten Format. Unterstütze Formate sind: GeoJSON, OSM-XML, GPX, KML, EsriJson und WKT.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">8</context>

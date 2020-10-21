@@ -2,6 +2,9 @@ import { Injectable } from '@angular/core';
 import { Geometry, GeometryCollection, LinearRing, LineString, MultiLineString, MultiPolygon, Polygon } from 'ol/geom';
 import GeometryType from 'ol/geom/GeometryType';
 import { Feature } from 'ol';
+import FeatureFormat from 'ol/format/Feature';
+import { EsriJSON, GeoJSON, GPX, KML, WKT } from 'ol/format';
+import OSMXML from 'ol/format/OSMXML';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +12,54 @@ import { Feature } from 'ol';
 export class GeometryService {
 
   constructor() {
+  }
+
+  public parseData(data: string | ArrayBuffer): Feature[] {
+    let format: FeatureFormat = new GeoJSON();
+    let features: Feature[] = this.dataToFeatures(format, data);
+
+    const formats = [
+      new GeoJSON(),
+      new OSMXML(),
+      new GPX(),
+      new EsriJSON(),
+      new KML(),
+      new WKT()
+    ];
+
+    let nextFormat: FeatureFormat;
+
+    for (let i = 0; i < formats.length; i++) {
+      nextFormat = formats[i];
+
+      // If i>0 then the first try wasn't successful
+      if (i > 0) {
+        console.log(`${format.constructor.name} parsing failed, try ${nextFormat.constructor.name} format`);
+      }
+
+      format = nextFormat;
+
+      features = this.dataToFeatures(format, data);
+      if (!!features) {
+        break;
+      }
+    }
+
+    return features;
+  }
+
+  private dataToFeatures(format: FeatureFormat, data: string | ArrayBuffer): Feature[] {
+    try {
+      const features = format.readFeatures(data) as Feature[];
+
+      if (!features || features.length === 0) {
+        return undefined;
+      }
+
+      return [].concat(...features.map(f => this.toUsableTaskFeature(f)));
+    } catch {
+      return undefined;
+    }
   }
 
   // Some editors (like JOSM) dont create a "Polygon" feature for a closed ring but a "LineString" feature. This, however, is not usable for

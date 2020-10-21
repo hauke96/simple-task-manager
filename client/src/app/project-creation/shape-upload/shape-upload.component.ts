@@ -1,9 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { NotificationService } from '../../common/notification.service';
-import { Feature } from 'ol';
-import { GeoJSON, GPX } from 'ol/format';
-import OSMXML from 'ol/format/OSMXML';
-import FeatureFormat from 'ol/format/Feature';
 import { GeometryService } from '../../common/geometry.service';
 import { TaskDraftService } from '../task-draft.service';
 
@@ -31,8 +27,13 @@ export class ShapeUploadComponent implements OnInit {
 
     reader.onload = (evt) => {
       try {
-        const features = this.fileToFeatures(file.name, evt.target.result);
-        this.taskDraftService.addTasks(features.map(f => this.taskDraftService.toTaskDraft(f)));
+        const features = this.geometryService.parseData(evt.target.result);
+
+        if (!!features && features.length !== 0) {
+          this.taskDraftService.addTasks(features.map(f => this.taskDraftService.toTaskDraft(f)));
+        } else {
+          this.notificationService.addError($localize`:@@ERROR_OVERPASS_NO_POLYGONS:No polygons exist or data has unknown format. Supported formats are: GeoJson, OSM-XML, GPX, KML, EsriJson and WKT.`);
+        }
       } catch (e) {
         this.notificationService.addError(e);
       }
@@ -41,27 +42,5 @@ export class ShapeUploadComponent implements OnInit {
       console.error(evt);
       this.notificationService.addError($localize`:@@ERROR_COULD_NOT_UPLOAD:Could not upload file '${(evt.target as any).files[0]}:INTERPOLATION:'`);
     };
-  }
-
-  public fileToFeatures(fileName: any, content: string | ArrayBuffer): Feature[] {
-    let features: Feature[];
-
-    if (fileName.toLowerCase().endsWith('.gpx')) {
-      features = this.dataToFeatures(content, new GPX());
-    } else if (fileName.toLowerCase().endsWith('.geojson')) {
-      features = this.dataToFeatures(content, new GeoJSON());
-    } else if (fileName.toLowerCase().endsWith('.osm')) {
-      features = this.dataToFeatures(content, new OSMXML());
-    } else {
-      throw new Error(`Unknown file type of file ${fileName}`);
-    }
-
-    return features;
-  }
-
-  public dataToFeatures(content: string | ArrayBuffer, format: FeatureFormat): Feature[] {
-    const features: Feature[] = [];
-    (format.readFeatures(content) as Feature[]).forEach(f => features.push(...this.geometryService.toUsableTaskFeature(f)));
-    return features;
   }
 }
