@@ -7,18 +7,28 @@
 	width: 100%;
 	position: absolute;
 	display: flex;
+	flex-direction: column;
 }
 
 .info-container,
 .error-container,
-.warning-container {
-	height: 50px;
-	background-color: #ffffffc0;
+.warning-container,
+.loading-container {
+	display: flex;
+	width: 100%;
 	border-bottom: $color-light 1px solid;
+	min-height: 50px;
 }
 
 .text-box {
 	margin-right: $space-large;
+}
+
+.loading-container {
+	background-color: #ffffffa0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .info-container{
