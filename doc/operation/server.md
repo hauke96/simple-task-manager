@@ -38,16 +38,17 @@ First steps before we start:
 
 # 3 SSH setup
 
-It would be cool to use public-/private-key authentication, ban `root` from ssh and don't allow `sudo` or even `su`, but not always is everything working as expected, to here just the basics:
+The plan is to use public-key-authentication and to change some `sshd` configs.
 
-* Change port of SSH to a number you like. This doesn't offer real protection, but a lot of people try to brute force into SSH using port 22. A lot. Thousands every day.
-    * `vim /etc/ssh/sshd_config`
+* Edit the `sshd` config file: `vim /etc/ssh/sshd_config`
     * Change the line `#Port 22` into e.g. `Port 4242`
         * Important: Remember that number for the firewall config below
-    * Optional: Disable SSH root-login also in that file, change the `PermitRootLogin` line to `PermitRootLogin no`
-* Disable `su` so that `stm` cannot login as root
-    * `vim /etc/pam.d/su`
-    * Remove the `#` in the line with `pam_wheel.so`
+    * Disable SSH root-login. Change the `PermitRootLogin` line to `PermitRootLogin no`
+        * Disable SSH password-login. Change the `PasswordAuthentication` line to `PasswordAuthentication no`
+* Copy your public SSH key. This requires a working SSH-setup on your private machine, so make sure you have a `~/.ssh/id_rsa.pub` file (or any other pubkey file you can use).
+    * use `ssh-copy-id` or manually copy content of the `.pub` file to your servers `~/.ssh/authorized_keys` and make sure the permissions are on 600 (if not, execute `chmod 600 ~/.ssh/authorized_keys`)
+
+Test the setup using `ssh -p 4242 foo@bar.com`. A succeeded login without entering a password means that the SSH-setup is completed. 
 
 # 4 LetsEncrypt
 
@@ -120,7 +121,7 @@ Check logs and firewall:
 Manual checks:
 
 * `ping stm.hauke-stieler.de`: Should work. Checks whether firewall accepts ping-requests and if server is on.
-* `ssh root@stm.hauke-stieler.de`: Should not work, also not for the `stm` user.
+* `ssh root@stm.hauke-stieler.de`: Should not work. Login with `stm` should not require password but valid SSH key.
 * `psql -h stm.hauke-stieler.de`: Should not work. If you get asked for a password, then the firewall isn't blocking incoming traffic in ports other than ssh, `8080` and `433`.
 * Open `https://stm.hauke-stieler.de:8080/info`: Should work, so the firewall accepts port 8080 requests.
 * Open `https://stm.hauke-stieler.de`: Should work, this is the normal front page.
