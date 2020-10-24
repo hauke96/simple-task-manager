@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { TaskDraftService } from './task-draft.service';
 import { Polygon } from 'ol/geom';
-import { TaskDraft } from './task-draft';
+import { TaskDraft } from '../task/task.material';
 
 describe('TaskDraftService', () => {
   let service: TaskDraftService;

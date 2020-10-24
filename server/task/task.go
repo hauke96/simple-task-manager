@@ -10,6 +10,11 @@ import (
 	"strings"
 )
 
+type TaskDraftDto struct {
+	MaxProcessPoints int    `json:"maxProcessPoints"`
+	Geometry         string `json:"geometry"`
+}
+
 type Task struct {
 	Id               string `json:"id"`
 	ProcessPoints    int    `json:"processPoints"`
@@ -43,12 +48,8 @@ func (s *TaskService) GetTasks(projectId string, requestingUserId string) ([]*Ta
 }
 
 // AddTasks sets the ID of the tasks and adds them to the storage.
-func (s *TaskService) AddTasks(newTasks []*Task, projectId string) ([]*Task, error) {
+func (s *TaskService) AddTasks(newTasks []TaskDraftDto, projectId string) ([]*Task, error) {
 	for _, t := range newTasks {
-		if t.ProcessPoints < 0 || t.MaxProcessPoints < 1 || t.MaxProcessPoints < t.ProcessPoints {
-			return nil, errors.New(fmt.Sprintf("process points of task are out of range (%d / %d)", t.ProcessPoints, t.MaxProcessPoints))
-		}
-
 		// Check for valid geojson
 		feature, err := geojson.UnmarshalFeature([]byte(t.Geometry))
 		if err != nil {

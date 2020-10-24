@@ -80,7 +80,7 @@ func (s *storePg) getProjectByTask(taskId string) (*Project, error) {
 }
 
 // addProject adds the given project draft and assigns an ID to the project.
-func (s *storePg) addProject(draft *Project) (*Project, error) {
+func (s *storePg) addProject(draft *ProjectDraftDto) (*Project, error) {
 	query := fmt.Sprintf("INSERT INTO %s (name, description, users, owner) VALUES($1, $2, $3, $4) RETURNING *", s.table)
 
 	project, err := s.execQuery(query, draft.Name, draft.Description, pq.Array(draft.Users), draft.Owner)
@@ -88,15 +88,6 @@ func (s *storePg) addProject(draft *Project) (*Project, error) {
 		return nil, err
 	}
 
-	for _, taskId := range draft.TaskIDs {
-		query = fmt.Sprintf("INSERT INTO %s (project_id, id) VALUES($1, $2)", s.taskTable)
-		err := s.execRawQuery(query, project.Id, taskId)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	project.TaskIDs = draft.TaskIDs
 	return project, nil
 }
 

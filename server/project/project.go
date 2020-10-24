@@ -10,6 +10,13 @@ import (
 	"strings"
 )
 
+type ProjectDraftDto struct {
+	Name        string   `json:"name"`
+	Description string   `json:"description"`
+	Users       []string `json:"users"`
+	Owner       string   `json:"owner"`
+}
+
 type Project struct {
 	Id                 string   `json:"id"`
 	Name               string   `json:"name"`
@@ -78,7 +85,7 @@ func (s *ProjectService) GetProjectByTask(taskId string, userId string) (*Projec
 
 // AddProjectWithTasks takes the project and the tasks and adds them to the database. This also adds the process-point
 // metadata to the returned project.
-func (s *ProjectService) AddProjectWithTasks(projectDraft *Project, taskDrafts []*task.Task) (*Project, error) {
+func (s *ProjectService) AddProjectWithTasks(projectDraft *ProjectDraftDto, taskDrafts []task.TaskDraftDto) (*Project, error) {
 	//
 	// Store project
 	//
@@ -112,11 +119,7 @@ func (s *ProjectService) AddProjectWithTasks(projectDraft *Project, taskDrafts [
 
 // AddProject adds the project, as requested by user "userId". This does NOT fill the metadata information because
 // there're not necessarily tasks yet.
-func (s *ProjectService) AddProject(projectDraft *Project) (*Project, error) {
-	if projectDraft.Id != "" {
-		return nil, errors.New("Id not empty")
-	}
-
+func (s *ProjectService) AddProject(projectDraft *ProjectDraftDto) (*Project, error) {
 	if projectDraft.Owner == "" {
 		return nil, errors.New("Owner must be set")
 	}

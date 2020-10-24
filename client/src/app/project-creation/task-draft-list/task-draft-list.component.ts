@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { TaskDraft } from '../task-draft';
+import { TaskDraft } from '../../task/task.material';
 import { TaskDraftService } from '../task-draft.service';
 
 @Component({

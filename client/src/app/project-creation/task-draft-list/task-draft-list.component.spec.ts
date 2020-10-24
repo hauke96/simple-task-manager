@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TaskDraftListComponent } from './task-draft-list.component';
-import { TaskDraft } from '../task-draft';
+import { TaskDraft } from '../../task/task.material';
 
 describe('TaskDraftListComponent', () => {
   let component: TaskDraftListComponent;

@@ -11,7 +11,7 @@ import { GeometryService } from '../../common/geometry.service';
 import { LoadingService } from '../../common/loading.service';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TaskDraftService } from '../task-draft.service';
-import { TaskDraft } from '../task-draft';
+import { TaskDraft } from '../../task/task.material';
 
 const remoteGeometry = `<?xml version="1.0" encoding="UTF-8"?>
 <osm version="0.6" generator="Overpass API 0.7.56.3 eb200aeb">

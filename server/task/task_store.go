@@ -85,14 +85,14 @@ func (s *storePg) getTask(taskId string) (*Task, error) {
 	return task, nil
 }
 
-func (s *storePg) addTasks(newTasks []*Task, projectId string) ([]*Task, error) {
+func (s *storePg) addTasks(newTasks []TaskDraftDto, projectId string) ([]*Task, error) {
 	taskIds := make([]string, 0)
 
 	// TODO Do not add one by one but instead build one large query (otherwise it's really slow)
 	for _, t := range newTasks {
-		id, err := s.addTask(t, projectId)
+		id, err := s.addTask(&t, projectId)
 		if err != nil {
-			s.Err("error adding task '%s'", t.Id)
+			s.Err("error adding task: %s", err.Error())
 			return nil, err
 		}
 
@@ -102,9 +102,9 @@ func (s *storePg) addTasks(newTasks []*Task, projectId string) ([]*Task, error) 
 	return s.getTasks(projectId)
 }
 
-func (s *storePg) addTask(task *Task, projectId string) (string, error) {
+func (s *storePg) addTask(task *TaskDraftDto, projectId string) (string, error) {
 	query := fmt.Sprintf("INSERT INTO %s(process_points, max_process_points, geometry, assigned_user, project_id) VALUES($1, $2, $3, $4, $5) RETURNING %s;", s.table, returnValues)
-	t, err := s.execQuery(query, task.ProcessPoints, task.MaxProcessPoints, task.Geometry, task.AssignedUser, projectId)
+	t, err := s.execQuery(query, 0, task.MaxProcessPoints, task.Geometry, "", projectId)
 
 	if err != nil {
 		return "", err

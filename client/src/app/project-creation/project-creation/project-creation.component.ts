@@ -21,7 +21,7 @@ import Interaction from 'ol/interaction/Interaction';
 import { ProjectProperties } from '../project-properties';
 import { DrawEvent } from 'ol/interaction/Draw';
 import { TaskDraftService } from '../task-draft.service';
-import { TaskDraft } from '../task-draft';
+import { TaskDraft } from '../../task/task.material';
 import { FeatureLike } from 'ol/Feature';
 
 @Component({

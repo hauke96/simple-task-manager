@@ -15,7 +15,7 @@ import { User } from '../../user/user.material';
 import { SelectEvent } from 'ol/interaction/Select';
 import { DrawEvent } from 'ol/interaction/Draw';
 import { TaskDraftService } from '../task-draft.service';
-import { TaskDraft } from '../task-draft';
+import { TaskDraft } from '../../task/task.material';
 
 describe('ProjectCreationComponent', () => {
   let component: ProjectCreationComponent;

@@ -1,8 +1,8 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, mergeMap, tap } from 'rxjs/operators';
-import { Project, ProjectAddDto, ProjectDto } from './project.material';
-import { Task, TaskDto } from './../task/task.material';
+import { Project, ProjectAddDto, ProjectDraftDto, ProjectDto } from './project.material';
+import { Task, TaskDraftDto, TaskDto } from './../task/task.material';
 import { TaskService } from './../task/task.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
@@ -104,8 +104,8 @@ export class ProjectService {
     }
 
     const p = new ProjectAddDto(
-      new ProjectDto('', name, projectDescription, users, owner),
-      geometries.map(g => new TaskDto('', 0, maxProcessPoints, g))
+      new ProjectDraftDto(name, projectDescription, users, owner),
+      geometries.map(g => new TaskDraftDto(maxProcessPoints, g))
     );
 
     return this.http.post<ProjectDto>(environment.url_projects, JSON.stringify(p))

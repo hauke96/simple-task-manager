@@ -1,5 +1,5 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { TaskDraft } from './task-draft';
+import { TaskDraft } from '../task/task.material';
 import { Feature } from 'ol';
 
 @Injectable()

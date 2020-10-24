@@ -1,6 +1,26 @@
 import { Feature } from 'ol';
-import { Polygon } from 'ol/geom';
+import { Geometry, Polygon } from 'ol/geom';
 import { User } from '../user/user.material';
+
+export class TaskDraftDto {
+  /**
+   * @param maxProcessPoints Amount of process points to complete this task.
+   * @param geometry Polygon feature encoded as GeoJSON.
+   */
+  constructor(
+    public maxProcessPoints: number,
+    public geometry: string
+  ) {
+  }
+}
+export class TaskDraft {
+  constructor(
+    public id: string,
+    public name: string,
+    public geometry: Geometry
+  ) {
+  }
+}
 
 export class TaskDto {
   constructor(

@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ShapeDivideComponent } from './shape-divide.component';
 import { FormsModule } from '@angular/forms';
 import { Polygon } from 'ol/geom';
-import { TaskDraft } from '../task-draft';
+import { TaskDraft } from '../../task/task.material';
 import { TaskDraftService } from '../task-draft.service';
 import { Feature } from 'ol';
 

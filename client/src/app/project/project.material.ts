@@ -1,9 +1,18 @@
 import { User } from '../user/user.material';
-import { Task, TaskDto } from '../task/task.material';
+import { Task, TaskDraftDto } from '../task/task.material';
 
 export class ProjectAddDto {
-  constructor(public project: ProjectDto,
-              public tasks: TaskDto[]) {
+  constructor(public project: ProjectDraftDto,
+              public tasks: TaskDraftDto[]) {
+  }
+}
+
+export class ProjectDraftDto {
+  constructor(public name: string,
+              public description: string,
+              public users: string[],
+              public owner: string
+  ) {
   }
 }
 
