@@ -20,13 +20,12 @@ The `{cfg}` parameter value is the key to the user configuration which was set f
 The `{url}` parameter value is the URL of the Simple-Task-Manager landing page, where this call redirects to after successful authentication.
 When redirecting to `{url}`, the `token={token}` query parameter is set so that the client can get the token from within the URL.
 
-# v2.4
+# v2.5
 
-**New in v2.4**
-* Removed endpoint `POST /v2.4/tasks`
-* Add tasks to endpoint `POST /v2.4/project`
+**Changes in v2.5**
+* Separate DTOs for tasks and project creation for `POST /v2.5/projects`
 
-Everything else is the same as in v2.3.
+Everything else is the same as in v2.4.
 
 ### Authentication
 
@@ -38,7 +37,7 @@ Authorization: eyJ2...In0=
 
 ### Updates via websockets
 
-Connect to `/v2.4/updates` and receive updates for the requesting user.
+Connect to `/v2.5/updates` and receive updates for the requesting user.
 
 #### Authentication
 
@@ -62,11 +61,11 @@ Every update is packed into a message of the following format:
 
 ### Projects
 
-##### GET  `/v2.4/projects`
+##### GET  `/v2.5/projects`
 
 Gets all projects for the requesting user.
 
-##### POST  `/v2.4/projects`
+##### POST  `/v2.5/projects`
 
 Adds the project and tasks as given in the body:
 
@@ -80,8 +79,6 @@ Adds the project and tasks as given in the body:
   },
   "tasks": [
       {
-        "id":"",
-        "processPoints":0,
         "maxProcessPoints":100,
         "geometry":"{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[9.9,53.5],[9.92,53.55],[9.94,53.55]]]},\"properties\":{\"name\":\"Atlantis\"}}}"
       }
@@ -89,66 +86,67 @@ Adds the project and tasks as given in the body:
 }
 ```
 
-**The `project` object**:
+**The project DTO**:
 
 The `owner`, `users` and `name` fields *must* be set.
+The optional `description` has a maximum possible length of 10000 characters.
 
-The `description` has a maximum possible length of 10000 characters.
+The `id` field will be ignored when set, it's filled by the server.
 
-**The `tasks` array**:
+**The task DTOs**:
 
 At least one task has to be part of this array.
 
-The `id` field must stay empty, it's filled by the server.
+The `id` field will be ignored when set, it's filled by the server.
 
-The `geometry` must be a valid GeoJSON string.
-The `name` value in the `properties` is optional but will be displayed the clients task list.
-It's okay to not specify the `properties` field, to set it to `null` or `{}`.
+The `geometry` *must* be a valid GeoJSON string.
+The `name` property of the geometry is optional but will be displayed the clients task list.
+It's okay to not specify the `properties` field at all, to set it to `null` or `{}`.
 Only Polygons are supported, there's no guarantee that anything else will work at all.
 
-##### GET  `/v2.4/projects/{id}`
+##### GET  `/v2.5/projects/{id}`
 
 Returns the project with the given ID. The requesting user (specified by the token) must be **member** of the project.
 
-##### DELETE  `/v2.4/projects/{id}`
+##### DELETE  `/v2.5/projects/{id}`
 
 Deletes the project with the given ID. The requesting user (specified by the token) must be **owner** of the project.
 
-##### PUT `/v2.4/project/{id}/name`
+##### PUT `/v2.5/project/{id}/name`
 
 Updates the name of the given project. The name must be in the request body. The requesting user (specified by the token) must be **owner** of the project.
 
-##### PUT`/v2.4/project/{id}/description`
+##### PUT`/v2.5/project/{id}/description`
          
 Updates the description of the given project. The description must be in the request body. The requesting user (specified by the token) must be **owner** of the project.
 
-##### POST `/v2.4/projects/{id}/users?uid={uid}`
+##### POST `/v2.5/projects/{id}/users?uid={uid}`
 
 Adds the user with id `{uid}` to the project. The requesting user (specified by the token) must be **owner** of the project.
 
-##### DELETE `/v2.4/projects/{id}/users`
+##### DELETE `/v2.5/projects/{id}/users`
 
 Removes the requesting user (specified by the token) from the project. The requesting user (specified by the token) must be **member** of the project.
 
-##### DELETE `/v2.4/projects/{id}/users/{uid}`
+##### DELETE `/v2.5/projects/{id}/users/{uid}`
 
 Removes the user with the id `{uid}` from the project. The requesting user (specified by the token) must either be the **owner** of the project or must be removing himself.
 
 ### Tasks
 
-##### GET  `/v2.4/projects/{id}/tasks`
+##### GET  `/v2.5/projects/{id}/tasks`
 
 Gets the tasks of project `{id}`. The requesting user (specified by the token) must be **member** of the project.
 
-##### POST `/v2.4/tasks/{id}/assignedUser`
+##### POST `/v2.5/tasks/{id}/assignedUser`
 
 Assigns the requesting user (specified by the token) to the task with id `{id}`. The requesting user (specified by the token) must be **member** of the project.
 
-##### DELETE `/v2.4/tasks/{id}/assignedUser`
+##### DELETE `/v2.5/tasks/{id}/assignedUser`
 
 Unassigns the requesting user (specified by the token) from the task with id `{id}`. When `needsAssignment=true`: Only the **assigned** user can unassign himself, you cannot unassign other users.
 
-##### POST `/v2.4/tasks/{id}/processPoints?process_points={points}`
+##### POST `/v2.5/tasks/{id}/processPoints?process_points={points}`
 
 Sets the amount of process points of the task with id `{id}` to `{points}` which must be an integer. When `needsAssignment=true`:  Only the currently **assigned** user can do this.
 
