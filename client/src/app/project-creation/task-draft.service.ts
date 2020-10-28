@@ -21,7 +21,10 @@ export class TaskDraftService {
 
   public selectTask(id: string) {
     this.selectedTask = this.tasks.find(t => t.id === id);
-    this.taskSelected.emit();
+
+    if (!!this.selectedTask) {
+      this.taskSelected.emit();
+    }
   }
 
   public deselectTask() {
@@ -50,7 +53,7 @@ export class TaskDraftService {
     const task = this.tasks.find(t => t.id === id);
     task.name = name;
 
-    if (this.selectedTask.id === id) {
+    if (!!this.selectedTask && this.selectedTask.id === id) {
       this.selectedTask = task;
     }
 

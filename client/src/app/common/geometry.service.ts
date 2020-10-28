@@ -40,7 +40,7 @@ export class GeometryService {
       format = nextFormat;
 
       features = this.dataToFeatures(format, data);
-      if (!!features) {
+      if (features.length > 0) {
         break;
       }
     }
@@ -53,12 +53,12 @@ export class GeometryService {
       const features = format.readFeatures(data) as Feature[];
 
       if (!features || features.length === 0) {
-        return undefined;
+        return [];
       }
 
       return [].concat(...features.map(f => this.toUsableTaskFeature(f)));
     } catch {
-      return undefined;
+      return [];
     }
   }
 

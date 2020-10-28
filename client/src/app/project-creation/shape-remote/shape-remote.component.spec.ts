@@ -4,7 +4,6 @@ import { ShapeRemoteComponent } from './shape-remote.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HttpClient } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
-import { Feature } from 'ol';
 import { Polygon } from 'ol/geom';
 import { NotificationService } from '../../common/notification.service';
 import { GeometryService } from '../../common/geometry.service';
@@ -43,7 +42,8 @@ describe('ShapeRemoteComponent', () => {
       imports: [
         HttpClientTestingModule,
         RouterTestingModule.withRoutes([])
-      ]
+      ],
+      providers: [TaskDraftService]
     })
       .compileComponents();
 
@@ -51,12 +51,12 @@ describe('ShapeRemoteComponent', () => {
     notificationService = TestBed.inject(NotificationService);
     geometryService = TestBed.inject(GeometryService);
     loadingService = TestBed.inject(LoadingService);
-    taskDraftService = TestBed.inject(TaskDraftService);
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ShapeRemoteComponent);
     component = fixture.componentInstance;
+    taskDraftService = fixture.debugElement.injector.get(TaskDraftService);
     fixture.detectChanges();
   });
 

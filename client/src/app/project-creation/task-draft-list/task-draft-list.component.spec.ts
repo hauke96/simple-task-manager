@@ -1,17 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TaskDraftListComponent } from './task-draft-list.component';
-import { TaskDraft } from '../../task/task.material';
+import { TaskDraftService } from '../task-draft.service';
 
 describe('TaskDraftListComponent', () => {
   let component: TaskDraftListComponent;
   let fixture: ComponentFixture<TaskDraftListComponent>;
+  let taskDraftService: TaskDraftService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [TaskDraftListComponent]
+      declarations: [TaskDraftListComponent],
+      providers: [TaskDraftService]
     })
       .compileComponents();
+
+    taskDraftService = TestBed.inject(TaskDraftService);
   });
 
   beforeEach(() => {
@@ -22,5 +26,13 @@ describe('TaskDraftListComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should select task on service', () => {
+    const spy = spyOn(taskDraftService, 'selectTask');
+
+    component.onTaskClicked('123');
+
+    expect(spy).toHaveBeenCalledWith('123');
   });
 });

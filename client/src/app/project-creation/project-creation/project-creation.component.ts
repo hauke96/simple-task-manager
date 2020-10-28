@@ -226,7 +226,8 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     this.removeInteraction = new Select();
     this.removeInteraction.on('select', (e: SelectEvent) => {
       if (!!e.selected[0]) {
-        this.taskDraftService.removeTask(e.selected[0].get('id'));
+        let id = e.selected[0].get('id');
+        this.taskDraftService.removeTask(id);
       }
     });
     this.removeInteraction.setActive(false);

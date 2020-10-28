@@ -8,7 +8,9 @@ describe('TaskDraftService', () => {
   let service: TaskDraftService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [TaskDraftService]
+    });
     service = TestBed.inject(TaskDraftService);
   });
 
@@ -115,6 +117,111 @@ describe('TaskDraftService', () => {
     expect(sortedTasks[0]).toEqual(tasks[7]);
     expect(sortedTasks[1]).toEqual(tasks[1]);
     expect(sortedTasks[2]).toEqual(tasks[0]);
+  });
+
+  it('should return tasks', () => {
+    expect(service.getTasks()).toEqual([]);
+
+    const tasks = [new TaskDraft('123', 'some name', new Polygon([]))];
+    // @ts-ignore
+    service.tasks = tasks;
+    expect(service.getTasks()).toEqual(tasks);
+  });
+
+  it('should select task correctly and fire event', () => {
+    expect(service.getSelectedTask()).toEqual(undefined);
+
+    const spyEvent = spyOn(service.taskSelected, 'emit');
+    const tasks = [
+      new TaskDraft('1', 'some name', new Polygon([])),
+      new TaskDraft('123', 'some name', new Polygon([])),
+      new TaskDraft('238754', 'some name', new Polygon([]))
+    ];
+    // @ts-ignore
+    service.tasks = tasks;
+    service.selectTask('123');
+
+    expect(service.getSelectedTask().id).toEqual('123');
+    expect(spyEvent).toHaveBeenCalled();
+  });
+
+  it('should not select anything on unknown task id', () => {
+    expect(service.getSelectedTask()).toEqual(undefined);
+
+    const spyEvent = spyOn(service.taskSelected, 'emit');
+    const tasks = [
+      new TaskDraft('1', 'some name', new Polygon([])),
+      new TaskDraft('123', 'some name', new Polygon([])),
+      new TaskDraft('238754', 'some name', new Polygon([]))
+    ];
+    // @ts-ignore
+    service.tasks = tasks;
+    service.selectTask('999999');
+
+    expect(service.getSelectedTask()).toEqual(undefined);
+    expect(spyEvent).not.toHaveBeenCalled();
+  });
+
+  it('should remove existing task', () => {
+    const spyEvent = spyOn(service.taskRemoved, 'emit');
+    const tasks = [
+      new TaskDraft('1', 'some name', new Polygon([])),
+      new TaskDraft('123', 'some name', new Polygon([])),
+      new TaskDraft('238754', 'some name', new Polygon([]))
+    ];
+    // @ts-ignore
+    service.tasks = tasks;
+
+    service.removeTask('123');
+
+    expect(service.getTasks().map(t => t.id)).not.toContain('123');
+    expect(spyEvent).toHaveBeenCalled();
+  });
+
+  it('should deselect removed task', () => {
+    const tasks = [
+      new TaskDraft('1', 'some name', new Polygon([])),
+      new TaskDraft('123', 'some name', new Polygon([])),
+      new TaskDraft('238754', 'some name', new Polygon([]))
+    ];
+    // @ts-ignore
+    service.tasks = tasks;
+    // @ts-ignore
+    service.selectedTask = tasks[1];
+
+    service.removeTask('123');
+
+    expect(service.getSelectedTask()).toEqual(undefined);
+  });
+
+  it('should rename task correctly', () => {
+    const spyEvent = spyOn(service.taskChanged, 'emit');
+    const tasks = [
+      new TaskDraft('123', 'some name', new Polygon([])),
+    ];
+    // @ts-ignore
+    service.tasks = tasks;
+
+    service.changeTaskName('123', 'new name');
+
+    expect(service.getTasks()[0].name).toEqual('new name');
+    expect(spyEvent).toHaveBeenCalledWith(tasks[0]);
+  });
+
+  it('should also rename selected task correctly', () => {
+    const spyEvent = spyOn(service.taskChanged, 'emit');
+    const tasks = [
+      new TaskDraft('123', 'some name', new Polygon([])),
+    ];
+    // @ts-ignore
+    service.tasks = tasks;
+    // @ts-ignore
+    service.selectTask('123');
+
+    service.changeTaskName('123', 'new name');
+
+    expect(service.getSelectedTask().name).toEqual('new name');
+    expect(spyEvent).toHaveBeenCalledWith(tasks[0]);
   });
 
   function createTaskDraftById(props?: any): TaskDraft {

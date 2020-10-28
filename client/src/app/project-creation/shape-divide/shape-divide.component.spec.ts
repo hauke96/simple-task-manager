@@ -5,7 +5,6 @@ import { FormsModule } from '@angular/forms';
 import { Polygon } from 'ol/geom';
 import { TaskDraft } from '../../task/task.material';
 import { TaskDraftService } from '../task-draft.service';
-import { Feature } from 'ol';
 
 describe('ShapeDivideComponent', () => {
   let component: ShapeDivideComponent;
@@ -17,7 +16,8 @@ describe('ShapeDivideComponent', () => {
       imports: [
         FormsModule
       ],
-      declarations: [ShapeDivideComponent]
+      declarations: [ShapeDivideComponent],
+      providers: [TaskDraftService]
     })
       .compileComponents();
 
