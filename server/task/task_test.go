@@ -92,22 +92,21 @@ func TestGetTasksUnknownProject(t *testing.T) {
 
 func TestAddTasks(t *testing.T) {
 	h.Run(t, func() error {
-		rawTask := &Task{
-			ProcessPoints:    5,
+		rawTask := TaskDraftDto{
 			MaxProcessPoints: 250,
 			Geometry:         "{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[0,0],[1,0]]]},\"properties\":null}",
-			AssignedUser:     "Mark",
 		}
 
-		addedTasks, err := s.AddTasks([]*Task{rawTask}, "1")
+		addedTasks, err := s.AddTasks([]TaskDraftDto{rawTask}, "1")
 		if err != nil {
 			return errors.New(fmt.Sprintf("Error: %s\n", err.Error()))
 		}
 
 		addedTask := addedTasks[1] // [0] is the original task from the dummy data
-		if addedTask.AssignedUser != "Mark" ||
-			addedTask.MaxProcessPoints != 250 ||
-			addedTask.ProcessPoints != 5 {
+		if addedTask.AssignedUser != "" ||
+			addedTask.MaxProcessPoints != rawTask.MaxProcessPoints ||
+			addedTask.Geometry != rawTask.Geometry ||
+			addedTask.ProcessPoints != 0 {
 			return errors.New(fmt.Sprintf("Added task does not match:\n%v\n%v\n", rawTask, addedTask))
 		}
 		return nil
@@ -117,44 +116,23 @@ func TestAddTasks(t *testing.T) {
 func TestAddTasksInvalidProcessPoints(t *testing.T) {
 	h.Run(t, func() error {
 		// Max points = 0 is not allowed
-		rawTask := &Task{
-			ProcessPoints:    0,
+		rawTask := TaskDraftDto{
 			MaxProcessPoints: 0,
 			Geometry:         "{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[0,0],[1,0]]]},\"properties\":null}",
-			AssignedUser:     "Mark",
 		}
 
-		_, err := s.AddTasks([]*Task{rawTask}, "1")
+		_, err := s.AddTasks([]TaskDraftDto{rawTask}, "1")
 		if err == nil {
 			return errors.New(fmt.Sprintf("Adding task with maxProcessPoints=0 should not be possible"))
 		}
 		s.Log(err.Error())
 
-		// More points than max is not allowed
-		rawTask.ProcessPoints = 20
-		rawTask.MaxProcessPoints = 10
-
-		_, err = s.AddTasks([]*Task{rawTask}, "1")
-		if err == nil {
-			return errors.New(fmt.Sprintf("Adding task with more than maxProcessPoints should not be possible"))
-		}
-
 		// Negative numbers aren't allowed
-		rawTask.ProcessPoints = 0
 		rawTask.MaxProcessPoints = -5
 
-		_, err = s.AddTasks([]*Task{rawTask}, "1")
+		_, err = s.AddTasks([]TaskDraftDto{rawTask}, "1")
 		if err == nil {
 			return errors.New(fmt.Sprintf("Adding task with negative maxProcessPoints should not be possible"))
-		}
-
-		// Even negative numbers aren't allowed
-		rawTask.ProcessPoints = -5
-		rawTask.MaxProcessPoints = 10
-
-		_, err = s.AddTasks([]*Task{rawTask}, "1")
-		if err == nil {
-			return errors.New(fmt.Sprintf("Adding task with negative processPoints should not be possible"))
 		}
 		return nil
 	})
@@ -162,36 +140,34 @@ func TestAddTasksInvalidProcessPoints(t *testing.T) {
 
 func TestAddTasksInvalidGeometry(t *testing.T) {
 	h.Run(t, func() error {
-		t := &Task{
-			ProcessPoints:    0,
+		t := TaskDraftDto{
 			MaxProcessPoints: 10,
 			Geometry:         "",
-			AssignedUser:     "Mark",
 		}
 
 		// Geometry field is empty
-		_, err := s.AddTasks([]*Task{t}, "1")
+		_, err := s.AddTasks([]TaskDraftDto{t}, "1")
 		if err == nil {
 			return errors.New("adding task without geometry (nil) should fail")
 		}
 
 		// Just a geometry, not a feature
 		t.Geometry = "{\"type\":\"Polygon\",\"coordinates\":[[0,0],[1,0]]}"
-		_, err = s.AddTasks([]*Task{t}, "1")
+		_, err = s.AddTasks([]TaskDraftDto{t}, "1")
 		if err == nil {
 			return errors.New("adding task with geometry only should fail")
 		}
 
 		// Empty geometry
 		t.Geometry = "{\"type\":\"Feature\",\"geometry\":{},\"properties\":null}"
-		_, err = s.AddTasks([]*Task{t}, "1")
+		_, err = s.AddTasks([]TaskDraftDto{t}, "1")
 		if err == nil {
 			return errors.New("adding task with empty geometry object should fail")
 		}
 
 		// Not a polygon
 		t.Geometry = "{\"type\":\"Feature\",\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[0,0],[1,0]]},\"properties\":null}"
-		_, err = s.AddTasks([]*Task{t}, "1")
+		_, err = s.AddTasks([]TaskDraftDto{t}, "1")
 		if err == nil {
 			return errors.New("adding task with non-polygon geometry should fail")
 		}
@@ -199,7 +175,7 @@ func TestAddTasksInvalidGeometry(t *testing.T) {
 
 		// very old format for the task geometry
 		t.Geometry = "[[0,1],[2,3],[4,0]"
-		_, err = s.AddTasks([]*Task{t}, "1")
+		_, err = s.AddTasks([]TaskDraftDto{t}, "1")
 		if err == nil {
 			return errors.New("adding task with old coordinate list format should fail")
 		}

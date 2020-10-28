@@ -50,6 +50,10 @@ func (s *TaskService) GetTasks(projectId string, requestingUserId string) ([]*Ta
 // AddTasks sets the ID of the tasks and adds them to the storage.
 func (s *TaskService) AddTasks(newTasks []TaskDraftDto, projectId string) ([]*Task, error) {
 	for _, t := range newTasks {
+		if t.MaxProcessPoints < 1 {
+			return nil, errors.New(fmt.Sprintf("Maximum process points must be at least 1 (%d)", t.MaxProcessPoints))
+		}
+
 		// Check for valid geojson
 		feature, err := geojson.UnmarshalFeature([]byte(t.Geometry))
 		if err != nil {

@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProjectService } from '../../project/project.service';
-import { Feature, Map, View } from 'ol';
+import { Feature, Map, MapEvent, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import { OSM } from 'ol/source';
 import VectorLayer from 'ol/layer/Vector';
@@ -108,12 +108,23 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
         this.previewVectorLayer
       ],
       view: new View({
-        center: [1110161, 7085688],
+        center: [1111000, 7086000],
         projection: 'EPSG:3857',
         zoom: 14,
         minZoom: 0,
         maxZoom: 19
       })
+    });
+
+    // Restore map center
+    const center = localStorage.getItem('project_creation_map_center');
+    if (!!center) {
+      this.map.getView().setCenter(JSON.parse(center));
+    }
+
+    // Update map center after map has been moved
+    this.map.on('moveend', (e: MapEvent) => {
+      localStorage.setItem('project_creation_map_center', JSON.stringify(e.map.getView().getCenter()));
     });
 
     this.addMapInteractions();
