@@ -302,9 +302,13 @@
       <trans-unit id="647cbc795a270aec8cc5703618774909673b0b78" datatype="html">
         <source>Properties:</source>
         <target xml:lang="de-DE" state="translated">Eigenschaften:</target>
-<context-group purpose="location">
+        <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
-          <context context-type="linenumber">12</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
+          <context context-type="linenumber">26</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project-settings/project-settings.component.html</context>
@@ -339,9 +343,9 @@
           <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="31a60780d9cf64bacecb8c3156076ad009988e62" datatype="html">
-        <source>Subdivide task:</source>
-        <target xml:lang="de-DE" state="translated">Aufgaben aufteilen:</target>
+      <trans-unit id="1ce4ea38f6f8dd51a865b801914b8e75e43cf2bc" datatype="html">
+        <source>Subdivide:</source>
+        <target xml:lang="de-DE" state="translated">Aufteilen:</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">38</context>
@@ -443,7 +447,7 @@
           <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="8867ba5a434d3191c637d05080ab20213d1fd67b" datatype="html">
+      <trans-unit id="5372b97b027c5e06c157f70e930ac7a5b1db2355" datatype="html">
         <source><x id="INTERPOLATION" equiv-text="{{ remainingErrors }}"/> errors left</source>
         <target xml:lang="de-DE" state="translated"><x id="INTERPOLATION" equiv-text="{{ remainingErrors }}"/> weitere Fehler</target>
 <context-group purpose="location">
@@ -459,7 +463,7 @@
           <context context-type="linenumber">16</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="6d0dc21d3ddfeb08c1236484a120ad0b8a3943de" datatype="html">
+      <trans-unit id="bb563263feeb05f7a58f13e0160513d5dc7cdc39" datatype="html">
         <source><x id="INTERPOLATION" equiv-text="{{ remainingWarning }}"/> warnings left</source>
         <target xml:lang="de-DE" state="translated"><x id="INTERPOLATION" equiv-text="{{ remainingWarning }}"/> weitere Warnungen</target>
 <context-group purpose="location">
@@ -483,7 +487,7 @@
           <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="78bed04eaf87650c17866961515546dc14950f15" datatype="html">
+      <trans-unit id="7627c8c61fbdc91eef42ecf3fd70e650318e8ce7" datatype="html">
         <source><x id="INTERPOLATION" equiv-text="{{ remainingInfo }}"/> notifications left</source>
         <target xml:lang="de-DE" state="translated"><x id="INTERPOLATION" equiv-text="{{ remainingInfo }}"/> weitere Meldungen</target>
 <context-group purpose="location">
@@ -561,6 +565,14 @@
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/shape-divide/shape-divide.component.html</context>
           <context context-type="linenumber">17</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3e2a583f531f7dd9f089f68a6968e444c372c3e8" datatype="html">
+        <source>Preview</source>
+        <target>Vorschau</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
+          <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
       <trans-unit id="64da6b784c67223a7ce9517cbd42c453e652df2a" datatype="html">

@@ -269,6 +269,10 @@
           <context context-type="linenumber">16</context>
         </context-group>
         <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
+          <context context-type="linenumber">26</context>
+        </context-group>
+        <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project-settings/project-settings.component.html</context>
           <context context-type="linenumber">28</context>
         </context-group>
@@ -280,15 +284,8 @@
           <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="351218681718c9501e9313cb22b4635019aeb3b0" datatype="html">
-        <source>Task properties:</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
-          <context context-type="linenumber">26</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="31a60780d9cf64bacecb8c3156076ad009988e62" datatype="html">
-        <source>Subdivide task:</source>
+      <trans-unit id="1ce4ea38f6f8dd51a865b801914b8e75e43cf2bc" datatype="html">
+        <source>Subdivide:</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">29</context>
@@ -370,21 +367,18 @@
         <source>Loading ...</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/ui/notification/notification.component.html</context>
-          <context context-type="linenumber">5</context>
+          <context context-type="linenumber">3</context>
         </context-group>
       </trans-unit>
       <trans-unit id="e007257a442d4f8c92941a3de92bf72ed1a438c8" datatype="html">
         <source>ERROR:</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/ui/notification/notification.component.html</context>
-          <context context-type="linenumber">9</context>
+          <context context-type="linenumber">10</context>
         </context-group>
-      </trans-unit>
-      <trans-unit id="e93ed47b127f4e97b0b5b6246806987bad1f5534" datatype="html">
-        <source>Warning:</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/ui/notification/notification.component.html</context>
-          <context context-type="linenumber">12</context>
+          <context context-type="linenumber">25</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5372b97b027c5e06c157f70e930ac7a5b1db2355" datatype="html">
@@ -392,37 +386,38 @@
 			errors left</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/ui/notification/notification.component.html</context>
-          <context context-type="linenumber">19</context>
+          <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7e6c975ebea8b5f8b120905ca7acf9f8edf59d8e" datatype="html">
         <source>OK</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/ui/notification/notification.component.html</context>
-          <context context-type="linenumber">21</context>
+          <context context-type="linenumber">17</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/ui/notification/notification.component.html</context>
-          <context context-type="linenumber">26</context>
+          <context context-type="linenumber">33</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/ui/notification/notification.component.html</context>
-          <context context-type="linenumber">30</context>
+          <context context-type="linenumber">48</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="286993dcc8da952962e11225577f8896826f259a" datatype="html">
+      <trans-unit id="bb563263feeb05f7a58f13e0160513d5dc7cdc39" datatype="html">
         <source><x id="INTERPOLATION" equiv-text="{{ remainingWarning }}"/>
-				warnings left</source>
+			warnings left</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/ui/notification/notification.component.html</context>
-          <context context-type="linenumber">24</context>
+          <context context-type="linenumber">31</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="78bed04eaf87650c17866961515546dc14950f15" datatype="html">
-        <source><x id="INTERPOLATION" equiv-text="{{ remainingInfo }}"/> notifications left</source>
+      <trans-unit id="7627c8c61fbdc91eef42ecf3fd70e650318e8ce7" datatype="html">
+        <source><x id="INTERPOLATION" equiv-text="{{ remainingInfo }}"/>
+			notifications left</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/ui/notification/notification.component.html</context>
-          <context context-type="linenumber">29</context>
+          <context context-type="linenumber">46</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ae9555ed661c4fc9adf8c6ec71e39c67f05513fe" datatype="html">

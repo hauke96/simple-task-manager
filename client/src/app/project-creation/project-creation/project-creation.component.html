@@ -23,10 +23,10 @@
 										 [selectedTask]="selectedTask"></app-task-draft-list>
 
 					<div *ngIf="!!selectedTask">
-						<h2 i18n>Task properties:</h2>
+						<h2 i18n>Properties:</h2>
 						<app-task-edit [task]="selectedTask"></app-task-edit>
 
-						<h2 i18n>Subdivide task:</h2>
+						<h2 i18n>Subdivide:</h2>
 						<app-shape-divide [selectedTask]="selectedTask"
 										  (previewClicked)="onDividePreviewClicked($event)"></app-shape-divide>
 					</div>
