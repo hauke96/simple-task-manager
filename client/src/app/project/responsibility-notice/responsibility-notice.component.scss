@@ -1,0 +1,36 @@
+@import "../../../styles";
+
+:host {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	z-index: 1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: $color-very-light-transparent;
+}
+
+.container {
+	width: 600px;
+	padding: $space-huge;
+	background-color: $color-white;
+	border: 1px solid $color-mid;
+}
+
+.checkbox-container {
+	margin-top: $space-huge;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+}
+
+.button-container {
+	margin-top: $space-huge;
+	display: flex;
+	justify-content: space-around;
+}
+
+.ok-button {
+	margin-left: $space-base;
+}

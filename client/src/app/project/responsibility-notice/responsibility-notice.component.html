@@ -1,0 +1,22 @@
+<div class="container">
+	<h2>Be responsible!</h2>
+
+	<p>OpenStreetMap is an open project driven by a world wide community. There's no company or official authority
+		checking the data you add to this project.</p>
+	<p>Be so kind and check the data you add, be responsible, don't copy and don't blindly add data because some project
+		description says so.</p>
+
+	<div class="checkbox-container">
+		<label class="checkbox"><input type="checkbox" [(ngModel)]="checkBlindCopy"/><span>I will not blindly add, change or remove data</span></label>
+		<label class="checkbox"><input type="checkbox" [(ngModel)]="checkStickToWiki"/><span>I will stick to the <a href="https://wiki.openstreetmap.org">wiki</a></span></label>
+		<label class="checkbox"><input type="checkbox" [(ngModel)]="checkHashtags"/><span>I won't remove the #hashtags from my changeset comments</span></label>
+		<label class="checkbox"><input type="checkbox" [(ngModel)]="checkOpenMinded"/><span>I will be kind and open minded if someone responds to my changesets</span></label>
+	</div>
+
+	<div class="button-container">
+		<div>
+			<button [routerLink]="['/manager']" i18n="Back button">&#60; Back</button>
+			<button class="ok-button" [disabled]="!canProceed" (click)="okClicked()">OK</button>
+		</div>
+	</div>
+</div>

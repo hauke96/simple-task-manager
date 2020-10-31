@@ -15,6 +15,7 @@ import { User } from '../../user/user.material';
   styleUrls: ['./project.component.scss']
 })
 export class ProjectComponent extends Unsubscriber implements OnInit {
+  public showResponsibilityPopup = true;
   public project: Project;
 
   constructor(
@@ -57,6 +58,8 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
         this.router.navigate(['/manager']);
       })
     );
+
+    this.showResponsibilityPopup = !localStorage.getItem('visited_projects').includes(this.project.name);
   }
 
   public get tabTitles(): string[] {
@@ -87,5 +90,17 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
 
   public isOwner(): boolean {
     return this.currentUserService.getUserId() === this.project.owner.uid;
+  }
+
+  onResponsibilityNoticeProceed() {
+    this.showResponsibilityPopup = false;
+
+    let visitedProjects = localStorage.getItem('visited_projects');
+    if (!visitedProjects) {
+      visitedProjects = this.project.name;
+    } else {
+      visitedProjects += '\n' + this.project.name;
+    }
+    localStorage.setItem('visited_projects', visitedProjects);
   }
 }

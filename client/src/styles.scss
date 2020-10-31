@@ -157,7 +157,7 @@ li {
 }
 
 input,
-textarea{
+textarea {
 	// So when setting "width", the input/textarea outer size really matched the given width. Otherwise the inner width
 	// would be set. When then using "width:100px" we would actually have a width of 122px
 	// (100px + 2 * 10px padding + 2 * 1px border). The "border-box" value prevents this strange behavior.
@@ -179,13 +179,26 @@ textarea:focus {
 }
 
 input.ng-invalid:not(form),
-textarea.ng-invalid:not(form)  {
+textarea.ng-invalid:not(form) {
 	border: 1px solid $color-error;
 }
 
 .input-field-label {
 	display: inline-block;
 	min-width: 180px;
+}
+
+.checkbox {
+	height: $space-huge;
+	display: inline-flex;
+	align-items: start;
+
+	input {
+		height: unset;
+		margin-right: $space-base;
+		margin-left: $space-base;
+		flex-grow: 0;
+	}
 }
 
 .hline {

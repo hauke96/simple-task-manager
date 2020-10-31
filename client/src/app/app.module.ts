@@ -36,6 +36,7 @@ import { DrawingToolbarComponent } from './project-creation/drawing-toolbar/draw
 import { TaskDraftListComponent } from './project-creation/task-draft-list/task-draft-list.component';
 import { ProjectPropertiesComponent } from './project-creation/project-properties/project-properties.component';
 import { TaskEditComponent } from './project-creation/task-edit/task-edit.component';
+import { ResponsibilityNoticeComponent } from './project/responsibility-notice/responsibility-notice.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import { TaskEditComponent } from './project-creation/task-edit/task-edit.compon
     DrawingToolbarComponent,
     TaskDraftListComponent,
     ProjectPropertiesComponent,
-    TaskEditComponent
+    TaskEditComponent,
+    ResponsibilityNoticeComponent
   ],
   imports: [
     BrowserModule,

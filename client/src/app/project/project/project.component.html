@@ -1,3 +1,5 @@
+<app-responsibility-notice *ngIf="showResponsibilityPopup" (proceed)="onResponsibilityNoticeProceed()"></app-responsibility-notice>
+
 <app-toolbar>
 	<div class="back-button-container">
 		<button [routerLink]="['/manager']" i18n="Back button">&#60; Back</button>
