@@ -186,7 +186,7 @@ describe('ProjectCreationComponent', () => {
 
     component.onToggleDraw();
 
-    allInteractionsOnDefaultState();
+    expectInteractionsToBeInDefaultState();
   });
 
   it('should toggle delete interactions correctly', () => {
@@ -199,7 +199,7 @@ describe('ProjectCreationComponent', () => {
 
     component.onToggleDelete();
 
-    allInteractionsOnDefaultState();
+    expectInteractionsToBeInDefaultState();
   });
 
   it('should toggle edit interactions correctly', () => {
@@ -212,7 +212,7 @@ describe('ProjectCreationComponent', () => {
 
     component.onToggleEdit();
 
-    allInteractionsOnDefaultState();
+    expectInteractionsToBeInDefaultState();
   });
 
   it('should add feature on draw interaction', () => {
@@ -267,7 +267,7 @@ describe('ProjectCreationComponent', () => {
     expect(spySelect).toHaveBeenCalledWith('123');
   });
 
-  function allInteractionsOnDefaultState() {
+  function expectInteractionsToBeInDefaultState() {
     expect(component.drawInteraction.getActive()).toEqual(false);
     expect(component.modifyInteraction.getActive()).toEqual(false);
     expect(component.removeInteraction.getActive()).toEqual(false);
