@@ -583,9 +583,9 @@
           <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="b9ea859581d68175d3d3159a9fa8378254a173a5" datatype="html">
-        <source>Upload a GPX, OSM or GeoJSON file, which contains polygons. Each polygon will result in a single task.</source>
-        <target xml:lang="de-DE" state="translated">Eine GPX-, OSM- oder GeoJSON-Datei hochladen, die Polygone enthält. Jedes Polygon wird zu einer eigenen Aufgabe.</target>
+      <trans-unit id="1c222c958cc86240c7e3e7f38ce8c730fda6f17f" datatype="html">
+        <source>Upload a GeoJSON, OSM-XML, GPX, EsriJson, KML or WKT file, which contains polygons. Each polygon will result in a single task.</source>
+        <target xml:lang="de-DE" state="translated">Eine Datei im GeoJSON, OSM-XML, GPX, EsriJson, KML oder WKT Format hochladen, die Polygone enthält. Jedes Polygon wird zu einer eigenen Aufgabe.</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/shape-upload/shape-upload.component.html</context>
           <context context-type="linenumber">1</context>
@@ -599,9 +599,9 @@
           <context context-type="linenumber">6</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="9f5f51918c7795228c656cb38264073903f9bd6a" datatype="html">
-        <source>URL to OSM-XML:</source>
-        <target xml:lang="de-DE" state="translated">URL zu OSM-XML Daten:</target>
+      <trans-unit id="d8ef47c8eceb33c1cef17101c49af48ce53295f8" datatype="html">
+        <source>URL to GeoJSON, OSM-XML, GPX, EsriJson, KML or WKT data:</source>
+        <target xml:lang="de-DE" state="translated">URL zu GeoJSON, OSM-XML, GPX, EsriJson, KML oder WKT Daten:</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/shape-remote/shape-remote.component.html</context>
           <context context-type="linenumber">1</context>
