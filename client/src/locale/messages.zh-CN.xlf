@@ -455,14 +455,6 @@
           <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="e93ed47b127f4e97b0b5b6246806987bad1f5534" datatype="html">
-        <source>Warning:</source>
-        <target xml:lang="zh-CN">警告:</target>
-<context-group purpose="location">
-          <context context-type="sourcefile">src/app/ui/notification/notification.component.html</context>
-          <context context-type="linenumber">16</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="bb563263feeb05f7a58f13e0160513d5dc7cdc39" datatype="html">
         <source><x id="INTERPOLATION" equiv-text="{{ remainingWarning }}"/> warnings left</source>
         <target xml:lang="zh-CN"><x id="INTERPOLATION" equiv-text="{{ remainingWarning }}"/>警告</target>
