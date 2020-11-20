@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 # Shows the difference in the translation units from messages.xlf and the given
 # file specified by the lang-code (ja, de, ...).
