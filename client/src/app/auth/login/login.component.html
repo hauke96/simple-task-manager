@@ -13,40 +13,31 @@
 		<div class="notice">
 			<div class="notice-container">
 				<div class="notice-bar"></div>
-				<div class="notice-text" i18n>
-					<p><b>Changes in 1.1.0:</b></p>
+				<div class="notice-text" i18n="@@LOGIN_CHANGELOG">
+					<p><b>Changes in 1.2.0:</b></p>
 					New features:
 					<ul>
-						<li>Internationalization:</li>
+						<li>New project creation:</li>
 						<ul>
-							<li>Translation of STM into Chinese, German and Japanese</li>
-							<li>Selection dialog to change the language</li>
-							<li>Selected language stored in the browsers local storage</li>
+							<li>Toolbar</li>
+							<li>Give own names to tasks</li>
+							<li>Preview for subdividing tasks</li>
+							<li>More formats for importing tasks</li>
+							<li>Overall better handling of interactions</li>
 						</ul>
-						<li>Button to open task in iD</li>
-						<li>Button to directly set a task as 'done'</li>
-						<li>Longer token validity (your login is now valid for one week)</li>
-						<li>Check GeoJSON format of each new task</li>
 					</ul>
 					Bug fixes:
 					<ul>
-						<li>Missing feedback on overpass error</li>
-						<li>Reconnect on broken websocket connection</li>
+						<li>Better error handling when importing tasks</li>
 					</ul>
 					Minor changes:
 					<ul>
-						<li>Zoom to selected task when not visible on the screen</li>
-						<li>Progress percentage in project list</li>
-						<li>Automatic names of tasks (the numbers of unnamed now start at 1 in each new project)</li>
+						<li>Save map location to local storage</li>
+						<li>Different and better visible color scheme for tasks on the map</li>
 					</ul>
 					Internals:
 					<ul>
-						<li>Store project-ID in task database table</li>
-						<li>Create project and tasks within one HTTP request</li>
-						<li>Introduce the <code>context</code> to add a logging trace-ID</li>
-						<li>Better server side logging</li>
-						<li>Reconnect to database after connection failure</li>
-						<li>Source maps in karma tests</li>
+						<li>Distinct DTO classes for project creation</li>
 					</ul>
 				</div>
 			</div>
