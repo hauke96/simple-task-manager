@@ -325,7 +325,7 @@
       </trans-unit>
       <trans-unit id="616e206cb4f25bd5885fc35925365e43cf5fb929" datatype="html">
         <source>Name:</source>
-        <target xml:lang="de-DE">Name:</target>
+        <target xml:lang="de-DE" state="translated">Name:</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">14</context>
@@ -465,7 +465,7 @@
       </trans-unit>
       <trans-unit id="7e6c975ebea8b5f8b120905ca7acf9f8edf59d8e" datatype="html">
         <source>OK</source>
-        <target xml:lang="de-DE">OK</target>
+        <target xml:lang="de-DE" state="translated">OK</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/ui/notification/notification.component.html</context>
           <context context-type="linenumber">20</context>
