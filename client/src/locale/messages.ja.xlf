@@ -201,12 +201,8 @@
         </context-group>
       </trans-unit>
       <trans-unit id="ab3e799adeb088d5437f0bb15e321ba9c1c7ff58" datatype="html">
-        <source>
-          Version: <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/><x id="INTERPOLATION" equiv-text="{{version}}"/><x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>Code: <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a&gt;"/>GitHub<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>License: <x id="START_LINK_2" ctype="x-a" equiv-text="&lt;a&gt;"/>GPLv3<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>Icons: <x id="START_LINK_3" ctype="x-a" equiv-text="&lt;a&gt;"/>Linearicons<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>
-        </source>
-        <target>
-            バージョン: <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/><x id="INTERPOLATION" equiv-text="{{version}}"/><x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>コード: <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a&gt;"/>GitHub<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>ライセンス: <x id="START_LINK_2" ctype="x-a" equiv-text="&lt;a&gt;"/>GPLv3<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>アイコン: <x id="START_LINK_3" ctype="x-a" equiv-text="&lt;a&gt;"/>Linearicons<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>
-        </target>
+        <source>Version: <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/><x id="INTERPOLATION" equiv-text="{{version}}"/><x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/>Code: <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a>"/>GitHub<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/>License: <x id="START_LINK_2" ctype="x-a" equiv-text="&lt;a>"/>GPLv3<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/>Icons: <x id="START_LINK_3" ctype="x-a" equiv-text="&lt;a>"/>Linearicons<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/></source>
+        <target>バージョン: <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/><x id="INTERPOLATION" equiv-text="{{version}}"/><x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/>コード: <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a>"/>GitHub<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/>ライセンス: <x id="START_LINK_2" ctype="x-a" equiv-text="&lt;a>"/>GPLv3<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/>アイコン: <x id="START_LINK_3" ctype="x-a" equiv-text="&lt;a>"/>Linearicons<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/></target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/ui/footer/footer.component.html</context>
           <context context-type="linenumber">1</context>
@@ -274,7 +270,7 @@
       </trans-unit>
       <trans-unit id="1ce4ea38f6f8dd51a865b801914b8e75e43cf2bc" datatype="html">
         <source>Subdivide:</source>
-        <target>Subdivide:</target>
+        <target>分割数:</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">38</context>
@@ -418,15 +414,15 @@
       </trans-unit>
       <trans-unit id="ae9555ed661c4fc9adf8c6ec71e39c67f05513fe" datatype="html">
         <source>This divides the selected task into smaller tasks of the selected shape and size.</source>
-        <target>This divides the selected task into smaller tasks of the selected shape and size.</target>
+        <target>選択したタスクを、指定した形状とサイズの、小さなタスクに分割します。</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
           <context context-type="linenumber">2</context>
         </context-group>
       </trans-unit>
       <trans-unit id="44408118c125445318294c7a1ec080166993294c" datatype="html">
-        <source>Task selected </source>
-        <target>Task selected </target>
+        <source>Task selected</source>
+        <target>選択されたタスク</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
           <context context-type="linenumber">8</context>
@@ -434,7 +430,7 @@
       </trans-unit>
       <trans-unit id="4d8c72b8aa088152b8fe08fb52e7668731501ed5" datatype="html">
         <source>Click on the map to select a task.</source>
-        <target>Click on the map to select a task.</target>
+        <target>マップ上でクリックしてタスクを選択します。</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
           <context context-type="linenumber">8</context>
@@ -622,7 +618,7 @@
       </trans-unit>
       <trans-unit id="ERROR_OVERPASS_NO_POLYGONS" datatype="html">
         <source>No polygons exist or data has unknown format. Supported formats are: GeoJson, OSM-XML, GPX, KML, EsriJson and WKT.</source>
-        <target>No polygons exist or data has unknown format. Supported formats are: GeoJson, OSM-XML, GPX, KML, EsriJson and WKT.</target>
+        <target>ポリゴンが存在しないか、データの形式が不明です。対応フォーマットは、GeoJson、OSM-XML、GPX、KML、EsriJson、およびWKTです。</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">8</context>
@@ -814,7 +810,7 @@
       </trans-unit>
       <trans-unit id="TABS_PROPERTIES" datatype="html">
         <source>Properties</source>
-        <target>特徴</target>
+        <target>プロパティ</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">32</context>
@@ -838,7 +834,7 @@
       </trans-unit>
       <trans-unit id="e28ee80cd3a124e109793180dfd1f8d8067dcc6b" datatype="html">
         <source>Zoom in</source>
-        <target>Zoom in</target>
+        <target>ズームイン</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
           <context context-type="linenumber">1</context>
@@ -846,7 +842,7 @@
       </trans-unit>
       <trans-unit id="a3dfc58748f790fa096cf3c5fc331f90846e1772" datatype="html">
         <source>Zoom out</source>
-        <target>Zoom out</target>
+        <target>ズームアウト</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
           <context context-type="linenumber">2</context>
@@ -854,7 +850,7 @@
       </trans-unit>
       <trans-unit id="4f5724e5ad8f6385d335b6705c780eae7110ec70" datatype="html">
         <source>Draw new polygon</source>
-        <target>Draw new polygon</target>
+        <target>新規ポリゴン作成</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
           <context context-type="linenumber">6</context>
@@ -862,7 +858,7 @@
       </trans-unit>
       <trans-unit id="46205b8c134572eadf2daeea8c8dce5974a32216" datatype="html">
         <source>Edit polygon</source>
-        <target>Edit polygon</target>
+        <target>ポリゴン編集</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
           <context context-type="linenumber">7</context>
@@ -870,15 +866,15 @@
       </trans-unit>
       <trans-unit id="07719975214d77aa88d781887c00cd217dec8be8" datatype="html">
         <source>Remove polygon</source>
-        <target>Remove polygon</target>
+        <target>ポリゴン削除</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
           <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
       <trans-unit id="628b295733edba52d46466df62992b41b162a162" datatype="html">
-        <source>There are no tasks here yet. Use the pencil-tool to draw tasks or import tasks via the &quot;Upload&quot; or &quot;Remote&quot; tab.</source>
-        <target>There are no tasks here yet. Use the pencil-tool to draw tasks or import tasks via the &quot;Upload&quot; or &quot;Remote&quot; tab.</target>
+        <source>There are no tasks here yet. Use the pencil-tool to draw tasks or import tasks via the "Upload" or "Remote" tab.</source>
+        <target>ここにはまだタスクがありません。鉛筆ツールを使用してタスクを描画するか、「アップロード」または「リモート」タブからタスクをインポートします。</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/task-draft-list/task-draft-list.component.html</context>
           <context context-type="linenumber">2</context>
