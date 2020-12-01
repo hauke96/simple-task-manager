@@ -26,7 +26,7 @@ export class SelectedLanguageService {
     return [
       new Language('en-US', 'English'),
       new Language('de', 'Deutsch'),
-      new Language('ja', '日本人'),
+      new Language('ja', '日本語'),
       new Language('zh-CN', '中文'),
     ];
   }
