@@ -70,33 +70,31 @@
               <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Distinct DTO classes for project creation<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
           <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
         </source>
-        <target>
-          <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Changes in 1.2.0:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;"/>
-          New features:
-          <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>New project creation:<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-              <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Toolbar<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Give own names to tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Preview for subdividing tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>More formats for importing tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Overall better handling of interactions<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-              <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-          <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-          Bug fixes:
-          <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Better error handling when importing tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-          <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-          Minor changes:
-          <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Save map location to local storage<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Different and better visible color scheme for tasks on the map<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-          <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-          Internals:
-          <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Distinct DTO classes for project creation<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-          <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-        </target>
+	<target state="translated"><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
+	  <x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b>"/>1.2.0での変更点:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b>"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
+          新機能:
+	  	<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/>
+		<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>新規プロジェクトの作成:<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+		<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>ツールバー<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+		<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>タスク名を付加できるようになりました<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+		<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>タスク分割のプレビュー機能<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+		<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>タスクのインポート対象フォーマットの追加<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+		<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>全般的なユーザ体験を改善しました<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+		<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/>
+          バグ修正:
+	  	<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/>
+	  	<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>タスクインポートにおいてエラー処理を改善しました<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+	  	<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/>
+          軽微な変更:
+		<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/>
+		<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>マップの位置をローカルストレージに保存します<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+		<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>マップ上のタスク表現の配色を見やすく改善<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+		<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/>
+          内部変更:
+		<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/>
+		<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/>プロジェクト作成用の別個のDTOクラス<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+		<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/>
+	</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/login/login.component.html</context>
           <context context-type="linenumber">16</context>
