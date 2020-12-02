@@ -133,20 +133,18 @@ func TestGetProjectByTask(t *testing.T) {
 func TestAddWithTasks(t *testing.T) {
 	h.Run(t, func() error {
 		user := "Jack"
-		p := Project{
+		p := ProjectDraftDto{
 			Name:  "Test name",
 			Users: []string{user, "user2"},
 			Owner: user,
 		}
 
-		t := task.Task{
-			ProcessPoints:    5,
+		t := task.TaskDraftDto{
 			MaxProcessPoints: 100,
 			Geometry:         "{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[0,0],[1,0]]]},\"properties\":null}",
-			AssignedUser:     "user2",
 		}
 
-		newProject, err := s.AddProjectWithTasks(&p, []*task.Task{&t})
+		newProject, err := s.AddProjectWithTasks(&p, []task.TaskDraftDto{t})
 		if err != nil {
 			return errors.New(fmt.Sprintf("Adding should work: %s", err.Error()))
 		}
@@ -165,7 +163,7 @@ func TestAddWithTasks(t *testing.T) {
 		if newProject.Owner != user {
 			return errors.New(fmt.Sprintf("Owner should be '%s' but was '%s'", user, newProject.Owner))
 		}
-		if newProject.TotalProcessPoints != 100 || newProject.DoneProcessPoints != 5 {
+		if newProject.TotalProcessPoints != 100 {
 			return errors.New("Process points on project not set correctly")
 		}
 
@@ -181,10 +179,10 @@ func TestAddWithTasks(t *testing.T) {
 		}
 
 		task := tasks[0]
-		if task.AssignedUser != "user2" ||
-			task.MaxProcessPoints != 100 ||
-			task.ProcessPoints != 5 ||
-			task.Geometry != "{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[0,0],[1,0]]]},\"properties\":null}" {
+		if task.AssignedUser != "" ||
+			task.MaxProcessPoints != t.MaxProcessPoints ||
+			task.Geometry != t.Geometry ||
+			task.ProcessPoints != 0 {
 			return errors.New(fmt.Sprintf("Added task does not match:\n%v\n%v\n", t, task))
 		}
 
@@ -195,7 +193,7 @@ func TestAddWithTasks(t *testing.T) {
 func TestAddAndGetProject(t *testing.T) {
 	h.Run(t, func() error {
 		user := "Jack"
-		p := Project{
+		p := ProjectDraftDto{
 			Name:  "Test name",
 			Users: []string{user, "user2"},
 			Owner: user,
@@ -222,46 +220,19 @@ func TestAddAndGetProject(t *testing.T) {
 	})
 }
 
-func TestAddProjectWithUsedTasks(t *testing.T) {
-	h.RunFail(t, func() error {
-		user := "Jen"
-		p := Project{
-			Name:    "Test name",
-			TaskIDs: []string{"1", "22", "33"}, // one task already used in a project
-			Users:   []string{user, "user2"},
-			Owner:   user,
-		}
-
-		_, err := s.AddProject(&p)
-		if err == nil {
-			return errors.New(fmt.Sprintf("The tasks are already used. This should not work."))
-		}
-		return nil
-	})
-}
-
 func TestAddProjectWithInvalidParameters(t *testing.T) {
 	h.Run(t, func() error {
-		// ID must not be set
-		p := Project{
-			Id: "foobar",
-		}
-		_, err := s.AddProject(&p)
-		if err == nil {
-			return errors.New("adding project with set ID is not allowed")
-		}
-
 		// Owner must be set
-		p = Project{
+		p := ProjectDraftDto{
 			Owner: "",
 		}
-		_, err = s.AddProject(&p)
+		_, err := s.AddProject(&p)
 		if err == nil {
 			return errors.New("adding project without owner not allowed")
 		}
 
 		// Owner must be in users array
-		p = Project{
+		p = ProjectDraftDto{
 			Owner: "foo",
 			Users:[]string{"bar"},
 		}
@@ -271,7 +242,7 @@ func TestAddProjectWithInvalidParameters(t *testing.T) {
 		}
 
 		// Name must be set
-		p = Project{
+		p = ProjectDraftDto{
 			Owner:"foo",
 			Users:[]string{"foo"},
 			Name: "",
@@ -283,7 +254,7 @@ func TestAddProjectWithInvalidParameters(t *testing.T) {
 
 		// Too long description not allowed
 		maxDescriptionLength = 10 // lower the border for test purposes
-		p = Project{
+		p = ProjectDraftDto{
 			Owner:"foo",
 			Users:[]string{"foo"},
 			Name: "some name",

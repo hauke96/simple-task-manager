@@ -1,0 +1,17 @@
+<div class="form-entry flex-line">
+	<span class="input-field-label" i18n>Name:</span>
+	<input [(ngModel)]="projectProperties.projectName" required name="nameField">
+</div>
+<div class="form-entry flex-line">
+	<span class="input-field-label" i18n>Max. points per task:</span>
+	<input type="number"
+		   [(ngModel)]="projectProperties.maxProcessPoints"
+		   required
+		   name="maxProcessPointsField"
+		   appMinValidator="1">
+</div>
+<div class="form-entry">
+	<p i18n>Description:</p>
+	<textarea name="description-text-area" class="description-text-area"
+			  [(ngModel)]="projectProperties.projectDescription"></textarea>
+</div>

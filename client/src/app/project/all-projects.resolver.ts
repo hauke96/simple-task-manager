@@ -16,7 +16,7 @@ export class AllProjectsResolver implements Resolve<Project[]> {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Project[]> {
-    return this.projectService.getProjects().pipe(tap(p => console.log(p)),
+    return this.projectService.getProjects().pipe(
       catchError((e: HttpErrorResponse) => {
         this.notificationService.addError($localize`:@@ERROR_LOAD_PROJECTS:Could not load projects`);
         throw e;

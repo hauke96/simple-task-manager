@@ -13,6 +13,8 @@ import { WebsocketClientService } from '../../common/websocket-client.service';
 import { WebsocketMessage, WebsocketMessageType } from '../../common/websocket-message';
 import { ProjectService } from '../project.service';
 import { of } from 'rxjs';
+import { ProcessPointColorService } from '../../common/process-point-color.service';
+import { NotificationService } from '../../common/notification.service';
 
 describe('ProjectListComponent', () => {
   let component: ProjectListComponent;
@@ -20,6 +22,8 @@ describe('ProjectListComponent', () => {
   let routerMock: MockRouter;
   let currentUserService: CurrentUserService;
   let projectService: ProjectService;
+  let colorService: ProcessPointColorService;
+  let notificationService: NotificationService;
   let websocketService: WebsocketClientService;
 
   beforeEach(waitForAsync(() => {
@@ -46,6 +50,8 @@ describe('ProjectListComponent', () => {
     routerMock = TestBed.inject(Router);
     currentUserService = TestBed.inject(CurrentUserService);
     projectService = TestBed.inject(ProjectService);
+    colorService = TestBed.inject(ProcessPointColorService);
+    notificationService = TestBed.inject(NotificationService);
     websocketService = TestBed.inject(WebsocketClientService);
   }));
 
@@ -90,7 +96,7 @@ describe('ProjectListComponent', () => {
     expect(component.projects).toContain(p);
   });
 
-  it('should add project to list when added', () => {
+  it('should update project', () => {
     component.projects = [createProject()];
 
     const p = createProject();
@@ -100,6 +106,22 @@ describe('ProjectListComponent', () => {
     p.name = component.projects[0].name;
     p.users = component.projects[0].users;
     p.users.push(new User('Foo', '1234'));
+    spyOn(projectService, 'toProject').and.returnValue(of(p));
+
+    // Trigger all needed events
+    websocketService.messageReceived.emit(new WebsocketMessage(
+      WebsocketMessageType.MessageType_ProjectUpdated,
+      new ProjectDto(p.id, p.name, p.description, p.users.map(u => u.uid), p.owner.uid, p.needsAssignment)
+    ));
+
+    expect(component.projects.length).toEqual(1);
+    expect(component.projects[0].users).toEqual(p.users);
+  });
+
+  it('should add unknown updated project to list', () => {
+    component.projects = [];
+
+    const p = createProject();
     spyOn(projectService, 'toProject').and.returnValue(of(p));
 
     // Trigger all needed events
@@ -128,6 +150,8 @@ describe('ProjectListComponent', () => {
   });
 
   it('should remove project from list', () => {
+    const spyNotification = spyOn(notificationService, 'addInfo');
+
     const p = createProject();
     component.projects = [p];
 
@@ -138,6 +162,57 @@ describe('ProjectListComponent', () => {
     ));
 
     expect(component.projects.length).toEqual(0);
+    expect(spyNotification).toHaveBeenCalled();
+  });
+
+  it('should do nothing on remove event of unknown project', () => {
+    const spyNotification = spyOn(notificationService, 'addInfo');
+
+    const p = createProject();
+    component.projects = [p];
+
+    // Trigger all needed events
+    websocketService.messageReceived.emit(new WebsocketMessage(
+      WebsocketMessageType.MessageType_ProjectDeleted,
+      '283745237654'
+    ));
+
+    expect(component.projects).toEqual([p]);
+    expect(spyNotification).not.toHaveBeenCalled();
+  });
+
+  it('should update projects on user-remove event', () => {
+    const spyNotification = spyOn(notificationService, 'addInfo');
+
+    const p = createProject();
+    const p2 = createProject();
+    p2.id = '35345'; // some other ID
+    component.projects = [p, p2];
+
+    // Trigger all needed events
+    websocketService.messageReceived.emit(new WebsocketMessage(
+      WebsocketMessageType.MessageType_ProjectUserRemoved,
+      p2.id
+    ));
+
+    expect(component.projects).toEqual([p]);
+    expect(spyNotification).toHaveBeenCalled();
+  });
+
+  it('should do nothing on user-remove event of unknown project', () => {
+    const spyNotification = spyOn(notificationService, 'addInfo');
+
+    const p = createProject();
+    component.projects = [p];
+
+    // Trigger all needed events
+    websocketService.messageReceived.emit(new WebsocketMessage(
+      WebsocketMessageType.MessageType_ProjectUserRemoved,
+      '283745237654'
+    ));
+
+    expect(component.projects).toEqual([p]);
+    expect(spyNotification).not.toHaveBeenCalled();
   });
 
   it('should calculate percentage correctly', () => {
@@ -153,6 +228,22 @@ describe('ProjectListComponent', () => {
     p.totalProcessPoints = 200;
     p.doneProcessPoints = 42; // -> 21.0%
     expect(component.getProcessPointPercentage(p)).toEqual(21);
+  });
+
+  it('should call color service for point color', () => {
+    const spy = spyOn(colorService, 'getProcessPointsColor');
+
+    component.getProcessPointColor({doneProcessPoints: 10, totalProcessPoints: 100} as Project);
+
+    expect(spy).toHaveBeenCalledWith(10, 100);
+  });
+
+  it('should get correct process point width', () => {
+    expect(component.getProcessPointWidth({doneProcessPoints: 0, totalProcessPoints: 100} as Project)).toEqual('0px');
+    expect(component.getProcessPointWidth({doneProcessPoints: 33, totalProcessPoints: 100} as Project)).toEqual('33px');
+    // normal rounding would result in 67px but we want the floor-rounding:
+    expect(component.getProcessPointWidth({doneProcessPoints: 66, totalProcessPoints: 100} as Project)).toEqual('66px');
+    expect(component.getProcessPointWidth({doneProcessPoints: 100, totalProcessPoints: 100} as Project)).toEqual('100px');
   });
 
   function createProject(): Project {

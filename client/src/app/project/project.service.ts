@@ -1,8 +1,8 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, mergeMap, tap } from 'rxjs/operators';
-import { Project, ProjectAddDto, ProjectDto } from './project.material';
-import { Task, TaskDto } from './../task/task.material';
+import { Project, ProjectAddDto, ProjectDraftDto, ProjectDto } from './project.material';
+import { Task, TaskDraftDto, TaskDto } from './../task/task.material';
 import { TaskService } from './../task/task.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
@@ -11,6 +11,8 @@ import { UserService } from '../user/user.service';
 import { WebsocketClientService } from '../common/websocket-client.service';
 import { WebsocketMessage, WebsocketMessageType } from '../common/websocket-message';
 import { NotificationService } from '../common/notification.service';
+import { Feature } from 'ol';
+import GeoJSON from 'ol/format/GeoJSON';
 
 @Injectable({
   providedIn: 'root'
@@ -89,13 +91,21 @@ export class ProjectService {
     name: string,
     maxProcessPoints: number,
     projectDescription: string,
-    geometries: string[],
+    features: Feature[],
     users: string[],
     owner: string
   ): Observable<Project> {
+    const format = new GeoJSON();
+    // We want features to attach attributes and to not be bound to one single Polygon.
+    // Furthermore the escaping in the string breaks the format as the "\" character is actually transmitted as "\" character
+    const geometries: string[] = [];
+    for (const feature of features) {
+      geometries.push(format.writeFeature(feature));
+    }
+
     const p = new ProjectAddDto(
-      new ProjectDto('', name, projectDescription, users, owner),
-      geometries.map(g => new TaskDto('', 0, maxProcessPoints, g))
+      new ProjectDraftDto(name, projectDescription, users, owner),
+      geometries.map(g => new TaskDraftDto(maxProcessPoints, g))
     );
 
     return this.http.post<ProjectDto>(environment.url_projects, JSON.stringify(p))

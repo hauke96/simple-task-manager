@@ -15,10 +15,10 @@ describe('ProcessPointColorService', () => {
   });
 
   it('should return correct color', () => {
-    expect(service.getProcessPointsColor(0, 120)).toEqual('#ff0000');
-    expect(service.getProcessPointsColor(59, 120)).toEqual('#fffb00');
-    expect(service.getProcessPointsColor(60, 120)).toEqual('#ffff00');
-    expect(service.getProcessPointsColor(120, 120)).toEqual('#00ff00');
+    expect(service.getProcessPointsColor(0, 120)).toEqual('#e60000');
+    expect(service.getProcessPointsColor(59, 120)).toEqual('#d2cf00');
+    expect(service.getProcessPointsColor(60, 120)).toEqual('#d2d200');
+    expect(service.getProcessPointsColor(120, 120)).toEqual('#00be00');
     expect(() => service.getProcessPointsColor(0, 0)).toThrow();
     expect(() => service.getProcessPointsColor(-5, 10)).toThrow();
     expect(() => service.getProcessPointsColor(5, -10)).toThrow();

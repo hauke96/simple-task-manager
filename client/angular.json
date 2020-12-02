@@ -39,6 +39,7 @@
             "styles": [
               "src/colors.scss",
               "src/styles.scss",
+              "src/icons.scss",
               "node_modules/ol/ol.css"
             ],
             "scripts": [],
@@ -96,8 +97,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "10kb"
+                  "maximumWarning": "9kb",
+                  "maximumError": "15kb"
                 }
               ]
             },
@@ -108,7 +109,7 @@
                   "with": "src/environments/environment.test.ts"
                 }
               ],
-              "optimization": false,
+              "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
               "extractCss": true,
@@ -124,8 +125,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "10kb"
+                  "maximumWarning": "9kb",
+                  "maximumError": "15kb"
                 }
               ]
             }

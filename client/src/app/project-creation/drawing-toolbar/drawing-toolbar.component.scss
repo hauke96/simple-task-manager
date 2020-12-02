@@ -1,0 +1,33 @@
+@import '../../../styles';
+@import '../../../icons';
+
+:host {
+	display: flex;
+	flex-direction: column;
+	margin: $space-base;
+}
+
+button {
+	background-color: unset;
+	width: $space-huge;
+	height: $space-huge;
+	padding: unset;
+	margin-bottom: -1px; // Get rid of double border
+}
+
+button:hover {
+	background-color: $color-very-light-transparent;
+}
+
+button.selected:hover,
+.selected {
+	border-left: 2px solid $color-mid;
+	background-color: $color-very-light;
+}
+button:hover {
+	z-index: 1000;
+}
+
+.sep {
+	height: $space-base;
+}

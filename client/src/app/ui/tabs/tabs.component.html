@@ -3,6 +3,6 @@
 		<button (click)="onTabClicked(t)" [ngClass]="{selected: t == tabTitle}">{{t}}</button>
 	</div>
 </div>
-<div class="tab-content">
+<div class="tab-content" [ngClass]="{'tab-content-border': !borderless}">
 	<ng-content></ng-content>
 </div>

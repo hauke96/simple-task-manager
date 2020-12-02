@@ -56,27 +56,27 @@ describe('TaskMapComponent', () => {
   });
 
   it('should create fillColor correctly', () => {
-    checkStyle(0, '#ff000040', 1);
-    checkStyle(1, '#ff330040', 1);
-    checkStyle(2, '#ffff0040', 1);
-    checkStyle(3, '#00ff0040', 1);
+    checkStyle(0, '#e6000050', 1);
+    checkStyle(1, '#e22d0050', 1);
+    checkStyle(2, '#d2d20050', 1);
+    checkStyle(3, '#00be0050', 1);
   });
 
   it('should create selected color correctly', () => {
-    checkStyle(0, '#ff000080', 1, true);
-    checkStyle(1, '#ff330080', 1, true);
-    checkStyle(2, '#ffff0080', 1, true);
-    checkStyle(3, '#00ff0080', 1, true);
+    checkStyle(0, '#e6000050', 4, true);
+    checkStyle(1, '#e22d0050', 4, true);
+    checkStyle(2, '#d2d20050', 4, true);
+    checkStyle(3, '#00be0050', 4, true);
   });
 
   it('should create assigned color correctly', () => {
     spyOn(currentUserService, 'getUserId').and.returnValue('123');
     component.tasks.forEach(t => t.assignedUser = new User('foo-' + t.id, '123'));
 
-    checkStyle(0, '#ff000080', 4, true);
-    checkStyle(1, '#ff330040', 4);
-    checkStyle(2, '#ffff0080', 4, true);
-    checkStyle(3, '#00ff0040', 4);
+    checkStyle(0, '#e6000090', 4, true);
+    checkStyle(1, '#e22d0090', 1);
+    checkStyle(2, '#d2d20090', 4, true);
+    checkStyle(3, '#00be0090', 1);
   });
 
   function checkStyle(taskIndex: number, expectedColor: string, expectedBorderWidth: number, select: boolean = false) {

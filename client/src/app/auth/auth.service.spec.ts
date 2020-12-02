@@ -8,7 +8,6 @@ import Spy = jasmine.Spy;
 describe('AuthService', () => {
   let currentUserService: CurrentUserService;
   let service: AuthService;
-  let logoutSpy: Spy;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -22,8 +21,6 @@ describe('AuthService', () => {
     currentUserService = TestBed.inject(CurrentUserService);
 
     service = TestBed.inject(AuthService);
-
-    logoutSpy = spyOn(service, 'logout');
   });
 
   it('should be created', () => {
@@ -58,16 +55,7 @@ describe('AuthService', () => {
 
     service.setUserNameFromToken();
 
-    expect(logoutSpy).not.toHaveBeenCalled();
     expect(currentUserService.getUserName()).toEqual('test-user'); // Encoded in token
     expect(currentUserService.getUserId()).toEqual('12345'); // Encoded in token
-  });
-
-  it('constructor should set user name correctly', () => {
-    localStorage.setItem('auth_token', 'not valid token');
-
-    service.setUserNameFromToken();
-
-    expect(logoutSpy).toHaveBeenCalled();
   });
 });

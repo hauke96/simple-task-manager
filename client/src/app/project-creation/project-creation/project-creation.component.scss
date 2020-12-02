@@ -1,0 +1,62 @@
+@import '../../../styles';
+
+:host {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+.root-container {
+	display: flex;
+	flex-direction: row;
+	flex-grow: 1;
+	min-height: 0px; // important for scrolling (for whatever reason)
+}
+
+.root-tabs,
+.root-form {
+	height: 100%;
+}
+
+.project-properties-container {
+	padding-top: $space-base;
+	min-width: 350px;
+	max-width: 450px;
+	width: 50%;
+	border-right: 1px solid $color-light;
+}
+
+// Also apply style to divs in child components using ::ng-deep
+.project-properties-container ::ng-deep .form-entry {
+	margin-bottom: $space-base
+}
+
+.properties-label {
+	margin-top: 0px;
+}
+
+.map-container {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+#map {
+	height: 100%;
+	width: 100%;
+}
+
+.save-button {
+	margin-left: $space-base;
+}
+
+app-tabs {
+	flex-grow: 1;
+}
+
+.tab-container {
+	display: flex;
+	flex-direction: column;
+	min-height: 0px; // important for scrolling (for whatever reason, s. above)
+	height: 100%; // To enable scrolling within the tab containers
+}

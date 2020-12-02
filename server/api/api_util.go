@@ -71,6 +71,7 @@ func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request,
 		t := query.Get("token")
 		if t == "" || t == "null" || t == "\u009e" {
 			err := errors.New("could not establish websocket connection: query parameter 'token' not set")
+			logger.Err("Token not found: %s. Found: %s", err.Error(), t)
 			util.ResponseUnauthorized(w, logger, err)
 			return
 		}
@@ -102,7 +103,7 @@ func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(r *ht
 
 	token, err := auth.VerifyRequest(r, logger)
 	if err != nil {
-		logger.Debug("URL without valid token called: %s", r.URL.Path)
+		logger.Err("URL without valid token called: %s %s", r.Method, r.URL.Path)
 		logger.Err("Token verification failed: %s", err)
 		// No further information to caller (which is a potential attacker)
 		util.ResponseUnauthorized(w, logger, errors.New("No valid authentication token found"))

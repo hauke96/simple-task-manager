@@ -1,0 +1,24 @@
+@import '../../../styles';
+@import '../../../icons';
+
+.space-between {
+	justify-content: space-between;
+}
+
+.meter-input {
+	min-width: 0px;
+	width: 100%;
+}
+
+.meter-label,
+.divide-button {
+	margin-left: $space-base;
+}
+
+.selected-task-label {
+	margin-bottom: $space-base;
+}
+
+.selected-task-label-icon {
+	margin-right: $space-base;
+}

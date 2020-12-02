@@ -56,6 +56,7 @@ func (s *WebsocketSender) GetWebsocketConnection(w http.ResponseWriter, r *http.
 		connections[uid] = make([]*websocket.Conn, 0)
 	}
 
+	s.Logger.Log("Created websocket connection for user '%s'", uid)
 	connections[uid] = append(connections[uid], ws)
 }
 

@@ -6,30 +6,38 @@ import { User } from './user.material';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 
-const userList = `
-<osm version="0.6" generator="OpenStreetMap server" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
-  <user id="1" display_name="foo" account_created="2001-01-01T01:01:01Z">
-  <description/>
-    <contributor-terms agreed="false"/>
-    <roles> </roles>
-    <changesets count="0"/>
-    <traces count="0"/>
-    <blocks>
-        <received count="0" active="0"/>
-    </blocks>
-  </user>
-  <user id="2" display_name="bar" account_created="2002-02-02T02:02:02Z">
-    <description/>
-    <contributor-terms agreed="true"/>
-    <roles> </roles>
-    <changesets count="1"/>
-    <traces count="0"/>
-    <blocks>
-        <received count="0" active="0"/>
-    </blocks>
-  </user>
-</osm>
-`;
+const userList = {
+  users: [
+    {
+      user: {
+        id: 1,
+        display_name: 'foo',
+        account_created: '2001-01-01T01:01:01Z',
+        roles: [],
+        changesets: {
+          count: 0
+        },
+        traces: {
+          count: 0
+        },
+      }
+    },
+    {
+      user: {
+        id: 2,
+        display_name: 'bar',
+        account_created: '2002-02-02T02:02:02Z',
+        roles: [],
+        changesets: {
+          count: 0
+        },
+        traces: {
+          count: 0
+        },
+      }
+    }
+  ]
+};
 
 const changesets = `
 <osm version="0.6" generator="OpenStreetMap server" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
@@ -156,7 +164,10 @@ describe('UserService', () => {
         expect(service.cache.get('1')).toEqual(u[0]);
         expect(service.cache.get('2')).toEqual(u[1]);
       },
-      () => fail());
+      e => {
+        console.error(e);
+        fail();
+      });
   });
 
   it('should use cache on hit', () => {

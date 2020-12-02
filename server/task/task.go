@@ -10,6 +10,11 @@ import (
 	"strings"
 )
 
+type TaskDraftDto struct {
+	MaxProcessPoints int    `json:"maxProcessPoints"`
+	Geometry         string `json:"geometry"`
+}
+
 type Task struct {
 	Id               string `json:"id"`
 	ProcessPoints    int    `json:"processPoints"`
@@ -43,10 +48,10 @@ func (s *TaskService) GetTasks(projectId string, requestingUserId string) ([]*Ta
 }
 
 // AddTasks sets the ID of the tasks and adds them to the storage.
-func (s *TaskService) AddTasks(newTasks []*Task, projectId string) ([]*Task, error) {
+func (s *TaskService) AddTasks(newTasks []TaskDraftDto, projectId string) ([]*Task, error) {
 	for _, t := range newTasks {
-		if t.ProcessPoints < 0 || t.MaxProcessPoints < 1 || t.MaxProcessPoints < t.ProcessPoints {
-			return nil, errors.New(fmt.Sprintf("process points of task are out of range (%d / %d)", t.ProcessPoints, t.MaxProcessPoints))
+		if t.MaxProcessPoints < 1 {
+			return nil, errors.New(fmt.Sprintf("Maximum process points must be at least 1 (%d)", t.MaxProcessPoints))
 		}
 
 		// Check for valid geojson
@@ -55,10 +60,13 @@ func (s *TaskService) AddTasks(newTasks []*Task, projectId string) ([]*Task, err
 			return nil, errors.Wrap(err, fmt.Sprintf("invalid GeoJSON: %s", t.Geometry))
 		}
 
-		s.Log("%#v", feature)
 		if feature.Type != "Feature" || feature.Geometry == nil || feature.Geometry.Type != "Polygon" {
-			return nil, errors.New(fmt.Sprintf("task Geometry is neither a feature nor a polygon: %s", t.Geometry))
+			s.Err("Invalid feature found: %#v", feature)
+			return nil, errors.New(fmt.Sprintf("task geometry is null, not a feature or doesn't contain a polygon: %s", t.Geometry))
 		}
+
+		// Delete id property to not be confused with the id of the task
+		delete(feature.Properties, "id")
 	}
 
 	tasks, err := s.store.addTasks(newTasks, projectId)

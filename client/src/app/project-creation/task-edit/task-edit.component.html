@@ -1,0 +1,4 @@
+<div class="form-entry flex-line">
+	<span class="input-field-label" i18n>Name:</span>
+	<input [value]="task?.name" (input)="onTaskNameChanged($event.target.value)">
+</div>

@@ -1,0 +1,60 @@
+<app-toolbar>
+	<div>
+		<button [routerLink]="['/manager']" i18n>&#60; Cancel</button>
+		<button class="save-button" (click)="onSaveButtonClicked()" [disabled]="!creationForm.form.valid || !hasTasks"
+				i18n>
+			Save
+		</button>
+	</div>
+</app-toolbar>
+<div class="root-container">
+	<div class="project-properties-container">
+		<form #creationForm="ngForm" class="root-form">
+			<app-tabs #rootTabs [tabs]="rootTabTitles" [borderless]="true" class="root-tabs"
+					  (tabSelected)="onTabSelected()">
+				<div *ngIf="rootTabs.tabIndex === 0">
+					<h2 class="properties-label" i18n>Properties:</h2>
+					<app-project-properties [projectProperties]="projectProperties"></app-project-properties>
+				</div>
+
+				<div *ngIf="rootTabs.tabIndex === 1" class="tab-container">
+					<h2 class="properties-label" i18n>Tasks:</h2>
+					<app-task-draft-list [tasks]="taskDrafts"
+										 [selectedTask]="selectedTask"></app-task-draft-list>
+
+					<div *ngIf="!!selectedTask">
+						<h2 i18n>Properties:</h2>
+						<app-task-edit [task]="selectedTask"></app-task-edit>
+
+						<h2 i18n>Subdivide:</h2>
+						<app-shape-divide [selectedTask]="selectedTask"
+										  (previewClicked)="onDividePreviewClicked($event)"></app-shape-divide>
+					</div>
+				</div>
+
+				<div *ngIf="rootTabs.tabIndex === 2">
+					<div class="tab-container">
+						<app-shape-upload></app-shape-upload>
+					</div>
+				</div>
+
+				<div *ngIf="rootTabs.tabIndex === 3">
+					<div class="tab-container">
+						<app-shape-remote></app-shape-remote>
+					</div>
+				</div>
+			</app-tabs>
+		</form>
+	</div>
+	<app-drawing-toolbar
+			[resetSelection]="resetToolbarSelectionSubject"
+			(buttonZoomIn)="onZoomIn()"
+			(buttonZoomOut)="onZoomOut()"
+			(buttonDraw)="onToggleDraw()"
+			(buttonEdit)="onToggleEdit()"
+			(buttonDelete)="onToggleDelete()"
+	></app-drawing-toolbar>
+	<div class="map-container">
+		<div id="map"></div>
+	</div>
+</div>

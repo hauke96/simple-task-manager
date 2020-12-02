@@ -43,79 +43,61 @@
           <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="4950f54bb4ede49f04041e3778dc574500d4eb0b" datatype="html">
+      <trans-unit id="LOGIN_CHANGELOG" datatype="html">
         <source>
-					<x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Changes in 1.1.0:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;"/>
-					New features:
-					<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Internationalization:<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-							<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Translation of STM into Chinese, German and Japanese<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-							<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Selection dialog to change the language<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-							<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Selected language stored in the browsers local storage<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Button to open task in iD<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Button to directly set a task as &apos;done&apos;<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Longer token validity (your login is now valid for one week)<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Check GeoJSON format of each new task<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-					<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-					Bug fixes:
-					<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Missing feedback on overpass error<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Reconnect on broken websocket connection<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-					<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-					Minor changes:
-					<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Zoom to selected task when not visible on the screen<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Progress percentage in project list<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Automatic names of tasks (the numbers of unnamed now start at 1 in each new project)<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-					<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-					Internals:
-					<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Store project-ID in task database table<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Create project and tasks within one HTTP request<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Introduce the <x id="START_TAG_CODE" ctype="x-code" equiv-text="&lt;code&gt;"/>context<x id="CLOSE_TAG_CODE" ctype="x-code" equiv-text="&lt;/code&gt;"/> to add a logging trace-ID<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Better server side logging<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Reconnect to database after connection failure<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Source maps in karma tests<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-					<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-				</source>
-          <target>
-					<x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Changes in 1.1.0-dev:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;"/>
-					New features:
-					<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Internationalization:<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-							<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Translation of STM into Chinese, German and Japanese<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-							<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Selection dialog to change the language<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-							<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Selected language stored in the browsers local storage<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Button to open task in iD<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Button to directly set a task as &apos;done&apos;<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Longer token validity (your login is now valid for one week)<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Check GeoJSON format of each new task<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-					<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-					Bug fixes:
-					<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Missing feedback on overpass error<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Reconnect on broken websocket connection<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-					<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-					Minor changes:
-					<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Zoom to selected task when not visible on the screen<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Progress percentage in project list<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Automatic names of tasks (the numbers of unnamed now start at 1 in each new project)<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-					<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-					Internals:
-					<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Store project-ID in task database table<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Create project and tasks within one HTTP request<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Introduce the <x id="START_TAG_CODE" ctype="x-code" equiv-text="&lt;code&gt;"/>context<x id="CLOSE_TAG_CODE" ctype="x-code" equiv-text="&lt;/code&gt;"/> to add a logging trace-ID<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Better server side logging<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Reconnect to database after connection failure<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Source maps in karma tests<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-					<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-				</target>
+          <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Changes in 1.2.0:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;"/>
+          New features:
+          <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
+              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>New project creation:<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+              <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
+                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Toolbar<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Give own names to tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Preview for subdividing tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>More formats for importing tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Overall better handling of interactions<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+              <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
+          <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
+          Bug fixes:
+          <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
+              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Better error handling when importing tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+          <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
+          Minor changes:
+          <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
+              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Save map location to local storage<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Different and better visible color scheme for tasks on the map<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+          <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
+          Internals:
+          <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
+              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Distinct DTO classes for project creation<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+          <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
+        </source>
+        <target>
+          <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Changes in 1.2.0:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;"/>
+          New features:
+          <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
+              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>New project creation:<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+              <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
+                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Toolbar<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Give own names to tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Preview for subdividing tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>More formats for importing tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Overall better handling of interactions<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+              <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
+          <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
+          Bug fixes:
+          <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
+              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Better error handling when importing tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+          <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
+          Minor changes:
+          <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
+              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Save map location to local storage<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Different and better visible color scheme for tasks on the map<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+          <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
+          Internals:
+          <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
+              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Distinct DTO classes for project creation<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+          <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
+        </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/login/login.component.html</context>
           <context context-type="linenumber">16</context>
@@ -178,7 +160,7 @@
           <context context-type="linenumber">11</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/project-creation/project-creation.component.html</context>
+          <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">26</context>
         </context-group>
         <context-group purpose="location">
@@ -255,14 +237,6 @@
           <context context-type="linenumber">25</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="243d9aaee29f1fa3fb458b1e5c49a6b11389a3f8" datatype="html">
-        <source>Save</source>
-        <target xml:lang="zh-CN">储存</target>
-<context-group purpose="location">
-          <context context-type="sourcefile">src/app/task/task-details/task-details.component.html</context>
-          <context context-type="linenumber">21</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="0728be2cde8178df6f108a5e2fc0b4ff39492396" datatype="html">
         <source>Open in JOSM</source>
         <target xml:lang="zh-CN">打开JOSM</target>
@@ -279,9 +253,13 @@
           <context context-type="linenumber">35</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="462f2f44a9c3615a6e54769b7f73c94f18cf1f55" datatype="html">
-        <source>SimpleTaskManager <x id="INTERPOLATION" equiv-text="{{version}}"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/>Code: <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>github.com/hauke96/simple-task-manager<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/>Licensed under <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a>"/>GPLv3<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/></source>
-        <target xml:lang="zh-CN">SimpleTaskManager <x id="INTERPOLATION" equiv-text="{{version}}"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/>Code: <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>github.com/hauke96/simple-task-manager<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/>Licensed under <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a>"/>GPLv3<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/></target>
+      <trans-unit id="ab3e799adeb088d5437f0bb15e321ba9c1c7ff58" datatype="html">
+        <source>
+          Version: <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/><x id="INTERPOLATION" equiv-text="{{version}}"/><x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>Code: <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a&gt;"/>GitHub<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>License: <x id="START_LINK_2" ctype="x-a" equiv-text="&lt;a&gt;"/>GPLv3<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>Icons: <x id="START_LINK_3" ctype="x-a" equiv-text="&lt;a&gt;"/>Linearicons<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>
+        </source>
+        <target>
+          版本: <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/><x id="INTERPOLATION" equiv-text="{{version}}"/><x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>编码: <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a&gt;"/>GitHub<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>许可证: <x id="START_LINK_2" ctype="x-a" equiv-text="&lt;a&gt;"/>GPLv3<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>图标: <x id="START_LINK_3" ctype="x-a" equiv-text="&lt;a&gt;"/>Linearicons<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>
+        </target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/ui/footer/footer.component.html</context>
           <context context-type="linenumber">1</context>
@@ -291,7 +269,7 @@
         <source>&lt; Cancel</source>
         <target xml:lang="zh-CN">&lt;取消</target>
 <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/project-creation/project-creation.component.html</context>
+          <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">3</context>
         </context-group>
       </trans-unit>
@@ -299,27 +277,39 @@
         <source>Save</source>
         <target xml:lang="zh-CN">储存</target>
 <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/project-creation/project-creation.component.html</context>
+          <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">4</context>
         </context-group>
       </trans-unit>
       <trans-unit id="647cbc795a270aec8cc5703618774909673b0b78" datatype="html">
         <source>Properties:</source>
         <target xml:lang="zh-CN">特性:</target>
-<context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/project-creation/project-creation.component.html</context>
-          <context context-type="linenumber">12</context>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
+          <context context-type="linenumber">26</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project-settings/project-settings.component.html</context>
           <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="ed9b07e91b831a27867345b0555adb38712cfff3" datatype="html">
+        <source>Tasks:</source>
+        <target xml:lang="zh-CN">任务:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="616e206cb4f25bd5885fc35925365e43cf5fb929" datatype="html">
         <source>Name:</source>
         <target xml:lang="zh-CN">名称:</target>
 <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/project-creation/project-creation.component.html</context>
+          <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">14</context>
         </context-group>
         <context-group purpose="location">
@@ -331,24 +321,16 @@
         <source>Max. points per task:</source>
         <target xml:lang="zh-CN">麦克斯每个任务的点:</target>
 <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/project-creation/project-creation.component.html</context>
+          <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="aa330ce457e46e40a8ac4d743c8959dcd046d15d" datatype="html">
-        <source>Create shapes:</source>
-        <target xml:lang="zh-CN">建立形状:</target>
-<context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/project-creation/project-creation.component.html</context>
-          <context context-type="linenumber">31</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="13e1e8c52a8f94d794a3a35e025a51e3cfa8458e" datatype="html">
-        <source>Click on a polygon to delete it.</source>
-        <target xml:lang="zh-CN">按一下多边形，删除它。</target>
-<context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/project-creation/project-creation.component.html</context>
-          <context context-type="linenumber">55</context>
+      <trans-unit id="1ce4ea38f6f8dd51a865b801914b8e75e43cf2bc" datatype="html">
+        <source>Subdivide:</source>
+        <target>Subdivide:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
+          <context context-type="linenumber">38</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3d243a75c1a16642d9d887827bdaa8e97a8e6e5c" datatype="html">
@@ -447,7 +429,7 @@
           <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="8867ba5a434d3191c637d05080ab20213d1fd67b" datatype="html">
+      <trans-unit id="5372b97b027c5e06c157f70e930ac7a5b1db2355" datatype="html">
         <source><x id="INTERPOLATION" equiv-text="{{ remainingErrors }}"/> errors left</source>
         <target xml:lang="zh-CN"><x id="INTERPOLATION" equiv-text="{{ remainingErrors }}"/>错误</target>
 <context-group purpose="location">
@@ -455,15 +437,7 @@
           <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="e93ed47b127f4e97b0b5b6246806987bad1f5534" datatype="html">
-        <source>Warning:</source>
-        <target xml:lang="zh-CN">警告:</target>
-<context-group purpose="location">
-          <context context-type="sourcefile">src/app/ui/notification/notification.component.html</context>
-          <context context-type="linenumber">16</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="6d0dc21d3ddfeb08c1236484a120ad0b8a3943de" datatype="html">
+      <trans-unit id="bb563263feeb05f7a58f13e0160513d5dc7cdc39" datatype="html">
         <source><x id="INTERPOLATION" equiv-text="{{ remainingWarning }}"/> warnings left</source>
         <target xml:lang="zh-CN"><x id="INTERPOLATION" equiv-text="{{ remainingWarning }}"/>警告</target>
 <context-group purpose="location">
@@ -487,7 +461,7 @@
           <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="78bed04eaf87650c17866961515546dc14950f15" datatype="html">
+      <trans-unit id="7627c8c61fbdc91eef42ecf3fd70e650318e8ce7" datatype="html">
         <source><x id="INTERPOLATION" equiv-text="{{ remainingInfo }}"/> notifications left</source>
         <target xml:lang="zh-CN"><x id="INTERPOLATION" equiv-text="{{ remainingInfo }}"/>发出通知</target>
 <context-group purpose="location">
@@ -495,12 +469,28 @@
           <context context-type="linenumber">27</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="17770785becab6addbe53d2a058e553ceec4ff9b" datatype="html">
-        <source>This divides the last drawn polygon into the selected shape. Beware, all other shapes will be removed.</source>
-        <target xml:lang="zh-CN">这将最后一个绘制的多边形分割成选取的形状。小心，其他所有形状都会被删除</target>
-<context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/shape-divide/shape-divide.component.html</context>
+      <trans-unit id="ae9555ed661c4fc9adf8c6ec71e39c67f05513fe" datatype="html">
+        <source>This divides the selected task into smaller tasks of the selected shape and size.</source>
+        <target>This divides the selected task into smaller tasks of the selected shape and size.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
           <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="44408118c125445318294c7a1ec080166993294c" datatype="html">
+        <source>Task selected </source>
+        <target>Task selected </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4d8c72b8aa088152b8fe08fb52e7668731501ed5" datatype="html">
+        <source>Click on the map to select a task.</source>
+        <target>Click on the map to select a task.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
+          <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1c1d1f8a90a0d951c07eff3863b48ab97377d8a4" datatype="html">
@@ -551,6 +541,14 @@
           <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="3e2a583f531f7dd9f089f68a6968e444c372c3e8" datatype="html">
+        <source>Preview</source>
+        <target xml:lang="zh-CN">预览</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
+          <context context-type="linenumber">28</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="64da6b784c67223a7ce9517cbd42c453e652df2a" datatype="html">
         <source>Divide</source>
         <target xml:lang="zh-CN">分裂</target>
@@ -559,9 +557,9 @@
           <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="b9ea859581d68175d3d3159a9fa8378254a173a5" datatype="html">
-        <source>Upload a GPX, OSM or GeoJSON file, which contains polygons. Each polygon will result in a single task.</source>
-        <target xml:lang="zh-CN">上传GPX、OSM或GeoJSON档案，其中包含多边形。每个多边形会产生单一任务。</target>
+      <trans-unit id="1c222c958cc86240c7e3e7f38ce8c730fda6f17f" datatype="html">
+        <source>Upload a GeoJSON, OSM-XML, GPX, EsriJson, KML or WKT file, which contains polygons. Each polygon will result in a single task.</source>
+        <target xml:lang="zh-CN">上传 GeoJSON、OSM-XML、GPX、EsriJson、KML 或 WKT 档案，其中包含多边形。每个多边形会产生单一任务。</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/shape-upload/shape-upload.component.html</context>
           <context context-type="linenumber">1</context>
@@ -575,9 +573,9 @@
           <context context-type="linenumber">6</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="9f5f51918c7795228c656cb38264073903f9bd6a" datatype="html">
-        <source>URL to OSM-XML:</source>
-        <target xml:lang="zh-CN">URL至OSM-XML:</target>
+      <trans-unit id="d8ef47c8eceb33c1cef17101c49af48ce53295f8" datatype="html">
+        <source>URL to GeoJSON, OSM-XML, GPX, EsriJson, KML or WKT data:</source>
+        <target xml:lang="zh-CN">GeoJSON、OSM-XML、GPX、EsriJson、KML或WKT数据的URL:</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/shape-remote/shape-remote.component.html</context>
           <context context-type="linenumber">1</context>
@@ -675,17 +673,9 @@
           <context context-type="linenumber">6</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ERROR_PARSING_OSM_DATA" datatype="html">
-        <source>Error parsing loaded OSM data</source>
-        <target xml:lang="zh-CN">分析载入的OSM资料时发生错误</target>
-<context-group purpose="location">
-          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">7</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="ERROR_OVERPASS_NO_POLYGONS" datatype="html">
-        <source>No usable polygons have been found. Make sure the output format is set to &apos;out:xml&apos; and the result contains actual polygons.</source>
-        <target>No usable polygons have been found. Make sure the output format is set to &apos;out:xml&apos; and the result contains actual polygons.</target>
+        <source>No polygons exist or data has unknown format. Supported formats are: GeoJson, OSM-XML, GPX, KML, EsriJson and WKT.</source>
+        <target>No polygons exist or data has unknown format. Supported formats are: GeoJson, OSM-XML, GPX, KML, EsriJson and WKT.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">8</context>
@@ -859,14 +849,6 @@
           <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="TABS_DRAW" datatype="html">
-        <source>Draw</source>
-        <target xml:lang="zh-CN">绘制</target>
-<context-group purpose="location">
-          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">29</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="TABS_UPLOAD" datatype="html">
         <source>Upload</source>
         <target xml:lang="zh-CN">上传</target>
@@ -883,10 +865,10 @@
           <context context-type="linenumber">31</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="TABS_REMOVE" datatype="html">
-        <source>Remove</source>
-        <target xml:lang="zh-CN">移除</target>
-<context-group purpose="location">
+      <trans-unit id="TABS_PROPERTIES" datatype="html">
+        <source>Properties</source>
+        <target>特点</target>
+        <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">32</context>
         </context-group>
@@ -905,6 +887,54 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="e28ee80cd3a124e109793180dfd1f8d8067dcc6b" datatype="html">
+        <source>Zoom in</source>
+        <target>Zoom in</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
+          <context context-type="linenumber">1</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="a3dfc58748f790fa096cf3c5fc331f90846e1772" datatype="html">
+        <source>Zoom out</source>
+        <target>Zoom out</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4f5724e5ad8f6385d335b6705c780eae7110ec70" datatype="html">
+        <source>Draw new polygon</source>
+        <target>Draw new polygon</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="46205b8c134572eadf2daeea8c8dce5974a32216" datatype="html">
+        <source>Edit polygon</source>
+        <target>Edit polygon</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="07719975214d77aa88d781887c00cd217dec8be8" datatype="html">
+        <source>Remove polygon</source>
+        <target>Remove polygon</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="628b295733edba52d46466df62992b41b162a162" datatype="html">
+        <source>There are no tasks here yet. Use the pencil-tool to draw tasks or import tasks via the &quot;Upload&quot; or &quot;Remote&quot; tab.</source>
+        <target>There are no tasks here yet. Use the pencil-tool to draw tasks or import tasks via the &quot;Upload&quot; or &quot;Remote&quot; tab.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/task-draft-list/task-draft-list.component.html</context>
+          <context context-type="linenumber">2</context>
         </context-group>
       </trans-unit>
     </body>

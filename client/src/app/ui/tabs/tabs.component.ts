@@ -8,6 +8,11 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 export class TabsComponent implements OnInit {
   @Input() tabs: string[];
 
+  /**
+   * When set to true, there'll be only a border between the tabs and the content but no border around the content.
+   */
+  @Input() borderless = false;
+
   @Output() tabSelected = new EventEmitter<number>();
 
   public tabTitle: string;

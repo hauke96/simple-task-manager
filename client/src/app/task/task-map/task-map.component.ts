@@ -128,15 +128,15 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
     let fillColor = this.processPointColorService.getProcessPointsColor(task.processPoints, task.maxProcessPoints);
 
     // Less opaque, when selected
-    if (isSelected) {
-      fillColor += '80';
+    if (hasAssignedUser) {
+      fillColor += '90';
     } else {
-      fillColor += '40';
+      fillColor += '50';
     }
 
     // Thick border when there's an assigned user
     let borderWidth = 1;
-    if (hasAssignedUser) {
+    if (isSelected) {
       borderWidth = 4;
     }
 
