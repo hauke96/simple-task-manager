@@ -7,6 +7,7 @@
     "dev-ja": "ng serve --watch --configuration=ja",
     "dev-de": "ng serve --watch --configuration=de",
     "dev-zh": "ng serve --watch --configuration=zh-CN",
+    "dev-fr": "ng serve --watch --configuration=fr",
     "dev-local": "ng serve --watch -c local",
     "build": "ng build --localize",
     "build-prod": "ng build --prod --localize",
