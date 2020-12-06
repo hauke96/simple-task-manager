@@ -18,7 +18,8 @@
         "locales": {
           "ja": "src/locale/messages.ja.xlf",
           "de": "src/locale/messages.de.xlf",
-          "zh-CN": "src/locale/messages.zh-CN.xlf"
+          "zh-CN": "src/locale/messages.zh-CN.xlf",
+          "fr": "src/locale/messages.fr.xlf"
         }
       },
       "architect": {
@@ -72,6 +73,11 @@
             "zh-CN": {
               "localize": [
                 "zh-CN"
+              ]
+            },
+            "fr": {
+              "localize": [
+                "fr"
               ]
             },
             "production": {
@@ -155,6 +161,9 @@
             },
             "zh-CN": {
               "browserTarget": "simple-task-manager:build:zh-CN"
+            },
+            "fr-FR": {
+              "browserTarget": "simple-task-manager:build:fr-FR"
             }
           }
         },
