@@ -47,6 +47,10 @@ The output will be in `client/dist/simple-taskmanager/<lang>`, where `en-US` for
 
 **Beware:** This may take some time (up to several minutes), depending on your machine.
 
+# Code conventions
+
+See the [development README](../doc/development/README.md) for details.
+
 # Configuration
 
 Currently the client has a very simple dev- and prod-configuration in `client/src/environments`.
