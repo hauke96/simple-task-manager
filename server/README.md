@@ -143,6 +143,22 @@ This script will remove your `postgres-data` folder created by the `stm-db` dock
 
 However, I don't use this in practice as the `Dockerfile` for the server uses `go run` to build and directly start the server.
 
+# Development
+
+## Error handling
+
+Whenever an error from a library/framework (e.g. in a database store) is returned, wrap it using `errors.Wrap(err)` (from the `github.com/pkg/errors` package) and return that.
+This will later result in a nice stack trace when the HTTP response is created.
+All other places just return the error because it's already wrapped (and therefore will already produce a stack trace).
+
+New errors should also be created using `errors.New(...)`.
+
+Whenever catching, creating or wrapping an error, feel free to print additional information using `sigolo.Error(...)`. 
+
+## Code conventions
+
+See the [development README](../doc/development/README.md) for details.
+
 # Configuration
 
 There are configuration files in the folder `./server/config/`.
@@ -166,15 +182,3 @@ At least for them, you only need to set the following properties in your configu
 **Important:** The `server-url` property has to begin with `https` in order to activate HTTPS.
 
 For **further information**, take a look at the `doc/operation/ssl-cert.md` file.
-
-# Development
-
-## Error handling
-
-Whenever an error from a library/framework (e.g. in a database store) is returned, wrap it using `errors.Wrap(err)` (from the `github.com/pkg/errors` package) and return that.
-This will later result in a nice stack trace when the HTTP response is created.
-All other places just return the error because it's already wrapped (and therefore will already produce a stack trace).
-
-New errors should also be created using `errors.New(...)`.
-
-Whenever catching, creating or wrapping an error, feel free to print additional information using `sigolo.Error(...)`. 

@@ -42,6 +42,8 @@ Currently there's no end user manual, tutorial or something similar.
 
 # Contribute
 
-Currently there are no real guidelines. Feel free to create an **issue** or **pull request**.
+Feel free to create an **issue** or **pull request**.
 
-**Wanna start coding?** Take a look at [doc/development/README.md](doc/development/README.md) on how to get started.
+For further information, take a look at the [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+**Wanna start coding?** Read the [doc/development/README.md](doc/development/README.md) to learn how to get started.
