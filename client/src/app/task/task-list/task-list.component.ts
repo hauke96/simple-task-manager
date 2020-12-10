@@ -22,14 +22,13 @@ export class TaskListComponent extends Unsubscriber implements AfterViewInit {
   ngAfterViewInit(): void {
     this.unsubscribeLater(
       this.taskService.tasksUpdated.subscribe((updatedTasks: Task[]) => {
-        for (const updatedTask of updatedTasks) { // through tasks
-          for (const i in this.tasks) { // through indices
-            if (this.tasks[i].id === updatedTask.id) {
-              this.tasks[i] = updatedTask;
-              break;
-            }
+        updatedTasks.forEach(u => {
+          const index = this.tasks.indexOf(u);
+          if (index !== -1) { // when "u" exists in the current tasks -> update it
+            this.tasks[index] = u;
           }
-        }
+          // No else case because tasks can't be added after project creation
+        });
       })
     );
   }
