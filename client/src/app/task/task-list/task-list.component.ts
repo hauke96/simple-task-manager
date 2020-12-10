@@ -10,7 +10,8 @@ import { Unsubscriber } from '../../common/unsubscriber';
   styleUrls: ['./task-list.component.scss']
 })
 export class TaskListComponent extends Unsubscriber implements AfterViewInit {
-  @Input() tasks: Task[];
+  // tslint:disable-next-line:variable-name
+  private _tasks: Task[];
 
   constructor(
     private taskService: TaskService,
@@ -23,14 +24,23 @@ export class TaskListComponent extends Unsubscriber implements AfterViewInit {
     this.unsubscribeLater(
       this.taskService.tasksUpdated.subscribe((updatedTasks: Task[]) => {
         updatedTasks.forEach(u => {
-          const index = this.tasks.indexOf(u);
+          const index = this._tasks.indexOf(u);
           if (index !== -1) { // when "u" exists in the current tasks -> update it
-            this.tasks[index] = u;
+            this._tasks[index] = u;
           }
           // No else case because tasks can't be added after project creation
         });
       })
     );
+  }
+
+  @Input()
+  set tasks(value: Task[]) {
+    this._tasks = value.sort((a, b) => (a.name > b.name) ? 1 : -1);
+  }
+
+  get tasks(): Task[] {
+    return this._tasks;
   }
 
   public get selectedTaskId(): string {
@@ -42,7 +52,7 @@ export class TaskListComponent extends Unsubscriber implements AfterViewInit {
   }
 
   public onListItemClicked(id: string) {
-    this.taskService.selectTask(this.tasks.find(t => t.id === id));
+    this.taskService.selectTask(this._tasks.find(t => t.id === id));
   }
 
   public taskTitle(task: Task): string {
