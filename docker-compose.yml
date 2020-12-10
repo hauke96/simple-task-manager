@@ -17,8 +17,9 @@ services:
       - "8080:8080"
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
-    depends_on:
-      - "stm-db"
+# 2020-12-09 hauke96: See systemd issue below
+#    depends_on:
+#      - "stm-db"
     logging:
       driver: 'journald'
   stm-client:
