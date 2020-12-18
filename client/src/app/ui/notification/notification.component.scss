@@ -48,20 +48,26 @@
 	justify-content: center;
 	align-items: center;
 	flex-grow: 1;
+	padding: $space-base;
 }
 
 .error-text {
 	color: $color-error-dark;
-	margin-left: $space-base;
+	align-self: baseline;
 }
 
 .warn-text {
 	color: $color-warn-dark;
-	margin-left: $space-base;
+	align-self: baseline;
+}
+
+.close-button-wrapper {
+	margin: $space-base;
+	display: flex;
+	align-items: flex-start;
 }
 
 .close-button-container {
-	margin: $space-base;
 	display: flex;
 	align-items: center;
 }

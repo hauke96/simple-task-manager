@@ -15,6 +15,10 @@
           <context context-type="sourcefile">src/app/manager/manager.component.html</context>
           <context context-type="linenumber">6</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/auth/login/login.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="bb694b49d408265c91c62799c2b3a7e3151c824d" datatype="html">
         <source>Logout</source>
@@ -30,47 +34,47 @@
 		</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/login/login.component.html</context>
-          <context context-type="linenumber">7</context>
+          <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6765b4c916060f6bc42d9bb69e80377dbcb5e4e9" datatype="html">
         <source>Login</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/login/login.component.html</context>
-          <context context-type="linenumber">11</context>
+          <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
       <trans-unit id="LOGIN_CHANGELOG" datatype="html">
         <source>
-          <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Changes in 1.2.0:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;"/>
-          New features:
-          <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>New project creation:<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-              <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Toolbar<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Give own names to tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Preview for subdividing tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>More formats for importing tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Overall better handling of interactions<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-              <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-          <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-          Bug fixes:
-          <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Better error handling when importing tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-          <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-          Minor changes:
-          <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Save map location to local storage<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Different and better visible color scheme for tasks on the map<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-          <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-          Internals:
-          <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Distinct DTO classes for project creation<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-          <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-        </source>
+					<x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Changes in 1.2.0:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;"/>
+					New features:
+					<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
+						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>New project creation:<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+						<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
+							<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Toolbar<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+							<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Give own names to tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+							<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Preview for subdividing tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+							<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>More formats for importing tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+							<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Overall better handling of interactions<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+						<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
+					<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
+					Bug fixes:
+					<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
+						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Better error handling when importing tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+					<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
+					Minor changes:
+					<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
+						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Save map location to local storage<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Different and better visible color scheme for tasks on the map<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+					<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
+					Internals:
+					<x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
+						<x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Distinct DTO classes for project creation<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
+					<x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
+				</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/login/login.component.html</context>
-          <context context-type="linenumber">16</context>
+          <context context-type="linenumber">20</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1a6adc5f5c4e0ee07c9edbbdb843d417930db480" datatype="html">
@@ -367,10 +371,6 @@
           <context context-type="sourcefile">src/app/ui/notification/notification.component.html</context>
           <context context-type="linenumber">10</context>
         </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/ui/notification/notification.component.html</context>
-          <context context-type="linenumber">25</context>
-        </context-group>
       </trans-unit>
       <trans-unit id="5372b97b027c5e06c157f70e930ac7a5b1db2355" datatype="html">
         <source><x id="INTERPOLATION" equiv-text="{{ remainingErrors }}"/>
@@ -393,6 +393,13 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/ui/notification/notification.component.html</context>
           <context context-type="linenumber">48</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="25affb93ffa0e09fb4eca0c2f92831bee6addf0f" datatype="html">
+        <source>WARNING:</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/ui/notification/notification.component.html</context>
+          <context context-type="linenumber">25</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bb563263feeb05f7a58f13e0160513d5dc7cdc39" datatype="html">

@@ -471,6 +471,14 @@
           <context context-type="linenumber">48</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="25affb93ffa0e09fb4eca0c2f92831bee6addf0f" datatype="html">
+        <source>WARNING:</source>
+        <target>ALERTE:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/ui/notification/notification.component.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="bb563263feeb05f7a58f13e0160513d5dc7cdc39" datatype="html">
         <source><x id="INTERPOLATION" equiv-text="{{ remainingWarning }}"/>
 			warnings left</source>

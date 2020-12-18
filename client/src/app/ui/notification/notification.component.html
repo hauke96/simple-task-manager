@@ -11,41 +11,40 @@
 			<span>{{currentErrorText}}</span>
 		</div>
 
-		<div class="close-button-container">
-		<span *ngIf="remainingErrors> 1" class="remaining-notifications-label" i18n>{{ remainingErrors }}
-			errors left</span>
-			<button (click)="onCloseErrorButtonClicked()" i18n>OK</button>
+		<div class="close-button-wrapper">
+			<div class="close-button-container">
+				<span *ngIf="remainingErrors> 1" class="remaining-notifications-label" i18n>{{ remainingErrors }} errors left</span>
+				<button (click)="onCloseErrorButtonClicked()" i18n>OK</button>
+			</div>
 		</div>
 	</div>
 
 	<!-- Warning -->
 	<div *ngIf="hasWarning" class="warning-container">
 		<div class="notification-text-container">
-			<div>
-				<div class="warn-text" i18n>ERROR:</div>&nbsp;
-				<span>{{currentWarningText}}</span>
-			</div>
+			<div class="warn-text" i18n>WARNING:</div>&nbsp;
+			<span>{{currentWarningText}}</span>
 		</div>
 
-		<div class="close-button-container">
-		<span *ngIf="remainingWarning> 1" class="remaining-notifications-label" i18n>{{ remainingWarning }}
-			warnings left</span>
-			<button (click)="onCloseWarningButtonClicked()" i18n>OK</button>
+		<div class="close-button-wrapper">
+			<div class="close-button-container">
+				<span *ngIf="remainingWarning> 1" class="remaining-notifications-label" i18n>{{ remainingWarning }} warnings left</span>
+				<button (click)="onCloseWarningButtonClicked()" i18n>OK</button>
+			</div>
 		</div>
 	</div>
 
 	<!-- Info -->
 	<div *ngIf="hasInfo" class="info-container">
 		<div class="notification-text-container">
-			<div>
-				<span>{{currentInfoText}}</span>
-			</div>
+			<span>{{currentInfoText}}</span>
 		</div>
 
-		<div class="close-button-container">
-		<span *ngIf="remainingInfo> 1" class="remaining-notifications-label" i18n>{{ remainingInfo }}
-			notifications left</span>
-			<button (click)="onCloseInfoButtonClicked()" i18n>OK</button>
+		<div class="close-button-wrapper">
+			<div class="close-button-container">
+				<span *ngIf="remainingInfo> 1" class="remaining-notifications-label" i18n>{{ remainingInfo }} notifications left</span>
+				<button (click)="onCloseInfoButtonClicked()" i18n>OK</button>
+			</div>
 		</div>
 	</div>
 </div>
