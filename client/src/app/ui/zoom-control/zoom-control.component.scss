@@ -20,9 +20,3 @@ button:hover {
 button:hover {
 	z-index: 1000;
 }
-
-button.selected:hover,
-.selected {
-	border-left: 2px solid $color-mid;
-	background-color: $color-very-light;
-}

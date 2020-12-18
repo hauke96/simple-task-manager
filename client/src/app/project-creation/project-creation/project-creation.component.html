@@ -47,15 +47,19 @@
 		</form>
 	</div>
 	<div class="map-container">
-		<app-drawing-toolbar
-				class="drawing-toolbar"
-				[resetSelection]="resetToolbarSelectionSubject"
-				(buttonZoomIn)="onZoomIn()"
-				(buttonZoomOut)="onZoomOut()"
-				(buttonDraw)="onToggleDraw()"
-				(buttonEdit)="onToggleEdit()"
-				(buttonDelete)="onToggleDelete()"
-		></app-drawing-toolbar>
+		<div class="drawing-toolbar">
+			<app-zoom-control
+					class="zoom-control"
+					(buttonZoomIn)="onZoomIn()"
+					(buttonZoomOut)="onZoomOut()"
+			></app-zoom-control>
+			<app-drawing-toolbar
+					[resetSelection]="resetToolbarSelectionSubject"
+					(buttonDraw)="onToggleDraw()"
+					(buttonEdit)="onToggleEdit()"
+					(buttonDelete)="onToggleDelete()"
+			></app-drawing-toolbar>
+		</div>
 		<div id="map"></div>
 	</div>
 </div>

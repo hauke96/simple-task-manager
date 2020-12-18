@@ -1,3 +1,17 @@
+@import '../../../styles';
+
+:host {
+	position: relative;
+}
+
+.zoom-control {
+	position: absolute;
+	z-index: 1000; // Because of OpenLayers claiming some z-indices
+	left: 0px;
+	top: 0px;
+	margin: $space-base;
+}
+
 #map {
 	height: 100%;
 }

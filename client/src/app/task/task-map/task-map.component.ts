@@ -179,4 +179,12 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
 
     this.vectorSource.addFeature(feature);
   }
+
+  onZoomIn() {
+    this.map.getView().setZoom(this.map.getView().getZoom() + 1);
+  }
+
+  onZoomOut() {
+    this.map.getView().setZoom(this.map.getView().getZoom() - 1);
+  }
 }
