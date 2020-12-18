@@ -37,6 +37,7 @@ import { TaskDraftListComponent } from './project-creation/task-draft-list/task-
 import { ProjectPropertiesComponent } from './project-creation/project-properties/project-properties.component';
 import { TaskEditComponent } from './project-creation/task-edit/task-edit.component';
 import { ZoomControlComponent } from './ui/zoom-control/zoom-control.component';
+import { ProjectProgressBarComponent } from './ui/project-progress-bar/project-progress-bar.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +69,8 @@ import { ZoomControlComponent } from './ui/zoom-control/zoom-control.component';
     TaskDraftListComponent,
     ProjectPropertiesComponent,
     TaskEditComponent,
-    ZoomControlComponent
+    ZoomControlComponent,
+    ProjectProgressBarComponent
   ],
   imports: [
     BrowserModule,

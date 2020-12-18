@@ -1,0 +1,18 @@
+@import "../../../styles";
+
+.border-bar {
+	width: 100px;
+	padding: 2px;
+	margin-left: $space-base;
+	margin-right: $space-base;
+	//border-radius: 50%;
+	border: 1px solid $color-light;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+.color-bar {
+	height: $space-base - 4px;
+	border: 1px solid;
+}
