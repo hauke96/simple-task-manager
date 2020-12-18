@@ -38,3 +38,4 @@ There's a script `build-base-image.sh` in the client folder, which takes the ver
 
 The containers are using the `journald` driver for logging.
 So accessing the logs is also possible via e.g. `journalctl CONTAINER_NAME=stm-db` and the logs are appended to the journal after restarting/rebuilding the container.
+For more logging commands see the [logging documentation file](./logging.md).
