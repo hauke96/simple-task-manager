@@ -6,7 +6,7 @@ import TileLayer from 'ol/layer/Tile';
 import { OSM } from 'ol/source';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
-import { Attribution, defaults as defaultControls, ScaleLine } from 'ol/control';
+import { Attribution, ScaleLine } from 'ol/control';
 import { Polygon } from 'ol/geom';
 import { Fill, Stroke, Style } from 'ol/style';
 import { Draw } from 'ol/interaction';
@@ -96,10 +96,10 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
 
     this.map = new Map({
       target: 'map',
-      controls: defaultControls().extend([
+      controls: [
         new ScaleLine(),
         new Attribution()
-      ]),
+      ],
       layers: [
         new TileLayer({
           source: new OSM()

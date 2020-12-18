@@ -46,15 +46,16 @@
 			</app-tabs>
 		</form>
 	</div>
-	<app-drawing-toolbar
-			[resetSelection]="resetToolbarSelectionSubject"
-			(buttonZoomIn)="onZoomIn()"
-			(buttonZoomOut)="onZoomOut()"
-			(buttonDraw)="onToggleDraw()"
-			(buttonEdit)="onToggleEdit()"
-			(buttonDelete)="onToggleDelete()"
-	></app-drawing-toolbar>
 	<div class="map-container">
+		<app-drawing-toolbar
+				class="drawing-toolbar"
+				[resetSelection]="resetToolbarSelectionSubject"
+				(buttonZoomIn)="onZoomIn()"
+				(buttonZoomOut)="onZoomOut()"
+				(buttonDraw)="onToggleDraw()"
+				(buttonEdit)="onToggleEdit()"
+				(buttonDelete)="onToggleDelete()"
+		></app-drawing-toolbar>
 		<div id="map"></div>
 	</div>
 </div>
