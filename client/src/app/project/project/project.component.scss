@@ -29,7 +29,8 @@
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
-	margin: $space-base;
+	padding-top: $space-base;
+	border-right: 1px solid $color-light;
 }
 
 .description-container {
