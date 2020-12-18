@@ -23,6 +23,7 @@ button:hover {
 .tab-list {
 	display: flex;
 	flex-direction: row;
+	padding-left: $space-small;
 }
 
 .tab-content {
