@@ -38,6 +38,7 @@ import { ProjectPropertiesComponent } from './project-creation/project-propertie
 import { TaskEditComponent } from './project-creation/task-edit/task-edit.component';
 import { ZoomControlComponent } from './ui/zoom-control/zoom-control.component';
 import { ProgressBarComponent } from './ui/progress-bar/progress-bar.component';
+import { TaskTitlePipe } from './task/task-title.pipe';
 
 @NgModule({
   declarations: [
@@ -70,7 +71,8 @@ import { ProgressBarComponent } from './ui/progress-bar/progress-bar.component';
     ProjectPropertiesComponent,
     TaskEditComponent,
     ZoomControlComponent,
-    ProgressBarComponent
+    ProgressBarComponent,
+    TaskTitlePipe
   ],
   imports: [
     BrowserModule,

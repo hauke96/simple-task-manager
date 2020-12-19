@@ -4,7 +4,7 @@
 	<div *ngFor="let t of tasks" class="list-item" (click)="onListItemClicked(t.id)"
 		 [ngClass]="{selected: t.id == selectedTaskId}">
 		<div>
-			{{taskTitle(t)}}
+			{{t | taskTitle}}
 			<span class="gray-label">({{t.processPoints}} / {{t.maxProcessPoints}})</span>
 			<span *ngIf="t.processPoints == t.maxProcessPoints" class="done-label" i18n>Done</span>
 		</div>
