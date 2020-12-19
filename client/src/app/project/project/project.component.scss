@@ -29,12 +29,11 @@
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
-	padding-top: $space-base;
 	border-right: 1px solid $color-light;
 }
 
 .description-container {
-	margin-bottom: $space-base;
+	margin: $space-base;
 }
 
 .description-label {
