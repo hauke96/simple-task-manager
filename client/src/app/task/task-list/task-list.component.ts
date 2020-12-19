@@ -24,7 +24,7 @@ export class TaskListComponent extends Unsubscriber implements AfterViewInit {
     this.unsubscribeLater(
       this.taskService.tasksUpdated.subscribe((updatedTasks: Task[]) => {
         updatedTasks.forEach(u => {
-          const index = this._tasks.indexOf(u);
+          const index = this._tasks.map(t => t.id).indexOf(u.id);
           if (index !== -1) { // when "u" exists in the current tasks -> update it
             this._tasks[index] = u;
           }
@@ -35,8 +35,8 @@ export class TaskListComponent extends Unsubscriber implements AfterViewInit {
   }
 
   @Input()
-  set tasks(value: Task[]) {
-    this._tasks = value.sort((a, b) => (a.name > b.name) ? 1 : -1);
+  set tasks(values: Task[]) {
+    this._tasks = values.sort((a, b) => (a.name > b.name) ? 1 : -1);
   }
 
   get tasks(): Task[] {

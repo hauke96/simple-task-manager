@@ -13,7 +13,6 @@ import { WebsocketClientService } from '../../common/websocket-client.service';
 import { WebsocketMessage, WebsocketMessageType } from '../../common/websocket-message';
 import { ProjectService } from '../project.service';
 import { of } from 'rxjs';
-import { ProcessPointColorService } from '../../common/process-point-color.service';
 import { NotificationService } from '../../common/notification.service';
 
 describe('ProjectListComponent', () => {
@@ -22,7 +21,6 @@ describe('ProjectListComponent', () => {
   let routerMock: MockRouter;
   let currentUserService: CurrentUserService;
   let projectService: ProjectService;
-  let colorService: ProcessPointColorService;
   let notificationService: NotificationService;
   let websocketService: WebsocketClientService;
 
@@ -50,7 +48,6 @@ describe('ProjectListComponent', () => {
     routerMock = TestBed.inject(Router);
     currentUserService = TestBed.inject(CurrentUserService);
     projectService = TestBed.inject(ProjectService);
-    colorService = TestBed.inject(ProcessPointColorService);
     notificationService = TestBed.inject(NotificationService);
     websocketService = TestBed.inject(WebsocketClientService);
   }));
@@ -213,37 +210,6 @@ describe('ProjectListComponent', () => {
 
     expect(component.projects).toEqual([p]);
     expect(spyNotification).not.toHaveBeenCalled();
-  });
-
-  it('should calculate percentage correctly', () => {
-    const p = createProject();
-    p.totalProcessPoints = 300;
-    p.doneProcessPoints = 196; // -> 65.33333%
-    expect(component.getProcessPointPercentage(p)).toEqual(65);
-
-    p.totalProcessPoints = 200;
-    p.doneProcessPoints = 1; // -> 0.5%
-    expect(component.getProcessPointPercentage(p)).toEqual(1);
-
-    p.totalProcessPoints = 200;
-    p.doneProcessPoints = 42; // -> 21.0%
-    expect(component.getProcessPointPercentage(p)).toEqual(21);
-  });
-
-  it('should call color service for point color', () => {
-    const spy = spyOn(colorService, 'getProcessPointsColor');
-
-    component.getProcessPointColor({doneProcessPoints: 10, totalProcessPoints: 100} as Project);
-
-    expect(spy).toHaveBeenCalledWith(10, 100);
-  });
-
-  it('should get correct process point width', () => {
-    expect(component.getProcessPointWidth({doneProcessPoints: 0, totalProcessPoints: 100} as Project)).toEqual('0px');
-    expect(component.getProcessPointWidth({doneProcessPoints: 33, totalProcessPoints: 100} as Project)).toEqual('33px');
-    // normal rounding would result in 67px but we want the floor-rounding:
-    expect(component.getProcessPointWidth({doneProcessPoints: 66, totalProcessPoints: 100} as Project)).toEqual('66px');
-    expect(component.getProcessPointWidth({doneProcessPoints: 100, totalProcessPoints: 100} as Project)).toEqual('100px');
   });
 
   function createProject(): Project {

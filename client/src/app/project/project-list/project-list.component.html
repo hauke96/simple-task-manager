@@ -4,8 +4,7 @@
 		<span>{{p.name}}</span>
 		<div class="list-item-column">
 			<span class="light-label">({{p.doneProcessPoints}}/{{p.totalProcessPoints}})</span>
-			<span class="light-label percentage-label">{{getProcessPointPercentage(p)}} %</span>
-			<app-project-progress-bar [progressPoints]="p.doneProcessPoints" [totalPoints]="p.totalProcessPoints"></app-project-progress-bar>
+			<app-progress-bar [progressPoints]="p.doneProcessPoints" [totalPoints]="p.totalProcessPoints"></app-progress-bar>
 			<div class="admin-label">
 				<span class="light-label" *ngIf="p.owner.uid === currentUserId">*</span>
 			</div>

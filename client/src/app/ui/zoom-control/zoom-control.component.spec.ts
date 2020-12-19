@@ -22,4 +22,20 @@ describe('ZoomControlComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should fire zoom in event', () => {
+    const spy = spyOn(component.buttonZoomIn, 'emit');
+
+    component.onButtonZoomIn();
+
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('should fire zoom out event', () => {
+    const spy = spyOn(component.buttonZoomOut, 'emit');
+
+    component.onButtonZoomOut();
+
+    expect(spy).toHaveBeenCalled();
+  });
 });

@@ -40,7 +40,7 @@ describe('LanguageSelectionComponent', () => {
 
     expect(serviceSpy).toHaveBeenCalled();
     expect(component.languages).toBeTruthy();
-    expect(component.languages.length).toEqual(4);
+    expect(component.languages.length).toEqual(5);
   });
 
   it('should call service to set language', () => {

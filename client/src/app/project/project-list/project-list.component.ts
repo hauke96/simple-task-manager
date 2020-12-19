@@ -77,8 +77,4 @@ export class ProjectListComponent extends Unsubscriber implements OnInit {
   public onProjectListItemClicked(id: string) {
     this.router.navigate(['/project', id]);
   }
-
-  getProcessPointPercentage(project: Project): number {
-    return Math.round(project.doneProcessPoints / project.totalProcessPoints * 100);
-  }
 }

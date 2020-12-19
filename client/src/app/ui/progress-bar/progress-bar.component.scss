@@ -1,5 +1,16 @@
 @import "../../../styles";
 
+:host {
+	display: flex;
+	align-items: center;
+}
+
+.percentage-label {
+	color: $color-gray-mid;
+	width: 7ex;
+	text-align: end;
+}
+
 .border-bar {
 	width: 100px;
 	padding: 2px;

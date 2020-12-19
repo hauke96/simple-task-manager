@@ -40,7 +40,7 @@ describe('TaskListComponent', () => {
     tasks.push(new Task('2', 'g', 30, 100, TestTaskFeature));
     tasks.push(new Task('3', 'z', 60, 100, TestTaskFeature));
     tasks.push(new Task('4', 'b', 99, 100, TestTaskFeature));
-    component.tasks = tasks;
+    component.tasks = [...tasks];
 
     // Actually update some tasks
     expect(component.tasks[0]).toEqual(tasks[0]);
@@ -56,7 +56,7 @@ describe('TaskListComponent', () => {
     const tasks: Task[] = [];
     tasks.push(new Task('42', undefined, 10, 100, TestTaskFeature));
     tasks.push(new Task('43', undefined, 55, 100, TestTaskFeature));
-    component.tasks = tasks;
+    component.tasks = [...tasks];
 
     component.onListItemClicked('42');
 
@@ -65,29 +65,49 @@ describe('TaskListComponent', () => {
     expect(component.selectedTaskId).toEqual('42');
   });
 
-  it('should update tasks on tasksUpdated event', () => {
-    const tasks: Task[] = [];
-    tasks.push(new Task('1', undefined, 10, 100, TestTaskFeature));
-    tasks.push(new Task('2', undefined, 30, 100, TestTaskFeature));
-    tasks.push(new Task('3', undefined, 60, 100, TestTaskFeature));
-    tasks.push(new Task('4', undefined, 99, 100, TestTaskFeature));
-    component.tasks = tasks;
+  describe('update event', () => {
+    let tasks: Task[];
 
-    // Empty update
-    taskService.tasksUpdated.emit([]);
-    expect(component.tasks).toEqual(tasks);
+    beforeEach(() => {
+      tasks = [];
 
-    // Update without listed tasks
-    taskService.tasksUpdated.emit([new Task('1546', undefined, 100, 100, TestTaskFeature)]);
-    expect(component.tasks).toEqual(tasks);
+      tasks.push(new Task('1', '1', 10, 100, TestTaskFeature));
+      tasks.push(new Task('2', '2', 30, 100, TestTaskFeature));
+      tasks.push(new Task('3', '3', 60, 100, TestTaskFeature));
+      tasks.push(new Task('4', '4', 99, 100, TestTaskFeature));
 
-    // Actually update some tasks
-    const t1 = new Task('1', undefined, 100, 100, TestTaskFeature);
-    const t4 = new Task('4', undefined, 50, 100, TestTaskFeature, new User('bar', '123'));
-    taskService.tasksUpdated.emit([t1, t4]);
+      component.tasks = [...tasks];
+    });
 
-    expect(component.tasks[0]).toEqual(t1);
-    expect(component.tasks[3]).toEqual(t4);
+    it('should ignore empty event', () => {
+      taskService.tasksUpdated.emit([]);
+      expect(component.tasks).toContain(tasks[0]);
+      expect(component.tasks).toContain(tasks[1]);
+      expect(component.tasks).toContain(tasks[2]);
+      expect(component.tasks).toContain(tasks[3]);
+    });
+
+    it('should ignore event with other tasks', () => {
+      taskService.tasksUpdated.emit([new Task('1546', undefined, 100, 100, TestTaskFeature)]);
+      expect(component.tasks).toContain(tasks[0]);
+      expect(component.tasks).toContain(tasks[1]);
+      expect(component.tasks).toContain(tasks[2]);
+      expect(component.tasks).toContain(tasks[3]);
+    });
+
+    it('should correctly update', () => {
+      const t1 = new Task('1', '1', 100, 100, TestTaskFeature);
+      const t4 = new Task('4', '4', 50, 100, TestTaskFeature, new User('bar', '123'));
+      taskService.tasksUpdated.emit([t1, t4]);
+
+      expect(component.tasks[0].id).toEqual(t1.id);
+      expect(component.tasks[0].processPoints).toEqual(100);
+      expect(component.tasks[3].id).toEqual(t4.id);
+      expect(component.tasks[3].processPoints).toEqual(50);
+      expect(component.tasks[3].assignedUser).not.toBeFalse();
+      expect(component.tasks[3].assignedUser.name).toEqual('bar');
+      expect(component.tasks[3].assignedUser.uid).toEqual('123');
+    });
   });
 
   it('should determine correctly whether user is assigned', () => {

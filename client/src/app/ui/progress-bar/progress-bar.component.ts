@@ -1,13 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Project } from '../../project/project.material';
 import { ProcessPointColorService } from '../../common/process-point-color.service';
 
 @Component({
-  selector: 'app-project-progress-bar',
-  templateUrl: './project-progress-bar.component.html',
-  styleUrls: ['./project-progress-bar.component.scss']
+  selector: 'app-progress-bar',
+  templateUrl: './progress-bar.component.html',
+  styleUrls: ['./progress-bar.component.scss']
 })
-export class ProjectProgressBarComponent implements OnInit {
+export class ProgressBarComponent implements OnInit {
   @Input() progressPoints: number;
   @Input() totalPoints: number;
 
@@ -24,5 +23,9 @@ export class ProjectProgressBarComponent implements OnInit {
 
   getProcessPointWidth(): string {
     return Math.floor(this.progressPoints / this.totalPoints * 100) + 'px';
+  }
+
+  getProcessPointPercentage(): number {
+    return Math.round(this.progressPoints / this.totalPoints * 100);
   }
 }
