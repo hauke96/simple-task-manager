@@ -40,10 +40,13 @@
 	flex-direction: column;
 	justify-content: flex-start;
 	border-right: 1px solid $color-light;
+	margin-top: $space-base;
 }
 
 .description-container {
-	margin: $space-base;
+	margin-left: $space-base;
+	margin-right: $space-base;
+	margin-bottom: $space-base;
 }
 
 .description-label {
