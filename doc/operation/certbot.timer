@@ -1,0 +1,8 @@
+[Unit]
+Description=Certbot renewal
+
+[Timer]
+OnCalendar=Mon *-*-* 00:00:00
+
+[Install]
+WantedBy=multi-user.target

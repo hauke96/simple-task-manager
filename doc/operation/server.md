@@ -82,9 +82,24 @@ I'm not a firewall and networking expert at all but this gives us some kind of b
 * Store to file: `iptables-save > /etc/iptables/rules.v4`
 
 There's also the possibility to specify what kind of local traffic (between stm-server, stm-db and localhost) is allowed, etc. etc.
-However, this should block the most basic things: SSH on 22, 
+However, this should block the most basic things: SSH on 22.
 
-# 6 Deployment
+# 6 Automatic backups
+
+This step is optional but recommended!
+
+* Copy the service and timer files from this directory to `/lib/systemd/system/`
+* Enable both with `systemctl enable stm-backup.service` and `.timer` accordingly
+* Start the timer with `systemctl start stm-backup.timer`
+
+You can test the setup manually:
+
+* Start the service with `systemctl start stm-backup.service`
+* Take a look into the logs with `journalctl -u stm-backup.service` and watch for errors
+
+See the [automatic-backup.md](automatic-backup.md)  
+
+# 7 Deployment
 
 * Login as `stm` (either via SSH or `su - stm`)
 * `git clone https://github.com/hauke96/simple-task-manager.git`

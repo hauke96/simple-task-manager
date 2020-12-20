@@ -1,0 +1,12 @@
+[Unit]
+Description=STM database backup creation
+
+[Service]
+WorkingDirectory=/home/stm/simple-task-manager
+Type=oneshot
+PrivateTmp=true
+Environment=STM_DB_USERNAME=stm
+ExecStart=/home/stm/simple-task-manager/create-dump.sh
+
+[Install]
+WantedBy=multi-user.target

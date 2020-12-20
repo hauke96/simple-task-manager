@@ -1,0 +1,12 @@
+[Unit]
+Description=Certbot
+Documentation=file:///usr/share/doc/python-certbot-doc/html/index.html
+Documentation=https://letsencrypt.readthedocs.io/en/latest/
+
+[Service]
+Type=oneshot
+PrivateTmp=true
+ExecStart=/usr/bin/certbot renew --pre-hook "bash -c \"cd /home/stm/simple-task-manager && docker-compose stop\"" --post-hook "bash -c \"cd /home/stm/simple-task-manager && docker-compose start\""
+
+[Install]
+WantedBy=multi-user.target
