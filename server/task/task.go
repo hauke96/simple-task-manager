@@ -60,9 +60,14 @@ func (s *TaskService) AddTasks(newTasks []TaskDraftDto, projectId string) ([]*Ta
 			return nil, errors.Wrap(err, fmt.Sprintf("invalid GeoJSON: %s", t.Geometry))
 		}
 
-		if feature.Type != "Feature" || feature.Geometry == nil || feature.Geometry.Type != "Polygon" {
+		if feature.Type != "Feature" || feature.Geometry == nil {
 			s.Err("Invalid feature found: %#v", feature)
 			return nil, errors.New(fmt.Sprintf("task geometry is null, not a feature or doesn't contain a polygon: %s", t.Geometry))
+		}
+
+		if !(feature.Geometry.Type == geojson.GeometryPolygon || feature.Geometry.Type == geojson.GeometryMultiPolygon) {
+			s.Err("Invalid geometry type found: %#v", feature)
+			return nil, errors.New(fmt.Sprintf("task geometry has invalid type: %s. Only \"%s\" and \"%s\" allowed", t.Geometry, geojson.GeometryPolygon, geojson.GeometryMultiPolygon))
 		}
 
 		// Delete id property to not be confused with the id of the task

@@ -99,10 +99,9 @@ At least one task has to be part of this array.
 
 The `id` field will be ignored when set, it's filled by the server.
 
-The `geometry` *must* be a valid GeoJSON string.
+The `geometry` *must* be a valid GeoJSON string containing a `feature` array. The `type` of each Feature *must* either be `Polygon` or `MultiPolygon` (according to GeoJSON specification).
 The `name` property of the geometry is optional but will be displayed the clients task list.
 It's okay to not specify the `properties` field at all, to set it to `null` or `{}`.
-Only Polygons are supported, there's no guarantee that anything else will work at all.
 
 ##### GET  `/v2.5/projects/{id}`
 
