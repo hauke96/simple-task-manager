@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/lib/pq"
+	geojson "github.com/paulmach/go.geojson"
 	"github.com/pkg/errors"
 	"strconv"
 )
@@ -174,6 +175,12 @@ func rowToTask(rows *sql.Rows) (*Task, error) {
 	result.MaxProcessPoints = task.maxProcessPoints
 	result.AssignedUser = task.assignedUser
 	result.Geometry = task.geometry
+
+	feature, err := geojson.UnmarshalFeature([]byte(result.Geometry))
+	name, err := feature.PropertyString("name")
+	if err == nil {
+		result.Name = name
+	}
 
 	return &result, err
 }

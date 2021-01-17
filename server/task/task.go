@@ -17,6 +17,7 @@ type TaskDraftDto struct {
 
 type Task struct {
 	Id               string `json:"id"`
+	Name             string `json:"name"`
 	ProcessPoints    int    `json:"processPoints"`
 	MaxProcessPoints int    `json:"maxProcessPoints"`
 	Geometry         string `json:"geometry"`

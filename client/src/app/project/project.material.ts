@@ -21,6 +21,7 @@ export class ProjectDto {
               public name: string,
               public description: string,
               public users: string[],
+              public tasks: Task[],
               public owner: string,
               public needsAssignment: boolean = true,
               public totalProcessPoints?: number,

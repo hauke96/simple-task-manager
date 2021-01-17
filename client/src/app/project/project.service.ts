@@ -193,19 +193,16 @@ export class ProjectService {
 
   // Takes the given project dto, the owner, users, gets the tasks from the server and build an Project object
   private toProjectWithTasks(p: ProjectDto, users: User[], owner: User): Observable<Project> {
-    return this.getTasks(p.id).pipe(
-      map(tasks => {
-        return new Project(
-          p.id,
-          p.name,
-          p.description,
-          tasks,
-          users,
-          owner,
-          p.needsAssignment,
-          p.totalProcessPoints,
-          p.doneProcessPoints);
-      })
-    );
+    return of(new Project(
+      p.id,
+      p.name,
+      p.description,
+      p.tasks,
+      users,
+      owner,
+      p.needsAssignment,
+      p.totalProcessPoints,
+      p.doneProcessPoints
+    ));
   }
 }
