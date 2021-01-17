@@ -25,14 +25,14 @@ type Task struct {
 
 type TaskService struct {
 	*util.Logger
-	store             *storePg
+	store             *StorePg
 	permissionService *permission.PermissionService
 }
 
 func Init(tx *sql.Tx, logger *util.Logger, permissionService *permission.PermissionService) *TaskService {
 	return &TaskService{
 		Logger:            logger,
-		store:             getStore(tx, logger),
+		store:             GetStore(tx, logger),
 		permissionService: permissionService,
 	}
 }
@@ -44,7 +44,7 @@ func (s *TaskService) GetTasks(projectId string, requestingUserId string) ([]*Ta
 		return nil, err
 	}
 
-	return s.store.getTasks(projectId)
+	return s.store.GetTasks(projectId)
 }
 
 // AddTasks sets the ID of the tasks and adds them to the storage.

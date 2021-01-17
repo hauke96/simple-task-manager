@@ -17,26 +17,26 @@ type taskRow struct {
 	assignedUser     string
 }
 
-type storePg struct {
+type StorePg struct {
 	*util.Logger
 	tx    *sql.Tx
-	table string
+	Table string
 }
 
 var (
 	returnValues = "id, process_points, max_process_points, geometry, assigned_user"
 )
 
-func getStore(tx *sql.Tx, logger *util.Logger) *storePg {
-	return &storePg{
+func GetStore(tx *sql.Tx, logger *util.Logger) *StorePg {
+	return &StorePg{
 		Logger: logger,
 		tx:     tx,
-		table:  "tasks",
+		Table:  "tasks",
 	}
 }
 
-func (s *storePg) getTasks(projectId string) ([]*Task, error) {
-	query := fmt.Sprintf("SELECT id,process_points,max_process_points,geometry,assigned_user FROM %s WHERE project_id = $1;", s.table)
+func (s *StorePg) GetTasks(projectId string) ([]*Task, error) {
+	query := fmt.Sprintf("SELECT id,process_points,max_process_points,geometry,assigned_user FROM %s WHERE project_id = $1;", s.Table)
 	s.LogQuery(query, projectId)
 
 	rows, err := s.tx.Query(query, projectId)
@@ -63,8 +63,8 @@ func (s *storePg) getTasks(projectId string) ([]*Task, error) {
 	return tasks, nil
 }
 
-func (s *storePg) getTask(taskId string) (*Task, error) {
-	query := fmt.Sprintf("SELECT id,process_points,max_process_points,geometry,assigned_user FROM %s WHERE id = $1;", s.table)
+func (s *StorePg) getTask(taskId string) (*Task, error) {
+	query := fmt.Sprintf("SELECT id,process_points,max_process_points,geometry,assigned_user FROM %s WHERE id = $1;", s.Table)
 	s.LogQuery(query, taskId)
 
 	rows, err := s.tx.Query(query, taskId)
@@ -85,7 +85,7 @@ func (s *storePg) getTask(taskId string) (*Task, error) {
 	return task, nil
 }
 
-func (s *storePg) addTasks(newTasks []TaskDraftDto, projectId string) ([]*Task, error) {
+func (s *StorePg) addTasks(newTasks []TaskDraftDto, projectId string) ([]*Task, error) {
 	taskIds := make([]string, 0)
 
 	// TODO Do not add one by one but instead build one large query (otherwise it's really slow)
@@ -99,11 +99,11 @@ func (s *storePg) addTasks(newTasks []TaskDraftDto, projectId string) ([]*Task, 
 		taskIds = append(taskIds, id)
 	}
 
-	return s.getTasks(projectId)
+	return s.GetTasks(projectId)
 }
 
-func (s *storePg) addTask(task *TaskDraftDto, projectId string) (string, error) {
-	query := fmt.Sprintf("INSERT INTO %s(process_points, max_process_points, geometry, assigned_user, project_id) VALUES($1, $2, $3, $4, $5) RETURNING %s;", s.table, returnValues)
+func (s *StorePg) addTask(task *TaskDraftDto, projectId string) (string, error) {
+	query := fmt.Sprintf("INSERT INTO %s(process_points, max_process_points, geometry, assigned_user, project_id) VALUES($1, $2, $3, $4, $5) RETURNING %s;", s.Table, returnValues)
 	t, err := s.execQuery(query, 0, task.MaxProcessPoints, task.Geometry, "", projectId)
 
 	if err != nil {
@@ -113,23 +113,23 @@ func (s *storePg) addTask(task *TaskDraftDto, projectId string) (string, error) 
 	return t.Id, nil
 }
 
-func (s *storePg) assignUser(taskId, userId string) (*Task, error) {
-	query := fmt.Sprintf("UPDATE %s SET assigned_user=$1 WHERE id=$2 RETURNING %s;", s.table, returnValues)
+func (s *StorePg) assignUser(taskId, userId string) (*Task, error) {
+	query := fmt.Sprintf("UPDATE %s SET assigned_user=$1 WHERE id=$2 RETURNING %s;", s.Table, returnValues)
 	return s.execQuery(query, userId, taskId)
 }
 
-func (s *storePg) unassignUser(taskId string) (*Task, error) {
-	query := fmt.Sprintf("UPDATE %s SET assigned_user='' WHERE id=$1 RETURNING %s;", s.table, returnValues)
+func (s *StorePg) unassignUser(taskId string) (*Task, error) {
+	query := fmt.Sprintf("UPDATE %s SET assigned_user='' WHERE id=$1 RETURNING %s;", s.Table, returnValues)
 	return s.execQuery(query, taskId)
 }
 
-func (s *storePg) setProcessPoints(taskId string, newPoints int) (*Task, error) {
-	query := fmt.Sprintf("UPDATE %s SET process_points=$1 WHERE id=$2 RETURNING %s;", s.table, returnValues)
+func (s *StorePg) setProcessPoints(taskId string, newPoints int) (*Task, error) {
+	query := fmt.Sprintf("UPDATE %s SET process_points=$1 WHERE id=$2 RETURNING %s;", s.Table, returnValues)
 	return s.execQuery(query, newPoints, taskId)
 }
 
-func (s *storePg) delete(taskIds []string) error {
-	query := fmt.Sprintf("DELETE FROM %s WHERE id=ANY($1)", s.table)
+func (s *StorePg) delete(taskIds []string) error {
+	query := fmt.Sprintf("DELETE FROM %s WHERE id=ANY($1)", s.Table)
 
 	s.LogQuery(query, taskIds)
 	_, err := s.tx.Exec(query, pq.Array(taskIds))
@@ -141,7 +141,7 @@ func (s *storePg) delete(taskIds []string) error {
 }
 
 // execQuery executed the given query, turns the result into a Task object and closes the query.
-func (s *storePg) execQuery(query string, params ...interface{}) (*Task, error) {
+func (s *StorePg) execQuery(query string, params ...interface{}) (*Task, error) {
 	s.LogQuery(query, params...)
 	rows, err := s.tx.Query(query, params...)
 	if err != nil {

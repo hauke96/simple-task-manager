@@ -3,6 +3,7 @@ package project
 import (
 	"database/sql"
 	"fmt"
+	"github.com/hauke96/simple-task-manager/server/task"
 	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/lib/pq"
 	"github.com/pkg/errors"
@@ -23,15 +24,15 @@ type storePg struct {
 	*util.Logger
 	tx        *sql.Tx
 	table     string
-	taskTable string
+	taskStore *task.StorePg
 }
 
-func getStore(tx *sql.Tx, logger *util.Logger) *storePg {
+func getStore(tx *sql.Tx, taskStore *task.StorePg, logger *util.Logger) *storePg {
 	return &storePg{
 		Logger:    logger,
 		tx:        tx,
 		table:     "projects",
-		taskTable: "tasks",
+		taskStore: taskStore,
 	}
 }
 
@@ -60,7 +61,7 @@ func (s *storePg) getProjects(userId string) ([]*Project, error) {
 
 	// Add task-IDs to projects
 	for _, project := range projects {
-		err = s.addTaskIdsToProject(project)
+		err = s.addTasksToProject(project)
 		if err != nil {
 			return nil, err
 		}
@@ -75,15 +76,17 @@ func (s *storePg) getProject(projectId string) (*Project, error) {
 }
 
 func (s *storePg) getProjectByTask(taskId string) (*Project, error) {
-	query := fmt.Sprintf("SELECT p.* FROM %s p, %s t WHERE $1 = t.id AND t.project_id = p.id", s.table, s.taskTable)
+	query := fmt.Sprintf("SELECT p.* FROM %s p, %s t WHERE $1 = t.id AND t.project_id = p.id", s.table, s.taskStore.Table)
 	return s.execQuery(query, taskId)
 }
 
 // addProject adds the given project draft and assigns an ID to the project.
 func (s *storePg) addProject(draft *ProjectDraftDto) (*Project, error) {
 	query := fmt.Sprintf("INSERT INTO %s (name, description, users, owner) VALUES($1, $2, $3, $4) RETURNING *", s.table)
+	params := []interface{}{draft.Name, draft.Description, pq.Array(draft.Users), draft.Owner}
 
-	project, err := s.execQuery(query, draft.Name, draft.Description, pq.Array(draft.Users), draft.Owner)
+	s.LogQuery(query, params...)
+	project, err := s.execQueryWithoutTasks(query, params...)
 	if err != nil {
 		return nil, err
 	}
@@ -139,25 +142,7 @@ func (s *storePg) updateDescription(projectId string, newDescription string) (*P
 	return s.execQuery(query, newDescription, projectId)
 }
 
-// execQuery executed the given query but doesn't collect any result data. Use "execQuery" to get a proper result.
-func (s *storePg) execRawQuery(query string, params ...interface{}) error {
-	s.LogQuery(query, params...)
-	rows, err := s.tx.Query(query, params...)
-	if err != nil {
-		return errors.Wrap(err, "could not run query")
-	}
-
-	err = rows.Close()
-	if err != nil {
-		return errors.Wrap(err, "could not close row")
-	}
-
-	return nil
-}
-
-// execQuery executed the given query, turns the result into a Project object and closes the query.
-func (s *storePg) execQuery(query string, params ...interface{}) (*Project, error) {
-	s.LogQuery(query, params...)
+func (s *storePg) execQueryWithoutTasks(query string, params ...interface{}) (*Project, error) {
 	rows, err := s.tx.Query(query, params...)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not run query")
@@ -169,17 +154,25 @@ func (s *storePg) execQuery(query string, params ...interface{}) (*Project, erro
 	}
 
 	p, err := s.rowToProject(rows)
+	if p == nil && err == nil {
+		return nil, errors.New("Project does not exist")
+	}
 
-	// Close row here already to do new queries within "addTaskIdsToProject"
-	rows.Close()
+	return p, err
+}
 
-	err = s.addTaskIdsToProject(p)
+// execQuery executed the given query, turns the result into a Project object and closes the query.
+func (s *storePg) execQuery(query string, params ...interface{}) (*Project, error) {
+	s.LogQuery(query, params...)
+
+	p, err := s.execQueryWithoutTasks(query, params...)
 	if err != nil {
 		return nil, err
 	}
 
-	if p == nil && err == nil {
-		return nil, errors.New("Project does not exist")
+	err = s.addTasksToProject(p)
+	if err != nil {
+		return nil, err
 	}
 
 	return p, err
@@ -204,27 +197,14 @@ func (s *storePg) rowToProject(rows *sql.Rows) (*Project, error) {
 	return &result, nil
 }
 
-func (s *storePg) addTaskIdsToProject(project *Project) error {
-	query := fmt.Sprintf("SELECT ARRAY_AGG(id) FROM %s WHERE project_id = $1", s.taskTable)
-
-	s.LogQuery(query, project.Id)
-	rows, err := s.tx.Query(query, project.Id)
+func (s *storePg) addTasksToProject(project *Project) error {
+	tasks, err := s.taskStore.GetTasks(project.Id)
 	if err != nil {
-		return errors.Wrap(err, "could not run query")
-	}
-	defer rows.Close()
-
-	ok := rows.Next()
-	if !ok {
-		return errors.New("there is no next row or an error happened")
+		return err
 	}
 
-	err = rows.Scan(pq.Array(&project.TaskIDs))
-	if err != nil {
-		return errors.Wrap(err, "could not scan task IDs from row")
-	}
-
-	s.Log("Added task-IDs to project %s", project.Id)
+	project.Tasks = tasks
+	s.Log("Added tasks to project %s", project.Id)
 
 	return nil
 }

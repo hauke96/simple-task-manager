@@ -69,6 +69,17 @@ func TestGetProjects(t *testing.T) {
 		if userProjects[1].TotalProcessPoints != 308 || userProjects[1].DoneProcessPoints != 154 {
 			return errors.New("Process points on project not set correctly")
 		}
+		if len(userProjects[0].Tasks) != 1 || userProjects[0].Tasks[0].Id != "1" {
+			return errors.New("Tasks of project 1 not matching")
+		}
+		if len(userProjects[1].Tasks) != 5 ||
+			userProjects[1].Tasks[0].Id != "2" ||
+			userProjects[1].Tasks[1].Id != "3" ||
+			userProjects[1].Tasks[2].Id != "4" ||
+			userProjects[1].Tasks[3].Id != "6" ||
+			userProjects[1].Tasks[4].Id != "7" {
+			return errors.New("Tasks of project 1 not matching")
+		}
 
 		// For Peter (being part of only project 1)
 		userProjects, err = s.GetProjects("Peter")
@@ -234,7 +245,7 @@ func TestAddProjectWithInvalidParameters(t *testing.T) {
 		// Owner must be in users array
 		p = ProjectDraftDto{
 			Owner: "foo",
-			Users:[]string{"bar"},
+			Users: []string{"bar"},
 		}
 		_, err = s.AddProject(&p)
 		if err == nil {
@@ -243,9 +254,9 @@ func TestAddProjectWithInvalidParameters(t *testing.T) {
 
 		// Name must be set
 		p = ProjectDraftDto{
-			Owner:"foo",
-			Users:[]string{"foo"},
-			Name: "",
+			Owner: "foo",
+			Users: []string{"foo"},
+			Name:  "",
 		}
 		_, err = s.AddProject(&p)
 		if err == nil {
@@ -255,10 +266,10 @@ func TestAddProjectWithInvalidParameters(t *testing.T) {
 		// Too long description not allowed
 		maxDescriptionLength = 10 // lower the border for test purposes
 		p = ProjectDraftDto{
-			Owner:"foo",
-			Users:[]string{"foo"},
-			Name: "some name",
-			Description:"This is a very very long description",
+			Owner:       "foo",
+			Users:       []string{"foo"},
+			Name:        "some name",
+			Description: "This is a very very long description",
 		}
 		_, err = s.AddProject(&p)
 		if err == nil {
