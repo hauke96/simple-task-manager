@@ -18,30 +18,30 @@ type ProjectAddDto struct {
 	Tasks   []task.TaskDraftDto  `json:"tasks"`
 }
 
-func Init_v2_5(router *mux.Router) (*mux.Router, string) {
-	r := router.PathPrefix("/v2.5").Subrouter()
+func Init_v2_6(router *mux.Router) (*mux.Router, string) {
+	r := router.PathPrefix("/v2.6").Subrouter()
 
-	r.HandleFunc("/projects", authenticatedTransactionHandler(getProjects_v2_5)).Methods(http.MethodGet)
-	r.HandleFunc("/projects", authenticatedTransactionHandler(addProject_v2_5)).Methods(http.MethodPost) // Edited in v2.5
-	r.HandleFunc("/projects/{id}", authenticatedTransactionHandler(getProject_v2_5)).Methods(http.MethodGet)
-	r.HandleFunc("/projects/{id}", authenticatedTransactionHandler(deleteProjects_v2_5)).Methods(http.MethodDelete)
-	r.HandleFunc("/projects/{id}/name", authenticatedTransactionHandler(updateProjectName_v2_5)).Methods(http.MethodPut)
-	r.HandleFunc("/projects/{id}/description", authenticatedTransactionHandler(updateProjectDescription_v2_5)).Methods(http.MethodPut)
-	r.HandleFunc("/projects/{id}/users", authenticatedTransactionHandler(addUserToProject_v2_5)).Methods(http.MethodPost)
-	r.HandleFunc("/projects/{id}/users", authenticatedTransactionHandler(leaveProject_v2_5)).Methods(http.MethodDelete)
-	r.HandleFunc("/projects/{id}/users/{uid}", authenticatedTransactionHandler(removeUser_v2_5)).Methods(http.MethodDelete)
-	r.HandleFunc("/projects/{id}/tasks", authenticatedTransactionHandler(getProjectTasks_v2_5)).Methods(http.MethodGet)
+	r.HandleFunc("/projects", authenticatedTransactionHandler(getProjects_v2_6)).Methods(http.MethodGet)
+	r.HandleFunc("/projects", authenticatedTransactionHandler(addProject_v2_6)).Methods(http.MethodPost) // Edited in v2.5
+	r.HandleFunc("/projects/{id}", authenticatedTransactionHandler(getProject_v2_6)).Methods(http.MethodGet)
+	r.HandleFunc("/projects/{id}", authenticatedTransactionHandler(deleteProjects_v2_6)).Methods(http.MethodDelete)
+	r.HandleFunc("/projects/{id}/name", authenticatedTransactionHandler(updateProjectName_v2_6)).Methods(http.MethodPut)
+	r.HandleFunc("/projects/{id}/description", authenticatedTransactionHandler(updateProjectDescription_v2_6)).Methods(http.MethodPut)
+	r.HandleFunc("/projects/{id}/users", authenticatedTransactionHandler(addUserToProject_v2_6)).Methods(http.MethodPost)
+	r.HandleFunc("/projects/{id}/users", authenticatedTransactionHandler(leaveProject_v2_6)).Methods(http.MethodDelete)
+	r.HandleFunc("/projects/{id}/users/{uid}", authenticatedTransactionHandler(removeUser_v2_6)).Methods(http.MethodDelete)
+	r.HandleFunc("/projects/{id}/tasks", authenticatedTransactionHandler(getProjectTasks_v2_6)).Methods(http.MethodGet)
 
-	r.HandleFunc("/tasks/{id}/assignedUser", authenticatedTransactionHandler(assignUser_v2_5)).Methods(http.MethodPost)
-	r.HandleFunc("/tasks/{id}/assignedUser", authenticatedTransactionHandler(unassignUser_v2_5)).Methods(http.MethodDelete)
-	r.HandleFunc("/tasks/{id}/processPoints", authenticatedTransactionHandler(setProcessPoints_v2_5)).Methods(http.MethodPost)
+	r.HandleFunc("/tasks/{id}/assignedUser", authenticatedTransactionHandler(assignUser_v2_6)).Methods(http.MethodPost)
+	r.HandleFunc("/tasks/{id}/assignedUser", authenticatedTransactionHandler(unassignUser_v2_6)).Methods(http.MethodDelete)
+	r.HandleFunc("/tasks/{id}/processPoints", authenticatedTransactionHandler(setProcessPoints_v2_6)).Methods(http.MethodPost)
 
 	r.HandleFunc("/updates", authenticatedWebsocket(getWebsocketConnection))
 
-	return r, "v2.5"
+	return r, "v2.6"
 }
 
-func getProjects_v2_5(r *http.Request, context *Context) *ApiResponse {
+func getProjects_v2_6(r *http.Request, context *Context) *ApiResponse {
 	projects, err := context.ProjectService.GetProjects(context.Token.UID)
 	if err != nil {
 		return InternalServerError(err)
@@ -52,7 +52,7 @@ func getProjects_v2_5(r *http.Request, context *Context) *ApiResponse {
 	return JsonResponse(projects)
 }
 
-func addProject_v2_5(r *http.Request, context *Context) *ApiResponse {
+func addProject_v2_6(r *http.Request, context *Context) *ApiResponse {
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		return BadRequestError(errors.Wrap(err, "error reading request body"))
@@ -76,7 +76,7 @@ func addProject_v2_5(r *http.Request, context *Context) *ApiResponse {
 	return JsonResponse(addedProject)
 }
 
-func getProject_v2_5(r *http.Request, context *Context) *ApiResponse {
+func getProject_v2_6(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
@@ -93,7 +93,7 @@ func getProject_v2_5(r *http.Request, context *Context) *ApiResponse {
 	return JsonResponse(project)
 }
 
-func leaveProject_v2_5(r *http.Request, context *Context) *ApiResponse {
+func leaveProject_v2_6(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
@@ -112,7 +112,7 @@ func leaveProject_v2_5(r *http.Request, context *Context) *ApiResponse {
 	return EmptyResponse()
 }
 
-func removeUser_v2_5(r *http.Request, context *Context) *ApiResponse {
+func removeUser_v2_6(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
@@ -136,7 +136,7 @@ func removeUser_v2_5(r *http.Request, context *Context) *ApiResponse {
 	return JsonResponse(updatedProject)
 }
 
-func deleteProjects_v2_5(r *http.Request, context *Context) *ApiResponse {
+func deleteProjects_v2_6(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
@@ -160,7 +160,7 @@ func deleteProjects_v2_5(r *http.Request, context *Context) *ApiResponse {
 	return EmptyResponse()
 }
 
-func updateProjectName_v2_5(r *http.Request, context *Context) *ApiResponse {
+func updateProjectName_v2_6(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
@@ -184,7 +184,7 @@ func updateProjectName_v2_5(r *http.Request, context *Context) *ApiResponse {
 	return JsonResponse(updatedProject)
 }
 
-func updateProjectDescription_v2_5(r *http.Request, context *Context) *ApiResponse {
+func updateProjectDescription_v2_6(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
@@ -208,7 +208,7 @@ func updateProjectDescription_v2_5(r *http.Request, context *Context) *ApiRespon
 	return JsonResponse(updatedProject)
 }
 
-func getProjectTasks_v2_5(r *http.Request, context *Context) *ApiResponse {
+func getProjectTasks_v2_6(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
@@ -225,7 +225,7 @@ func getProjectTasks_v2_5(r *http.Request, context *Context) *ApiResponse {
 	return JsonResponse(tasks)
 }
 
-func addUserToProject_v2_5(r *http.Request, context *Context) *ApiResponse {
+func addUserToProject_v2_6(r *http.Request, context *Context) *ApiResponse {
 	userToAdd, err := util.GetParam("uid", r)
 	if err != nil {
 		return BadRequestError(errors.Wrap(err, "url param 'uid' not set"))
@@ -249,7 +249,7 @@ func addUserToProject_v2_5(r *http.Request, context *Context) *ApiResponse {
 	return JsonResponse(updatedProject)
 }
 
-func assignUser_v2_5(r *http.Request, context *Context) *ApiResponse {
+func assignUser_v2_6(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
 	taskId, ok := vars["id"]
 	if !ok {
@@ -274,7 +274,7 @@ func assignUser_v2_5(r *http.Request, context *Context) *ApiResponse {
 	return JsonResponse(*task)
 }
 
-func unassignUser_v2_5(r *http.Request, context *Context) *ApiResponse {
+func unassignUser_v2_6(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
 	taskId, ok := vars["id"]
 	if !ok {
@@ -299,7 +299,7 @@ func unassignUser_v2_5(r *http.Request, context *Context) *ApiResponse {
 	return JsonResponse(*task)
 }
 
-func setProcessPoints_v2_5(r *http.Request, context *Context) *ApiResponse {
+func setProcessPoints_v2_6(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
 	taskId, ok := vars["id"]
 	if !ok {

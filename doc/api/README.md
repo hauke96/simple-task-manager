@@ -20,12 +20,13 @@ The `{cfg}` parameter value is the key to the user configuration which was set f
 The `{url}` parameter value is the URL of the Simple-Task-Manager landing page, where this call redirects to after successful authentication.
 When redirecting to `{url}`, the `token={token}` query parameter is set so that the client can get the token from within the URL.
 
-# v2.5
+# v2.6
 
-**Changes in v2.5**
-* Separate DTOs for tasks and project creation for `POST /v2.5/projects`
+**Changes in v2.6**
+* The `ProjectDto` now contains the tasks
+* Each task now contains the `Name` attribute
 
-Everything else is the same as in v2.4.
+Everything else is the same as in v2.5.
 
 ### Authentication
 
@@ -37,7 +38,7 @@ Authorization: eyJ2...In0=
 
 ### Updates via websockets
 
-Connect to `/v2.5/updates` and receive updates for the requesting user.
+Connect to `/v2.6/updates` and receive updates for the requesting user.
 
 #### Authentication
 
@@ -61,11 +62,11 @@ Every update is packed into a message of the following format:
 
 ### Projects
 
-##### GET  `/v2.5/projects`
+##### GET  `/v2.6/projects`
 
 Gets all projects for the requesting user.
 
-##### POST  `/v2.5/projects`
+##### POST  `/v2.6/projects`
 
 Adds the project and tasks as given in the body:
 
@@ -103,49 +104,49 @@ The `geometry` *must* be a valid GeoJSON string containing a `feature` array. Th
 The `name` property of the geometry is optional but will be displayed the clients task list.
 It's okay to not specify the `properties` field at all, to set it to `null` or `{}`.
 
-##### GET  `/v2.5/projects/{id}`
+##### GET  `/v2.6/projects/{id}`
 
 Returns the project with the given ID. The requesting user (specified by the token) must be **member** of the project.
 
-##### DELETE  `/v2.5/projects/{id}`
+##### DELETE  `/v2.6/projects/{id}`
 
 Deletes the project with the given ID. The requesting user (specified by the token) must be **owner** of the project.
 
-##### PUT `/v2.5/project/{id}/name`
+##### PUT `/v2.6/project/{id}/name`
 
 Updates the name of the given project. The name must be in the request body. The requesting user (specified by the token) must be **owner** of the project.
 
-##### PUT`/v2.5/project/{id}/description`
+##### PUT`/v2.6/project/{id}/description`
          
 Updates the description of the given project. The description must be in the request body. The requesting user (specified by the token) must be **owner** of the project.
 
-##### POST `/v2.5/projects/{id}/users?uid={uid}`
+##### POST `/v2.6/projects/{id}/users?uid={uid}`
 
 Adds the user with id `{uid}` to the project. The requesting user (specified by the token) must be **owner** of the project.
 
-##### DELETE `/v2.5/projects/{id}/users`
+##### DELETE `/v2.6/projects/{id}/users`
 
 Removes the requesting user (specified by the token) from the project. The requesting user (specified by the token) must be **member** of the project.
 
-##### DELETE `/v2.5/projects/{id}/users/{uid}`
+##### DELETE `/v2.6/projects/{id}/users/{uid}`
 
 Removes the user with the id `{uid}` from the project. The requesting user (specified by the token) must either be the **owner** of the project or must be removing himself.
 
 ### Tasks
 
-##### GET  `/v2.5/projects/{id}/tasks`
+##### GET  `/v2.6/projects/{id}/tasks`
 
 Gets the tasks of project `{id}`. The requesting user (specified by the token) must be **member** of the project.
 
-##### POST `/v2.5/tasks/{id}/assignedUser`
+##### POST `/v2.6/tasks/{id}/assignedUser`
 
 Assigns the requesting user (specified by the token) to the task with id `{id}`. The requesting user (specified by the token) must be **member** of the project.
 
-##### DELETE `/v2.5/tasks/{id}/assignedUser`
+##### DELETE `/v2.6/tasks/{id}/assignedUser`
 
 Unassigns the requesting user (specified by the token) from the task with id `{id}`. When `needsAssignment=true`: Only the **assigned** user can unassign himself, you cannot unassign other users.
 
-##### POST `/v2.5/tasks/{id}/processPoints?process_points={points}`
+##### POST `/v2.6/tasks/{id}/processPoints?process_points={points}`
 
 Sets the amount of process points of the task with id `{id}` to `{points}` which must be an integer. When `needsAssignment=true`:  Only the currently **assigned** user can do this.
 
