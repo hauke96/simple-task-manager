@@ -316,32 +316,32 @@ func getWebsocketConnection(w http.ResponseWriter, r *http.Request, token *auth.
 func sendAdd(sender *websocket.WebsocketSender, addedProject *project.Project) {
 	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectAdded,
-		Data: addedProject,
+		Id: addedProject.Id,
 	}, addedProject.Users...)
 }
 
 func sendUpdate(sender *websocket.WebsocketSender, updatedProject *project.Project) {
 	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectUpdated,
-		Data: updatedProject,
+		Id: updatedProject.Id,
 	}, updatedProject.Users...)
 }
 
 func sendUserRemoved(sender *websocket.WebsocketSender, updatedProject *project.Project, removedUser string) {
 	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectUpdated,
-		Data: updatedProject,
+		Id: updatedProject.Id,
 	}, updatedProject.Users...)
 	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectUserRemoved,
-		Data: updatedProject.Id,
+		Id: updatedProject.Id,
 	}, removedUser)
 }
 
 func sendDelete(sender *websocket.WebsocketSender, removedProject *project.Project) {
 	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectDeleted,
-		Data: removedProject.Id,
+		Id: removedProject.Id,
 	}, removedProject.Users...)
 }
 
@@ -353,7 +353,7 @@ func sendTaskUpdate(sender *websocket.WebsocketSender, task *task.Task, context 
 
 	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectUpdated,
-		Data: project,
+		Id: project.Id,
 	}, project.Users...)
 
 	return nil

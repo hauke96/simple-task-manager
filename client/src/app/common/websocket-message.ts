@@ -1,7 +1,7 @@
 export class WebsocketMessage {
   constructor(
     public type: string,
-    public data: any
+    public id: string
   ) {
   }
 }

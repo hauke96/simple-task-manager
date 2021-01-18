@@ -16,7 +16,7 @@ const (
 type Message struct {
 	// One of the "MessageType" strings
 	Type string      `json:"type"`
-	Data interface{} `json:"data"`
+	Id   string      `json:"id"`
 }
 
 var (

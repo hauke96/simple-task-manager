@@ -21,7 +21,7 @@ export class ProjectService {
   public projectAdded: EventEmitter<Project> = new EventEmitter();
   public projectChanged: EventEmitter<Project> = new EventEmitter();
   public projectDeleted: EventEmitter<string> = new EventEmitter();
-  public projectUserRemoved: EventEmitter<void> = new EventEmitter();
+  public projectUserRemoved: EventEmitter<string> = new EventEmitter();
 
   constructor(
     private taskService: TaskService,
@@ -41,38 +41,34 @@ export class ProjectService {
   private handleReceivedMessage(m: WebsocketMessage) {
     switch (m.type) {
       case WebsocketMessageType.MessageType_ProjectAdded:
-        const addDto = m.data as ProjectDto;
-
-        this.toProject(addDto).subscribe(
+        this.getProject(m.id).subscribe(
           p => {
             this.projectAdded.emit(p);
           },
           e => {
-            console.error('Unable to process ' + m.type + ' event for project ' + addDto.id);
+            console.error('Unable to process ' + m.type + ' event for project ' + m.id);
             console.error(e);
           }
         );
         break;
       case WebsocketMessageType.MessageType_ProjectUpdated:
-        const updateDto = m.data as ProjectDto;
-
-        this.toProject(updateDto).subscribe(
+        this.getProject(m.id).subscribe(
           p => {
             // Also call the task service to send task-updates to the components.
             this.taskService.updateTasks(p.tasks);
             this.projectChanged.emit(p);
           },
           e => {
-            console.error('Unable to process ' + m.type + ' event for project ' + updateDto.id);
+            console.error('Unable to process ' + m.type + ' event for project ' + m.id);
             console.error(e);
           }
         );
         break;
       case WebsocketMessageType.MessageType_ProjectUserRemoved:
-        this.projectUserRemoved.emit(m.data);
+        this.projectUserRemoved.emit(m.id);
         break;
       case WebsocketMessageType.MessageType_ProjectDeleted:
-        this.projectDeleted.emit(m.data);
+        this.projectDeleted.emit(m.id);
         break;
     }
   }
