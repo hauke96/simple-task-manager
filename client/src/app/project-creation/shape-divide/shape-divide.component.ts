@@ -32,10 +32,6 @@ export class ShapeDivideComponent implements OnInit {
     this.gridCellSize = 1000;
   }
 
-  public get hasSelectedPolygon(): boolean {
-    return !!this.selectedTask;
-  }
-
   onPreviewButtonClicked() {
     const taskDrafts: TaskDraft[] = this.createTaskDrafts();
     if (!taskDrafts) {

@@ -22,7 +22,7 @@
 					<app-task-draft-list [tasks]="taskDrafts"
 										 [selectedTask]="selectedTask"></app-task-draft-list>
 
-					<div *ngIf="!!selectedTask">
+					<div *ngIf="selectedTask">
 						<h2 i18n>Properties:</h2>
 						<app-task-edit [task]="selectedTask"></app-task-edit>
 
