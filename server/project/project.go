@@ -67,7 +67,7 @@ func (s *ProjectService) GetProjects(userId string) ([]*Project, error) {
 	return projects, nil
 }
 
-func (s *ProjectService) GetProjectByTask(taskId string, userId string) (*Project, error) {
+func (s *ProjectService) GetProjectByTask(taskId string) (*Project, error) {
 	project, err := s.store.getProjectByTask(taskId)
 	if err != nil {
 		s.Err("Error getting project with task %s", taskId)

@@ -126,7 +126,7 @@ func TestGetProjectsInvalidUser(t *testing.T) {
 
 func TestGetProjectByTask(t *testing.T) {
 	h.Run(t, func() error {
-		project, err := s.GetProjectByTask("4", "John")
+		project, err := s.GetProjectByTask("4")
 		if err != nil {
 			return err
 		}

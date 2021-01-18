@@ -246,7 +246,7 @@ func assignUser_v2_6(r *http.Request, context *Context) *ApiResponse {
 	}
 
 	// Send via websockets
-	err = sendTaskUpdate(context.WebsocketSender, task, user, context)
+	err = sendTaskUpdate(context.WebsocketSender, task, context)
 	if err != nil {
 		return InternalServerError(err)
 	}
@@ -271,7 +271,7 @@ func unassignUser_v2_6(r *http.Request, context *Context) *ApiResponse {
 	}
 
 	// Send via websockets
-	err = sendTaskUpdate(context.WebsocketSender, task, user, context)
+	err = sendTaskUpdate(context.WebsocketSender, task, context)
 	if err != nil {
 		return InternalServerError(err)
 	}
@@ -299,7 +299,7 @@ func setProcessPoints_v2_6(r *http.Request, context *Context) *ApiResponse {
 	}
 
 	// Send via websockets
-	err = sendTaskUpdate(context.WebsocketSender, task, context.Token.UID, context)
+	err = sendTaskUpdate(context.WebsocketSender, task, context)
 	if err != nil {
 		return InternalServerError(err)
 	}
@@ -345,8 +345,8 @@ func sendDelete(sender *websocket.WebsocketSender, removedProject *project.Proje
 	}, removedProject.Users...)
 }
 
-func sendTaskUpdate(sender *websocket.WebsocketSender, task *task.Task, userId string, context *Context) error {
-	project, err := context.ProjectService.GetProjectByTask(task.Id, userId)
+func sendTaskUpdate(sender *websocket.WebsocketSender, task *task.Task, context *Context) error {
+	project, err := context.ProjectService.GetProjectByTask(task.Id)
 	if err != nil {
 		return err
 	}
