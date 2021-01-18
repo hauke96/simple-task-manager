@@ -57,7 +57,7 @@ func (s *ProjectService) GetProjects(userId string) ([]*Project, error) {
 	}
 
 	for _, p := range projects {
-		err = s.addTasksAndMetadata(p, userId)
+		err = s.addTasksAndMetadata(p)
 		if err != nil {
 			s.Err("Unable to add process point data to project %s", p.Id)
 			return nil, err
@@ -74,7 +74,7 @@ func (s *ProjectService) GetProjectByTask(taskId string, userId string) (*Projec
 		return nil, err
 	}
 
-	err = s.addTasksAndMetadata(project, userId)
+	err = s.addTasksAndMetadata(project)
 	if err != nil {
 		s.Err("Unable to add process point data to project %s", project.Id)
 		return nil, err
@@ -100,16 +100,17 @@ func (s *ProjectService) AddProjectWithTasks(projectDraft *ProjectDraftDto, task
 	// Store tasks
 	//
 
-	_, err = s.taskService.AddTasks(taskDrafts, addedProject.Id)
+	tasks, err := s.taskService.AddTasks(taskDrafts, addedProject.Id)
 	if err != nil {
 		return nil, err
 	}
+	addedProject.Tasks = tasks
 	s.Log("Added tasks")
 
 	//
 	// Add Metadata now, that we have tasks
 	//
-	err = s.addTasksAndMetadata(addedProject, addedProject.Owner)
+	err = s.addTasksAndMetadata(addedProject)
 	if err != nil {
 		return nil, err
 	}
@@ -163,7 +164,7 @@ func (s *ProjectService) GetProject(projectId string, potentialMemberId string) 
 		return nil, err
 	}
 
-	err = s.addTasksAndMetadata(project, potentialMemberId)
+	err = s.addTasksAndMetadata(project)
 	if err != nil {
 		s.Err("Unable to add process point data to project %s", project.Id)
 		return nil, err
@@ -173,16 +174,9 @@ func (s *ProjectService) GetProject(projectId string, potentialMemberId string) 
 }
 
 // addTasksAndMetadata adds additional metadata for convenience. This includes information about process points as well as permissions.
-func (s *ProjectService) addTasksAndMetadata(project *Project, potentialMemberId string) error {
-	tasks, err := s.taskService.GetTasks(project.Id, potentialMemberId)
-	if err != nil {
-		s.Err("getting tasks of project %s failed", project.Id)
-		return err
-	}
-	project.Tasks = tasks
-
+func (s *ProjectService) addTasksAndMetadata(project *Project) error {
 	// Collect the overall finish-state of the project
-	for _, t := range tasks {
+	for _, t := range project.Tasks {
 		project.DoneProcessPoints += t.ProcessPoints
 		project.TotalProcessPoints += t.MaxProcessPoints
 	}
@@ -223,7 +217,7 @@ func (s *ProjectService) AddUser(projectId, userId, potentialOwnerId string) (*P
 	}
 	s.Log("Added user to project %s", project.Id)
 
-	err = s.addTasksAndMetadata(project, potentialOwnerId)
+	err = s.addTasksAndMetadata(project)
 	if err != nil {
 		s.Err("Unable to add process point data to project %s", project.Id)
 		return nil, err
@@ -265,26 +259,30 @@ func (s *ProjectService) RemoveUser(projectId, requestingUserId, userIdToRemove 
 	s.Log("User removed from project %s", project.Id)
 
 	// Unassign removed user from all tasks
-	for _, t := range project.Tasks {
+	newTasks := make([]*task.Task, len(project.Tasks))
+	for i, t := range project.Tasks {
 		err := s.permissionService.VerifyAssignment(t.Id, userIdToRemove)
 
 		// err != nil means: The user is assigned to the task 't'
 		if err == nil {
-			_, err := s.taskService.UnassignUser(t.Id, userIdToRemove)
-
+			updatedTask, err := s.taskService.UnassignUser(t.Id, userIdToRemove)
 			if err != nil {
 				s.Err("Unable to unassign user '%s' from task '%s'", userIdToRemove, t.Id)
 				return nil, err
 			}
-
 			s.Log("Unassigned user %s from task %s", userIdToRemove, t.Id)
+
+			newTasks[i] = updatedTask
+		}else{
+			newTasks[i] = t
 		}
 	}
+	project.Tasks = newTasks
 	s.Log("Unassigned the removed user %s from all tasks of project %s", userIdToRemove, project.Id)
 
 	// It could happen that someone removes him-/herself, so that we just removed requestingUserId from the project.
 	// Therefore the owner is used here.
-	err = s.addTasksAndMetadata(project, project.Owner)
+	err = s.addTasksAndMetadata(project)
 	if err != nil {
 		s.Err("Unable to add process point data to project %s", project.Id)
 		return nil, err
@@ -328,7 +326,7 @@ func (s *ProjectService) UpdateName(projectId string, newName string, requesting
 	}
 	s.Log("Updated name of project %s to '%s'", project.Id, newName)
 
-	err = s.addTasksAndMetadata(project, requestingUserId)
+	err = s.addTasksAndMetadata(project)
 	if err != nil {
 		s.Err("Unable to add process point data to project %s", project.Id)
 		return nil, err
@@ -353,7 +351,7 @@ func (s *ProjectService) UpdateDescription(projectId string, newDescription stri
 	}
 	s.Log("Updated description of project %s", project.Id)
 
-	err = s.addTasksAndMetadata(project, requestingUserId)
+	err = s.addTasksAndMetadata(project)
 	if err != nil {
 		s.Err("Unable to add process point data to project %s", project.Id)
 		return nil, err

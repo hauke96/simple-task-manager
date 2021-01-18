@@ -182,5 +182,5 @@ func rowToTask(rows *sql.Rows) (*Task, error) {
 		result.Name = name
 	}
 
-	return &result, err
+	return &result, nil
 }

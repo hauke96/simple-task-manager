@@ -38,16 +38,6 @@ func Init(tx *sql.Tx, logger *util.Logger, permissionService *permission.Permiss
 	}
 }
 
-// GetTasks checks the membership of the requesting user and gets the tasks requested by the IDs.
-func (s *TaskService) GetTasks(projectId string, requestingUserId string) ([]*Task, error) {
-	err := s.permissionService.VerifyMembershipProject(projectId, requestingUserId)
-	if err != nil {
-		return nil, err
-	}
-
-	return s.store.GetTasks(projectId)
-}
-
 // AddTasks sets the ID of the tasks and adds them to the storage.
 func (s *TaskService) AddTasks(newTasks []TaskDraftDto, projectId string) ([]*Task, error) {
 	for _, t := range newTasks {

@@ -120,15 +120,6 @@ export class ProjectService {
     return this.http.delete(environment.url_projects + '/' + projectId);
   }
 
-  // Gets the tasks of the given project
-  public getTasks(projectId: string): Observable<Task[]> {
-    return this.http.get<TaskDto[]>(environment.url_projects_task.replace('{id}', projectId))
-      .pipe(
-        mergeMap((tasks: TaskDto[]) => this.taskService.addUserNames(tasks)),
-        map(dtos => dtos.map(dto => this.taskService.toTask(dto)))
-      );
-  }
-
   public removeUser(projectId: string, userId: string): Observable<Project> {
     return this.http.delete<ProjectDto>(environment.url_projects_users.replace('{id}', projectId) + '/' + userId)
       .pipe(
@@ -197,7 +188,7 @@ export class ProjectService {
       p.id,
       p.name,
       p.description,
-      p.tasks,
+      p.tasks.map(dto => this.taskService.toTask(dto)),
       users,
       owner,
       p.needsAssignment,

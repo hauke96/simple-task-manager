@@ -30,7 +30,6 @@ func Init_v2_6(router *mux.Router) (*mux.Router, string) {
 	r.HandleFunc("/projects/{id}/users", authenticatedTransactionHandler(addUserToProject_v2_6)).Methods(http.MethodPost)
 	r.HandleFunc("/projects/{id}/users", authenticatedTransactionHandler(leaveProject_v2_6)).Methods(http.MethodDelete)
 	r.HandleFunc("/projects/{id}/users/{uid}", authenticatedTransactionHandler(removeUser_v2_6)).Methods(http.MethodDelete)
-	r.HandleFunc("/projects/{id}/tasks", authenticatedTransactionHandler(getProjectTasks_v2_6)).Methods(http.MethodGet)
 
 	r.HandleFunc("/tasks/{id}/assignedUser", authenticatedTransactionHandler(assignUser_v2_6)).Methods(http.MethodPost)
 	r.HandleFunc("/tasks/{id}/assignedUser", authenticatedTransactionHandler(unassignUser_v2_6)).Methods(http.MethodDelete)
@@ -206,23 +205,6 @@ func updateProjectDescription_v2_6(r *http.Request, context *Context) *ApiRespon
 	context.Log("Successfully updated description of project %s", projectId)
 
 	return JsonResponse(updatedProject)
-}
-
-func getProjectTasks_v2_6(r *http.Request, context *Context) *ApiResponse {
-	vars := mux.Vars(r)
-	projectId, ok := vars["id"]
-	if !ok {
-		return BadRequestError(errors.New("url segment 'id' not set"))
-	}
-
-	tasks, err := context.TaskService.GetTasks(projectId, context.Token.UID)
-	if err != nil {
-		return InternalServerError(err)
-	}
-
-	context.Log("Successfully got tasks of project %s", projectId)
-
-	return JsonResponse(tasks)
 }
 
 func addUserToProject_v2_6(r *http.Request, context *Context) *ApiResponse {

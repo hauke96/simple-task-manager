@@ -113,19 +113,6 @@ describe('ProjectService', () => {
     spyOn(httpClient, 'post').and.returnValue(of(dto));
   });
 
-  it('should return tasks with user names', () => {
-    const {users, tasks} = setUpUserAndTasks();
-
-    // The result isn't important (s. TaskService tests) but we just want to check that this is called
-    const addUserNamesSpy = spyOn(taskService, 'addUserNames').and.returnValue(of([]));
-
-    spyOn(httpClient, 'get').and.returnValue(of(tasks));
-
-    service.getTasks('123').subscribe((newTasks: Task[]) => {
-      expect(addUserNamesSpy).toHaveBeenCalled();
-    }, e => fail(e));
-  });
-
   it('should remove user correctly and return updated project', () => {
     const {users, tasks} = setUpUserAndTasks();
 

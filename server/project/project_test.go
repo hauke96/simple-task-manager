@@ -180,11 +180,7 @@ func TestAddWithTasks(t *testing.T) {
 
 		// Check task
 
-		tasks, err := s.taskService.GetTasks(newProject.Id, newProject.Owner)
-		if err != nil {
-			return errors.Wrap(err, "Getting tasks after adding project should work")
-		}
-
+		tasks := newProject.Tasks
 		if tasks == nil || len(tasks) != 1 {
 			return errors.New("Expect to have exactly one task")
 		}
@@ -357,10 +353,7 @@ func TestRemoveUser(t *testing.T) {
 			return errors.New(fmt.Sprintf("Process points on project not set correctly"))
 		}
 
-		tasks, err := taskService.GetTasks(p.Id, "Peter")
-		if err != nil {
-			return errors.New(fmt.Sprintf("Getting tasks should still work"))
-		}
+		tasks := p.Tasks
 
 		// Check that the user to remove has been unassigned
 		for _, task := range tasks {
@@ -463,16 +456,12 @@ func TestRemoveUserTwice(t *testing.T) {
 
 func TestRemoveUserUnassignsHim(t *testing.T) {
 	h.Run(t, func() error {
-		_, err := s.RemoveUser("2", "Donny", "Donny")
+		p, err := s.RemoveUser("2", "Donny", "Donny")
 		if err != nil {
 			return errors.New("Removing user should work")
 		}
 
-		tasks, err := s.taskService.GetTasks("2", "Maria")
-		if err != nil {
-			return errors.New("Getting tasks should work")
-		}
-
+		tasks := p.Tasks
 		// No task should be assigned to "Donny"
 		for _, t := range tasks {
 			if t.AssignedUser == "Donny" {
@@ -534,7 +523,7 @@ func TestDeleteProject(t *testing.T) {
 			return errors.New("The project should not exist anymore")
 		}
 
-		_, err = taskService.GetTasks(id, "Peter")
+		_, err = s.store.taskStore.GetTasks(id)
 		if err == nil {
 			return errors.New("The tasks should not exist anymore")
 		}
