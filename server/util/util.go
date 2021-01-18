@@ -43,7 +43,9 @@ func ResponseUnauthorized(w http.ResponseWriter, logger *Logger, err error) {
 }
 
 func ErrorResponse(w http.ResponseWriter, logger *Logger, err error, status int) {
-	logger.Err("ErrorResponse with status %d: %s", status, err.Error())
+	if logger != nil {
+		logger.Err("ErrorResponse with status %d: %s", status, err.Error())
+	}
 	w.WriteHeader(status)
 	w.Write([]byte(err.Error()))
 }
