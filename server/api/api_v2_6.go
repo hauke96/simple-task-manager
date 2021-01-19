@@ -378,7 +378,8 @@ func unassignUser_v2_6(r *http.Request, context *Context) *ApiResponse {
 }
 
 // Set process points
-// @Summary Sets the process points of a task. The requesting user must be a member of the project. If the project has more than one member, the requesting user must be assigned to the given task.
+// @Summary Sets the process points of a task.
+// @Description Sets the process points of a task. The requesting user must be a member of the project. If the project has more than one member, the requesting user must be assigned to the given task.
 // @Version 2.6
 // @Tags tasks
 // @Produce json
@@ -414,6 +415,13 @@ func setProcessPoints_v2_6(r *http.Request, context *Context) *ApiResponse {
 	return JsonResponse(*task)
 }
 
+// Establish websocket connection
+// @Summary Established an websocket connection to receive updates on projects.
+// @Description Established an websocket connection to receive updates on projects. This requires the same authentication as normal HTTP endpoints. See the GitHub repo '/doc/api' for information on the messaging protocol.
+// @Version 2.6
+// @Tags websocket
+// @Success 200 {object} []project.Project
+// @Router /v2.6/updates [get]
 func getWebsocketConnection(w http.ResponseWriter, r *http.Request, token *auth.Token, websocketSender *websocket.WebsocketSender) {
 	websocketSender.GetWebsocketConnection(w, r, token.UID)
 }

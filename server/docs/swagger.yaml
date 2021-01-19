@@ -76,7 +76,8 @@ info:
   contact:
     name: STM issue tracker
     url: https://github.com/hauke96/simple-task-manager/issues
-  description: This is the SimpleTaskManager (STM) Server.
+  description: This is the SimpleTaskManager (STM) Server. See the GitHub repo '/doc/api/'
+    for further details on authentication, websockets and changelogs.
   license:
     name: GNU General Public License 3.0
     url: https://github.com/hauke96/simple-task-manager/blob/master/LICENSE
@@ -352,6 +353,9 @@ paths:
       - tasks
   /v2.6/tasks/{id}/processPoints:
     post:
+      description: Sets the process points of a task. The requesting user must be
+        a member of the project. If the project has more than one member, the requesting
+        user must be assigned to the given task.
       parameters:
       - description: The ID of the task
         in: path
@@ -371,9 +375,22 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/task.Task'
-      summary: Sets the process points of a task. The requesting user must be a member
-        of the project. If the project has more than one member, the requesting user
-        must be assigned to the given task.
+      summary: Sets the process points of a task.
       tags:
       - tasks
+  /v2.6/updates:
+    get:
+      description: Established an websocket connection to receive updates on projects.
+        This requires the same authentication as normal HTTP endpoints. See the GitHub
+        repo '/doc/api' for information on the messaging protocol.
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/project.Project'
+            type: array
+      summary: Established an websocket connection to receive updates on projects.
+      tags:
+      - websocket
 swagger: "2.0"

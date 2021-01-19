@@ -1,26 +1,8 @@
 This file describes the REST-like API provided by the Server.
 
-# Unversioned API Methods
+# API information
 
-No Authentication needed here.
-
-##### GET `/info`
-
-Generates a simple, text-based info page.
-
-##### GET `/oauth_login?redirect={url}`
-
-Gets OSM login token and therefore redirects to the OSM Login page with `redirect` and `config` query parameters set.
-The `{url}` query parameter is the URL of the Simple-Task-Manager landing page, which is called after successful authentication.
-
-##### GET `/oauth_callback?config={cfg}&redirect={url}`
-
-Performs the OAuth authentication by getting an OSM access token.
-The `{cfg}` parameter value is the key to the user configuration which was set from `/oauth_login` when redirecting.
-The `{url}` parameter value is the URL of the Simple-Task-Manager landing page, where this call redirects to after successful authentication.
-When redirecting to `{url}`, the `token={token}` query parameter is set so that the client can get the token from within the URL.
-
-# v2.6
+## v2.6
 
 **Changes in v2.6**
 * The `ProjectDto` now contains the tasks
@@ -28,24 +10,24 @@ When redirecting to `{url}`, the `token={token}` query parameter is set so that 
 
 Everything else is the same as in v2.5.
 
-### Authentication
+## Authentication
 
-**All** API methods have to be authenticated: The `Authorization` header must contain a valid base64 encoded token (without leading "Bearer" or something):
+**All** API methods (except the authentication themselves) have to be authenticated: The `Authorization` header must contain a valid base64 encoded token (without leading "Bearer" or something):
 
 ```
 Authorization: eyJ2...In0=
 ```
 
-### Updates via websockets
+## Updates via websockets
 
-Connect to `/v2.6/updates` and receive updates for the requesting user.
+Connect to `/{version}/updates` and receive updates for the requesting user.
 
-#### Authentication
+### Authentication
 
 This endpoint, like all other endpoints below as well, needs a valid token.
 The token must be set in the `Sec-WebSocket-Protocol` header (not the `Authorization` header like in normal REST calls).
 
-#### Data protocol
+### Data protocol
 
 Every update is packed into a message of the following format:
 ```json
@@ -56,99 +38,9 @@ Every update is packed into a message of the following format:
 ```
 
 * `<type>` is either `project_added`, `project_updated` or `project_deleted` as specified by the `MessageType_...` variables from the `websocket/websocket.go` file
-* `<data>` is the payload data sent to the client
+* `<id>` is the id of the project that has been added/changed/removed.
   * For `project_added` and `project_updated` its a whole project without tasks
   * For `project_deleted` it's just the project ID of the deleted project
-
-### Projects
-
-##### GET  `/v2.6/projects`
-
-Gets all projects for the requesting user.
-
-##### POST  `/v2.6/projects`
-
-Adds the project and tasks as given in the body:
-
-```json
-{
-  "project": {
-      "name":"foo",
-      "description":"Lorem ipsum ...",
-      "users":["12","42"],
-      "owner":"12"
-  },
-  "tasks": [
-      {
-        "maxProcessPoints":100,
-        "geometry":"{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[9.9,53.5],[9.92,53.55],[9.94,53.55]]]},\"properties\":{\"name\":\"Atlantis\"}}}"
-      }
-  ]
-}
-```
-
-**The project DTO**:
-
-The `owner`, `users` and `name` fields *must* be set.
-The optional `description` has a maximum possible length of 10000 characters.
-
-The `id` field will be ignored when set, it's filled by the server.
-
-**The task DTOs**:
-
-At least one task has to be part of this array.
-
-The `id` field will be ignored when set, it's filled by the server.
-
-The `geometry` *must* be a valid GeoJSON string containing a `feature` array. The `type` of each Feature *must* either be `Polygon` or `MultiPolygon` (according to GeoJSON specification).
-The `name` property of the geometry is optional but will be displayed the clients task list.
-It's okay to not specify the `properties` field at all, to set it to `null` or `{}`.
-
-##### GET  `/v2.6/projects/{id}`
-
-Returns the project with the given ID. The requesting user (specified by the token) must be **member** of the project.
-
-##### DELETE  `/v2.6/projects/{id}`
-
-Deletes the project with the given ID. The requesting user (specified by the token) must be **owner** of the project.
-
-##### PUT `/v2.6/project/{id}/name`
-
-Updates the name of the given project. The name must be in the request body. The requesting user (specified by the token) must be **owner** of the project.
-
-##### PUT`/v2.6/project/{id}/description`
-         
-Updates the description of the given project. The description must be in the request body. The requesting user (specified by the token) must be **owner** of the project.
-
-##### POST `/v2.6/projects/{id}/users?uid={uid}`
-
-Adds the user with id `{uid}` to the project. The requesting user (specified by the token) must be **owner** of the project.
-
-##### DELETE `/v2.6/projects/{id}/users`
-
-Removes the requesting user (specified by the token) from the project. The requesting user (specified by the token) must be **member** of the project.
-
-##### DELETE `/v2.6/projects/{id}/users/{uid}`
-
-Removes the user with the id `{uid}` from the project. The requesting user (specified by the token) must either be the **owner** of the project or must be removing himself.
-
-### Tasks
-
-##### GET  `/v2.6/projects/{id}/tasks`
-
-Gets the tasks of project `{id}`. The requesting user (specified by the token) must be **member** of the project.
-
-##### POST `/v2.6/tasks/{id}/assignedUser`
-
-Assigns the requesting user (specified by the token) to the task with id `{id}`. The requesting user (specified by the token) must be **member** of the project.
-
-##### DELETE `/v2.6/tasks/{id}/assignedUser`
-
-Unassigns the requesting user (specified by the token) from the task with id `{id}`. When `needsAssignment=true`: Only the **assigned** user can unassign himself, you cannot unassign other users.
-
-##### POST `/v2.6/tasks/{id}/processPoints?process_points={points}`
-
-Sets the amount of process points of the task with id `{id}` to `{points}` which must be an integer. When `needsAssignment=true`:  Only the currently **assigned** user can do this.
 
 # Developer information
 
@@ -157,7 +49,7 @@ Sets the amount of process points of the task with id `{id}` to `{points}` which
 An API should offer all functionality needed to run a version of the SimpleTaskManager.
 Not all versions but at least one version (which could also be an upcoming release).
 
-If no version can (or will) use an API version, than this version can bre removed.
+If no version can (or will) use an API version, than this version can be removed.
 This for example applies to very old, insecure, unstable or testing versions.
 
 ## Code structure

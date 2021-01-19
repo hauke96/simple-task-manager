@@ -421,13 +421,14 @@ var doc = `{
         },
         "/v2.6/tasks/{id}/processPoints": {
             "post": {
+                "description": "Sets the process points of a task. The requesting user must be a member of the project. If the project has more than one member, the requesting user must be assigned to the given task.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "tasks"
                 ],
-                "summary": "Sets the process points of a task. The requesting user must be a member of the project. If the project has more than one member, the requesting user must be assigned to the given task.",
+                "summary": "Sets the process points of a task.",
                 "parameters": [
                     {
                         "type": "string",
@@ -450,6 +451,26 @@ var doc = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/task.Task"
+                        }
+                    }
+                }
+            }
+        },
+        "/v2.6/updates": {
+            "get": {
+                "description": "Established an websocket connection to receive updates on projects. This requires the same authentication as normal HTTP endpoints. See the GitHub repo '/doc/api' for information on the messaging protocol.",
+                "tags": [
+                    "websocket"
+                ],
+                "summary": "Established an websocket connection to receive updates on projects.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/project.Project"
+                            }
                         }
                     }
                 }
@@ -585,7 +606,7 @@ var SwaggerInfo = swaggerInfo{
 	BasePath:    "",
 	Schemes:     []string{},
 	Title:       "SimpleTaskManager Server",
-	Description: "This is the SimpleTaskManager (STM) Server.",
+	Description: "This is the SimpleTaskManager (STM) Server. See the GitHub repo '/doc/api/' for further details on authentication, websockets and changelogs.",
 }
 
 type s struct{}
