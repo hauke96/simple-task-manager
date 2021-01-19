@@ -48,6 +48,7 @@
               "@turf/square-grid",
               "@turf/hex-grid",
               "@turf/triangle-grid",
+              "geojson-rbush",
               "pbf"
             ]
           },
@@ -90,7 +91,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -118,7 +118,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
