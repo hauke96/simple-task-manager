@@ -228,6 +228,7 @@ func (s *ProjectService) AddUser(projectId, userId, potentialOwnerId string) (*P
 
 func (s *ProjectService) RemoveUser(projectId, requestingUserId, userIdToRemove string) (*Project, error) {
 	// Both users have to be member of the project
+	// TODO I think this is unnecessary: First check whether requestingUserId == userIdToRemove
 	err := s.permissionService.VerifyMembershipProject(projectId, requestingUserId)
 	if err != nil {
 		return nil, err

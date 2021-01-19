@@ -1,0 +1,553 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is the SimpleTaskManager (STM) Server.",
+        "title": "SimpleTaskManager Server",
+        "contact": {
+            "name": "STM issue tracker",
+            "url": "https://github.com/hauke96/simple-task-manager/issues"
+        },
+        "license": {
+            "name": "GNU General Public License 3.0",
+            "url": "https://github.com/hauke96/simple-task-manager/blob/master/LICENSE"
+        },
+        "version": "1.3.0"
+    },
+    "paths": {
+        "/doc": {
+            "get": {
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "info"
+                ],
+                "summary": "A Swagger UI with all kinds of API related information."
+            }
+        },
+        "/info": {
+            "get": {
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "info"
+                ],
+                "summary": "Shows very basic information about this server.",
+                "responses": {
+                    "200": {
+                        "description": "Some bunch of text with basic information about this server",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/oauth_callback": {
+            "get": {
+                "description": "OAuth callback called after OSM login. Performs the OAuth authentication by getting an OSM access token. See GitHub Repo under '/doc/authentication' for further information.",
+                "tags": [
+                    "authentication"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The config key sent to the OSM login page.",
+                        "name": "config",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The URL that should be redirected to after authentication",
+                        "name": "redirect",
+                        "in": "query",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        "/oauth_login": {
+            "get": {
+                "description": "Gets OSM login token and therefore redirects to the OSM Login page. See GitHub Repo under '/doc/authentication' for further information.",
+                "tags": [
+                    "authentication"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The URL that should be redirected to after authentication",
+                        "name": "redirect",
+                        "in": "query",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        "/v2.6/project/{id}": {
+            "get": {
+                "description": "Gets a specific project. The requesting user must be a member of the project.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Get a specific project.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the project to get",
+                        "name": "project_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/project.Project"
+                        }
+                    }
+                }
+            }
+        },
+        "/v2.6/projects": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Get all projects for the requesting user.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/project.Project"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Adds a new project.",
+                "parameters": [
+                    {
+                        "description": "Draft project with draft task list",
+                        "name": "project",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.ProjectAddDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/project.Project"
+                        }
+                    }
+                }
+            }
+        },
+        "/v2.6/projects/{id}": {
+            "delete": {
+                "description": "Deletes the specified project. The requesting user must be the owner of the project.",
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Delete a project.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the project to delete",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        "/v2.6/projects/{id}/description": {
+            "put": {
+                "description": "Update the projects description. The requesting user must be the owner of the project.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Update project description.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the project",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "The new description of the project",
+                        "name": "new_desc",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/project.Project"
+                        }
+                    }
+                }
+            }
+        },
+        "/v2.6/projects/{id}/name": {
+            "put": {
+                "description": "Updates the projects name/title. The requesting user must be the owner of the project.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Update project name.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the project",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "The new name of the project",
+                        "name": "new_name",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/project.Project"
+                        }
+                    }
+                }
+            }
+        },
+        "/v2.6/projects/{id}/users": {
+            "post": {
+                "description": "Adds the given user to the project. The requesting user must be the owner of the project.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Adds a user to the project",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the project",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The OSM user-ID to add to the project",
+                        "name": "uid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/project.Project"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "The requesting user must be a member (but not the owner) of the project will be removed.",
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Removes the requesting user from project.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the project the requesting user should leave",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        "/v2.6/projects/{id}/users/{uid}": {
+            "delete": {
+                "description": "Removes a user from the project. The requesting user must be the owner of the project and cannot be removed.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Remove a user from a project.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the project the requesting user should leave",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "OSM user-Id of the user who should be removed",
+                        "name": "uid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/project.Project"
+                        }
+                    }
+                }
+            }
+        },
+        "/v2.6/tasks/{id}/assignedUser": {
+            "post": {
+                "description": "Assigns the requesting user to the given task. The requesting user must be a member of the project.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tasks"
+                ],
+                "summary": "Assigns a user to a task",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The ID of the task",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/task.Task"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Unassigns the requesting user from the given task. The requesting user must be a member of the project and must be assigned to the given task.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tasks"
+                ],
+                "summary": "Unassigns a user from a task.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The ID of the task",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/task.Task"
+                        }
+                    }
+                }
+            }
+        },
+        "/v2.6/tasks/{id}/processPoints": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tasks"
+                ],
+                "summary": "Sets the process points of a task. The requesting user must be a member of the project. If the project has more than one member, the requesting user must be assigned to the given task.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The ID of the task",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "minimum": 0,
+                        "type": "integer",
+                        "description": "The new amount of process points of the task",
+                        "name": "process_points",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/task.Task"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "api.ProjectAddDto": {
+            "type": "object",
+            "properties": {
+                "project": {
+                    "$ref": "#/definitions/project.ProjectDraftDto"
+                },
+                "tasks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/task.TaskDraftDto"
+                    }
+                }
+            }
+        },
+        "project.Project": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "doneProcessPoints": {
+                    "description": "Sum of all process points that have been set",
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "needsAssignment": {
+                    "description": "When \"true\", the tasks of this project need to have an assigned user",
+                    "type": "boolean"
+                },
+                "owner": {
+                    "type": "string"
+                },
+                "tasks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/task.Task"
+                    }
+                },
+                "totalProcessPoints": {
+                    "description": "Sum of all maximum process points of all tasks",
+                    "type": "integer"
+                },
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "project.ProjectDraftDto": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "owner": {
+                    "type": "string"
+                },
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "task.Task": {
+            "type": "object",
+            "properties": {
+                "assignedUser": {
+                    "type": "string"
+                },
+                "geometry": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "maxProcessPoints": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "processPoints": {
+                    "type": "integer"
+                }
+            }
+        },
+        "task.TaskDraftDto": {
+            "type": "object",
+            "properties": {
+                "geometry": {
+                    "type": "string"
+                },
+                "maxProcessPoints": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}
