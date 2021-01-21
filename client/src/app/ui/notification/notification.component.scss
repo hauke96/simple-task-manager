@@ -46,9 +46,11 @@
 .notification-text-container {
 	display: flex;
 	justify-content: center;
-	align-items: center;
+	align-items: baseline;
 	flex-grow: 1;
 	padding: $space-base;
+	margin-top: auto;
+	margin-bottom: auto;
 }
 
 .error-text {
