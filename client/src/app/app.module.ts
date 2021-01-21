@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { ErrorHandler, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
@@ -39,6 +39,7 @@ import { TaskEditComponent } from './project-creation/task-edit/task-edit.compon
 import { ZoomControlComponent } from './ui/zoom-control/zoom-control.component';
 import { ProgressBarComponent } from './ui/progress-bar/progress-bar.component';
 import { TaskTitlePipe } from './task/task-title.pipe';
+import { GlobalErrorHandler } from './error-handler';
 
 @NgModule({
   declarations: [
@@ -87,6 +88,10 @@ import { TaskTitlePipe } from './task/task-title.pipe';
       provide: HTTP_INTERCEPTORS,
       useClass: LoggedInInterceptor,
       multi: true
+    },
+    {
+      provide: ErrorHandler,
+      useClass: GlobalErrorHandler
     }
   ],
   bootstrap: [AppComponent]
