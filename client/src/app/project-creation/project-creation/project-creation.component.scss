@@ -44,7 +44,7 @@
 
 .drawing-toolbar {
 	position: absolute;
-	z-index: 1000; // Because of OpenLayers claiming some z-indices
+	z-index: 5; // Because of OpenLayers claiming some z-indices
 	left: 0px;
 	top: 0px;
 	margin: $space-base;
