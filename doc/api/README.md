@@ -2,6 +2,9 @@ This file describes the REST-like API provided by the Server.
 
 # API information
 
+The server hosts its own API doc.
+For `localhost` it's [`http://localhost:8080/doc/`](http://localhost:8080/doc/).
+
 ## v2.6
 
 **Changes in v2.6**
