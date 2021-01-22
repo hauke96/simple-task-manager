@@ -1,8 +1,8 @@
 Here you'll find some documentation about the simple task manager. This is ordered into few categories:
 
 ### [api](api/README.md)
-* General information about the API
-* API methods
+* link to general information about the API
+* (re)generating swagger UI
 * versions
 
 ### [architecture](architecture/README.md)
