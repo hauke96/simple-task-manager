@@ -27,6 +27,7 @@ type Config struct {
 	DbPassword            string
 	TokenValidityDuration string `json:"token-validity"`
 	SourceRepoURL         string `json:"source-repo-url"`
+	MaxTasksPerProject    int
 }
 
 func LoadConfig(file string) {
@@ -67,6 +68,9 @@ func LoadConfig(file string) {
 		sigolo.Info("Environment variable %s for the database user not set. Fallback to default: %s", DbPasswordEnvVar, DbPasswordDefault)
 		dbPassword = DbPasswordDefault
 	}
+
+	// TODO extract into config (s. GitHub issue https://github.com/hauke96/simple-task-manager/issues/133)
+	Conf.MaxTasksPerProject = 1000
 
 	Conf.DbUsername = dbUsername
 	Conf.DbPassword = dbPassword

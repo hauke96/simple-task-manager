@@ -3,6 +3,7 @@ package project
 import (
 	"database/sql"
 	"fmt"
+	"github.com/hauke96/simple-task-manager/server/config"
 	"github.com/hauke96/simple-task-manager/server/permission"
 	"github.com/hauke96/simple-task-manager/server/task"
 	"github.com/hauke96/simple-task-manager/server/util"
@@ -86,6 +87,10 @@ func (s *ProjectService) GetProjectByTask(taskId string) (*Project, error) {
 // AddProjectWithTasks takes the project and the tasks and adds them to the database. This also adds the process-point
 // metadata to the returned project.
 func (s *ProjectService) AddProjectWithTasks(projectDraft *ProjectDraftDto, taskDrafts []task.TaskDraftDto) (*Project, error) {
+	if len(taskDrafts) > config.Conf.MaxTasksPerProject {
+		return nil, errors.New(fmt.Sprintf("Maximum %d tasks allowed", config.Conf.MaxTasksPerProject))
+	}
+
 	//
 	// Store project
 	//
@@ -274,7 +279,7 @@ func (s *ProjectService) RemoveUser(projectId, requestingUserId, userIdToRemove 
 			s.Log("Unassigned user %s from task %s", userIdToRemove, t.Id)
 
 			newTasks[i] = updatedTask
-		}else{
+		} else {
 			newTasks[i] = t
 		}
 	}

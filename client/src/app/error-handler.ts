@@ -7,7 +7,7 @@ export class GlobalErrorHandler implements ErrorHandler {
   constructor(private notificationService: NotificationService) {
   }
 
-  handleError(error) {
+  handleError(error: string) {
     this.notificationService.addError('Unexcpected error occured: ' + error);
   }
 }
