@@ -8,7 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MockRouter } from '../../common/mock-router';
 import { Task, TestTaskFeature } from '../../task/task.material';
 import { User } from '../../user/user.material';
-import { Project, ProjectDto } from '../project.material';
+import { Project } from '../project.material';
 import { WebsocketClientService } from '../../common/websocket-client.service';
 import { WebsocketMessage, WebsocketMessageType } from '../../common/websocket-message';
 import { ProjectService } from '../project.service';
@@ -82,12 +82,12 @@ describe('ProjectListComponent', () => {
     const p = createProject();
     p.id = '123456';
     p.name = 'flubby';
-    spyOn(projectService, 'toProject').and.returnValue(of(p));
+    spyOn(projectService, 'getProject').and.returnValue(of(p));
 
     // Trigger all needed events
     websocketService.messageReceived.emit(new WebsocketMessage(
       WebsocketMessageType.MessageType_ProjectAdded,
-      new ProjectDto(p.id, p.name, p.description, p.users.map(u => u.uid), p.tasks, p.owner.uid, p.needsAssignment)
+      p.id
     ));
 
     expect(component.projects).toContain(p);
@@ -103,12 +103,12 @@ describe('ProjectListComponent', () => {
     p.name = component.projects[0].name;
     p.users = component.projects[0].users;
     p.users.push(new User('Foo', '1234'));
-    spyOn(projectService, 'toProject').and.returnValue(of(p));
+    spyOn(projectService, 'getProject').and.returnValue(of(p));
 
     // Trigger all needed events
     websocketService.messageReceived.emit(new WebsocketMessage(
       WebsocketMessageType.MessageType_ProjectUpdated,
-      new ProjectDto(p.id, p.name, p.description, p.users.map(u => u.uid), p.tasks, p.owner.uid, p.needsAssignment)
+      p.id
     ));
 
     expect(component.projects.length).toEqual(1);
@@ -119,12 +119,12 @@ describe('ProjectListComponent', () => {
     component.projects = [];
 
     const p = createProject();
-    spyOn(projectService, 'toProject').and.returnValue(of(p));
+    spyOn(projectService, 'getProject').and.returnValue(of(p));
 
     // Trigger all needed events
     websocketService.messageReceived.emit(new WebsocketMessage(
       WebsocketMessageType.MessageType_ProjectUpdated,
-      new ProjectDto(p.id, p.name, p.description, p.users.map(u => u.uid), p.tasks, p.owner.uid, p.needsAssignment)
+      p.id
     ));
 
     expect(component.projects).toContain(p);
@@ -135,12 +135,12 @@ describe('ProjectListComponent', () => {
 
     const p = createProject();
     p.name = 'flubby';
-    spyOn(projectService, 'toProject').and.returnValue(of(p));
+    spyOn(projectService, 'getProject').and.returnValue(of(p));
 
     // Trigger all needed events
     websocketService.messageReceived.emit(new WebsocketMessage(
       WebsocketMessageType.MessageType_ProjectUpdated,
-      new ProjectDto(p.id, p.name, p.description, p.users.map(u => u.uid), p.tasks, p.owner.uid, p.needsAssignment)
+      p.id
     ));
 
     expect(component.projects[0]).toEqual(p);
