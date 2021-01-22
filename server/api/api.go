@@ -120,7 +120,7 @@ func getInfo(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "SimpleTaskManager Server:\n")
 	fmt.Fprintf(w, "=========================\n\n")
 	fmt.Fprintf(w, fmtStr, fmtColWidth, "Version", util.VERSION)
-	fmt.Fprintf(w, fmtStr, fmtColWidth, "Code", "https://github.com/hauke96/simple-task-manager")
+	fmt.Fprintf(w, fmtStr, fmtColWidth, "Code", config.Conf.SourceRepoURL)
 	fmt.Fprintf(w, fmtStr, fmtColWidth, "Supported API versions", strings.Join(supportedApiVersions, ", "))
 	fmt.Fprintf(w, fmtStr, fmtColWidth, "API doc (swagger)", fmt.Sprintf("%s:%d/doc/index.html", config.Conf.ServerUrl, config.Conf.Port))
 }

@@ -26,6 +26,7 @@ type Config struct {
 	DbUsername            string
 	DbPassword            string
 	TokenValidityDuration string `json:"token-validity"`
+	SourceRepoURL         string `json:"source-repo-url"`
 }
 
 func LoadConfig(file string) {
@@ -88,7 +89,7 @@ func PrintConfig() {
 		} else {
 			propertyValue = strings.Join(strings.Split(p, ":")[1:], ":") // Join remaining parts back together
 		}
-		
+
 		sigolo.Info("  %-*s = %s", 21, propertyName, propertyValue)
 	}
 }
