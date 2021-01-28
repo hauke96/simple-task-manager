@@ -1,5 +1,5 @@
 ## Stage 1 : Install dependencies
-FROM node:15.4.0 as builder
+FROM node:15.7.0 as builder
 
 RUN npm i -g @angular/cli
 
@@ -20,7 +20,7 @@ RUN NODE_OPTIONS="--max_old_space_size=4096" npm run build-prod
 
 
 ## STAGE 3 : Configure nginx and run client
-FROM nginx:1.19.5
+FROM nginx:1.19.6
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
