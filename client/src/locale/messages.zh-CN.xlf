@@ -44,63 +44,21 @@
         </context-group>
       </trans-unit>
       <trans-unit id="LOGIN_CHANGELOG" datatype="html">
-        <source>
-          <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Changes in 1.2.0:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;"/>
-          New features:
-          <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>New project creation:<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-              <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Toolbar<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Give own names to tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Preview for subdividing tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>More formats for importing tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Overall better handling of interactions<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-              <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-          <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-          Bug fixes:
-          <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Better error handling when importing tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-          <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-          Minor changes:
-          <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Save map location to local storage<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Different and better visible color scheme for tasks on the map<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-          <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-          Internals:
-          <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Distinct DTO classes for project creation<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-          <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-        </source>
-        <target>
-          <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Changes in 1.2.0:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;"/>
-          New features:
-          <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>New project creation:<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-              <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Toolbar<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Give own names to tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Preview for subdividing tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>More formats for importing tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-                  <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Overall better handling of interactions<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-              <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-          <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-          Bug fixes:
-          <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Better error handling when importing tasks<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-          <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-          Minor changes:
-          <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Save map location to local storage<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Different and better visible color scheme for tasks on the map<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-          <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-          Internals:
-          <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/>
-              <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Distinct DTO classes for project creation<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/>
-          <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/>
-        </target>
+        <source><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Changes in 1.3.0:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;
+					"/> New features: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;
+						"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>More language selection drop-down menus<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Task list is now sorted by process state<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/> Bug fixes: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;
+						"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Reduce unnecessary logging<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Project creation: Save button enabled but data wasn&apos;t completely entered<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Task name sometimes not shown<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Remove unnecessary zoom buttons<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Fix broken styling of very long notifications<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Show task name instead of ID<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>All kind of errors will now be catched<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/> Infrastructure: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;
+						"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>The server now makes daily database backups<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/> Internals: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;
+						"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Tasks are now withing the project DTO class<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Added swagger UI as better API documentation<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/></source>
+        <target><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Changes in 1.3.0:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;
+					"/> New features: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;
+						"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>More language selection drop-down menus<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Task list is now sorted by process state<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/> Bug fixes: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;
+						"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Reduce unnecessary logging<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Project creation: Save button enabled but data wasn&apos;t completely entered<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Task name sometimes not shown<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Remove unnecessary zoom buttons<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Fix broken styling of very long notifications<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Show task name instead of ID<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>All kind of errors will now be catched<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/> Infrastructure: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;
+						"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>The server now makes daily database backups<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/> Internals: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;
+						"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Tasks are now withing the project DTO class<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Added swagger UI as better API documentation<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/login/login.component.html</context>
-          <context context-type="linenumber">16</context>
+          <context context-type="linenumber">21,45</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1a6adc5f5c4e0ee07c9edbbdb843d417930db480" datatype="html">
@@ -429,7 +387,7 @@
           <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="5372b97b027c5e06c157f70e930ac7a5b1db2355" datatype="html">
+      <trans-unit id="8867ba5a434d3191c637d05080ab20213d1fd67b" datatype="html">
         <source><x id="INTERPOLATION" equiv-text="{{ remainingErrors }}"/> errors left</source>
         <target xml:lang="zh-CN"><x id="INTERPOLATION" equiv-text="{{ remainingErrors }}"/>错误</target>
 <context-group purpose="location">
@@ -437,7 +395,7 @@
           <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="bb563263feeb05f7a58f13e0160513d5dc7cdc39" datatype="html">
+      <trans-unit id="6d0dc21d3ddfeb08c1236484a120ad0b8a3943de" datatype="html">
         <source><x id="INTERPOLATION" equiv-text="{{ remainingWarning }}"/> warnings left</source>
         <target xml:lang="zh-CN"><x id="INTERPOLATION" equiv-text="{{ remainingWarning }}"/>警告</target>
 <context-group purpose="location">
@@ -469,7 +427,7 @@
           <context context-type="linenumber">25</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="7627c8c61fbdc91eef42ecf3fd70e650318e8ce7" datatype="html">
+      <trans-unit id="78bed04eaf87650c17866961515546dc14950f15" datatype="html">
         <source><x id="INTERPOLATION" equiv-text="{{ remainingInfo }}"/> notifications left</source>
         <target xml:lang="zh-CN"><x id="INTERPOLATION" equiv-text="{{ remainingInfo }}"/>发出通知</target>
 <context-group purpose="location">
@@ -483,22 +441,6 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
           <context context-type="linenumber">2</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="44408118c125445318294c7a1ec080166993294c" datatype="html">
-        <source>Task selected </source>
-        <target>Task selected </target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
-          <context context-type="linenumber">8</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="4d8c72b8aa088152b8fe08fb52e7668731501ed5" datatype="html">
-        <source>Click on the map to select a task.</source>
-        <target>Click on the map to select a task.</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
-          <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1c1d1f8a90a0d951c07eff3863b48ab97377d8a4" datatype="html">
@@ -826,7 +768,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_NOT_INVITE_USER" datatype="html">
-        <source>Could not invite user <x id="INTERPOLATION" equiv-text="{{interp}}"/></source>
+        <source>Could not invite user '<x id="INTERPOLATION" equiv-text="{{interp}}"/>'</source>
         <target xml:lang="zh-CN">无法邀请使用者<x id="INTERPOLATION" equiv-text="{{interp}}"/></target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>

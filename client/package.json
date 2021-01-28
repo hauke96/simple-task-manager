@@ -16,7 +16,7 @@
     "test": "ng test --source-map --watch=true --browsers=ChromeHeadlessNoSandbox --code-coverage",
     "lint": "ng lint --fix",
     "e2e": "ng e2e",
-    "i18n": "ng xi18n --output-path src/locale"
+    "i18n": "ng extract-i18n --output-path src/locale"
   },
   "private": true,
   "dependencies": {
