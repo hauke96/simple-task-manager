@@ -18,7 +18,7 @@ type TestHelper struct {
 func InitWithDummyData() {
 	sigolo.Info("Add database dummy data")
 
-	db, err := sql.Open("postgres", "user=postgres password=geheim dbname=stm sslmode=disable")
+	db, err := sql.Open("postgres", "user=stm password=geheim dbname=stm sslmode=disable")
 	if err != nil {
 		sigolo.Fatal("Unable to connect to database: %s", err.Error())
 	}
