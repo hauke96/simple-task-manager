@@ -1,8 +1,8 @@
 This file describes the automatic creation of database backups.
 
-# Setup
+# Prerequisites
 
-See the main [server.md](server.md) file.
+I assume you went through the [server.md](server.md) file and have a running stm server with working database.
 
 # How it works
 
