@@ -23,6 +23,7 @@ const (
 	DefaultTokenInvalidityDuration = "24h"
 	DefaultDbUsername              = "stm"
 	DefaultDbPassword              = "secret"
+	DefaultMaxTaskPerProject       = 1000
 )
 
 type Config struct {
@@ -30,15 +31,15 @@ type Config struct {
 	Port                  int    `json:"port"`
 	SslCertFile           string `json:"ssl-cert-file"`
 	SslKeyFile            string `json:"ssl-key-file"`
-	OauthConsumerKey      string
-	OauthSecret           string
+	OauthConsumerKey      string `json:"-"`
+	OauthSecret           string `json:"-"`
 	OsmBaseUrl            string `json:"osm-base-url"`
 	DebugLogging          bool   `json:"debug-logging"`
-	DbUsername            string
-	DbPassword            string
+	DbUsername            string `json:"-"`
+	DbPassword            string `json:"-"`
 	TokenValidityDuration string `json:"token-validity"`
 	SourceRepoURL         string `json:"source-repo-url"`
-	MaxTasksPerProject    int
+	MaxTasksPerProject    int    `json:"-"`
 }
 
 func LoadConfig(file string) {
@@ -85,7 +86,7 @@ func InitDefaultConfig() {
 	Conf.DbPassword = DefaultDbPassword
 
 	// TODO extract into config (s. GitHub issue https://github.com/hauke96/simple-task-manager/issues/133)
-	Conf.MaxTasksPerProject = 1000
+	Conf.MaxTasksPerProject = DefaultMaxTaskPerProject
 }
 
 func PrintConfig() {
