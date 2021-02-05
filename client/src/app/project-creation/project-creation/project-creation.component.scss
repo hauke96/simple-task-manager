@@ -39,6 +39,19 @@
 	width: 100%;
 	display: flex;
 	flex-direction: column;
+	position: relative;
+}
+
+.drawing-toolbar {
+	position: absolute;
+	z-index: 5; // Because of OpenLayers claiming some z-indices
+	left: 0px;
+	top: 0px;
+	margin: $space-base;
+}
+
+.zoom-control {
+	margin-bottom: $space-base;
 }
 
 #map {

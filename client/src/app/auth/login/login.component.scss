@@ -7,6 +7,18 @@
 	justify-content: space-between;
 }
 
+.language-selection-label {
+	margin-right: $space-base;
+}
+
+.language-selection {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin: $space-base;
+	justify-content: flex-end;
+}
+
 .logo {
 	margin-top: $space-huge;
 	opacity: 0.75;

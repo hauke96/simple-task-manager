@@ -1,0 +1,22 @@
+@import '../../../styles';
+@import '../../../icons';
+
+:host {
+	display: flex;
+	flex-direction: column;
+}
+
+button {
+	background-color: $color-white-transparent;
+	width: $space-huge;
+	height: $space-huge;
+	padding: unset;
+	margin-bottom: -1px; // Get rid of double border
+}
+
+button:hover {
+	background-color: $color-very-light-transparent;
+}
+button:hover {
+	z-index: 1;
+}

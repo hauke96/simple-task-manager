@@ -10,7 +10,8 @@ import { Unsubscriber } from '../../common/unsubscriber';
   styleUrls: ['./task-list.component.scss']
 })
 export class TaskListComponent extends Unsubscriber implements AfterViewInit {
-  @Input() tasks: Task[];
+  // tslint:disable-next-line:variable-name
+  private _tasks: Task[];
 
   constructor(
     private taskService: TaskService,
@@ -22,16 +23,34 @@ export class TaskListComponent extends Unsubscriber implements AfterViewInit {
   ngAfterViewInit(): void {
     this.unsubscribeLater(
       this.taskService.tasksUpdated.subscribe((updatedTasks: Task[]) => {
-        for (const updatedTask of updatedTasks) { // through tasks
-          for (const i in this.tasks) { // through indices
-            if (this.tasks[i].id === updatedTask.id) {
-              this.tasks[i] = updatedTask;
-              break;
-            }
+        updatedTasks.forEach(u => {
+          const index = this._tasks.map(t => t.id).indexOf(u.id);
+          if (index !== -1) { // when "u" exists in the current tasks -> update it
+            this._tasks[index] = u;
           }
-        }
+          // No else case because tasks can't be added after project creation
+        });
       })
     );
+  }
+
+  @Input()
+  set tasks(values: Task[]) {
+    this._tasks = values
+      .sort((a: Task, b: Task) => {
+        if (a.isDone && !b.isDone) {
+          return 1;
+        }
+        if (!a.isDone && b.isDone) {
+          return -1;
+        }
+
+        return a.name > b.name ? 1 : -1;
+      });
+  }
+
+  get tasks(): Task[] {
+    return this._tasks;
   }
 
   public get selectedTaskId(): string {
@@ -43,10 +62,6 @@ export class TaskListComponent extends Unsubscriber implements AfterViewInit {
   }
 
   public onListItemClicked(id: string) {
-    this.taskService.selectTask(this.tasks.find(t => t.id === id));
-  }
-
-  public taskTitle(task: Task): string {
-    return !task.name ? task.id : task.name;
+    this.taskService.selectTask(this._tasks.find(t => t.id === id));
   }
 }

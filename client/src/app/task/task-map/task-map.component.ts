@@ -7,7 +7,7 @@ import TileLayer from 'ol/layer/Tile';
 import { OSM } from 'ol/source';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
-import { Attribution, defaults as defaultControls, ScaleLine } from 'ol/control';
+import { Attribution, ScaleLine } from 'ol/control';
 import { Fill, Stroke, Style, Text } from 'ol/style';
 import { ProcessPointColorService } from '../../common/process-point-color.service';
 import { Unsubscriber } from '../../common/unsubscriber';
@@ -44,10 +44,10 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
 
     this.map = new Map({
       target: 'map',
-      controls: defaultControls().extend([
+      controls: [
         new ScaleLine(),
         new Attribution()
-      ]),
+      ],
       layers: [
         new TileLayer({
           source: new OSM()
@@ -143,7 +143,7 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
     // Text (progress percentage). Bold text on own tasks.
     const labelWeight = currentUserTask ? 'bold' : 'normal';
     let labelText: string;
-    if (task.processPoints === task.maxProcessPoints) {
+    if (task.isDone) {
       labelText = $localize`:@@TASK_MAP_DONE:DONE`;
     } else {
       labelText = Math.floor(100 * task.processPoints / task.maxProcessPoints) + '%';
@@ -178,5 +178,13 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
     feature.set('task_id', task.id);
 
     this.vectorSource.addFeature(feature);
+  }
+
+  onZoomIn() {
+    this.map.getView().setZoom(this.map.getView().getZoom() + 1);
+  }
+
+  onZoomOut() {
+    this.map.getView().setZoom(this.map.getView().getZoom() - 1);
   }
 }

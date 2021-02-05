@@ -10,6 +10,7 @@ import { of } from 'rxjs';
 import { WebsocketClientService } from '../../common/websocket-client.service';
 import { UserService } from '../../user/user.service';
 import { User } from '../../user/user.material';
+import { TaskTitlePipe } from '../task-title.pipe';
 
 describe('TaskDetailsComponent', () => {
   let component: TaskDetailsComponent;
@@ -22,14 +23,14 @@ describe('TaskDetailsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [TaskDetailsComponent],
+      declarations: [TaskDetailsComponent, TaskTitlePipe],
       imports: [
         HttpClientTestingModule,
         FormsModule
       ],
       providers: [
         CurrentUserService,
-        TaskService,
+        TaskService
       ]
     })
       .compileComponents();

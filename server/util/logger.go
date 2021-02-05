@@ -40,5 +40,5 @@ func (l *Logger) LogQuery(query string, args ...interface{}) {
 		query = strings.Replace(query, fmt.Sprintf("$%d", i+1), fmt.Sprintf("%v", a), 1)
 	}
 
-	l.Debug(query)
+	sigolo.Debugb(1, query)
 }

@@ -3,12 +3,13 @@ package main
 import (
 	"github.com/hauke96/kingpin"
 	"github.com/hauke96/sigolo"
+	"github.com/hauke96/simple-task-manager/server/api"
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 	"os"
 
-	"github.com/hauke96/simple-task-manager/server/api"
 	"github.com/hauke96/simple-task-manager/server/auth"
 	"github.com/hauke96/simple-task-manager/server/config"
+	_ "github.com/hauke96/simple-task-manager/server/docs"
 	"github.com/hauke96/simple-task-manager/server/util"
 )
 
@@ -33,6 +34,15 @@ func configureLogging() {
 	}
 }
 
+// @title SimpleTaskManager Server
+// @version 1.3.0
+// @description This is the SimpleTaskManager (STM) Server. See the GitHub repo '/doc/api/' for further details on authentication, websockets and changelogs.
+
+// @contact.name STM issue tracker
+// @contact.url https://github.com/hauke96/simple-task-manager/issues
+
+// @license.name GNU General Public License 3.0
+// @license.url https://github.com/hauke96/simple-task-manager/blob/master/LICENSE
 func main() {
 	sigolo.Info("Init simple-task-manager server v" + util.VERSION)
 

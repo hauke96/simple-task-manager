@@ -17,12 +17,13 @@ button.selected:hover,
 	background-color: $color-very-light;
 }
 button:hover {
-	z-index: 1000;
+	z-index: 1;
 }
 
 .tab-list {
 	display: flex;
 	flex-direction: row;
+	padding-left: $space-small;
 }
 
 .tab-content {

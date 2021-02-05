@@ -89,7 +89,7 @@ func OauthLogin(w http.ResponseWriter, r *http.Request) {
 	logger.Log("%s", service.ClientConfig.CallbackURL)
 
 	httpClient := new(http.Client)
-	err = userConfig.GetRequestToken(service, httpClient)
+	err = userConfig.GetRequestToken(r.Context(), service, httpClient)
 	if err != nil {
 		//sigolo.Error("could not get request token from config: %s", err.Error())
 		logger.Stack(err)
@@ -192,7 +192,7 @@ func requestAccessToken(r *http.Request, userConfig *oauth1a.UserConfig) error {
 	userConfig.Verifier = r.FormValue("oauth_verifier")
 
 	httpClient := new(http.Client)
-	return userConfig.GetAccessToken(userConfig.RequestTokenKey, userConfig.Verifier, service, httpClient)
+	return userConfig.GetAccessToken(r.Context(), userConfig.RequestTokenKey, userConfig.Verifier, service, httpClient)
 }
 
 func requestUserInformation(userConfig *oauth1a.UserConfig) (string, string, error) {

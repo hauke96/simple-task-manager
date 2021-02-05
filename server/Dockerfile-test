@@ -1,4 +1,4 @@
-FROM golang:1.14.4
+FROM golang:1.15.7
 
 COPY . ./stm-server/
 WORKDIR ./stm-server/

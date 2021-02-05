@@ -17,10 +17,10 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
         <span i18n="@@ERROR_LOAD_PROJECTS">Could not load projects</span>
         <span i18n="@@ERROR_LIVE_UPDATE">Could not initialize live-updates</span>
         <span i18n="@@ERROR_COULD_NOT_UPLOAD">Could not upload file '{{interp}}'</span>
-        <span i18n="@@ERROR_OVERPASS_NO_POLYGONS">No usable polygons have been found. Make sure the output format is set to \'out:xml\' and the result contains actual polygons.</span>
+        <span i18n="@@ERROR_OVERPASS_NO_POLYGONS">No polygons exist or data has unknown format. Supported formats are: GeoJson, OSM-XML, GPX, KML, EsriJson and WKT.</span>
         <span i18n="@@ERROR_UNABLE_LOAD_URL">Unable to load data from remote URL</span>
         <span i18n="@@WARN_ALREADY_MEMBER">User '{{interp}}' is already a member of this project</span>
-        <span i18n="@@ERROR_USER_ID">Could not load user ID for user '{{interp}}'</span>
+        <span i18n="@@ERROR_USER_ID">Could not load user ID for user '{{interp}}'. The user must have at least one changeset or note.</span>
         <span i18n="@@ERROR_UNABLE_LOAD_USER">Unable to load assigned user</span>
         <span i18n="@@ERROR_ASSIGN_USER">Could not assign user</span>
         <span i18n="@@ERROR_UNASSIGN_USER">Could not unassign user</span>
@@ -35,7 +35,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
         <span i18n="@@WARN_PROJECT_REMOVED">The project '{{interp}}' has been removed</span>
         <span i18n="@@WARN_REMOVED_USER_PROJECT">You have been removed from project '{{interp}}'</span>
         <span i18n="@@ERROR_NOT_REMOVE_USER">Could not remove user</span>
-        <span i18n="@@ERROR_NOT_INVITE_USER">Could not invite user{{interp}}</span>
+        <span i18n="@@ERROR_NOT_INVITE_USER">Could not invite user '{{interp}}'</span>
 		    <span i18n="@@TABS_TASKS">Tasks</span>
 		    <span i18n="@@TABS_USERS">Users</span>
 		    <span i18n="@@TABS_SETTINGS">Settings</span>

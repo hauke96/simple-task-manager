@@ -1,7 +1,10 @@
 <app-toolbar>
-	<div class="back-button-container">
-		<button [routerLink]="['/manager']" i18n="Back button">&#60; Back</button>
-		<p class="project-label">Project: {{project?.name}}</p>
+	<div class="toolbar-item">
+		<div class="back-button-container">
+			<button [routerLink]="['/manager']" i18n="Back button">&#60; Back</button>
+			<p class="project-label">Project: {{project?.name}}</p>
+		</div>
+		<app-progress-bar [progressPoints]="project?.doneProcessPoints" [totalPoints]="project?.totalProcessPoints"></app-progress-bar>
 	</div>
 </app-toolbar>
 
@@ -11,7 +14,7 @@
 			<h2 class="description-label" i18n="Description label">Description:</h2>
 			<div class="description-text">{{project?.description}}</div>
 		</div>
-		<app-tabs [tabs]="tabTitles" #tabs>
+		<app-tabs [tabs]="tabTitles" #tabs [borderless]="true">
 			<div *ngIf="tabs.tabIndex === 0" class="task-tab">
 				<div class="tab-container">
 					<app-task-details [needUserAssignment]="project?.needsAssignment"

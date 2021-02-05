@@ -13,3 +13,6 @@ server/database/.tmp.*
 
 # Docker stuff
 postgres-data
+
+# Backups
+*.sql.gz

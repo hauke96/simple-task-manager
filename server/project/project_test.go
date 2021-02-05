@@ -69,6 +69,17 @@ func TestGetProjects(t *testing.T) {
 		if userProjects[1].TotalProcessPoints != 308 || userProjects[1].DoneProcessPoints != 154 {
 			return errors.New("Process points on project not set correctly")
 		}
+		if len(userProjects[0].Tasks) != 1 || userProjects[0].Tasks[0].Id != "1" {
+			return errors.New("Tasks of project 1 not matching")
+		}
+		if len(userProjects[1].Tasks) != 5 ||
+			userProjects[1].Tasks[0].Id != "2" ||
+			userProjects[1].Tasks[1].Id != "3" ||
+			userProjects[1].Tasks[2].Id != "4" ||
+			userProjects[1].Tasks[3].Id != "6" ||
+			userProjects[1].Tasks[4].Id != "7" {
+			return errors.New("Tasks of project 1 not matching")
+		}
 
 		// For Peter (being part of only project 1)
 		userProjects, err = s.GetProjects("Peter")
@@ -115,7 +126,7 @@ func TestGetProjectsInvalidUser(t *testing.T) {
 
 func TestGetProjectByTask(t *testing.T) {
 	h.Run(t, func() error {
-		project, err := s.GetProjectByTask("4", "John")
+		project, err := s.GetProjectByTask("4")
 		if err != nil {
 			return err
 		}
@@ -169,11 +180,7 @@ func TestAddWithTasks(t *testing.T) {
 
 		// Check task
 
-		tasks, err := s.taskService.GetTasks(newProject.Id, newProject.Owner)
-		if err != nil {
-			return errors.Wrap(err, "Getting tasks after adding project should work")
-		}
-
+		tasks := newProject.Tasks
 		if tasks == nil || len(tasks) != 1 {
 			return errors.New("Expect to have exactly one task")
 		}
@@ -234,7 +241,7 @@ func TestAddProjectWithInvalidParameters(t *testing.T) {
 		// Owner must be in users array
 		p = ProjectDraftDto{
 			Owner: "foo",
-			Users:[]string{"bar"},
+			Users: []string{"bar"},
 		}
 		_, err = s.AddProject(&p)
 		if err == nil {
@@ -243,9 +250,9 @@ func TestAddProjectWithInvalidParameters(t *testing.T) {
 
 		// Name must be set
 		p = ProjectDraftDto{
-			Owner:"foo",
-			Users:[]string{"foo"},
-			Name: "",
+			Owner: "foo",
+			Users: []string{"foo"},
+			Name:  "",
 		}
 		_, err = s.AddProject(&p)
 		if err == nil {
@@ -255,10 +262,10 @@ func TestAddProjectWithInvalidParameters(t *testing.T) {
 		// Too long description not allowed
 		maxDescriptionLength = 10 // lower the border for test purposes
 		p = ProjectDraftDto{
-			Owner:"foo",
-			Users:[]string{"foo"},
-			Name: "some name",
-			Description:"This is a very very long description",
+			Owner:       "foo",
+			Users:       []string{"foo"},
+			Name:        "some name",
+			Description: "This is a very very long description",
 		}
 		_, err = s.AddProject(&p)
 		if err == nil {
@@ -346,10 +353,7 @@ func TestRemoveUser(t *testing.T) {
 			return errors.New(fmt.Sprintf("Process points on project not set correctly"))
 		}
 
-		tasks, err := taskService.GetTasks(p.Id, "Peter")
-		if err != nil {
-			return errors.New(fmt.Sprintf("Getting tasks should still work"))
-		}
+		tasks := p.Tasks
 
 		// Check that the user to remove has been unassigned
 		for _, task := range tasks {
@@ -452,16 +456,12 @@ func TestRemoveUserTwice(t *testing.T) {
 
 func TestRemoveUserUnassignsHim(t *testing.T) {
 	h.Run(t, func() error {
-		_, err := s.RemoveUser("2", "Donny", "Donny")
+		p, err := s.RemoveUser("2", "Donny", "Donny")
 		if err != nil {
 			return errors.New("Removing user should work")
 		}
 
-		tasks, err := s.taskService.GetTasks("2", "Maria")
-		if err != nil {
-			return errors.New("Getting tasks should work")
-		}
-
+		tasks := p.Tasks
 		// No task should be assigned to "Donny"
 		for _, t := range tasks {
 			if t.AssignedUser == "Donny" {
@@ -523,7 +523,7 @@ func TestDeleteProject(t *testing.T) {
 			return errors.New("The project should not exist anymore")
 		}
 
-		_, err = taskService.GetTasks(id, "Peter")
+		_, err = s.store.taskStore.GetTasks(id)
 		if err == nil {
 			return errors.New("The tasks should not exist anymore")
 		}

@@ -2,7 +2,9 @@ package test
 
 import (
 	"database/sql"
+	"fmt"
 	"github.com/hauke96/sigolo"
+	"github.com/hauke96/simple-task-manager/server/config"
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 	"github.com/pkg/errors"
 	"io/ioutil"
@@ -18,7 +20,9 @@ type TestHelper struct {
 func InitWithDummyData() {
 	sigolo.Info("Add database dummy data")
 
-	db, err := sql.Open("postgres", "user=postgres password=geheim dbname=stm sslmode=disable")
+	config.InitDefaultConfig()
+
+	db, err := sql.Open("postgres", fmt.Sprintf("user=%s password=%s dbname=stm sslmode=disable", config.Conf.DbUsername, config.Conf.DbPassword))
 	if err != nil {
 		sigolo.Fatal("Unable to connect to database: %s", err.Error())
 	}

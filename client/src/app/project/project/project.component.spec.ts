@@ -63,12 +63,12 @@ describe('ProjectComponent', () => {
 
     const p = createProject();
     p.name = 'flubby';
-    spyOn(projectService, 'toProject').and.returnValue(of(p));
+    spyOn(projectService, 'getProject').and.returnValue(of(p));
 
     // Trigger all needed events
     websocketService.messageReceived.emit(new WebsocketMessage(
       WebsocketMessageType.MessageType_ProjectUpdated,
-      new ProjectDto(p.id, p.name, p.description, p.users.map(u => u.uid), p.owner.uid, p.needsAssignment)
+      p.id
     ));
 
     expect(component.project).toEqual(p);

@@ -14,61 +14,80 @@ var (
 	Conf *Config
 )
 
+const (
+	EnvVarDbUsername       = "STM_DB_USERNAME"
+	EnvVarDbPassword       = "STM_DB_PASSWORD"
+	EnvVarOAuthConsumerKey = "OAUTH_CONSUMER_KEY"
+	EnvVarOAuthSecret      = "OAUTH_SECRET"
+
+	DefaultTokenInvalidityDuration = "24h"
+	DefaultDbUsername              = "stm"
+	DefaultDbPassword              = "secret"
+	DefaultMaxTaskPerProject       = 1000
+)
+
 type Config struct {
+	// Can be set via config file:
 	ServerUrl             string `json:"server-url"`
 	Port                  int    `json:"port"`
 	SslCertFile           string `json:"ssl-cert-file"`
 	SslKeyFile            string `json:"ssl-key-file"`
-	OauthConsumerKey      string
-	OauthSecret           string
 	OsmBaseUrl            string `json:"osm-base-url"`
 	DebugLogging          bool   `json:"debug-logging"`
-	DbUsername            string
-	DbPassword            string
 	TokenValidityDuration string `json:"token-validity"`
+	SourceRepoURL         string `json:"source-repo-url"`
+	MaxTasksPerProject    int    `json:"max-task-per-project"`
+
+	// Can only be set via environment variables:
+	DbUsername       string `json:"-"`
+	DbPassword       string `json:"-"`
+	OauthConsumerKey string `json:"-"`
+	OauthSecret      string `json:"-"`
 }
 
 func LoadConfig(file string) {
 	sigolo.Info("Use config file '%s'", file)
+
+	InitDefaultConfig()
 
 	fileContent, err := ioutil.ReadFile(file)
 	if err != nil {
 		sigolo.FatalCheck(err)
 	}
 
-	Conf = &Config{}
-	Conf.TokenValidityDuration = "24h"
-
-	err = json.Unmarshal([]byte(fileContent), Conf)
+	err = json.Unmarshal(fileContent, Conf)
 	if err != nil {
 		sigolo.FatalCheck(err)
 	}
 
 	// OSM Oauth configs
-	oauthConsumerKey, _ := os.LookupEnv("OAUTH_CONSUMER_KEY")
-	oauthSecret, _ := os.LookupEnv("OAUTH_SECRET")
+	oauthConsumerKey, _ := os.LookupEnv(EnvVarOAuthConsumerKey)
+	oauthSecret, _ := os.LookupEnv(EnvVarOAuthSecret)
 	Conf.OauthConsumerKey = oauthConsumerKey
 	Conf.OauthSecret = oauthSecret
 
 	// Database configs
-	DbUsernameEnvVar := "STM_DB_USERNAME"
-	DbPasswordEnvVar := "STM_DB_PASSWORD"
-	DbUsernameDefault := "postgres"
-	DbPasswordDefault := "geheim"
-
-	dbUsername, ok := os.LookupEnv(DbUsernameEnvVar)
+	dbUsername, ok := os.LookupEnv(EnvVarDbUsername)
 	if len(dbUsername) == 0 || !ok {
-		sigolo.Info("Environment variable %s for the database user not set. Fallback to default: %s", DbUsernameEnvVar, DbUsernameDefault)
-		dbUsername = DbUsernameDefault
-	}
-	dbPassword, _ := os.LookupEnv(DbPasswordEnvVar)
-	if len(dbUsername) == 0 || !ok {
-		sigolo.Info("Environment variable %s for the database user not set. Fallback to default: %s", DbPasswordEnvVar, DbPasswordDefault)
-		dbPassword = DbPasswordDefault
+		sigolo.Info("Environment variable %s for the database user not set. Use default instead.", EnvVarDbUsername)
+	} else {
+		Conf.DbUsername = dbUsername
 	}
 
-	Conf.DbUsername = dbUsername
-	Conf.DbPassword = dbPassword
+	dbPassword, _ := os.LookupEnv(EnvVarDbPassword)
+	if len(dbUsername) == 0 || !ok {
+		sigolo.Info("Environment variable %s for the database user not set. Use default instead.", EnvVarDbPassword)
+	} else {
+		Conf.DbPassword = dbPassword
+	}
+}
+
+func InitDefaultConfig() {
+	Conf = &Config{}
+	Conf.TokenValidityDuration = DefaultTokenInvalidityDuration
+	Conf.DbUsername = DefaultDbUsername
+	Conf.DbPassword = DefaultDbPassword
+	Conf.MaxTasksPerProject = DefaultMaxTaskPerProject
 }
 
 func PrintConfig() {
@@ -88,7 +107,7 @@ func PrintConfig() {
 		} else {
 			propertyValue = strings.Join(strings.Split(p, ":")[1:], ":") // Join remaining parts back together
 		}
-		
+
 		sigolo.Info("  %-*s = %s", 21, propertyName, propertyValue)
 	}
 }

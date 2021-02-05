@@ -114,8 +114,6 @@ Using `--no-ff` (creates a single, separate merge commit) is not required.
 # Deployment
 
 The `docker-compose.yml` creates three docker container for the client, server and the database.
-Because the container build and test themselves, starting everything probably takes a few minutes.
+Because the container build the whole project from scratch, starting everything probably takes a few minutes.
 
-To increase build time, there's an own [base image for the client](https://hub.docker.com/r/simpletaskmanager/stm-client-base).
-
-During development I recommend to manually start the client and server (see according `README.md` files in [client](../../client/README.md) and [server](../../server/README.md) folders) and just use the docker container for the database.
+During **development** I recommend to not use docker but manually start the client and server (see according `README.md` files in [client](../../client/README.md) and [server](../../server/README.md) folders) and just use the docker container for the database.

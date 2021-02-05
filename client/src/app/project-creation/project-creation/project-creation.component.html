@@ -22,7 +22,7 @@
 					<app-task-draft-list [tasks]="taskDrafts"
 										 [selectedTask]="selectedTask"></app-task-draft-list>
 
-					<div *ngIf="!!selectedTask">
+					<div *ngIf="selectedTask">
 						<h2 i18n>Properties:</h2>
 						<app-task-edit [task]="selectedTask"></app-task-edit>
 
@@ -46,15 +46,20 @@
 			</app-tabs>
 		</form>
 	</div>
-	<app-drawing-toolbar
-			[resetSelection]="resetToolbarSelectionSubject"
-			(buttonZoomIn)="onZoomIn()"
-			(buttonZoomOut)="onZoomOut()"
-			(buttonDraw)="onToggleDraw()"
-			(buttonEdit)="onToggleEdit()"
-			(buttonDelete)="onToggleDelete()"
-	></app-drawing-toolbar>
 	<div class="map-container">
+		<div class="drawing-toolbar">
+			<app-zoom-control
+					class="zoom-control"
+					(buttonZoomIn)="onZoomIn()"
+					(buttonZoomOut)="onZoomOut()"
+			></app-zoom-control>
+			<app-drawing-toolbar
+					[resetSelection]="resetToolbarSelectionSubject"
+					(buttonDraw)="onToggleDraw()"
+					(buttonEdit)="onToggleEdit()"
+					(buttonDelete)="onToggleDelete()"
+			></app-drawing-toolbar>
+		</div>
 		<div id="map"></div>
 	</div>
 </div>

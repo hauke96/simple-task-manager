@@ -1,5 +1,9 @@
+<app-notification></app-notification>
+<div class="language-selection">
+	<span class="language-selection-label" i18n>Language selection:</span>
+	<app-language-selection></app-language-selection>
+</div>
 <div>
-	<app-notification></app-notification>
 	<div>
 		<div class="center logo">
 			<img src="./assets/icon.png">
@@ -14,30 +18,30 @@
 			<div class="notice-container">
 				<div class="notice-bar"></div>
 				<div class="notice-text" i18n="@@LOGIN_CHANGELOG">
-					<p><b>Changes in 1.2.0:</b></p>
+					<p><b>Changes in 1.3.0:</b></p>
 					New features:
 					<ul>
-						<li>New project creation:</li>
-						<ul>
-							<li>Toolbar</li>
-							<li>Give own names to tasks</li>
-							<li>Preview for subdividing tasks</li>
-							<li>More formats for importing tasks</li>
-							<li>Overall better handling of interactions</li>
-						</ul>
+						<li>More language selection drop-down menus</li>
+						<li>Task list is now sorted by process state</li>
 					</ul>
 					Bug fixes:
 					<ul>
-						<li>Better error handling when importing tasks</li>
+						<li>Reduce unnecessary logging</li>
+						<li>Project creation: Save button enabled but data wasn't completely entered</li>
+						<li>Task name sometimes not shown</li>
+						<li>Remove unnecessary zoom buttons</li>
+						<li>Fix broken styling of very long notifications</li>
+						<li>Show task name instead of ID</li>
+						<li>All kind of errors will now be catched</li>
 					</ul>
-					Minor changes:
+					Infrastructure:
 					<ul>
-						<li>Save map location to local storage</li>
-						<li>Different and better visible color scheme for tasks on the map</li>
+						<li>The server now makes daily database backups</li>
 					</ul>
 					Internals:
 					<ul>
-						<li>Distinct DTO classes for project creation</li>
+						<li>Tasks are now withing the project DTO class</li>
+						<li>Added swagger UI as better API documentation</li>
 					</ul>
 				</div>
 			</div>

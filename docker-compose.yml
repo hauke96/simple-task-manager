@@ -13,12 +13,11 @@ services:
     container_name: stm-server
     network_mode: host
     restart: unless-stopped
-    ports:
-      - "8080:8080"
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
-    depends_on:
-      - "stm-db"
+# 2020-12-09 hauke96: See systemd issue below
+#    depends_on:
+#      - "stm-db"
     logging:
       driver: 'journald'
   stm-client:
@@ -28,8 +27,6 @@ services:
     container_name: stm-client
     network_mode: host
     restart: unless-stopped
-    ports:
-      - "80:80"
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
     logging:
@@ -42,15 +39,18 @@ services:
     environment:
       - POSTGRES_USER=${STM_DB_USERNAME}
       - POSTGRES_PASSWORD=${STM_DB_PASSWORD}
-    ports:
-      - "5432:5432"
     volumes:
       - "./postgres-data:/var/lib/postgresql/data"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${STM_DB_USERNAME}"]
-      interval: 1s
-      timeout: 2s
-      retries: 30
-      start_period: 1s
+# 2020-12-09 hauke96: Because health checks are creating mount points, newer
+# systemd versions are flodding the logs with succeed-messages rendering the
+# logs more or less useless, because they are way too large. I disable health
+# checks here until there's a solution for that.
+#
+#    healthcheck:
+#      test: ["CMD-SHELL", "pg_isready -U ${STM_DB_USERNAME}"]
+#      interval: 1s
+#      timeout: 2s
+#      retries: 30
+#      start_period: 1s
     logging:
       driver: 'journald'

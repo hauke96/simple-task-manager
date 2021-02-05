@@ -37,7 +37,7 @@
 ### データベースのユーザー/パスワードを環境変数として設定する
 
 **一言でいうと**
-* `export STM_DB_USERNAME=postgres STM_DB_PASSWORD=geheim`
+* `export STM_DB_USERNAME=stm STM_DB_PASSWORD=secret`
 
 以下に示すテストを実行する場合、ユーザーとパスワードは上記と同じでなければなりません。
 
@@ -68,7 +68,7 @@
 ### データベースのリセット
 
 **一言でいうと**
-* `psql -h localhost -U postgres -c 'DROP DATABASE stm;'`
+* `psql -h localhost -U stm -c 'DROP DATABASE stm;'`
 * `cd server/database`
 * `./init-db.sh`
 * 以上

@@ -15,9 +15,6 @@ export class DrawingToolbarComponent implements OnInit {
 
   @Input() public resetSelection: Subject<void>;
 
-  @Output() public buttonZoomIn: EventEmitter<void> = new EventEmitter<void>();
-  @Output() public buttonZoomOut: EventEmitter<void> = new EventEmitter<void>();
-
   @Output() public buttonDraw: EventEmitter<void> = new EventEmitter<void>();
   @Output() public buttonEdit: EventEmitter<void> = new EventEmitter<void>();
   @Output() public buttonDelete: EventEmitter<void> = new EventEmitter<void>();
@@ -29,14 +26,6 @@ export class DrawingToolbarComponent implements OnInit {
     this.resetSelection.subscribe(() => {
       this.selectedButton = undefined;
     });
-  }
-
-  public onButtonZoomIn() {
-    this.buttonZoomIn.emit();
-  }
-
-  public onButtonZoomOut() {
-    this.buttonZoomOut.emit();
   }
 
   public onButtonDraw() {

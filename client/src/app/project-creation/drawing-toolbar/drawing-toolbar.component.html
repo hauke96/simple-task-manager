@@ -1,8 +1,3 @@
-<button class="lnr lnr-plus-circle" (click)="onButtonZoomIn()" i18n-title title="Zoom in"></button>
-<button class="lnr lnr-circle-minus" (click)="onButtonZoomOut()" i18n-title title="Zoom out"></button>
-
-<div class="sep"></div>
-
 <button class="lnr lnr-pencil" (click)="onButtonDraw()" [ngClass]="{selected: selectedButton == SELECTION_DRAW}" i18n-title title="Draw new polygon"></button>
 <button class="lnr lnr-highlight" (click)="onButtonEdit()" [ngClass]="{selected: selectedButton == SELECTION_EDIT}" i18n-title title="Edit polygon"></button>
 <button class="lnr lnr-trash" (click)="onButtonDelete()" [ngClass]="{selected: selectedButton == SELECTION_DELETE}" i18n-title title="Remove polygon"></button>

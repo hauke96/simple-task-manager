@@ -1,50 +1,36 @@
 This file describes the REST-like API provided by the Server.
 
-# Unversioned API Methods
+# API information
 
-No Authentication needed here.
+The server hosts its own API doc.
+For `localhost` it's [`http://localhost:8080/doc/`](http://localhost:8080/doc/).
 
-##### GET `/info`
+## v2.6
 
-Generates a simple, text-based info page.
+**Changes in v2.6**
+* The `ProjectDto` now contains the tasks
+* Each task now contains the `Name` attribute
 
-##### GET `/oauth_login?redirect={url}`
+Everything else is the same as in v2.5.
 
-Gets OSM login token and therefore redirects to the OSM Login page with `redirect` and `config` query parameters set.
-The `{url}` query parameter is the URL of the Simple-Task-Manager landing page, which is called after successful authentication.
+## Authentication
 
-##### GET `/oauth_callback?config={cfg}&redirect={url}`
-
-Performs the OAuth authentication by getting an OSM access token.
-The `{cfg}` parameter value is the key to the user configuration which was set from `/oauth_login` when redirecting.
-The `{url}` parameter value is the URL of the Simple-Task-Manager landing page, where this call redirects to after successful authentication.
-When redirecting to `{url}`, the `token={token}` query parameter is set so that the client can get the token from within the URL.
-
-# v2.5
-
-**Changes in v2.5**
-* Separate DTOs for tasks and project creation for `POST /v2.5/projects`
-
-Everything else is the same as in v2.4.
-
-### Authentication
-
-**All** API methods have to be authenticated: The `Authorization` header must contain a valid base64 encoded token (without leading "Bearer" or something):
+**All** API methods (except the authentication themselves) have to be authenticated: The `Authorization` header must contain a valid base64 encoded token (without leading "Bearer" or something):
 
 ```
 Authorization: eyJ2...In0=
 ```
 
-### Updates via websockets
+## Updates via websockets
 
-Connect to `/v2.5/updates` and receive updates for the requesting user.
+Connect to `/{version}/updates` and receive updates for the requesting user.
 
-#### Authentication
+### Authentication
 
 This endpoint, like all other endpoints below as well, needs a valid token.
 The token must be set in the `Sec-WebSocket-Protocol` header (not the `Authorization` header like in normal REST calls).
 
-#### Data protocol
+### Data protocol
 
 Every update is packed into a message of the following format:
 ```json
@@ -55,109 +41,27 @@ Every update is packed into a message of the following format:
 ```
 
 * `<type>` is either `project_added`, `project_updated` or `project_deleted` as specified by the `MessageType_...` variables from the `websocket/websocket.go` file
-* `<data>` is the payload data sent to the client
+* `<id>` is the id of the project that has been added/changed/removed.
   * For `project_added` and `project_updated` its a whole project without tasks
   * For `project_deleted` it's just the project ID of the deleted project
 
-### Projects
-
-##### GET  `/v2.5/projects`
-
-Gets all projects for the requesting user.
-
-##### POST  `/v2.5/projects`
-
-Adds the project and tasks as given in the body:
-
-```json
-{
-  "project": {
-      "name":"foo",
-      "description":"Lorem ipsum ...",
-      "users":["12","42"],
-      "owner":"12"
-  },
-  "tasks": [
-      {
-        "maxProcessPoints":100,
-        "geometry":"{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[9.9,53.5],[9.92,53.55],[9.94,53.55]]]},\"properties\":{\"name\":\"Atlantis\"}}}"
-      }
-  ]
-}
-```
-
-**The project DTO**:
-
-The `owner`, `users` and `name` fields *must* be set.
-The optional `description` has a maximum possible length of 10000 characters.
-
-The `id` field will be ignored when set, it's filled by the server.
-
-**The task DTOs**:
-
-At least one task has to be part of this array.
-
-The `id` field will be ignored when set, it's filled by the server.
-
-The `geometry` *must* be a valid GeoJSON string.
-The `name` property of the geometry is optional but will be displayed the clients task list.
-It's okay to not specify the `properties` field at all, to set it to `null` or `{}`.
-Only Polygons are supported, there's no guarantee that anything else will work at all.
-
-##### GET  `/v2.5/projects/{id}`
-
-Returns the project with the given ID. The requesting user (specified by the token) must be **member** of the project.
-
-##### DELETE  `/v2.5/projects/{id}`
-
-Deletes the project with the given ID. The requesting user (specified by the token) must be **owner** of the project.
-
-##### PUT `/v2.5/project/{id}/name`
-
-Updates the name of the given project. The name must be in the request body. The requesting user (specified by the token) must be **owner** of the project.
-
-##### PUT`/v2.5/project/{id}/description`
-         
-Updates the description of the given project. The description must be in the request body. The requesting user (specified by the token) must be **owner** of the project.
-
-##### POST `/v2.5/projects/{id}/users?uid={uid}`
-
-Adds the user with id `{uid}` to the project. The requesting user (specified by the token) must be **owner** of the project.
-
-##### DELETE `/v2.5/projects/{id}/users`
-
-Removes the requesting user (specified by the token) from the project. The requesting user (specified by the token) must be **member** of the project.
-
-##### DELETE `/v2.5/projects/{id}/users/{uid}`
-
-Removes the user with the id `{uid}` from the project. The requesting user (specified by the token) must either be the **owner** of the project or must be removing himself.
-
-### Tasks
-
-##### GET  `/v2.5/projects/{id}/tasks`
-
-Gets the tasks of project `{id}`. The requesting user (specified by the token) must be **member** of the project.
-
-##### POST `/v2.5/tasks/{id}/assignedUser`
-
-Assigns the requesting user (specified by the token) to the task with id `{id}`. The requesting user (specified by the token) must be **member** of the project.
-
-##### DELETE `/v2.5/tasks/{id}/assignedUser`
-
-Unassigns the requesting user (specified by the token) from the task with id `{id}`. When `needsAssignment=true`: Only the **assigned** user can unassign himself, you cannot unassign other users.
-
-##### POST `/v2.5/tasks/{id}/processPoints?process_points={points}`
-
-Sets the amount of process points of the task with id `{id}` to `{points}` which must be an integer. When `needsAssignment=true`:  Only the currently **assigned** user can do this.
-
 # Developer information
+
+## (Re)Generate Swagger-UI
+
+The swagger documentation UI (available under `...:8080/doc/`) can be (re)generated using [swagger](https://github.com/swaggo/swag) (see installation documentation there).
+After installation, go into the `server` folder and execute the command `swag init`.
+If the `swag` command is not available, use `go run` for that: `go run <something>/github.com/swaggo/swag/cmd/swag/main.go init`
+
+Now the `server/docs` folder contains new generated files.
+Start the server normally and you'll have an updated swagger UI.
 
 ## Requirements to the API
 
 An API should offer all functionality needed to run a version of the SimpleTaskManager.
 Not all versions but at least one version (which could also be an upcoming release).
 
-If no version can (or will) use an API version, than this version can bre removed.
+If no version can (or will) use an API version, than this version can be removed.
 This for example applies to very old, insecure, unstable or testing versions.
 
 ## Code structure

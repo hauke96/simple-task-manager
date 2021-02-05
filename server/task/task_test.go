@@ -49,7 +49,7 @@ func setup() {
 
 func TestGetTasks(t *testing.T) {
 	h.Run(t, func() error {
-		tasks, err := s.GetTasks("3", "Otto")
+		tasks, err := s.store.GetTasks("3")
 
 		if err != nil {
 			return errors.New(fmt.Sprintf("Error: %s\n", err.Error()))
@@ -80,7 +80,7 @@ func TestGetTasks(t *testing.T) {
 
 func TestGetTasksUnknownProject(t *testing.T) {
 	h.Run(t, func() error {
-		_, err := s.GetTasks("42", "Clara")
+		_, err := s.store.GetTasks("42")
 
 		if err == nil {
 			return errors.New("Project 42 doesn't exist, getting tasks should not work")
@@ -312,7 +312,7 @@ func TestDelete(t *testing.T) {
 			return errors.New(fmt.Sprintf("error deleting tasks: %s", err.Error()))
 		}
 
-		remainingTasks, err := s.GetTasks("2", "Maria")
+		remainingTasks, err := s.store.GetTasks("2")
 		if err != nil {
 			return errors.New("Getting remaining tasks should work")
 		}
