@@ -143,7 +143,7 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
     // Text (progress percentage). Bold text on own tasks.
     const labelWeight = currentUserTask ? 'bold' : 'normal';
     let labelText: string;
-    if (task.processPoints === task.maxProcessPoints) {
+    if (task.isDone) {
       labelText = $localize`:@@TASK_MAP_DONE:DONE`;
     } else {
       labelText = Math.floor(100 * task.processPoints / task.maxProcessPoints) + '%';

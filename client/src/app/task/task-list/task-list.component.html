@@ -6,7 +6,7 @@
 		<div>
 			{{t | taskTitle}}
 			<span class="gray-label">({{t.processPoints}} / {{t.maxProcessPoints}})</span>
-			<span *ngIf="t.processPoints == t.maxProcessPoints" class="done-label" i18n>Done</span>
+			<span *ngIf="t.isDone" class="done-label" i18n>Done</span>
 		</div>
 		<span *ngIf="!!t.assignedUser && !isAssignedToCurrentUser(t)"
 			  class="gray-label">{{t.assignedUser.name}}</span>
