@@ -36,7 +36,17 @@ export class TaskListComponent extends Unsubscriber implements AfterViewInit {
 
   @Input()
   set tasks(values: Task[]) {
-    this._tasks = values.sort((a, b) => (a.name > b.name) ? 1 : -1);
+    this._tasks = values
+      .sort((a: Task, b: Task) => {
+        if (a.isDone && !b.isDone) {
+          return 1;
+        }
+        if (!a.isDone && b.isDone) {
+          return -1;
+        }
+
+        return a.name > b.name ? 1 : -1;
+      });
   }
 
   get tasks(): Task[] {

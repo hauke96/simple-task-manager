@@ -37,16 +37,18 @@ describe('TaskListComponent', () => {
   it('should sort tasks', () => {
     const tasks: Task[] = [];
     tasks.push(new Task('1', 'a', 10, 100, TestTaskFeature));
-    tasks.push(new Task('2', 'g', 30, 100, TestTaskFeature));
+    tasks.push(new Task('2', 'b', 100, 100, TestTaskFeature));
     tasks.push(new Task('3', 'z', 60, 100, TestTaskFeature));
-    tasks.push(new Task('4', 'b', 99, 100, TestTaskFeature));
+    tasks.push(new Task('4', 'a', 100, 100, TestTaskFeature));
+    tasks.push(new Task('5', 'g', 30, 100, TestTaskFeature));
     component.tasks = [...tasks];
 
     // Actually update some tasks
     expect(component.tasks[0]).toEqual(tasks[0]);
-    expect(component.tasks[1]).toEqual(tasks[3]);
-    expect(component.tasks[2]).toEqual(tasks[1]);
-    expect(component.tasks[3]).toEqual(tasks[2]);
+    expect(component.tasks[1]).toEqual(tasks[4]);
+    expect(component.tasks[2]).toEqual(tasks[2]);
+    expect(component.tasks[3]).toEqual(tasks[3]);
+    expect(component.tasks[4]).toEqual(tasks[1]);
   });
 
   it('should select correct task', () => {

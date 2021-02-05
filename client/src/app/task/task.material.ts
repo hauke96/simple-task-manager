@@ -13,6 +13,7 @@ export class TaskDraftDto {
   ) {
   }
 }
+
 export class TaskDraft {
   constructor(
     public id: string,
@@ -44,6 +45,10 @@ export class Task {
     // TODO instead store an actual User object
     public assignedUser?: User
   ) {
+  }
+
+  public get isDone(): boolean {
+    return this.processPoints === this.maxProcessPoints;
   }
 }
 
