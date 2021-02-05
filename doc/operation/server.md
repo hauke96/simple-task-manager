@@ -105,7 +105,7 @@ See the [automatic-backup.md](automatic-backup.md)
 * `git clone https://github.com/hauke96/simple-task-manager.git`
     * Optional: Switch to the branch/tag/commit you want to deploy
 
-# 8 Config the server
+# 8 Server configuration
 
 The server knows two places for configuration:
 A config file in the `./config/` folder (so a config folder next to the server executable) and environment variables.
