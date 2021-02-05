@@ -2,7 +2,7 @@
 
 The server is written in go (aka golang) so you need to install go and setup your development environment (paths, IDE, etc.)
 
-# Setup environment
+# Setup development environment
 
 ## 1. Requirements
 
@@ -37,11 +37,10 @@ This description assumes that you use docker instead of an direct installation o
 ### Set Database user/password as environment variable
 
 **tl;dr:**
-* `export STM_DB_USERNAME=postgres STM_DB_PASSWORD=geheim`
+* `export STM_DB_USERNAME=stm STM_DB_PASSWORD=secret`
 
-If you want to run test expressed below, user and password must be as same as the above.
-
-If you want to run it as public site, you should change to your own **unique and secure** password.
+You can override the default username and password (`stm` and `secret`) by setting environment variables.
+To make this permanent, you probably want to add this to the `.bachrc` or similar file.
 
 ### Start as docker container
 
@@ -162,8 +161,10 @@ See the [development README](../doc/development/README.md) for details.
 # Configuration
 
 There are configuration files in the folder `./server/config/`.
-Until there's further documentation, just take a look, the properties are quite simple and straight forward.
 For local development, you don't need to change anything there.
+
+I you still want to change things, just take a look at the properties, they are quite simple and straight forward.
+Or peek into the [deployment README](../doc/operation/server.md) for further details.
 
 # HTTPS
 

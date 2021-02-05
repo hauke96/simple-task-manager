@@ -99,28 +99,74 @@ You can test the setup manually:
 
 See the [automatic-backup.md](automatic-backup.md)  
 
-# 7 Deployment
+# 7 Check out the code
 
 * Login as `stm` (either via SSH or `su - stm`)
 * `git clone https://github.com/hauke96/simple-task-manager.git`
     * Optional: Switch to the branch/tag/commit you want to deploy
+
+# 8 Config the server
+
+The server knows two places for configuration:
+A config file in the `./config/` folder (so a config folder next to the server executable) and environment variables.
+
+When using docker, environment variables can also be set via a file.
+
+## Config file
+
+Default file is the `./config/default.json` but can be specified using the `--config`/`-c` flag when starting the server.
+The config folder in the git project for examples of production configurations.
+
+The following things can be configured:
+
+* ```server-url```: The URL of the server. Is used for SSL, authentication and the info page (e.g. `https://stm.hauke-stieler.de`).
+* ```port```: The port that should be used by the server (e.g. `8080`).
+* ```ssl-cert-file```: Absolute path to the SSL certificate file (e.g. `/etc/letencrypt/.../fullchain.pem`).
+* ```ssl-key-file```: Absolute path to the SSL key file (e.g. `/etc/letencrypt/.../privkey.pem`).
+* ```osm-base-url```: URL to the OSM server (e.g. `https://www.openstreetmap.org`).
+* ```debug-logging```: Set to `true` for more detailed logging (caution: expect tons of log entries!).
+* ```token-validity```: Duration of a token until it's not valid anymore (e.g. `24h` or other valid duration strings according to golang `time.ParseDuration` function).
+* ```source-repo-url```: URL to the GitHub/GitLab/Gitea/... repo. Just used for the info-page.
+
+## Environment variables
+
+Currently it's not possible to override entries from the config file using environment variables.
+
+What can be set using environment variables?
+OAuth and database credentials:
+
+* ```OAUTH_CONSUMER_KEY```: The OAuth 1 consumer key provided by osm.org (no default value → this must be set)
+* ```OAUTH_SECRET```: The OAuth 1 consumer secret provided by osm.org (no default value → this must be set)
+* ```STM_DB_USERNAME```: The username for the database (default: stm)
+* ```STM_DB_PASSWORD```: The password for the database (default: secret)
+
+Simply set them via `export STM_DB_USERNAME=mydbuser STM_DB_PASSWORD=supersecurepassword123`.
+To make the export permanent, move that command into your `.bachrc` (or similar file).
+
+**Important:** At least set a secure password for the database!
+
+## The `.env` file
+
+When using docker-compose you can set environment variables of a container via a `.env` file.
+This is just a simple file next to the deployment script (so in the projects root folder) containing the following information (or parts of it):
+
+```
+OAUTH_CONSUMER_KEY=abc123
+OAUTH_SECRET=def234
+STM_DB_USERNAME=mydbuser
+STM_DB_PASSWORD=supersecurepassword123
+```
+
+The `STM_DB_...` entries just override the default ones whereas the `OAUTH_` entries don't have default configs and must be set in order to make authentication work.
+
+# 9 Deployment
+
 * `./deploy.sh`
     * Important: Per default, this uses the production configs (`/client/src/environments/environment.prod.ts` and `/server/configs/prod.json`) so make sure they contain the right values. 
     * Per default this expects an docker-compose `.env` file next to the script. Specifying `-e` makes the script ask you for all the needed values instead of using the env-file.
     * If no database exists, it will set up the database from scratch! Amazing right? :D
 
 That's it. Now everything should run properly.
-
-## The `.env` file
-
-This is just a simple file next to the deployment script (so in the projects root folder) containing the following information:
-
-```
-OAUTH_CONSUMER_KEY=abc123
-OAUTH_SECRET=def234
-STM_DB_USERNAME=postgres
-STM_DB_PASSWORD=supersecurepassword123
-```
 
 # Verify setup
 
