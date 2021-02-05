@@ -109,8 +109,15 @@ See the [automatic-backup.md](automatic-backup.md)
 
 The server knows two places for configuration:
 A config file in the `./config/` folder (so a config folder next to the server executable) and environment variables.
-
 When using docker, environment variables can also be set via a file.
+
+There's no overlap between the config file and environment variables, so they both configure totally different things.
+
+*What can be set using environment variables?*<br>
+Only OAuth and database credentials.
+
+*Why are there two sources of configurations?*<br>
+To separate sensitive data (credentials) from non-sensitive data that can also be uploaded to a git repo.
 
 ## Config file
 
@@ -127,13 +134,11 @@ The following things can be configured:
 * ```debug-logging```: Set to `true` for more detailed logging (caution: expect tons of log entries!).
 * ```token-validity```: Duration of a token until it's not valid anymore (e.g. `24h` or other valid duration strings according to golang `time.ParseDuration` function).
 * ```source-repo-url```: URL to the GitHub/GitLab/Gitea/... repo. Just used for the info-page.
+* ```max-task-per-project```: Maximum amount of tasks that are allowed per project.
 
 ## Environment variables
 
 Currently it's not possible to override entries from the config file using environment variables.
-
-What can be set using environment variables?
-OAuth and database credentials:
 
 * ```OAUTH_CONSUMER_KEY```: The OAuth 1 consumer key provided by osm.org (no default value → this must be set)
 * ```OAUTH_SECRET```: The OAuth 1 consumer secret provided by osm.org (no default value → this must be set)
