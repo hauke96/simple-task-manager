@@ -6,8 +6,8 @@
 		</div>
 		<app-progress-bar class="progress-bar" [progressPoints]="project?.doneProcessPoints" [totalPoints]="project?.totalProcessPoints"></app-progress-bar>
 		<div class="created-at-label">
-			<span i18n>Created at: </span>
-			<span>{{project?.creationDate}}</span>
+			<span i18n>Created on: </span>
+			<span>{{project?.creationDate | date:'longDate'}}</span>
 		</div>
 	</div>
 </app-toolbar>
