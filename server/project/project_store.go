@@ -83,9 +83,9 @@ func (s *storePg) getProjectByTask(taskId string) (*Project, error) {
 }
 
 // addProject adds the given project draft and assigns an ID to the project.
-func (s *storePg) addProject(draft *ProjectDraftDto) (*Project, error) {
-	query := fmt.Sprintf("INSERT INTO %s (name, description, users, owner) VALUES($1, $2, $3, $4) RETURNING *", s.table)
-	params := []interface{}{draft.Name, draft.Description, pq.Array(draft.Users), draft.Owner}
+func (s *storePg) addProject(draft *ProjectDraftDto, creationDate time.Time) (*Project, error) {
+	query := fmt.Sprintf("INSERT INTO %s (name, description, users, owner, creation_date) VALUES($1, $2, $3, $4, $5) RETURNING *", s.table)
+	params := []interface{}{draft.Name, draft.Description, pq.Array(draft.Users), draft.Owner, creationDate}
 
 	s.LogQuery(query, params...)
 	project, err := s.execQueryWithoutTasks(query, params...)

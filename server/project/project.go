@@ -93,20 +93,14 @@ func (s *ProjectService) AddProjectWithTasks(projectDraft *ProjectDraftDto, task
 		return nil, errors.New(fmt.Sprintf("Maximum %d tasks allowed", config.Conf.MaxTasksPerProject))
 	}
 
-	//
 	// Store project
-	//
-
 	addedProject, err := s.AddProject(projectDraft)
 	if err != nil {
 		return nil, err
 	}
 	s.Log("Added project %s", addedProject.Id)
 
-	//
 	// Store tasks
-	//
-
 	tasks, err := s.taskService.AddTasks(taskDrafts, addedProject.Id)
 	if err != nil {
 		return nil, err
@@ -114,9 +108,7 @@ func (s *ProjectService) AddProjectWithTasks(projectDraft *ProjectDraftDto, task
 	addedProject.Tasks = tasks
 	s.Log("Added tasks")
 
-	//
 	// Add Metadata now, that we have tasks
-	//
 	err = s.addTasksAndMetadata(addedProject)
 	if err != nil {
 		return nil, err
@@ -150,8 +142,7 @@ func (s *ProjectService) AddProject(projectDraft *ProjectDraftDto) (*Project, er
 	}
 
 	// Actually add project
-
-	project, err := s.store.addProject(projectDraft)
+	project, err := s.store.addProject(projectDraft, time.Now().UTC())
 	if err != nil {
 		return nil, err
 	}
