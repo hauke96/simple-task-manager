@@ -9,6 +9,7 @@ import (
 	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/pkg/errors"
 	"strings"
+	"time"
 )
 
 type ProjectDraftDto struct {
@@ -22,12 +23,13 @@ type Project struct {
 	Id                 string       `json:"id"`
 	Name               string       `json:"name"`
 	Tasks              []*task.Task `json:"tasks"`
-	Users              []string     `json:"users"`
-	Owner              string       `json:"owner"`
-	Description        string       `json:"description"`
+	Users              []string     `json:"users"`              // Array of user-IDs (=members of this project)
+	Owner              string       `json:"owner"`              // User-ID of the owner/creator of this project
+	Description        string       `json:"description"`        // Some description, can be empty
 	NeedsAssignment    bool         `json:"needsAssignment"`    // When "true", the tasks of this project need to have an assigned user
 	TotalProcessPoints int          `json:"totalProcessPoints"` // Sum of all maximum process points of all tasks
 	DoneProcessPoints  int          `json:"doneProcessPoints"`  // Sum of all process points that have been set
+	CreationDate       *time.Time   `json:"creationDate"`       // Date in UTC, can be NIL because of old data in the database
 }
 
 type ProjectService struct {

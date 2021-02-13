@@ -8,16 +8,18 @@ import (
 	"github.com/lib/pq"
 	"github.com/pkg/errors"
 	"strconv"
+	"time"
 )
 
 // Helper struct to read raw data from database. The "Project" struct has higher-level structure (e.g. arrays), which we
 // don't have in the database columns.
 type projectRow struct {
-	id          int
-	name        string
-	users       []string
-	owner       string
-	description string
+	id           int
+	name         string
+	users        []string
+	owner        string
+	description  string
+	creationDate *time.Time
 }
 
 type storePg struct {
@@ -181,7 +183,7 @@ func (s *storePg) execQuery(query string, params ...interface{}) (*Project, erro
 // rowToProject turns the current row into a Project object. This does not close the row.
 func (s *storePg) rowToProject(rows *sql.Rows) (*Project, error) {
 	var p projectRow
-	err := rows.Scan(&p.id, &p.name, &p.owner, &p.description, pq.Array(&p.users))
+	err := rows.Scan(&p.id, &p.name, &p.owner, &p.description, pq.Array(&p.users), &p.creationDate)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not scan rows")
 	}
@@ -193,6 +195,7 @@ func (s *storePg) rowToProject(rows *sql.Rows) (*Project, error) {
 	result.Users = p.users
 	result.Owner = p.owner
 	result.Description = p.description
+	result.CreationDate = p.creationDate
 
 	return &result, nil
 }
