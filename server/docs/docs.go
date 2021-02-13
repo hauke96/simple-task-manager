@@ -102,7 +102,7 @@ var doc = `{
                 ]
             }
         },
-        "/v2.6/project/{id}": {
+        "/v2.7/project/{id}": {
             "get": {
                 "description": "Gets a specific project. The requesting user must be a member of the project.",
                 "produces": [
@@ -131,7 +131,7 @@ var doc = `{
                 }
             }
         },
-        "/v2.6/projects": {
+        "/v2.7/projects": {
             "get": {
                 "produces": [
                     "application/json"
@@ -181,7 +181,7 @@ var doc = `{
                 }
             }
         },
-        "/v2.6/projects/{id}": {
+        "/v2.7/projects/{id}": {
             "delete": {
                 "description": "Deletes the specified project. The requesting user must be the owner of the project.",
                 "tags": [
@@ -199,7 +199,7 @@ var doc = `{
                 ]
             }
         },
-        "/v2.6/projects/{id}/description": {
+        "/v2.7/projects/{id}/description": {
             "put": {
                 "description": "Update the projects description. The requesting user must be the owner of the project.",
                 "produces": [
@@ -237,7 +237,7 @@ var doc = `{
                 }
             }
         },
-        "/v2.6/projects/{id}/name": {
+        "/v2.7/projects/{id}/name": {
             "put": {
                 "description": "Updates the projects name/title. The requesting user must be the owner of the project.",
                 "produces": [
@@ -275,7 +275,7 @@ var doc = `{
                 }
             }
         },
-        "/v2.6/projects/{id}/users": {
+        "/v2.7/projects/{id}/users": {
             "post": {
                 "description": "Adds the given user to the project. The requesting user must be the owner of the project.",
                 "produces": [
@@ -327,7 +327,7 @@ var doc = `{
                 ]
             }
         },
-        "/v2.6/projects/{id}/users/{uid}": {
+        "/v2.7/projects/{id}/users/{uid}": {
             "delete": {
                 "description": "Removes a user from the project. The requesting user must be the owner of the project and cannot be removed.",
                 "produces": [
@@ -363,7 +363,7 @@ var doc = `{
                 }
             }
         },
-        "/v2.6/tasks/{id}/assignedUser": {
+        "/v2.7/tasks/{id}/assignedUser": {
             "post": {
                 "description": "Assigns the requesting user to the given task. The requesting user must be a member of the project.",
                 "produces": [
@@ -419,7 +419,7 @@ var doc = `{
                 }
             }
         },
-        "/v2.6/tasks/{id}/processPoints": {
+        "/v2.7/tasks/{id}/processPoints": {
             "post": {
                 "description": "Sets the process points of a task. The requesting user must be a member of the project. If the project has more than one member, the requesting user must be assigned to the given task.",
                 "produces": [
@@ -456,7 +456,7 @@ var doc = `{
                 }
             }
         },
-        "/v2.6/updates": {
+        "/v2.7/updates": {
             "get": {
                 "description": "Established an websocket connection to receive updates on projects. This requires the same authentication as normal HTTP endpoints. See the GitHub repo '/doc/api' for information on the messaging protocol.",
                 "tags": [
@@ -495,7 +495,12 @@ var doc = `{
         "project.Project": {
             "type": "object",
             "properties": {
+                "creationDate": {
+                    "description": "Date in UTC, can be NIL because of old data in the database",
+                    "type": "string"
+                },
                 "description": {
+                    "description": "Some description, can be empty",
                     "type": "string"
                 },
                 "doneProcessPoints": {
@@ -513,6 +518,7 @@ var doc = `{
                     "type": "boolean"
                 },
                 "owner": {
+                    "description": "User-ID of the owner/creator of this project",
                     "type": "string"
                 },
                 "tasks": {
@@ -526,6 +532,7 @@ var doc = `{
                     "type": "integer"
                 },
                 "users": {
+                    "description": "Array of user-IDs (=members of this project)",
                     "type": "array",
                     "items": {
                         "type": "string"

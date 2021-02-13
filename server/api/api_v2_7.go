@@ -18,36 +18,36 @@ type ProjectAddDto struct {
 	Tasks   []task.TaskDraftDto  `json:"tasks"`
 }
 
-func Init_v2_6(router *mux.Router) (*mux.Router, string) {
-	r := router.PathPrefix("/v2.6").Subrouter()
+func Init_v2_7(router *mux.Router) (*mux.Router, string) {
+	r := router.PathPrefix("/v2.7").Subrouter()
 
-	r.HandleFunc("/projects", authenticatedTransactionHandler(getProjects_v2_6)).Methods(http.MethodGet)
-	r.HandleFunc("/projects", authenticatedTransactionHandler(addProject_v2_6)).Methods(http.MethodPost)
-	r.HandleFunc("/projects/{id}", authenticatedTransactionHandler(getProject_v2_6)).Methods(http.MethodGet)
-	r.HandleFunc("/projects/{id}", authenticatedTransactionHandler(deleteProjects_v2_6)).Methods(http.MethodDelete)
-	r.HandleFunc("/projects/{id}/name", authenticatedTransactionHandler(updateProjectName_v2_6)).Methods(http.MethodPut)
-	r.HandleFunc("/projects/{id}/description", authenticatedTransactionHandler(updateProjectDescription_v2_6)).Methods(http.MethodPut)
-	r.HandleFunc("/projects/{id}/users", authenticatedTransactionHandler(addUserToProject_v2_6)).Methods(http.MethodPost)
-	r.HandleFunc("/projects/{id}/users", authenticatedTransactionHandler(leaveProject_v2_6)).Methods(http.MethodDelete)
-	r.HandleFunc("/projects/{id}/users/{uid}", authenticatedTransactionHandler(removeUser_v2_6)).Methods(http.MethodDelete)
+	r.HandleFunc("/projects", authenticatedTransactionHandler(getProjects_v2_7)).Methods(http.MethodGet)
+	r.HandleFunc("/projects", authenticatedTransactionHandler(addProject_v2_7)).Methods(http.MethodPost)
+	r.HandleFunc("/projects/{id}", authenticatedTransactionHandler(getProject_v2_7)).Methods(http.MethodGet)
+	r.HandleFunc("/projects/{id}", authenticatedTransactionHandler(deleteProjects_v2_7)).Methods(http.MethodDelete)
+	r.HandleFunc("/projects/{id}/name", authenticatedTransactionHandler(updateProjectName_v2_7)).Methods(http.MethodPut)
+	r.HandleFunc("/projects/{id}/description", authenticatedTransactionHandler(updateProjectDescription_v2_7)).Methods(http.MethodPut)
+	r.HandleFunc("/projects/{id}/users", authenticatedTransactionHandler(addUserToProject_v2_7)).Methods(http.MethodPost)
+	r.HandleFunc("/projects/{id}/users", authenticatedTransactionHandler(leaveProject_v2_7)).Methods(http.MethodDelete)
+	r.HandleFunc("/projects/{id}/users/{uid}", authenticatedTransactionHandler(removeUser_v2_7)).Methods(http.MethodDelete)
 
-	r.HandleFunc("/tasks/{id}/assignedUser", authenticatedTransactionHandler(assignUser_v2_6)).Methods(http.MethodPost)
-	r.HandleFunc("/tasks/{id}/assignedUser", authenticatedTransactionHandler(unassignUser_v2_6)).Methods(http.MethodDelete)
-	r.HandleFunc("/tasks/{id}/processPoints", authenticatedTransactionHandler(setProcessPoints_v2_6)).Methods(http.MethodPost)
+	r.HandleFunc("/tasks/{id}/assignedUser", authenticatedTransactionHandler(assignUser_v2_7)).Methods(http.MethodPost)
+	r.HandleFunc("/tasks/{id}/assignedUser", authenticatedTransactionHandler(unassignUser_v2_7)).Methods(http.MethodDelete)
+	r.HandleFunc("/tasks/{id}/processPoints", authenticatedTransactionHandler(setProcessPoints_v2_7)).Methods(http.MethodPost)
 
 	r.HandleFunc("/updates", authenticatedWebsocket(getWebsocketConnection))
 
-	return r, "v2.6"
+	return r, "v2.7"
 }
 
 // Get projects
 // @Summary Get all projects for the requesting user.
-// @Version 2.6
+// @Version 2.7
 // @Tags projects
 // @Produce json
 // @Success 200 {object} []project.Project
-// @Router /v2.6/projects [get]
-func getProjects_v2_6(r *http.Request, context *Context) *ApiResponse {
+// @Router /v2.7/projects [get]
+func getProjects_v2_7(r *http.Request, context *Context) *ApiResponse {
 	projects, err := context.ProjectService.GetProjects(context.Token.UID)
 	if err != nil {
 		return InternalServerError(err)
@@ -60,13 +60,13 @@ func getProjects_v2_6(r *http.Request, context *Context) *ApiResponse {
 
 // Add projects
 // @Summary Adds a new project.
-// @Version 2.6
+// @Version 2.7
 // @Tags projects
 // @Produce json
 // @Param project body api.ProjectAddDto true "Draft project with draft task list"
 // @Success 200 {object} project.Project
-// @Router /v2.6/projects [post]
-func addProject_v2_6(r *http.Request, context *Context) *ApiResponse {
+// @Router /v2.7/projects [post]
+func addProject_v2_7(r *http.Request, context *Context) *ApiResponse {
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		return BadRequestError(errors.Wrap(err, "error reading request body"))
@@ -93,13 +93,13 @@ func addProject_v2_6(r *http.Request, context *Context) *ApiResponse {
 // Get project
 // @Summary Get a specific project.
 // @Description Gets a specific project. The requesting user must be a member of the project.
-// @Version 2.6
+// @Version 2.7
 // @Tags projects
 // @Produce json
 // @Param project_id path string true "ID of the project to get"
 // @Success 200 {object} project.Project
-// @Router /v2.6/project/{id} [get]
-func getProject_v2_6(r *http.Request, context *Context) *ApiResponse {
+// @Router /v2.7/project/{id} [get]
+func getProject_v2_7(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
@@ -119,11 +119,11 @@ func getProject_v2_6(r *http.Request, context *Context) *ApiResponse {
 // Leave project
 // @Summary Removes the requesting user from project.
 // @Description The requesting user must be a member (but not the owner) of the project will be removed.
-// @Version 2.6
+// @Version 2.7
 // @Tags projects
 // @Param id path string true "ID of the project the requesting user should leave"
-// @Router /v2.6/projects/{id}/users [delete]
-func leaveProject_v2_6(r *http.Request, context *Context) *ApiResponse {
+// @Router /v2.7/projects/{id}/users [delete]
+func leaveProject_v2_7(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
@@ -145,14 +145,14 @@ func leaveProject_v2_6(r *http.Request, context *Context) *ApiResponse {
 // Remove user
 // @Summary Remove a user from a project.
 // @Description Removes a user from the project. The requesting user must be the owner of the project and cannot be removed.
-// @Version 2.6
+// @Version 2.7
 // @Tags projects
 // @Produce json
 // @Param id path string true "ID of the project the requesting user should leave"
 // @Param uid path string true "OSM user-Id of the user who should be removed"
 // @Success 200 {object} project.Project
-// @Router /v2.6/projects/{id}/users/{uid} [delete]
-func removeUser_v2_6(r *http.Request, context *Context) *ApiResponse {
+// @Router /v2.7/projects/{id}/users/{uid} [delete]
+func removeUser_v2_7(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
@@ -179,11 +179,11 @@ func removeUser_v2_6(r *http.Request, context *Context) *ApiResponse {
 // Delete project
 // @Summary Delete a project.
 // @Description Deletes the specified project. The requesting user must be the owner of the project.
-// @Version 2.6
+// @Version 2.7
 // @Tags projects
 // @Param id path string true "ID of the project to delete"
-// @Router /v2.6/projects/{id} [delete]
-func deleteProjects_v2_6(r *http.Request, context *Context) *ApiResponse {
+// @Router /v2.7/projects/{id} [delete]
+func deleteProjects_v2_7(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
@@ -210,14 +210,14 @@ func deleteProjects_v2_6(r *http.Request, context *Context) *ApiResponse {
 // Update project name
 // @Summary Update project name.
 // @Description Updates the projects name/title. The requesting user must be the owner of the project.
-// @Version 2.6
+// @Version 2.7
 // @Tags projects
 // @Produce json
 // @Param id path string true "ID of the project"
 // @Param new_name body string true "The new name of the project"
 // @Success 200 {object} project.Project
-// @Router /v2.6/projects/{id}/name [put]
-func updateProjectName_v2_6(r *http.Request, context *Context) *ApiResponse {
+// @Router /v2.7/projects/{id}/name [put]
+func updateProjectName_v2_7(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
@@ -244,14 +244,14 @@ func updateProjectName_v2_6(r *http.Request, context *Context) *ApiResponse {
 // Update project description
 // @Summary Update project description.
 // @Description Update the projects description. The requesting user must be the owner of the project.
-// @Version 2.6
+// @Version 2.7
 // @Tags projects
 // @Produce json
 // @Param id path string true "ID of the project"
 // @Param new_desc body string true "The new description of the project"
 // @Success 200 {object} project.Project
-// @Router /v2.6/projects/{id}/description [put]
-func updateProjectDescription_v2_6(r *http.Request, context *Context) *ApiResponse {
+// @Router /v2.7/projects/{id}/description [put]
+func updateProjectDescription_v2_7(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
@@ -278,14 +278,14 @@ func updateProjectDescription_v2_6(r *http.Request, context *Context) *ApiRespon
 // Add user
 // @Summary Adds a user to the project
 // @Description Adds the given user to the project. The requesting user must be the owner of the project.
-// @Version 2.6
+// @Version 2.7
 // @Tags projects
 // @Produce json
 // @Param id path string true "ID of the project"
 // @Param uid query string true "The OSM user-ID to add to the project"
 // @Success 200 {object} project.Project
-// @Router /v2.6/projects/{id}/users [post]
-func addUserToProject_v2_6(r *http.Request, context *Context) *ApiResponse {
+// @Router /v2.7/projects/{id}/users [post]
+func addUserToProject_v2_7(r *http.Request, context *Context) *ApiResponse {
 	userToAdd, err := util.GetParam("uid", r)
 	if err != nil {
 		return BadRequestError(errors.Wrap(err, "url param 'uid' not set"))
@@ -312,13 +312,13 @@ func addUserToProject_v2_6(r *http.Request, context *Context) *ApiResponse {
 // Assign user
 // @Summary Assigns a user to a task
 // @Description Assigns the requesting user to the given task. The requesting user must be a member of the project.
-// @Version 2.6
+// @Version 2.7
 // @Tags tasks
 // @Produce json
 // @Param id path string true "The ID of the task"
 // @Success 200 {object} task.Task
-// @Router /v2.6/tasks/{id}/assignedUser [post]
-func assignUser_v2_6(r *http.Request, context *Context) *ApiResponse {
+// @Router /v2.7/tasks/{id}/assignedUser [post]
+func assignUser_v2_7(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
 	taskId, ok := vars["id"]
 	if !ok {
@@ -346,13 +346,13 @@ func assignUser_v2_6(r *http.Request, context *Context) *ApiResponse {
 // Unassign user
 // @Summary Unassigns a user from a task.
 // @Description Unassigns the requesting user from the given task. The requesting user must be a member of the project and must be assigned to the given task.
-// @Version 2.6
+// @Version 2.7
 // @Tags tasks
 // @Produce json
 // @Param id path string true "The ID of the task"
 // @Success 200 {object} task.Task
-// @Router /v2.6/tasks/{id}/assignedUser [delete]
-func unassignUser_v2_6(r *http.Request, context *Context) *ApiResponse {
+// @Router /v2.7/tasks/{id}/assignedUser [delete]
+func unassignUser_v2_7(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
 	taskId, ok := vars["id"]
 	if !ok {
@@ -380,14 +380,14 @@ func unassignUser_v2_6(r *http.Request, context *Context) *ApiResponse {
 // Set process points
 // @Summary Sets the process points of a task.
 // @Description Sets the process points of a task. The requesting user must be a member of the project. If the project has more than one member, the requesting user must be assigned to the given task.
-// @Version 2.6
+// @Version 2.7
 // @Tags tasks
 // @Produce json
 // @Param id path string true "The ID of the task"
 // @Param process_points query int true "The new amount of process points of the task" minimum(0)
 // @Success 200 {object} task.Task
-// @Router /v2.6/tasks/{id}/processPoints [post]
-func setProcessPoints_v2_6(r *http.Request, context *Context) *ApiResponse {
+// @Router /v2.7/tasks/{id}/processPoints [post]
+func setProcessPoints_v2_7(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
 	taskId, ok := vars["id"]
 	if !ok {
@@ -418,10 +418,10 @@ func setProcessPoints_v2_6(r *http.Request, context *Context) *ApiResponse {
 // Establish websocket connection
 // @Summary Established an websocket connection to receive updates on projects.
 // @Description Established an websocket connection to receive updates on projects. This requires the same authentication as normal HTTP endpoints. See the GitHub repo '/doc/api' for information on the messaging protocol.
-// @Version 2.6
+// @Version 2.7
 // @Tags websocket
 // @Success 200 {object} []project.Project
-// @Router /v2.6/updates [get]
+// @Router /v2.7/updates [get]
 func getWebsocketConnection(w http.ResponseWriter, r *http.Request, token *auth.Token, websocketSender *websocket.WebsocketSender) {
 	websocketSender.GetWebsocketConnection(w, r, token.UID)
 }

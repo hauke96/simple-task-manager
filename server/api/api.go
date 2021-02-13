@@ -38,12 +38,13 @@ func Init() error {
 	// API v2.3
 	// API v2.4
 	// API v2.5
-
 	// API v2.6
-	router_v2_6, version := Init_v2_6(router)
+
+	// API v2.7
+	router_v2_7, version := Init_v2_7(router)
 	supportedApiVersions = append(supportedApiVersions, version)
 	sigolo.Info("Registered routes for API %s:", version)
-	printRoutes(router_v2_6)
+	printRoutes(router_v2_7)
 
 	router.Methods(http.MethodOptions).HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -73,7 +74,7 @@ func Init() error {
 
 // Info
 // @Summary Shows very basic information about this server.
-// @Version 2.6
+// @Version 2.7
 // @Tags info
 // @Produce text/plain
 // @Success 200 {string} string "Some bunch of text with basic information about this server"
@@ -84,7 +85,7 @@ func addInfoHandler(router *mux.Router) {
 
 // API documentation
 // @Summary A Swagger UI with all kinds of API related information.
-// @Version 2.6
+// @Version 2.7
 // @Tags info
 // @Produce text/html
 // @Router /doc [get]
@@ -94,7 +95,7 @@ func addDocHandler(router *mux.Router) {
 
 // OAuth login
 // @Description Gets OSM login token and therefore redirects to the OSM Login page. See GitHub Repo under '/doc/authentication' for further information.
-// @Version 2.6
+// @Version 2.7
 // @Tags authentication
 // @Param redirect query string true "The URL that should be redirected to after authentication"
 // @Router /oauth_login [get]
@@ -104,7 +105,7 @@ func addAuthLoginHandler(router *mux.Router) *mux.Route {
 
 // OAuth callback
 // @Description OAuth callback called after OSM login. Performs the OAuth authentication by getting an OSM access token. See GitHub Repo under '/doc/authentication' for further information.
-// @Version 2.6
+// @Version 2.7
 // @Tags authentication
 // @Param config query string true "The config key sent to the OSM login page."
 // @Param redirect query string true "The URL that should be redirected to after authentication"
