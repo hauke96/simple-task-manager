@@ -195,7 +195,11 @@ func (s *storePg) rowToProject(rows *sql.Rows) (*Project, error) {
 	result.Users = p.users
 	result.Owner = p.owner
 	result.Description = p.description
-	result.CreationDate = p.creationDate
+
+	if p.creationDate != nil {
+		t := p.creationDate.UTC()
+		result.CreationDate = &t
+	}
 
 	return &result, nil
 }
