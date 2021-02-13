@@ -188,6 +188,7 @@ export class ProjectService {
       users,
       owner,
       p.needsAssignment,
+      p.creationDate,
       p.totalProcessPoints,
       p.doneProcessPoints
     ));

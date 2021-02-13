@@ -64,9 +64,10 @@ describe('ProjectService', () => {
   it('should add users when getting all projects', () => {
     const {users, taskDtos} = setUpUserAndTasks();
     const tasks = taskDtoToTask(taskDtos);
+    const date = new Date();
 
-    const dto1 = new ProjectDto('123', 'Project 123', 'foo', ['1'], [taskDtos[0]], '1', false);
-    const dto2 = new ProjectDto('124', 'Project 124', 'bar', ['2'], [taskDtos[1]], '2', false);
+    const dto1 = new ProjectDto('123', 'Project 123', 'foo', ['1'], [taskDtos[0]], '1', false, date);
+    const dto2 = new ProjectDto('124', 'Project 124', 'bar', ['2'], [taskDtos[1]], '2', false, date);
     spyOn(httpClient, 'get').and.returnValue(of([dto1, dto2]));
 
     service.getProjects().subscribe((projects: Project[]) => {
@@ -82,14 +83,18 @@ describe('ProjectService', () => {
       expect(projects[1].users[0]).toEqual(users[1]);
       expect(projects[1].tasks.length).toEqual(1);
       expect(projects[1].tasks[0].id).toEqual(tasks[1].id);
+
+      expect(projects[0].creationDate).toEqual(date);
+      expect(projects[1].creationDate).toEqual(date);
     }, e => fail(e));
   });
 
   it('should add users when getting a specific project', () => {
     const {users, taskDtos} = setUpUserAndTasks();
     const tasks = taskDtoToTask(taskDtos);
+    const date = new Date();
 
-    const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '3'], [taskDtos[0]], '1', false);
+    const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '3'], [taskDtos[0]], '1', false, date);
     spyOn(httpClient, 'get').and.returnValue(of(dto));
 
     service.getProject('123').subscribe((project: Project) => {
@@ -105,21 +110,25 @@ describe('ProjectService', () => {
 
       expect(project.users).toContain(users[0]);
       expect(project.users).toContain(users[2]);
+
+      expect(project.creationDate).toEqual(date);
     }, e => fail(e));
   });
 
   it('should return project after invitation', () => {
     const {users, taskDtos} = setUpUserAndTasks();
+    const date = new Date();
 
-    const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2'], [taskDtos[0]], '2', true);
+    const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2'], [taskDtos[0]], '2', true, date);
     spyOn(httpClient, 'post').and.returnValue(of(dto));
   });
 
   it('should remove user correctly and return updated project', () => {
     const {users, taskDtos} = setUpUserAndTasks();
     const tasks = taskDtoToTask(taskDtos);
+    const date = new Date();
 
-    const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2'], taskDtos, '2', true);
+    const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2'], taskDtos, '2', true, date);
     spyOn(httpClient, 'delete').and.returnValue(of(dto));
     const changeSpy = spyOn(service.projectChanged, 'emit');
 
@@ -138,6 +147,8 @@ describe('ProjectService', () => {
       expect(project.users).toContain(users[1]);
       expect(project.users).not.toContain(users[2]);
 
+      expect(project.creationDate).toEqual(date);
+
       expect(changeSpy).toHaveBeenCalled();
     }, e => fail(e));
   });
@@ -149,8 +160,9 @@ describe('ProjectService', () => {
   it('should convert DTOs into Projects', () => {
     const {users, taskDtos} = setUpUserAndTasks();
     const tasks = taskDtoToTask(taskDtos);
+    const date = new Date();
 
-    const dto: ProjectDto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2', '3'], taskDtos, '2', true);
+    const dto: ProjectDto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2', '3'], taskDtos, '2', true, date);
 
     // Execute
     service.toProject(dto).subscribe((project: Project) => {
@@ -170,6 +182,8 @@ describe('ProjectService', () => {
       expect(project.users).toContain(users[0]);
       expect(project.users).toContain(users[1]);
       expect(project.users).toContain(users[2]);
+
+      expect(project.creationDate).toEqual(date);
     }, e => fail(e));
   });
 

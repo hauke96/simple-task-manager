@@ -23,7 +23,16 @@
 .back-button-container {
 	display: flex;
 	align-items: center;
-	margin-right: $space-huge;
+}
+
+.progress-bar {
+	margin-left: $space-huge;
+}
+
+.created-at-label {
+	display: flex;
+	align-items: center;
+	margin-left: $space-huge;
 }
 
 .root-container {

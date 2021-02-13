@@ -24,6 +24,7 @@ export class ProjectDto {
               public tasks: TaskDto[],
               public owner: string,
               public needsAssignment: boolean = true,
+              public creationDate: Date,
               public totalProcessPoints?: number,
               public doneProcessPoints?: number
   ) {
@@ -38,6 +39,7 @@ export class Project {
               public users: User[],
               public owner: User,
               public needsAssignment: boolean = true,
+              public creationDate: Date,
               public totalProcessPoints?: number,
               public doneProcessPoints?: number
   ) {
