@@ -11,17 +11,17 @@ import (
 )
 
 type TaskDraftDto struct {
-	MaxProcessPoints int    `json:"maxProcessPoints"`
-	Geometry         string `json:"geometry"`
+	MaxProcessPoints int    `json:"maxProcessPoints"` // The maximum amount of process points of this task. Must be larger than zero.
+	Geometry         string `json:"geometry"`         // A GeoJson feature with a polygon or multi-polygon geometry. If the feature properties contain the field "name", then this will be used as the name of the task.
 }
 
 type Task struct {
-	Id               string `json:"id"`
-	Name             string `json:"name"`
-	ProcessPoints    int    `json:"processPoints"`
-	MaxProcessPoints int    `json:"maxProcessPoints"`
-	Geometry         string `json:"geometry"`
-	AssignedUser     string `json:"assignedUser"`
+	Id               string `json:"id"`               // The ID of the task.
+	Name             string `json:"name"`             // The name of the task. If the properties of the geometry feature contain the field "name", this field is used here. If no name has been set, this field will be empty.
+	ProcessPoints    int    `json:"processPoints"`    // The amount of process points that have been set by the user. It applies that "0 <= processPoints <= maxProcessPoints".
+	MaxProcessPoints int    `json:"maxProcessPoints"` // The maximum amount of process points of this task. Is larger than zero.
+	Geometry         string `json:"geometry"`         // A GeoJson feature of the task wit a polygon or multipolygon geometry. Will never be NULL or empty.
+	AssignedUser     string `json:"assignedUser"`     // The user-ID of the user who is currently assigned to this task. Will never be NULL but might be empty.
 }
 
 type TaskService struct {

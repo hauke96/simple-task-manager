@@ -13,23 +13,23 @@ import (
 )
 
 type ProjectDraftDto struct {
-	Name        string   `json:"name"`
-	Description string   `json:"description"`
-	Users       []string `json:"users"`
-	Owner       string   `json:"owner"`
+	Name        string   `json:"name"`        // Name of the project. Must not be NULL or empty.
+	Description string   `json:"description"` // Description of the project. Must not be NULL but cam be empty.
+	Users       []string `json:"users"`       // A non-empty list of user-IDs. At least the owner should be in here.
+	Owner       string   `json:"owner"`       // The user-ID who created this project. Must not be NULL or empty.
 }
 
 type Project struct {
-	Id                 string       `json:"id"`
-	Name               string       `json:"name"`
-	Tasks              []*task.Task `json:"tasks"`
-	Users              []string     `json:"users"`              // Array of user-IDs (=members of this project)
-	Owner              string       `json:"owner"`              // User-ID of the owner/creator of this project
-	Description        string       `json:"description"`        // Some description, can be empty
-	NeedsAssignment    bool         `json:"needsAssignment"`    // When "true", the tasks of this project need to have an assigned user
-	TotalProcessPoints int          `json:"totalProcessPoints"` // Sum of all maximum process points of all tasks
-	DoneProcessPoints  int          `json:"doneProcessPoints"`  // Sum of all process points that have been set
-	CreationDate       *time.Time   `json:"creationDate"`       // Date in UTC, can be NIL because of old data in the database
+	Id                 string       `json:"id"`                 // The ID of the project.
+	Name               string       `json:"name"`               // The name of the project. Will not be NULL or empty.
+	Tasks              []*task.Task `json:"tasks"`              // List of tasks of the project. Will not be NULL or empty.
+	Users              []string     `json:"users"`              // Array of user-IDs (=members of this project). Will not be NULL or empty.
+	Owner              string       `json:"owner"`              // User-ID of the owner/creator of this project. Will not be NULL or empty.
+	Description        string       `json:"description"`        // Some description, can be empty. Will not be NULL but might be empty.
+	NeedsAssignment    bool         `json:"needsAssignment"`    // When "true", the tasks of this project need to have an assigned user.
+	TotalProcessPoints int          `json:"totalProcessPoints"` // Sum of all maximum process points of all tasks.
+	DoneProcessPoints  int          `json:"doneProcessPoints"`  // Sum of all process points that have been set. It applies "0 <= doneProcessPoints <= totalProcessPoints".
+	CreationDate       *time.Time   `json:"creationDate"`       // UTC Date in RFC 3339 format, can be NIL because of old data in the database. Example: "2006-01-02 15:04:05.999999999 -0700 MST"
 }
 
 type ProjectService struct {

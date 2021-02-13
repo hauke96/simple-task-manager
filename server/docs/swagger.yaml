@@ -11,34 +11,42 @@ definitions:
   project.Project:
     properties:
       creationDate:
-        description: Date in UTC, can be NIL because of old data in the database
+        description: 'UTC Date in RFC 3339 format, can be NIL because of old data
+          in the database. Example: "2006-01-02 15:04:05.999999999 -0700 MST"'
         type: string
       description:
-        description: Some description, can be empty
+        description: Some description, can be empty. Will not be NULL but might be
+          empty.
         type: string
       doneProcessPoints:
-        description: Sum of all process points that have been set
+        description: Sum of all process points that have been set. It applies "0 <=
+          doneProcessPoints <= totalProcessPoints".
         type: integer
       id:
+        description: The ID of the project.
         type: string
       name:
+        description: The name of the project. Will not be NULL or empty.
         type: string
       needsAssignment:
         description: When "true", the tasks of this project need to have an assigned
-          user
+          user.
         type: boolean
       owner:
-        description: User-ID of the owner/creator of this project
+        description: User-ID of the owner/creator of this project. Will not be NULL
+          or empty.
         type: string
       tasks:
+        description: List of tasks of the project. Will not be NULL or empty.
         items:
           $ref: '#/definitions/task.Task'
         type: array
       totalProcessPoints:
-        description: Sum of all maximum process points of all tasks
+        description: Sum of all maximum process points of all tasks.
         type: integer
       users:
-        description: Array of user-IDs (=members of this project)
+        description: Array of user-IDs (=members of this project). Will not be NULL
+          or empty.
         items:
           type: string
         type: array
@@ -46,12 +54,17 @@ definitions:
   project.ProjectDraftDto:
     properties:
       description:
+        description: Description of the project. Must not be NULL but cam be empty.
         type: string
       name:
+        description: Name of the project. Must not be NULL or empty.
         type: string
       owner:
+        description: The user-ID who created this project.
         type: string
       users:
+        description: A non-empty list of user-IDs. At least the owner should be in
+          here.
         items:
           type: string
         type: array
@@ -59,23 +72,40 @@ definitions:
   task.Task:
     properties:
       assignedUser:
+        description: The user-ID of the user who is currently assigned to this task.
+          Will never be NULL but might be empty.
         type: string
       geometry:
+        description: A GeoJson feature of the task wit a polygon or multipolygon geometry.
+          Will never be NULL or empty.
         type: string
       id:
+        description: The ID of the task.
         type: string
       maxProcessPoints:
+        description: The maximum amount of process points of this task. Is larger
+          than zero.
         type: integer
       name:
+        description: The name of the task. If the properties of the geometry feature
+          contain the field "name", this field is used here. If no name has been set,
+          this field will be empty.
         type: string
       processPoints:
+        description: The amount of process points that have been set by the user.
+          It applies that "0 <= processPoints <= maxProcessPoints".
         type: integer
     type: object
   task.TaskDraftDto:
     properties:
       geometry:
+        description: A GeoJson feature with a polygon or multi-polygon geometry. If
+          the feature properties contain the field "name", then this will be used
+          as the name of the task.
         type: string
       maxProcessPoints:
+        description: The maximum amount of process points of this task. Must be larger
+          than zero.
         type: integer
     type: object
 info:
