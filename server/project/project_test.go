@@ -283,7 +283,7 @@ func TestAddProjectWithInvalidParameters(t *testing.T) {
 		}
 
 		// Too long description not allowed
-		maxDescriptionLength = 10 // lower the border for test purposes
+		config.Conf.MaxDescriptionLength = 10 // lower the border for test purposes
 		p = ProjectDraftDto{
 			Owner:       "foo",
 			Users:       []string{"foo"},
@@ -624,19 +624,42 @@ func TestUpdateDescription(t *testing.T) {
 			return errors.New(fmt.Sprintf("Process points on project not set correctly"))
 		}
 
-		// With non-owner (Maria)
+		return nil
+	})
+}
 
-		_, err = s.UpdateDescription("1", "skfgkf", "Maria")
+func TestUpdateDescriptionWithNonOwnerUser(t *testing.T) {
+	h.Run(t, func() error {
+		_, err := s.UpdateDescription("1", "skfgkf", "Maria")
 		if err == nil {
 			return errors.New("Updating description should not be possible for non-owner user Maria")
 		}
 
-		// Empty description
+		return nil
+	})
+}
 
-		_, err = s.UpdateDescription("1", "  ", "Peter")
+func TestUpdateDescriptionWithEmptyText(t *testing.T) {
+	h.Run(t, func() error {
+		_, err := s.UpdateDescription("1", "  ", "Peter")
 		if err == nil {
 			return errors.New("Updating description should not be possible with empty description")
 		}
+
+		return nil
+	})
+}
+
+func TestUpdateDescriptionWithTooLargeText(t *testing.T) {
+	h.Run(t, func() error {
+		config.Conf.MaxDescriptionLength = 10 // lower the border for test purposes
+		newDescription := "This is some too long description"
+
+		_, err := s.UpdateDescription("1", newDescription, "Peter")
+		if err == nil {
+			return errors.New(fmt.Sprintf("Updating project description should not work. Allowed description length %d but was %d", config.Conf.MaxDescriptionLength, len(newDescription)))
+		}
+
 		return nil
 	})
 }

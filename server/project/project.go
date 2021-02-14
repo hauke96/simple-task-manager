@@ -134,7 +134,7 @@ func (s *ProjectService) AddProject(projectDraft *ProjectDraftDto) (*Project, er
 	}
 
 	if len(projectDraft.Description) > config.Conf.MaxDescriptionLength {
-		return nil, errors.New(fmt.Sprintf("Description too long. Maximum allowed are %d characters.", config.Conf.MaxDescriptionLength))
+		return nil, errors.New(fmt.Sprintf("Description too long. Allowed are %d characters but found %d.", config.Conf.MaxDescriptionLength, len(projectDraft.Description)))
 	}
 
 	// Actually add project
@@ -338,6 +338,10 @@ func (s *ProjectService) UpdateDescription(projectId string, newDescription stri
 
 	if len(strings.TrimSpace(newDescription)) == 0 {
 		return nil, errors.New("No description specified")
+	}
+
+	if len(newDescription) > config.Conf.MaxDescriptionLength {
+		return nil, errors.New(fmt.Sprintf("Description too long. Allowed are %d characters but found %d.", config.Conf.MaxDescriptionLength, len(newDescription)))
 	}
 
 	project, err := s.store.updateDescription(projectId, newDescription)
