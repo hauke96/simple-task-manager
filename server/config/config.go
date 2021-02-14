@@ -24,6 +24,7 @@ const (
 	DefaultDbUsername              = "stm"
 	DefaultDbPassword              = "secret"
 	DefaultMaxTaskPerProject       = 1000
+	DefaultMaxDescriptionLength    = 1000
 )
 
 type Config struct {
@@ -37,6 +38,7 @@ type Config struct {
 	TokenValidityDuration string `json:"token-validity"`
 	SourceRepoURL         string `json:"source-repo-url"`
 	MaxTasksPerProject    int    `json:"max-task-per-project"`
+	MaxDescriptionLength  int    `json:"max-description-length"` // Maximum length for the project description in characters. Default: 1000.
 
 	// Can only be set via environment variables:
 	DbUsername       string `json:"-"`
@@ -88,6 +90,7 @@ func InitDefaultConfig() {
 	Conf.DbUsername = DefaultDbUsername
 	Conf.DbPassword = DefaultDbPassword
 	Conf.MaxTasksPerProject = DefaultMaxTaskPerProject
+	Conf.MaxDescriptionLength = DefaultMaxDescriptionLength
 }
 
 func PrintConfig() {

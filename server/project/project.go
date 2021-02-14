@@ -39,10 +39,6 @@ type ProjectService struct {
 	taskService       *task.TaskService
 }
 
-var (
-	maxDescriptionLength = 10000
-)
-
 func Init(tx *sql.Tx, logger *util.Logger, taskService *task.TaskService, permissionService *permission.PermissionService) *ProjectService {
 	return &ProjectService{
 		Logger:            logger,
@@ -137,8 +133,8 @@ func (s *ProjectService) AddProject(projectDraft *ProjectDraftDto) (*Project, er
 		return nil, errors.New("Project must have a title")
 	}
 
-	if len(projectDraft.Description) > maxDescriptionLength {
-		return nil, errors.New(fmt.Sprintf("Description too long. Maximum allowed are %d characters.", maxDescriptionLength))
+	if len(projectDraft.Description) > config.Conf.MaxDescriptionLength {
+		return nil, errors.New(fmt.Sprintf("Description too long. Maximum allowed are %d characters.", config.Conf.MaxDescriptionLength))
 	}
 
 	// Actually add project
