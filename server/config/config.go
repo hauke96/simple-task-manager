@@ -37,8 +37,8 @@ type Config struct {
 	DebugLogging          bool   `json:"debug-logging"`
 	TokenValidityDuration string `json:"token-validity"`
 	SourceRepoURL         string `json:"source-repo-url"`
-	MaxTasksPerProject    int    `json:"max-task-per-project"`
-	MaxDescriptionLength  int    `json:"max-description-length"` // Maximum length for the project description in characters. Default: 1000.
+	MaxTasksPerProject    int    `json:"max-task-per-project"`   // Maximum amount of tasks allowed for a project.
+	MaxDescriptionLength  int    `json:"max-description-length"` // Maximum length for the project description in characters.
 
 	// Can only be set via environment variables:
 	DbUsername       string `json:"-"`

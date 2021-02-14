@@ -8,6 +8,19 @@ definitions:
           $ref: '#/definitions/task.TaskDraftDto'
         type: array
     type: object
+  config.ConfigDto:
+    properties:
+      max-description-length:
+        description: 'Maximum length for the project description in characters. Default:
+          1000.'
+        type: integer
+      max-task-per-project:
+        description: Maximum amount of tasks allowed for a project.
+        type: integer
+      source-repo-url:
+        description: URL to the source code repository.
+        type: string
+    type: object
   project.Project:
     properties:
       creationDate:
@@ -60,7 +73,7 @@ definitions:
         description: Name of the project. Must not be NULL or empty.
         type: string
       owner:
-        description: The user-ID who created this project.
+        description: The user-ID who created this project. Must not be NULL or empty.
         type: string
       users:
         description: A non-empty list of user-IDs. At least the owner should be in
@@ -169,6 +182,19 @@ paths:
         type: string
       tags:
       - authentication
+  /v2.7/config:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/config.ConfigDto'
+      summary: Gets the servers configuration containing important information for
+        the client.
+      tags:
+      - config
   /v2.7/project/{id}:
     get:
       description: Gets a specific project. The requesting user must be a member of

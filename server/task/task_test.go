@@ -31,7 +31,7 @@ func TestMain(m *testing.M) {
 
 func setup() {
 	config.LoadConfig("../config/test.json")
-	test.InitWithDummyData()
+	test.InitWithDummyData(config.Conf.DbUsername, config.Conf.DbPassword)
 	sigolo.LogLevel = sigolo.LOG_DEBUG
 
 	logger := util.NewLogger()

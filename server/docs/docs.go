@@ -102,6 +102,25 @@ var doc = `{
                 ]
             }
         },
+        "/v2.7/config": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "config"
+                ],
+                "summary": "Gets the servers configuration containing important information for the client.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/config.ConfigDto"
+                        }
+                    }
+                }
+            }
+        },
         "/v2.7/project/{id}": {
             "get": {
                 "description": "Gets a specific project. The requesting user must be a member of the project.",
@@ -492,6 +511,23 @@ var doc = `{
                 }
             }
         },
+        "config.ConfigDto": {
+            "type": "object",
+            "properties": {
+                "max-description-length": {
+                    "description": "Maximum length for the project description in characters. Default: 1000.",
+                    "type": "integer"
+                },
+                "max-task-per-project": {
+                    "description": "Maximum amount of tasks allowed for a project.",
+                    "type": "integer"
+                },
+                "source-repo-url": {
+                    "description": "URL to the source code repository.",
+                    "type": "string"
+                }
+            }
+        },
         "project.Project": {
             "type": "object",
             "properties": {
@@ -555,7 +591,7 @@ var doc = `{
                     "type": "string"
                 },
                 "owner": {
-                    "description": "The user-ID who created this project.",
+                    "description": "The user-ID who created this project. Must not be NULL or empty.",
                     "type": "string"
                 },
                 "users": {

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"github.com/hauke96/simple-task-manager/server/auth"
+	"github.com/hauke96/simple-task-manager/server/config"
 	"github.com/hauke96/simple-task-manager/server/project"
 	"github.com/hauke96/simple-task-manager/server/task"
 	"github.com/hauke96/simple-task-manager/server/util"
@@ -20,6 +21,8 @@ type ProjectAddDto struct {
 
 func Init_v2_7(router *mux.Router) (*mux.Router, string) {
 	r := router.PathPrefix("/v2.7").Subrouter()
+
+	r.HandleFunc("/config", simpleHandler(getConfig_v2_7)).Methods(http.MethodGet)
 
 	r.HandleFunc("/projects", authenticatedTransactionHandler(getProjects_v2_7)).Methods(http.MethodGet)
 	r.HandleFunc("/projects", authenticatedTransactionHandler(addProject_v2_7)).Methods(http.MethodPost)
@@ -38,6 +41,17 @@ func Init_v2_7(router *mux.Router) (*mux.Router, string) {
 	r.HandleFunc("/updates", authenticatedWebsocket(getWebsocketConnection))
 
 	return r, "v2.7"
+}
+
+// Get server configuration
+// @Summary Gets the servers configuration containing important information for the client.
+// @Version 2.7
+// @Tags config
+// @Produce json
+// @Success 200 {object} config.ConfigDto
+// @Router /v2.7/config [get]
+func getConfig_v2_7(_ *http.Request, _ *util.Logger) *ApiResponse {
+	return JsonResponse(config.GetConfigDto())
 }
 
 // Get projects

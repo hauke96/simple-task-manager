@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/hauke96/sigolo"
-	"github.com/hauke96/simple-task-manager/server/config"
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 	"github.com/pkg/errors"
 	"io/ioutil"
@@ -17,12 +16,10 @@ type TestHelper struct {
 }
 
 // Load dummy data into the database.
-func InitWithDummyData() {
+func InitWithDummyData(dbUsername, dbPassword string) {
 	sigolo.Info("Add database dummy data")
 
-	config.InitDefaultConfig()
-
-	db, err := sql.Open("postgres", fmt.Sprintf("user=%s password=%s dbname=stm sslmode=disable", config.Conf.DbUsername, config.Conf.DbPassword))
+	db, err := sql.Open("postgres", fmt.Sprintf("user=%s password=%s dbname=stm sslmode=disable", dbUsername, dbPassword))
 	if err != nil {
 		sigolo.Fatal("Unable to connect to database: %s", err.Error())
 	}
@@ -43,7 +40,9 @@ func InitWithDummyData() {
 }
 
 func (h *TestHelper) Run(t *testing.T, testFunc func() error) {
-	h.Setup()
+	if h.Setup != nil {
+		h.Setup()
+	}
 
 	err := testFunc()
 	if err != nil {
@@ -67,6 +66,10 @@ func (h *TestHelper) RunFail(t *testing.T, testFunc func() error) {
 }
 
 func (h *TestHelper) tearDown() {
+	if h.Tx == nil {
+		return
+	}
+
 	err := h.Tx.Commit()
 	if err != nil {
 		panic(err)
@@ -74,6 +77,10 @@ func (h *TestHelper) tearDown() {
 }
 
 func (h *TestHelper) tearDownFail() {
+	if h.Tx == nil {
+		return
+	}
+
 	err := h.Tx.Commit()
 	if err == nil {
 		panic(errors.New("expected database error and rollback but not occurred"))
