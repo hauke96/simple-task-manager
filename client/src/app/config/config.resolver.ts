@@ -4,7 +4,7 @@ import { Config } from './config';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { ConfigProvider } from './config-provider';
+import { ConfigProvider } from './config.provider';
 import { tap } from 'rxjs/operators';
 
 @Injectable({

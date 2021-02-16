@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { ConfigResolver } from './config.resolver';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ConfigProvider } from './config-provider';
+import { ConfigProvider } from './config.provider';
 import { HttpClient } from '@angular/common/http';
 import { Config } from './config';
 import { of } from 'rxjs';

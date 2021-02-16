@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { ConfigProvider } from './config-provider';
+import { ConfigProvider } from './config.provider';
 import { Config } from './config';
 
 describe('ConfigProvider', () => {
