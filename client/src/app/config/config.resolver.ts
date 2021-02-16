@@ -15,7 +15,7 @@ export class ConfigResolver implements Resolve<Config> {
               private configProvider: ConfigProvider) {
   }
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Config> | Promise<Config> | Config {
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Config> {
     return this.httpClient.get<Config>(environment.url_config).pipe(tap(config => {
       this.configProvider.apply(config);
     }));
