@@ -9,6 +9,7 @@ export const environment = {
 
   base_url: baseUrl,
   url_auth: baseUrl + '/oauth_login',
+  url_config: baseUrl + '/' + usedApi + '/config',
   url_projects: baseUrl + '/' + usedApi + '/projects',
   url_projects_by_id: baseUrl + '/' + usedApi + '/projects/{id}',
   url_projects_users: baseUrl + '/' + usedApi + '/projects/{id}/users',

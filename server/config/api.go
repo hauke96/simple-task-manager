@@ -1,9 +1,9 @@
 package config
 
 type ConfigDto struct {
-	SourceRepoURL        string `json:"source-repo-url"`        // URL to the source code repository.
-	MaxTasksPerProject   int    `json:"max-task-per-project"`   // Maximum amount of tasks allowed for a project.
-	MaxDescriptionLength int    `json:"max-description-length"` // Maximum length for the project description in characters. Default: 1000.
+	SourceRepoURL        string `json:"sourceRepoUrl"`        // URL to the source code repository.
+	MaxTasksPerProject   int    `json:"maxTasksPerProject"`    // Maximum amount of tasks allowed for a project.
+	MaxDescriptionLength int    `json:"maxDescriptionLength"` // Maximum length for the project description in characters. Default: 1000.
 }
 
 func GetConfigDto() *ConfigDto {
