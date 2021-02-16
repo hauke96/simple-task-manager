@@ -12,13 +12,18 @@
 		<form #creationForm="ngForm" class="root-form">
 			<app-tabs #rootTabs [tabs]="rootTabTitles" [borderless]="true" class="root-tabs"
 					  (tabSelected)="onTabSelected()">
+				<!-- Properties -->
 				<div *ngIf="rootTabs.tabIndex === 0">
 					<h2 class="properties-label" i18n>Properties:</h2>
 					<app-project-properties [projectProperties]="projectProperties"></app-project-properties>
 				</div>
 
+				<!-- Tasks -->
 				<div *ngIf="rootTabs.tabIndex === 1" class="tab-container">
-					<h2 class="properties-label" i18n>Tasks:</h2>
+					<div class="task-head">
+						<h2 class="properties-label" i18n>Tasks:</h2>
+						<span class="font-small">{{taskDrafts.length}} / {{config.maxTasksPerProject}}</span>
+					</div>
 					<app-task-draft-list [tasks]="taskDrafts"
 										 [selectedTask]="selectedTask"></app-task-draft-list>
 
@@ -32,12 +37,14 @@
 					</div>
 				</div>
 
+				<!-- Upload -->
 				<div *ngIf="rootTabs.tabIndex === 2">
 					<div class="tab-container">
 						<app-shape-upload></app-shape-upload>
 					</div>
 				</div>
 
+				<!-- Remote -->
 				<div *ngIf="rootTabs.tabIndex === 3">
 					<div class="tab-container">
 						<app-shape-remote></app-shape-remote>

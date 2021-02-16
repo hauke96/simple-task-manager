@@ -73,3 +73,10 @@ app-tabs {
 	min-height: 0px; // important for scrolling (for whatever reason, s. above)
 	height: 100%; // To enable scrolling within the tab containers
 }
+
+.task-head {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: baseline;
+}

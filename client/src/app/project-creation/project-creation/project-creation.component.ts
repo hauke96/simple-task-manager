@@ -23,6 +23,7 @@ import { DrawEvent } from 'ol/interaction/Draw';
 import { TaskDraftService } from '../task-draft.service';
 import { TaskDraft } from '../../task/task.material';
 import { FeatureLike } from 'ol/Feature';
+import { ConfigProvider } from '../../config/config.provider';
 
 @Component({
   selector: 'app-project-creation',
@@ -54,7 +55,8 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     private taskDraftService: TaskDraftService,
     private notificationService: NotificationService,
     private currentUserService: CurrentUserService,
-    private router: Router
+    private router: Router,
+    private config: ConfigProvider
   ) {
   }
 

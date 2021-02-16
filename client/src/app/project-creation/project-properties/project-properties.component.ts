@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { ProjectProperties } from '../project-properties';
 import { ControlContainer, NgForm } from '@angular/forms';
+import { ConfigProvider } from '../../config/config.provider';
 
 @Component({
   selector: 'app-project-properties',
@@ -11,6 +12,6 @@ import { ControlContainer, NgForm } from '@angular/forms';
 export class ProjectPropertiesComponent {
   @Input() projectProperties: ProjectProperties;
 
-  constructor() {
+  constructor(private config: ConfigProvider) {
   }
 }
