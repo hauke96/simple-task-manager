@@ -38,7 +38,7 @@ export class Project {
               public tasks: Task[],
               public users: User[],
               public owner: User,
-              public needsAssignment: boolean = true,
+              public needsAssignment: boolean,
               public creationDate: Date,
               public totalProcessPoints?: number,
               public doneProcessPoints?: number
