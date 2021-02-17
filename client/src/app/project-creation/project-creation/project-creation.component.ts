@@ -56,7 +56,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     private notificationService: NotificationService,
     private currentUserService: CurrentUserService,
     private router: Router,
-    private config: ConfigProvider
+    public config: ConfigProvider
   ) {
   }
 
@@ -174,6 +174,10 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     ];
   }
 
+  public get canAddTasks(): boolean {
+    return this.taskDraftService.getTasks().length < this.config.maxTasksPerProject;
+  }
+
   public get taskDrafts(): TaskDraft[] {
     return this.taskDraftService.getTasks();
   }
@@ -182,6 +186,9 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     return this.taskDraftService.getSelectedTask();
   }
 
+  /**
+   * Called after a task has been added to the task draft service.
+   */
   private addTasks(tasks: TaskDraft[]) {
     this.vectorSource.addFeatures(tasks.map(t => this.toFeature(t)));
 
@@ -192,6 +199,10 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
       padding: [25, 25, 25, 25] // in pixels
     });
     // }
+
+    if (!this.canAddTasks) {
+      this.setInteraction(this.drawInteraction, false);
+    }
   }
 
   private removeTask(id: string) {

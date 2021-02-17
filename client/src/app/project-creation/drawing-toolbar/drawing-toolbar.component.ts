@@ -14,6 +14,7 @@ export class DrawingToolbarComponent implements OnInit {
   public selectedButton: string;
 
   @Input() public resetSelection: Subject<void>;
+  @Input() public canAddTasks: boolean;
 
   @Output() public buttonDraw: EventEmitter<void> = new EventEmitter<void>();
   @Output() public buttonEdit: EventEmitter<void> = new EventEmitter<void>();

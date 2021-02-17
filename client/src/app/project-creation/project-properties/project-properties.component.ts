@@ -12,6 +12,6 @@ import { ConfigProvider } from '../../config/config.provider';
 export class ProjectPropertiesComponent {
   @Input() projectProperties: ProjectProperties;
 
-  constructor(private config: ConfigProvider) {
+  constructor(public config: ConfigProvider) {
   }
 }
