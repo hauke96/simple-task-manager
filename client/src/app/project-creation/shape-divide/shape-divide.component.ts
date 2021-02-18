@@ -7,6 +7,7 @@ import { Polygon } from 'ol/geom';
 import { NotificationService } from '../../common/notification.service';
 import { TaskDraft } from '../../task/task.material';
 import { TaskDraftService } from '../task-draft.service';
+import { ConfigProvider } from '../../config/config.provider';
 
 @Component({
   selector: 'app-shape-divide',
@@ -16,6 +17,7 @@ import { TaskDraftService } from '../task-draft.service';
 export class ShapeDivideComponent implements OnInit {
   public gridCellSize: number;
   public gridCellShape: string;
+  public previewTasks: TaskDraft[] = [];
 
   @Input() public selectedTask: TaskDraft;
 
@@ -23,36 +25,40 @@ export class ShapeDivideComponent implements OnInit {
 
   constructor(
     private notificationService: NotificationService,
-    private taskDraftService: TaskDraftService
+    private taskDraftService: TaskDraftService,
+    private config: ConfigProvider
   ) {
   }
 
   ngOnInit(): void {
     this.gridCellShape = 'squareGrid';
     this.gridCellSize = 1000;
+    this.previewTasks = this.createTaskDrafts();
+  }
+
+  public get canDivideTasks(): boolean {
+    // The existing tasks - the one task that should be divided + the amount of new tasks
+    return this.taskDraftService.getTasks().length - 1 + this.previewTasks.length <= this.config.maxTasksPerProject;
   }
 
   onPreviewButtonClicked() {
-    const taskDrafts: TaskDraft[] = this.createTaskDrafts();
-    if (!taskDrafts) {
-      return;
-    }
-
-    taskDrafts.forEach(t => t.geometry.transform('EPSG:4326', 'EPSG:3857'));
-
-    this.previewClicked.emit(taskDrafts);
+    this.previewTasks.forEach(t => t.geometry.transform('EPSG:4326', 'EPSG:3857'));
+    this.previewClicked.emit(this.previewTasks);
   }
 
   public onDivideButtonClicked() {
-    const taskDrafts: TaskDraft[] = this.createTaskDrafts();
-    if (!taskDrafts) {
-      return;
+    if (!this.canDivideTasks) {
+      throw new Error('Dividing tasks should not be able');
     }
 
     this.taskDraftService.removeTask(this.taskDraftService.getSelectedTask().id);
-    this.taskDraftService.addTasks(taskDrafts, true);
+    this.taskDraftService.addTasks(this.createTaskDrafts(), true);
   }
 
+
+  /**
+   * This just creates the tasks but does not add them to the TaskDraftService.
+   */
   private createTaskDrafts(): TaskDraft[] {
     const polygon = this.selectedTask.geometry.clone() as Polygon;
     const extent = polygon.transform('EPSG:3857', 'EPSG:4326').getExtent();
@@ -95,5 +101,9 @@ export class ShapeDivideComponent implements OnInit {
 
       return new TaskDraft(undefined, undefined, geometry);
     });
+  }
+
+  public taskDividePropertyChanged() {
+    this.previewTasks = this.createTaskDrafts();
   }
 }
