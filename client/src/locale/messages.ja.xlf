@@ -107,7 +107,14 @@
           <context context-type="sourcefile">src/app/project/project/project.component.html</context>
           <context context-type="linenumber">3</context>
         </context-group>
-
+      </trans-unit>
+      <trans-unit id="918e8ff0f3bd063be422543b9423fc184b945b5c" datatype="html">
+        <source>Created on: </source>
+        <target>Created on: </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project/project/project.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="4a22c6843133f0b0d7dc0d28f864f2f90c1de7ad" datatype="html">
         <source>Description:</source>
@@ -124,7 +131,6 @@
           <context context-type="sourcefile">src/app/project/project-settings/project-settings.component.html</context>
           <context context-type="linenumber">34</context>
         </context-group>
-
       </trans-unit>
       <trans-unit id="4d13a9cd5ed3dcee0eab22cb25198d43886942be" datatype="html">
         <source>Users</source>

@@ -103,12 +103,19 @@
       </trans-unit>
       <trans-unit id="553204f35cd5b8f9d341963cf371cc0439a9fb0a" datatype="html">
         <source>&lt; Back</source>
-        <target xml:lang="de-DE">&lt; Zurück</target>
+        <target xml:lang="de-DE" state="translated">&lt; Zurück</target>
 <note from="description" priority="1">Back button</note><context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.html</context>
           <context context-type="linenumber">3</context>
         </context-group>
-
+      </trans-unit>
+      <trans-unit id="918e8ff0f3bd063be422543b9423fc184b945b5c" datatype="html">
+        <source>Created on: </source>
+        <target xml:lang="de-DE" state="translated">Erstellt am: </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project/project/project.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="4a22c6843133f0b0d7dc0d28f864f2f90c1de7ad" datatype="html">
         <source>Description:</source>
