@@ -78,7 +78,7 @@ func Init() error {
 // @Tags info
 // @Produce text/plain
 // @Success 200 {string} string "Some bunch of text with basic information about this server"
-// @Router /info [get]
+// @Router /info [GET]
 func addInfoHandler(router *mux.Router) {
 	router.HandleFunc("/info", getInfo).Methods(http.MethodGet)
 }
@@ -88,7 +88,7 @@ func addInfoHandler(router *mux.Router) {
 // @Version 2.7
 // @Tags info
 // @Produce text/html
-// @Router /doc [get]
+// @Router /doc [GET]
 func addDocHandler(router *mux.Router) {
 	router.PathPrefix("/doc").Handler(httpSwagger.WrapHandler)
 }
@@ -98,7 +98,7 @@ func addDocHandler(router *mux.Router) {
 // @Version 2.7
 // @Tags authentication
 // @Param redirect query string true "The URL that should be redirected to after authentication"
-// @Router /oauth_login [get]
+// @Router /oauth_login [GET]
 func addAuthLoginHandler(router *mux.Router) *mux.Route {
 	return router.HandleFunc("/oauth_login", auth.OauthLogin).Methods(http.MethodGet)
 }
@@ -109,7 +109,7 @@ func addAuthLoginHandler(router *mux.Router) *mux.Route {
 // @Tags authentication
 // @Param config query string true "The config key sent to the OSM login page."
 // @Param redirect query string true "The URL that should be redirected to after authentication"
-// @Router /oauth_callback [get]
+// @Router /oauth_callback [GET]
 func addAuthCallbackHandler(router *mux.Router) *mux.Route {
 	return router.HandleFunc("/oauth_callback", auth.OauthCallback).Methods(http.MethodGet)
 }

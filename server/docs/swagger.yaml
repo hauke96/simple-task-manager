@@ -10,14 +10,14 @@ definitions:
     type: object
   config.ConfigDto:
     properties:
-      max-description-length:
+      maxDescriptionLength:
         description: 'Maximum length for the project description in characters. Default:
           1000.'
         type: integer
-      max-task-per-project:
+      maxTasksPerProject:
         description: Maximum amount of tasks allowed for a project.
         type: integer
-      source-repo-url:
+      sourceRepoUrl:
         description: URL to the source code repository.
         type: string
     type: object

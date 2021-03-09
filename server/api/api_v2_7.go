@@ -49,7 +49,7 @@ func Init_v2_7(router *mux.Router) (*mux.Router, string) {
 // @Tags config
 // @Produce json
 // @Success 200 {object} config.ConfigDto
-// @Router /v2.7/config [get]
+// @Router /v2.7/config [GET]
 func getConfig_v2_7(_ *http.Request, _ *util.Logger) *ApiResponse {
 	return JsonResponse(config.GetConfigDto())
 }
@@ -60,7 +60,7 @@ func getConfig_v2_7(_ *http.Request, _ *util.Logger) *ApiResponse {
 // @Tags projects
 // @Produce json
 // @Success 200 {object} []project.Project
-// @Router /v2.7/projects [get]
+// @Router /v2.7/projects [GET]
 func getProjects_v2_7(r *http.Request, context *Context) *ApiResponse {
 	projects, err := context.ProjectService.GetProjects(context.Token.UID)
 	if err != nil {
@@ -79,7 +79,7 @@ func getProjects_v2_7(r *http.Request, context *Context) *ApiResponse {
 // @Produce json
 // @Param project body api.ProjectAddDto true "Draft project with draft task list"
 // @Success 200 {object} project.Project
-// @Router /v2.7/projects [post]
+// @Router /v2.7/projects [POST]
 func addProject_v2_7(r *http.Request, context *Context) *ApiResponse {
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -112,7 +112,7 @@ func addProject_v2_7(r *http.Request, context *Context) *ApiResponse {
 // @Produce json
 // @Param project_id path string true "ID of the project to get"
 // @Success 200 {object} project.Project
-// @Router /v2.7/project/{id} [get]
+// @Router /v2.7/project/{id} [GET]
 func getProject_v2_7(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
@@ -136,7 +136,7 @@ func getProject_v2_7(r *http.Request, context *Context) *ApiResponse {
 // @Version 2.7
 // @Tags projects
 // @Param id path string true "ID of the project the requesting user should leave"
-// @Router /v2.7/projects/{id}/users [delete]
+// @Router /v2.7/projects/{id}/users [DELETE]
 func leaveProject_v2_7(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
@@ -165,7 +165,7 @@ func leaveProject_v2_7(r *http.Request, context *Context) *ApiResponse {
 // @Param id path string true "ID of the project the requesting user should leave"
 // @Param uid path string true "OSM user-Id of the user who should be removed"
 // @Success 200 {object} project.Project
-// @Router /v2.7/projects/{id}/users/{uid} [delete]
+// @Router /v2.7/projects/{id}/users/{uid} [DELETE]
 func removeUser_v2_7(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
@@ -196,7 +196,7 @@ func removeUser_v2_7(r *http.Request, context *Context) *ApiResponse {
 // @Version 2.7
 // @Tags projects
 // @Param id path string true "ID of the project to delete"
-// @Router /v2.7/projects/{id} [delete]
+// @Router /v2.7/projects/{id} [DELETE]
 func deleteProjects_v2_7(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
@@ -230,7 +230,7 @@ func deleteProjects_v2_7(r *http.Request, context *Context) *ApiResponse {
 // @Param id path string true "ID of the project"
 // @Param new_name body string true "The new name of the project"
 // @Success 200 {object} project.Project
-// @Router /v2.7/projects/{id}/name [put]
+// @Router /v2.7/projects/{id}/name [PUT]
 func updateProjectName_v2_7(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
@@ -264,7 +264,7 @@ func updateProjectName_v2_7(r *http.Request, context *Context) *ApiResponse {
 // @Param id path string true "ID of the project"
 // @Param new_desc body string true "The new description of the project"
 // @Success 200 {object} project.Project
-// @Router /v2.7/projects/{id}/description [put]
+// @Router /v2.7/projects/{id}/description [PUT]
 func updateProjectDescription_v2_7(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
@@ -298,7 +298,7 @@ func updateProjectDescription_v2_7(r *http.Request, context *Context) *ApiRespon
 // @Param id path string true "ID of the project"
 // @Param uid query string true "The OSM user-ID to add to the project"
 // @Success 200 {object} project.Project
-// @Router /v2.7/projects/{id}/users [post]
+// @Router /v2.7/projects/{id}/users [POST]
 func addUserToProject_v2_7(r *http.Request, context *Context) *ApiResponse {
 	userToAdd, err := util.GetParam("uid", r)
 	if err != nil {
@@ -331,7 +331,7 @@ func addUserToProject_v2_7(r *http.Request, context *Context) *ApiResponse {
 // @Produce json
 // @Param id path string true "The ID of the task"
 // @Success 200 {object} task.Task
-// @Router /v2.7/tasks/{id}/assignedUser [post]
+// @Router /v2.7/tasks/{id}/assignedUser [POST]
 func assignUser_v2_7(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
 	taskId, ok := vars["id"]
@@ -365,7 +365,7 @@ func assignUser_v2_7(r *http.Request, context *Context) *ApiResponse {
 // @Produce json
 // @Param id path string true "The ID of the task"
 // @Success 200 {object} task.Task
-// @Router /v2.7/tasks/{id}/assignedUser [delete]
+// @Router /v2.7/tasks/{id}/assignedUser [DELETE]
 func unassignUser_v2_7(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
 	taskId, ok := vars["id"]
@@ -400,7 +400,7 @@ func unassignUser_v2_7(r *http.Request, context *Context) *ApiResponse {
 // @Param id path string true "The ID of the task"
 // @Param process_points query int true "The new amount of process points of the task" minimum(0)
 // @Success 200 {object} task.Task
-// @Router /v2.7/tasks/{id}/processPoints [post]
+// @Router /v2.7/tasks/{id}/processPoints [POST]
 func setProcessPoints_v2_7(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
 	taskId, ok := vars["id"]
@@ -435,7 +435,7 @@ func setProcessPoints_v2_7(r *http.Request, context *Context) *ApiResponse {
 // @Version 2.7
 // @Tags websocket
 // @Success 200 {object} []project.Project
-// @Router /v2.7/updates [get]
+// @Router /v2.7/updates [GET]
 func getWebsocketConnection(w http.ResponseWriter, r *http.Request, token *auth.Token, websocketSender *websocket.WebsocketSender) {
 	websocketSender.GetWebsocketConnection(w, r, token.UID)
 }
@@ -443,32 +443,32 @@ func getWebsocketConnection(w http.ResponseWriter, r *http.Request, token *auth.
 func sendAdd(sender *websocket.WebsocketSender, addedProject *project.Project) {
 	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectAdded,
-		Id: addedProject.Id,
+		Id:   addedProject.Id,
 	}, addedProject.Users...)
 }
 
 func sendUpdate(sender *websocket.WebsocketSender, updatedProject *project.Project) {
 	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectUpdated,
-		Id: updatedProject.Id,
+		Id:   updatedProject.Id,
 	}, updatedProject.Users...)
 }
 
 func sendUserRemoved(sender *websocket.WebsocketSender, updatedProject *project.Project, removedUser string) {
 	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectUpdated,
-		Id: updatedProject.Id,
+		Id:   updatedProject.Id,
 	}, updatedProject.Users...)
 	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectUserRemoved,
-		Id: updatedProject.Id,
+		Id:   updatedProject.Id,
 	}, removedUser)
 }
 
 func sendDelete(sender *websocket.WebsocketSender, removedProject *project.Project) {
 	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectDeleted,
-		Id: removedProject.Id,
+		Id:   removedProject.Id,
 	}, removedProject.Users...)
 }
 
@@ -480,7 +480,7 @@ func sendTaskUpdate(sender *websocket.WebsocketSender, task *task.Task, context 
 
 	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectUpdated,
-		Id: project.Id,
+		Id:   project.Id,
 	}, project.Users...)
 
 	return nil
