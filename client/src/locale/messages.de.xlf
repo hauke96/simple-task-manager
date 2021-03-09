@@ -514,9 +514,9 @@
           <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="84d3fd9e7c4848f9223d340b262b9cc9a0cb71d1" datatype="html">
-        <source>Result with <x id="INTERPOLATION" equiv-text="{{amountTasksAfterDividing}}"/> tasks is too large, only <x id="INTERPOLATION_1" equiv-text="{{maxTasksPerProject}}"/> allowed.</source>
-        <target>Ergebnis mit <x id="INTERPOLATION" equiv-text="{{amountTasksAfterDividing}}"/> Tasks ist zu groß, nur <x id="INTERPOLATION_1" equiv-text="{{maxTasksPerProject}}"/> erlaubt.</target>
+      <trans-unit id="52bceca85970cf340ba25a105c9dede10bc4afbe" datatype="html">
+        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;lnr lnr-warning error-color&quot;&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>Result with <x id="INTERPOLATION" equiv-text="{{amountTasksAfterDividing}}"/> tasks is too large, only <x id="INTERPOLATION_1" equiv-text="{{maxTasksPerProject}}"/> allowed.</source>
+        <target><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;lnr lnr-warning error-color&quot;&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>Ergebnis mit <x id="INTERPOLATION" equiv-text="{{amountTasksAfterDividing}}"/> Tasks ist zu groß, nur <x id="INTERPOLATION_1" equiv-text="{{maxTasksPerProject}}"/> erlaubt.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
           <context context-type="linenumber">28</context>
