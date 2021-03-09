@@ -193,3 +193,11 @@ textarea.ng-invalid:not(form)  {
 	border-bottom: 1px solid $color-gray-light;
 	margin: $space-large $space-base;
 }
+
+// ===========
+// UI elements
+// ===========
+
+.error-color {
+	color: $color-error-dark;
+}
