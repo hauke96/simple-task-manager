@@ -4,5 +4,5 @@
 	"osm-base-url": "https://master.apis.dev.openstreetmap.org",
 	"debug-logging": true,
 	"source-repo-url": "https://github.com/hauke96/simple-task-manager",
-	"max-task-per-project": 2
+	"max-task-per-project": 10
 }
