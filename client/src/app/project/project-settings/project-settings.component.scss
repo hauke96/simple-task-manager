@@ -1,4 +1,13 @@
 @import "../../../styles";
+@import "../../../icons";
+
+.export-project-button {
+	margin-top: $space-base;
+
+	.lnr-download {
+		margin-right: $space-base;
+	}
+}
 
 .space-right {
 	margin-right: $space-base;
