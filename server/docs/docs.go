@@ -256,6 +256,35 @@ var doc = `{
                 }
             }
         },
+        "/v2.7/projects/{id}/export": {
+            "get": {
+                "description": "This aims to transfer a project to another STM instance or to simply create a backup of a project.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Get a JSON representation of the project.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the project",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/project.Project"
+                        }
+                    }
+                }
+            }
+        },
         "/v2.7/projects/{id}/name": {
             "put": {
                 "description": "Updates the projects name/title. The requesting user must be the owner of the project.",

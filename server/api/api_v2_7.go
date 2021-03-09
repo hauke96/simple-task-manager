@@ -16,7 +16,7 @@ import (
 
 type ProjectAddDto struct {
 	Project project.ProjectDraftDto `json:"project"`
-	Tasks   []task.TaskDraftDto  `json:"tasks"`
+	Tasks   []task.TaskDraftDto     `json:"tasks"`
 }
 
 func Init_v2_7(router *mux.Router) (*mux.Router, string) {
@@ -28,6 +28,7 @@ func Init_v2_7(router *mux.Router) (*mux.Router, string) {
 	r.HandleFunc("/projects", authenticatedTransactionHandler(addProject_v2_7)).Methods(http.MethodPost)
 	r.HandleFunc("/projects/{id}", authenticatedTransactionHandler(getProject_v2_7)).Methods(http.MethodGet)
 	r.HandleFunc("/projects/{id}", authenticatedTransactionHandler(deleteProjects_v2_7)).Methods(http.MethodDelete)
+	r.HandleFunc("/projects/{id}/export", authenticatedTransactionHandler(exportProject_v2_7)).Methods(http.MethodGet)
 	r.HandleFunc("/projects/{id}/name", authenticatedTransactionHandler(updateProjectName_v2_7)).Methods(http.MethodPut)
 	r.HandleFunc("/projects/{id}/description", authenticatedTransactionHandler(updateProjectDescription_v2_7)).Methods(http.MethodPut)
 	r.HandleFunc("/projects/{id}/users", authenticatedTransactionHandler(addUserToProject_v2_7)).Methods(http.MethodPost)
@@ -219,6 +220,30 @@ func deleteProjects_v2_7(r *http.Request, context *Context) *ApiResponse {
 	context.Log("Successfully removed project %s", projectId)
 
 	return EmptyResponse()
+}
+
+// Get a JSON representation of the project.
+// @Summary Get a JSON representation of the project.
+// @Description This aims to transfer a project to another STM instance or to simply create a backup of a project.
+// @Version 2.7
+// @Tags projects
+// @Produce json
+// @Param id path string true "ID of the project"
+// @Success 200 {object} project.Project
+// @Router /v2.7/projects/{id}/export [GET]
+func exportProject_v2_7(r *http.Request, context *Context) *ApiResponse {
+	vars := mux.Vars(r)
+	projectId, ok := vars["id"]
+	if !ok {
+		return BadRequestError(errors.New("url segment 'id' not set"))
+	}
+
+	projectExport, err := context.ExportService.ExportProject(projectId, context.Token.UID)
+	if err != nil {
+		return InternalServerError(err)
+	}
+
+	return JsonResponse(projectExport)
 }
 
 // Update project name

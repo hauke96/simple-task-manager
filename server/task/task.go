@@ -38,6 +38,11 @@ func Init(tx *sql.Tx, logger *util.Logger, permissionService *permission.Permiss
 	}
 }
 
+// Simply gets the tasks for the given project
+func (s *TaskService) GetTasks(projectId string) ([]*Task, error) {
+	return s.store.GetTasks(projectId)
+}
+
 // AddTasks sets the ID of the tasks and adds them to the storage.
 func (s *TaskService) AddTasks(newTasks []TaskDraftDto, projectId string) ([]*Task, error) {
 	for _, t := range newTasks {

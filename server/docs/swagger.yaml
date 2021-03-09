@@ -286,6 +286,26 @@ paths:
       summary: Update project description.
       tags:
       - projects
+  /v2.7/projects/{id}/export:
+    get:
+      description: This aims to transfer a project to another STM instance or to simply
+        create a backup of a project.
+      parameters:
+      - description: ID of the project
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/project.Project'
+      summary: Get a JSON representation of the project.
+      tags:
+      - projects
   /v2.7/projects/{id}/name:
     put:
       description: Updates the projects name/title. The requesting user must be the
