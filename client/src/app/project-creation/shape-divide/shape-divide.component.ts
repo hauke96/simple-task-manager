@@ -37,8 +37,16 @@ export class ShapeDivideComponent implements OnInit {
   }
 
   public get canDivideTasks(): boolean {
+    return this.amountTasksAfterDividing <= this.maxTasksPerProject;
+  }
+
+  public get maxTasksPerProject() {
+    return this.config.maxTasksPerProject;
+  }
+
+  public get amountTasksAfterDividing() {
     // The existing tasks - the one task that should be divided + the amount of new tasks
-    return this.taskDraftService.getTasks().length - 1 + this.previewTasks.length <= this.config.maxTasksPerProject;
+    return this.taskDraftService.getTasks().length - 1 + this.previewTasks.length;
   }
 
   onPreviewButtonClicked() {
