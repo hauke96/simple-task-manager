@@ -24,6 +24,8 @@ import { TaskDraftService } from '../task-draft.service';
 import { TaskDraft } from '../../task/task.material';
 import { FeatureLike } from 'ol/Feature';
 import { ConfigProvider } from '../../config/config.provider';
+import { extend } from 'ol/extent';
+import { Size } from 'ol/size';
 
 @Component({
   selector: 'app-project-creation',
@@ -190,15 +192,20 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
    * Called after a task has been added to the task draft service.
    */
   private addTasks(tasks: TaskDraft[]) {
-    this.vectorSource.addFeatures(tasks.map(t => this.toFeature(t)));
+    const newFeatures = tasks.map(t => this.toFeature(t));
+    this.vectorSource.addFeatures(newFeatures);
 
-    // TODO check is anythin/everythin? already visible. If not -> fit view
-    // if (fitViewToFeatures) {
-    this.map.getView().fit(this.vectorSource.getExtent(), {
+    // Subtract the padding from the map size. This padding will be added back to the map size below.
+    const paddedMapSize = [this.map.getSize()[0] - 50, this.map.getSize()[1] - 50] as Size;
+    let overallExtent = this.map.getView().calculateExtent(paddedMapSize);
+
+    // Try to extend the extent over all new features: If one feature is outside the current extent, then the map view should be adjusted
+    newFeatures.forEach(f => overallExtent = extend(overallExtent, f.getGeometry().getExtent()));
+
+    this.map.getView().fit(overallExtent, {
       size: this.map.getSize(),
       padding: [25, 25, 25, 25] // in pixels
     });
-    // }
 
     if (!this.canAddTasks) {
       this.setInteraction(this.drawInteraction, false);
