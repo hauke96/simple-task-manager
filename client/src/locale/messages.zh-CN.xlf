@@ -537,6 +537,30 @@
           <context context-type="linenumber">6</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="ad4ff0b5dabb73b45a369d9b8b75c4cccab8cdea" datatype="html">
+        <source>Import:</source>
+        <target>Import:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="f9cc69a618eda0298d87de6903f37c3a98c1fef5" datatype="html">
+        <source>Import an existing project from your computer. Existing properties will be overwritten.</source>
+        <target>Import an existing project from your computer. Existing properties will be overwritten.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="82f7c3df9268079ecc5edc0e0662c956d90dff5b" datatype="html">
+        <source>Upload project</source>
+        <target>Upload project</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="d8ef47c8eceb33c1cef17101c49af48ce53295f8" datatype="html">
         <source>URL to GeoJSON, OSM-XML, GPX, EsriJson, KML or WKT data:</source>
         <target xml:lang="zh-CN">GeoJSON、OSM-XML、GPX、EsriJson、KML或WKT数据的URL:</target>
@@ -653,6 +677,14 @@
           <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="19229f72ffd8a140a8336dbac75fd95cf0702648" datatype="html">
+        <source>Upload:</source>
+        <target>Upload:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.html</context>
+          <context context-type="linenumber">1</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="WARN_ALREADY_MEMBER" datatype="html">
         <source>User '<x id="INTERPOLATION" equiv-text="{{interp}}"/>' is already a member of this project</source>
         <target xml:lang="zh-CN">使用者<x id="INTERPOLATION" equiv-text="{{interp}}"/>已是此专案的成员</target>
@@ -755,6 +787,18 @@
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ERROR_EXPORT_PROJ" datatype="html">
+        <source>Creating project export failed</source>
+        <target>Creating project export failed</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project/project-settings/project-settings.component.ts</context>
+          <context context-type="linenumber">129</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">35</context>
         </context-group>
       </trans-unit>
       <trans-unit id="WARN_PROJECT_REMOVED" datatype="html">

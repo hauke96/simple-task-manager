@@ -144,7 +144,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">44</context>
+          <context context-type="linenumber">45</context>
         </context-group>
       </trans-unit>
       <trans-unit id="TABS_TASKS" datatype="html">
@@ -159,7 +159,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">39</context>
+          <context context-type="linenumber">40</context>
         </context-group>
       </trans-unit>
       <trans-unit id="TABS_UPLOAD" datatype="html">
@@ -170,7 +170,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">42</context>
+          <context context-type="linenumber">43</context>
         </context-group>
       </trans-unit>
       <trans-unit id="TABS_REMOTE" datatype="html">
@@ -181,7 +181,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">43</context>
+          <context context-type="linenumber">44</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_NOT_CREATE_PROJ" datatype="html">
@@ -363,7 +363,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.ts</context>
-          <context context-type="linenumber">35</context>
+          <context context-type="linenumber">30</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
@@ -381,11 +381,18 @@
           <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="19229f72ffd8a140a8336dbac75fd95cf0702648" datatype="html">
+        <source>Upload:</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.html</context>
+          <context context-type="linenumber">1</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="1c222c958cc86240c7e3e7f38ce8c730fda6f17f" datatype="html">
         <source>Upload a GeoJSON, OSM-XML, GPX, EsriJson, KML or WKT file, which contains polygons. Each polygon will result in a single task.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.html</context>
-          <context context-type="linenumber">1</context>
+          <context context-type="linenumber">3</context>
         </context-group>
       </trans-unit>
       <trans-unit id="30425abcb2ca17bc7f74857afd2d4a74e31b9b2b" datatype="html">
@@ -395,11 +402,32 @@
           <context context-type="linenumber">6</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="ad4ff0b5dabb73b45a369d9b8b75c4cccab8cdea" datatype="html">
+        <source>Import:</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="f9cc69a618eda0298d87de6903f37c3a98c1fef5" datatype="html">
+        <source>Import an existing project from your computer. Existing properties will be overwritten.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="82f7c3df9268079ecc5edc0e0662c956d90dff5b" datatype="html">
+        <source>Upload project</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="ERROR_COULD_NOT_UPLOAD" datatype="html">
         <source>Could not upload file &apos;<x id="INTERPOLATION" equiv-text="evt.target as any).files[0]"/>&apos;</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.ts</context>
-          <context context-type="linenumber">43</context>
+          <context context-type="linenumber">57</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
@@ -464,7 +492,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">35</context>
+          <context context-type="linenumber">36</context>
         </context-group>
       </trans-unit>
       <trans-unit id="WARN_REMOVED_USER_PROJECT" datatype="html">
@@ -479,7 +507,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">36</context>
+          <context context-type="linenumber">37</context>
         </context-group>
       </trans-unit>
       <trans-unit id="d9d8be77cf88cf6bfb0cd5bdfdd3290c58380422" datatype="html">
@@ -598,6 +626,17 @@
           <context context-type="linenumber">34</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="ERROR_EXPORT_PROJ" datatype="html">
+        <source>Creating project export failed</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project/project-settings/project-settings.component.ts</context>
+          <context context-type="linenumber">129</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="ERROR_NOT_LOAD_PROJ" datatype="html">
         <source>Could not load project &apos;<x id="INTERPOLATION" equiv-text="route.paramMap.get(&apos;id&apos;) "/>&apos;</source>
         <context-group purpose="location">
@@ -657,7 +696,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">40</context>
+          <context context-type="linenumber">41</context>
         </context-group>
       </trans-unit>
       <trans-unit id="TABS_SETTINGS" datatype="html">
@@ -668,7 +707,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">41</context>
+          <context context-type="linenumber">42</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_NOT_REMOVE_USER" datatype="html">
@@ -679,7 +718,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">37</context>
+          <context context-type="linenumber">38</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_NOT_INVITE_USER" datatype="html">
@@ -690,7 +729,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">38</context>
+          <context context-type="linenumber">39</context>
         </context-group>
       </trans-unit>
       <trans-unit id="9c95e79714babddbf9f35af7a271f780e6d7589d" datatype="html">
@@ -831,7 +870,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">45</context>
+          <context context-type="linenumber">46</context>
         </context-group>
       </trans-unit>
       <trans-unit id="TASK_YOU" datatype="html">
@@ -842,7 +881,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">46</context>
+          <context context-type="linenumber">47</context>
         </context-group>
       </trans-unit>
       <trans-unit id="WARN_ALREADY_MEMBER" datatype="html">
