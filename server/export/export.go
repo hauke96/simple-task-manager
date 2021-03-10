@@ -17,7 +17,7 @@ type ProjectExport struct {
 }
 
 type TaskExport struct {
-	// TODO name
+	Name             string
 	ProcessPoints    int
 	MaxProcessPoints int
 	Geometry         string
@@ -62,6 +62,7 @@ func toTaskExport(tasks []*task.Task) []*TaskExport {
 	for i := 0; i < len(tasks); i++ {
 		task := tasks[i]
 		taskExport[i] = &TaskExport{
+			Name:             task.Name,
 			ProcessPoints:    task.ProcessPoints,
 			MaxProcessPoints: task.MaxProcessPoints,
 			Geometry:         task.Geometry,
