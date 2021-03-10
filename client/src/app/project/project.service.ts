@@ -1,8 +1,8 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, mergeMap, tap } from 'rxjs/operators';
-import { Project, ProjectAddDto, ProjectDraftDto, ProjectDto } from './project.material';
-import { Task, TaskDraftDto, TaskDto } from './../task/task.material';
+import { Project, ProjectAddDto, ProjectDraftDto, ProjectDto, ProjectExport } from './project.material';
+import { TaskDraftDto } from './../task/task.material';
 import { TaskService } from './../task/task.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
@@ -138,6 +138,10 @@ export class ProjectService {
         mergeMap(dto => this.toProject(dto)),
         tap(p => this.projectChanged.emit(p))
       );
+  }
+
+  public getProjectExport(projectId: string): Observable<ProjectExport> {
+    return this.http.get<ProjectExport>(environment.url_projects_export.replace('{id}', projectId));
   }
 
   public leaveProject(projectId: string): Observable<any> {

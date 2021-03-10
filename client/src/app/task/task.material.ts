@@ -52,5 +52,15 @@ export class Task {
   }
 }
 
+export class TaskExport {
+  constructor(
+    public name: string,
+    public processPoints: number,
+    public maxProcessPoints: number,
+    public geometry: Feature,
+    public assignedUser?: User) {
+  }
+}
+
 export const TestTaskFeature = new Feature(new Polygon([[[0, 0], [1, 1], [1, 2]]]));
 export const TestTaskGeometry = '{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[0, 0], [1, 1], [1, 2]]]},"properties":null}';

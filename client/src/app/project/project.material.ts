@@ -1,5 +1,5 @@
 import { User } from '../user/user.material';
-import { Task, TaskDraftDto, TaskDto } from '../task/task.material';
+import { Task, TaskDraftDto, TaskDto, TaskExport } from '../task/task.material';
 
 export class ProjectAddDto {
   constructor(public project: ProjectDraftDto,
@@ -43,5 +43,15 @@ export class Project {
               public totalProcessPoints?: number,
               public doneProcessPoints?: number
   ) {
+  }
+}
+
+export class ProjectExport {
+  constructor(public name: string,
+              public description: string,
+              public tasks: TaskExport[],
+              public users: string[],
+              public owner: string,
+              public creationDate: Date) {
   }
 }

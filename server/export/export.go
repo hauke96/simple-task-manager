@@ -17,6 +17,7 @@ type ProjectExport struct {
 }
 
 type TaskExport struct {
+	// TODO name
 	ProcessPoints    int
 	MaxProcessPoints int
 	Geometry         string
