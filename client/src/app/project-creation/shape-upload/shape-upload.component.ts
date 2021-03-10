@@ -20,12 +20,7 @@ export class ShapeUploadComponent implements OnInit {
   }
 
   public onFileSelected(event: any) {
-    const reader = new FileReader();
-    const file = event.target.files[0];
-
-    reader.readAsText(file, 'UTF-8');
-
-    reader.onload = (evt) => {
+    const loadHandler = (evt) => {
       try {
         const features = this.geometryService.parseData(evt.target.result);
 
@@ -38,6 +33,25 @@ export class ShapeUploadComponent implements OnInit {
         this.notificationService.addError(e);
       }
     };
+
+    this.uploadFile(event, loadHandler);
+  }
+
+  public onProjectSelected(event: any) {
+    const loadHandler = (evt) => {
+      console.log('TODO upload project');
+    };
+
+    this.uploadFile(event, loadHandler);
+  }
+
+  private uploadFile(event: any, loadHandler: (evt) => void) {
+    const reader = new FileReader();
+    const file = event.target.files[0];
+
+    reader.readAsText(file, 'UTF-8');
+
+    reader.onload = loadHandler;
     reader.onerror = (evt) => {
       console.error(evt);
       this.notificationService.addError($localize`:@@ERROR_COULD_NOT_UPLOAD:Could not upload file '${(evt.target as any).files[0]}:INTERPOLATION:'`);
