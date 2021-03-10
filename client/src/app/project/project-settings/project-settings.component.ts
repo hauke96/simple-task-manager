@@ -113,16 +113,21 @@ export class ProjectSettingsComponent implements OnInit {
 
   onExportButtonClicked() {
     this.projectService.getProjectExport(this.projectId).subscribe(projectExport => {
-      const element = document.createElement('a');
-      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(projectExport)));
-      element.setAttribute('download', 'stm-project-export.json');
+        const element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(projectExport)));
+        element.setAttribute('download', 'stm-project-export.json');
 
-      element.style.display = 'none';
-      document.body.appendChild(element);
+        element.style.display = 'none';
+        document.body.appendChild(element);
 
-      element.click();
+        element.click();
 
-      document.body.removeChild(element);
-    });
+        document.body.removeChild(element);
+      },
+      e => {
+        console.error(e);
+        this.notificationService.addError($localize`:@@ERROR_EXPORT_PROJ:Creating project export failed`);
+      }
+    );
   }
 }
