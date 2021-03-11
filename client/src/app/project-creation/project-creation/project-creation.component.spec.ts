@@ -42,13 +42,13 @@ describe('ProjectCreationComponent', () => {
       .compileComponents();
 
     projectService = TestBed.inject(ProjectService);
+    taskDraftService = TestBed.inject(TaskDraftService);
     routerMock = TestBed.inject(Router);
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ProjectCreationComponent);
     component = fixture.componentInstance;
-    taskDraftService = fixture.debugElement.injector.get(TaskDraftService);
     fixture.detectChanges();
   });
 

@@ -59,8 +59,13 @@ export class ShapeDivideComponent implements OnInit {
       throw new Error('Dividing tasks should not be able');
     }
 
+    const taskDrafts: TaskDraft[] = this.createTaskDrafts();
+    if (!taskDrafts) {
+      return;
+    }
+
     this.taskDraftService.removeTask(this.taskDraftService.getSelectedTask().id);
-    this.taskDraftService.addTasks(this.createTaskDrafts(), true);
+    this.taskDraftService.addTasks(taskDrafts, true);
   }
 
 
