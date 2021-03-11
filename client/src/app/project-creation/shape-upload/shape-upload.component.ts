@@ -23,30 +23,30 @@ export class ShapeUploadComponent implements OnInit {
   }
 
   public onFileSelected(event: any) {
-    const loadHandler = (evt) => {
-      try {
-        const features = this.geometryService.parseData(evt.target.result);
+    this.uploadFile(event, (e) => this.addTasks(e));
+  }
 
-        if (!!features && features.length !== 0) {
-          this.taskDraftService.addTasks(features.map(f => this.taskDraftService.toTaskDraft(f)));
-        } else {
-          this.notificationService.addError($localize`:@@ERROR_OVERPASS_NO_POLYGONS:No polygons exist or data has unknown format. Supported formats are: GeoJson, OSM-XML, GPX, KML, EsriJson and WKT.`);
-        }
-      } catch (e) {
-        this.notificationService.addError(e);
+  public addTasks(evt) {
+    try {
+      const features = this.geometryService.parseData(evt.target.result);
+
+      if (!!features && features.length !== 0) {
+        this.taskDraftService.addTasks(features.map(f => this.taskDraftService.toTaskDraft(f)));
+      } else {
+        this.notificationService.addError($localize`:@@ERROR_OVERPASS_NO_POLYGONS:No polygons exist or data has unknown format. Supported formats are: GeoJson, OSM-XML, GPX, KML, EsriJson and WKT.`);
       }
-    };
-
-    this.uploadFile(event, loadHandler);
+    } catch (e) {
+      this.notificationService.addError(e);
+    }
   }
 
   public onProjectSelected(event: any) {
-    const loadHandler = (evt) => {
-      const project = JSON.parse(evt.target.result) as ProjectExport;
-      this.projectImportService.importProject(project);
-    };
+    this.uploadFile(event, (e) => this.addProjectExport(e));
+  }
 
-    this.uploadFile(event, loadHandler);
+  public addProjectExport(evt) {
+    const project = JSON.parse(evt.target.result) as ProjectExport;
+    this.projectImportService.importProject(project);
   }
 
   private uploadFile(event: any, loadHandler: (evt) => void) {
