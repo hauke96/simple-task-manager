@@ -31,8 +31,7 @@ import { ProjectImportService } from '../project-import.service';
 @Component({
   selector: 'app-project-creation',
   templateUrl: './project-creation.component.html',
-  styleUrls: ['./project-creation.component.scss'],
-  providers: [TaskDraftService]
+  styleUrls: ['./project-creation.component.scss']
 })
 export class ProjectCreationComponent implements OnInit, AfterViewInit {
   public projectProperties: ProjectProperties = new ProjectProperties('', 100, '');
