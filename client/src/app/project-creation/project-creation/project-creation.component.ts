@@ -26,6 +26,7 @@ import { FeatureLike } from 'ol/Feature';
 import { ConfigProvider } from '../../config/config.provider';
 import { extend } from 'ol/extent';
 import { Size } from 'ol/size';
+import { ProjectImportService } from '../project-import.service';
 
 @Component({
   selector: 'app-project-creation',
@@ -57,6 +58,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     private taskDraftService: TaskDraftService,
     private notificationService: NotificationService,
     private currentUserService: CurrentUserService,
+    private projectImportService: ProjectImportService,
     private router: Router,
     public config: ConfigProvider
   ) {
@@ -80,6 +82,10 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     this.taskDraftService.taskChanged.subscribe((task: TaskDraft) => {
       this.removeTask(task.id);
       this.addTasks([task]);
+    });
+
+    this.projectImportService.projectPropertiesImported.subscribe((properties: ProjectProperties) => {
+      this.projectProperties = properties;
     });
   }
 
@@ -192,11 +198,15 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
    * Called after a task has been added to the task draft service.
    */
   private addTasks(tasks: TaskDraft[]) {
+    const mapPaddingPx = 25;
     const newFeatures = tasks.map(t => this.toFeature(t));
     this.vectorSource.addFeatures(newFeatures);
 
     // Subtract the padding from the map size. This padding will be added back to the map size below.
-    const paddedMapSize = [this.map.getSize()[0] - 50, this.map.getSize()[1] - 50] as Size;
+    const paddedMapSize = [
+      this.map.getSize()[0] - 2 * mapPaddingPx,
+      this.map.getSize()[1] - 2 * mapPaddingPx
+    ] as Size;
     let overallExtent = this.map.getView().calculateExtent(paddedMapSize);
 
     // Try to extend the extent over all new features: If one feature is outside the current extent, then the map view should be adjusted
@@ -204,7 +214,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
 
     this.map.getView().fit(overallExtent, {
       size: this.map.getSize(),
-      padding: [25, 25, 25, 25] // in pixels
+      padding: [mapPaddingPx, mapPaddingPx, mapPaddingPx, mapPaddingPx] // in pixels
     });
 
     if (!this.canAddTasks) {

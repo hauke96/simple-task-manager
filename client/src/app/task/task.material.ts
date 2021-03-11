@@ -57,8 +57,8 @@ export class TaskExport {
     public name: string,
     public processPoints: number,
     public maxProcessPoints: number,
-    public geometry: Feature,
-    public assignedUser?: User) {
+    public geometry: string,
+    public assignedUser?: string) {
   }
 }
 
