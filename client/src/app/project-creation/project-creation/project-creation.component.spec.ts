@@ -93,6 +93,8 @@ describe('ProjectCreationComponent', () => {
   });
 
   it('should not navigate on fail', () => {
+    const name = 'test name';
+
     const spyService = spyOn(projectService, 'createNewProject').and.returnValue(throwError('BOOM'));
     const spyRouter = spyOn(routerMock, 'navigate').and.callThrough();
 
