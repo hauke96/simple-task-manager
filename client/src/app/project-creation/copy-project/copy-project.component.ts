@@ -9,10 +9,15 @@ import { Project } from '../../project/project.material';
 export class CopyProjectComponent implements OnInit {
   @Input() projects: Project[];
 
+  public selectedProjectId: string;
+
   constructor() {
   }
 
   ngOnInit(): void {
   }
 
+  onProjectClicked(id: string) {
+    this.selectedProjectId = id !== this.selectedProjectId ? id : undefined;
+  }
 }

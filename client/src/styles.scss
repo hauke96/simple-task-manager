@@ -139,6 +139,11 @@ select {
 	border-top: none;
 }
 
+.list-item-selected {
+	background-color: $color-very-light;
+}
+
+
 ul {
 	list-style: none;
 	padding-left: $space-huge;

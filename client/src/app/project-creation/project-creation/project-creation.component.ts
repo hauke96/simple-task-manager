@@ -16,7 +16,7 @@ import { CurrentUserService } from '../../user/current-user.service';
 import Snap from 'ol/interaction/Snap';
 import Modify from 'ol/interaction/Modify';
 import Select, { SelectEvent } from 'ol/interaction/Select';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import Interaction from 'ol/interaction/Interaction';
 import { ProjectProperties } from '../project-properties';
 import { DrawEvent } from 'ol/interaction/Draw';
@@ -27,6 +27,7 @@ import { ConfigProvider } from '../../config/config.provider';
 import { extend } from 'ol/extent';
 import { Size } from 'ol/size';
 import { ProjectImportService } from '../project-import.service';
+import { Project } from '../../project/project.material';
 
 @Component({
   selector: 'app-project-creation',
@@ -35,6 +36,7 @@ import { ProjectImportService } from '../project-import.service';
 })
 export class ProjectCreationComponent implements OnInit, AfterViewInit {
   public projectProperties: ProjectProperties = new ProjectProperties('', 100, '');
+  public existingProjects: Observable<Project[]>;
 
   // public for tests
   public modifyInteraction: Modify;
@@ -86,6 +88,8 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     this.projectImportService.projectPropertiesImported.subscribe((properties: ProjectProperties) => {
       this.projectProperties = properties;
     });
+
+    this.existingProjects = this.projectService.getProjects();
   }
 
   ngAfterViewInit(): void {
