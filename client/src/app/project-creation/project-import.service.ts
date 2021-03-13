@@ -46,7 +46,6 @@ export class ProjectImportService {
    * Copies the project export properties and all tasks including the process points.
    */
   public importProject(project: ProjectExport): void {
-    // TODO subscribe and show notification
     this.projectService.importProject(project)
       .subscribe(() => this.notificationService.addInfo('Project imported'));
   }
