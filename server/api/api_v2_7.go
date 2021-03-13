@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/hauke96/simple-task-manager/server/auth"
 	"github.com/hauke96/simple-task-manager/server/config"
+	"github.com/hauke96/simple-task-manager/server/export"
 	"github.com/hauke96/simple-task-manager/server/project"
 	"github.com/hauke96/simple-task-manager/server/task"
 	"github.com/hauke96/simple-task-manager/server/util"
@@ -29,6 +30,7 @@ func Init_v2_7(router *mux.Router) (*mux.Router, string) {
 	r.HandleFunc("/projects/{id}", authenticatedTransactionHandler(getProject_v2_7)).Methods(http.MethodGet)
 	r.HandleFunc("/projects/{id}", authenticatedTransactionHandler(deleteProjects_v2_7)).Methods(http.MethodDelete)
 	r.HandleFunc("/projects/{id}/export", authenticatedTransactionHandler(exportProject_v2_7)).Methods(http.MethodGet)
+	r.HandleFunc("/projects/import", authenticatedTransactionHandler(importProject_v2_7)).Methods(http.MethodPost)
 	r.HandleFunc("/projects/{id}/name", authenticatedTransactionHandler(updateProjectName_v2_7)).Methods(http.MethodPut)
 	r.HandleFunc("/projects/{id}/description", authenticatedTransactionHandler(updateProjectDescription_v2_7)).Methods(http.MethodPut)
 	r.HandleFunc("/projects/{id}/users", authenticatedTransactionHandler(addUserToProject_v2_7)).Methods(http.MethodPost)
@@ -244,6 +246,38 @@ func exportProject_v2_7(r *http.Request, context *Context) *ApiResponse {
 	}
 
 	return JsonResponse(projectExport)
+}
+
+// Imports a previously exported project.
+// @Summary Imports a previously exported project.
+// @Description This aims to import a project from e.g. a backup or to migrate to another STM instance.
+// @Version 2.7
+// @Tags projects
+// @Produce json
+// @Param projectExport body export.ProjectExport true "The project to import"
+// @Router /v2.7/projects/import [POST]
+func importProject_v2_7(r *http.Request, context *Context) *ApiResponse {
+	bodyBytes, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return BadRequestError(errors.Wrap(err, "error reading request body"))
+	}
+
+	var dto export.ProjectExport
+	err = json.Unmarshal(bodyBytes, &dto)
+	if err != nil {
+		return InternalServerError(errors.Wrap(err, "error unmarshalling project export"))
+	}
+
+	addedProject, err := context.ProjectService.ImportProjectWithTasks(&dto)
+	if err != nil {
+		return InternalServerError(errors.Wrap(err, "error importing project with tasks"))
+	}
+
+	sendAdd(context.WebsocketSender, addedProject)
+
+	context.Log("Successfully imported project %s with %d tasks", addedProject.Id, len(dto.Tasks))
+
+	return JsonResponse(addedProject)
 }
 
 // Update project name
