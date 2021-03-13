@@ -40,6 +40,7 @@ import { ZoomControlComponent } from './ui/zoom-control/zoom-control.component';
 import { ProgressBarComponent } from './ui/progress-bar/progress-bar.component';
 import { TaskTitlePipe } from './task/task-title.pipe';
 import { GlobalErrorHandler } from './error-handler';
+import { ProjectImportComponent } from './project-creation/project-import/project-import.component';
 
 @NgModule({
   declarations: [
@@ -73,7 +74,8 @@ import { GlobalErrorHandler } from './error-handler';
     TaskEditComponent,
     ZoomControlComponent,
     ProgressBarComponent,
-    TaskTitlePipe
+    TaskTitlePipe,
+    ProjectImportComponent
   ],
   imports: [
     BrowserModule,

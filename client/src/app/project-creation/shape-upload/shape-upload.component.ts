@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { NotificationService } from '../../common/notification.service';
 import { GeometryService } from '../../common/geometry.service';
 import { TaskDraftService } from '../task-draft.service';
-import { ProjectExport } from '../../project/project.material';
-import { ProjectImportService } from '../project-import.service';
 
 @Component({
   selector: 'app-shape-upload',
@@ -14,8 +12,7 @@ export class ShapeUploadComponent implements OnInit {
   constructor(
     private notificationService: NotificationService,
     private geometryService: GeometryService,
-    private taskDraftService: TaskDraftService,
-    private projectImportService: ProjectImportService
+    private taskDraftService: TaskDraftService
   ) {
   }
 
@@ -38,15 +35,6 @@ export class ShapeUploadComponent implements OnInit {
     } catch (e) {
       this.notificationService.addError(e);
     }
-  }
-
-  public onProjectSelected(event: any) {
-    this.uploadFile(event, (e) => this.addProjectExport(e));
-  }
-
-  public addProjectExport(evt) {
-    const project = JSON.parse(evt.target.result) as ProjectExport;
-    this.projectImportService.importProject(project);
   }
 
   private uploadFile(event: any, loadHandler: (evt) => void) {

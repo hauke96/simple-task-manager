@@ -4,12 +4,3 @@
 
 <input id="fileInput" type="file" content="Upload" accept=".geojson, .osm, .xml, .gpx, .json, .esrijson, .kml, .wkt" (change)="onFileSelected($event)" style="display:none;">
 <button class="upload-button" onclick="document.getElementById('fileInput').click();" i18n>Upload file</button>
-
-<div class="hline"></div>
-
-<h2 i18n>Import:</h2>
-
-<div i18n>Import an existing project from your computer. Existing properties will be overwritten.</div>
-
-<input id="projectInput" type="file" content="Upload" accept=".json" (change)="onProjectSelected($event)" style="display:none;">
-<button class="upload-button" onclick="document.getElementById('projectInput').click();" i18n>Upload project</button>
