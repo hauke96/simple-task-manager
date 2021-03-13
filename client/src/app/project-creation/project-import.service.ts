@@ -18,7 +18,10 @@ export class ProjectImportService {
   constructor(private taskDraftService: TaskDraftService) {
   }
 
-  public importProject(project: ProjectExport): void {
+  /**
+   * Copys the project export properties and all tasks but without the process points.
+   */
+  public importProjectAsDraft(project: ProjectExport): void {
     // TODO Handle this correctly when there are task specific max-point amounts (s. #139).
     // Until #139 is not implemented, we can assume here that all maxProcessPoints values are the same, so just pick the first one.
     const maxProcessPoints = project.tasks[0].maxProcessPoints;
