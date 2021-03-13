@@ -40,11 +40,7 @@
       </trans-unit>
       <trans-unit id="LOGIN_CHANGELOG" datatype="html">
         <source><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Changes in 1.3.0:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;
-					"/> New features: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;
-						"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>More language selection drop-down menus<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Task list is now sorted by process state<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/> Bug fixes: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;
-						"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Reduce unnecessary logging<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Project creation: Save button enabled but data wasn&apos;t completely entered<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Task name sometimes not shown<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Remove unnecessary zoom buttons<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Fix broken styling of very long notifications<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Show task name instead of ID<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>All kind of errors will now be catched<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/> Infrastructure: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;
-						"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>The server now makes daily database backups<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/> Internals: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;
-						"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Tasks are now withing the project DTO class<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Added swagger UI as better API documentation<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/></source>
+					"/> New features: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>More language selection drop-down menus<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Task list is now sorted by process state<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/> Bug fixes: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Reduce unnecessary logging<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Project creation: Save button enabled but data wasn&apos;t completely entered<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Task name sometimes not shown<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Remove unnecessary zoom buttons<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Fix broken styling of very long notifications<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Show task name instead of ID<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>All kind of errors will now be catched<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/> Infrastructure: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>The server now makes daily database backups<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/> Internals: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Tasks are now withing the project DTO class<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Added swagger UI as better API documentation<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/login/login.component.html</context>
           <context context-type="linenumber">21,45</context>
@@ -71,6 +67,20 @@
           <context context-type="linenumber">10</context>
         </context-group>
         <note priority="1" from="description">logout button</note>
+      </trans-unit>
+      <trans-unit id="55bdec1af5e4593361ebc9faa6dd2e53ec68cf92" datatype="html">
+        <source>Duplicate:</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/copy-project/copy-project.component.html</context>
+          <context context-type="linenumber">1</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4bd22b3271b9d55e8e9dbdc8348e6a26c297a2f5" datatype="html">
+        <source>Copy and import an existing project you are a member of.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/copy-project/copy-project.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="4f5724e5ad8f6385d335b6705c780eae7110ec70" datatype="html">
         <source>Draw new polygon</source>
@@ -140,7 +150,7 @@
         <source>Properties</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.ts</context>
-          <context context-type="linenumber">170</context>
+          <context context-type="linenumber">177</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
@@ -151,7 +161,7 @@
         <source>Tasks</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.ts</context>
-          <context context-type="linenumber">171</context>
+          <context context-type="linenumber">178</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.ts</context>
@@ -166,7 +176,7 @@
         <source>Import</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.ts</context>
-          <context context-type="linenumber">172</context>
+          <context context-type="linenumber">179</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
@@ -177,7 +187,7 @@
         <source>Remote</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.ts</context>
-          <context context-type="linenumber">173</context>
+          <context context-type="linenumber">180</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
@@ -188,11 +198,47 @@
         <source>Could not create project</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.ts</context>
-          <context context-type="linenumber">298</context>
+          <context context-type="linenumber">314</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ad4ff0b5dabb73b45a369d9b8b75c4cccab8cdea" datatype="html">
+        <source>Import:</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/project-import/project-import.component.html</context>
+          <context context-type="linenumber">1</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="f9cc69a618eda0298d87de6903f37c3a98c1fef5" datatype="html">
+        <source>Import an existing project from your computer. Existing properties will be overwritten.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/project-import/project-import.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="82f7c3df9268079ecc5edc0e0662c956d90dff5b" datatype="html">
+        <source>Upload project</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/project-import/project-import.component.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ERROR_COULD_NOT_UPLOAD" datatype="html">
+        <source>Could not upload file &apos;<x id="INTERPOLATION" equiv-text="evt.target as any).files[0]"/>&apos;</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/project-import/project-import.component.ts</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.ts</context>
+          <context context-type="linenumber">49</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
       <trans-unit id="616e206cb4f25bd5885fc35925365e43cf5fb929" datatype="html">
@@ -363,7 +409,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.ts</context>
-          <context context-type="linenumber">30</context>
+          <context context-type="linenumber">33</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
@@ -400,38 +446,6 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.html</context>
           <context context-type="linenumber">6</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="ad4ff0b5dabb73b45a369d9b8b75c4cccab8cdea" datatype="html">
-        <source>Import:</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.html</context>
-          <context context-type="linenumber">10</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="f9cc69a618eda0298d87de6903f37c3a98c1fef5" datatype="html">
-        <source>Import an existing project from your computer. Existing properties will be overwritten.</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.html</context>
-          <context context-type="linenumber">12</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="82f7c3df9268079ecc5edc0e0662c956d90dff5b" datatype="html">
-        <source>Upload project</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.html</context>
-          <context context-type="linenumber">15</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="ERROR_COULD_NOT_UPLOAD" datatype="html">
-        <source>Could not upload file &apos;<x id="INTERPOLATION" equiv-text="evt.target as any).files[0]"/>&apos;</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.ts</context>
-          <context context-type="linenumber">57</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
       <trans-unit id="628b295733edba52d46466df62992b41b162a162" datatype="html">

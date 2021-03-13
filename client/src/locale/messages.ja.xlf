@@ -26,6 +26,22 @@
           <context context-type="linenumber">4</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="55bdec1af5e4593361ebc9faa6dd2e53ec68cf92" datatype="html">
+        <source>Duplicate:</source>
+        <target>Duplicate:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/copy-project/copy-project.component.html</context>
+          <context context-type="linenumber">1</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4bd22b3271b9d55e8e9dbdc8348e6a26c297a2f5" datatype="html">
+        <source>Copy and import an existing project you are a member of.</source>
+        <target>Copy and import an existing project you are a member of.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/copy-project/copy-project.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="a40a5da1275dd0b1cba2d4eb75b3c874db4a8858" datatype="html">
         <source>Welcome to the SimpleTaskManager for <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>OpenStreetMap<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/></source>
         <target xml:lang="ja"><x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>OpenStreetMap<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/>用シンプル タスク管理(STM) へようこそ</target>
