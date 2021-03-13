@@ -6,6 +6,7 @@ import { TaskDraft } from '../task/task.material';
 import { Feature } from 'ol';
 import FeatureFormat from 'ol/format/Feature';
 import GeoJSON from 'ol/format/GeoJSON';
+import { ProjectService } from '../project/project.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,13 +16,16 @@ export class ProjectImportService {
 
   private format: FeatureFormat = new GeoJSON();
 
-  constructor(private taskDraftService: TaskDraftService) {
+  constructor(
+    private taskDraftService: TaskDraftService,
+    private projectService: ProjectService
+  ) {
   }
 
   /**
-   * Copys the project export properties and all tasks but without the process points.
+   * Copies the project export properties and all tasks but without the process points.
    */
-  public importProjectAsDraft(project: ProjectExport): void {
+  public importProjectAsNewProject(project: ProjectExport): void {
     // TODO Handle this correctly when there are task specific max-point amounts (s. #139).
     // Until #139 is not implemented, we can assume here that all maxProcessPoints values are the same, so just pick the first one.
     const maxProcessPoints = project.tasks[0].maxProcessPoints;
@@ -30,9 +34,16 @@ export class ProjectImportService {
 
     const taskDrafts = project.tasks.map(t => {
       const taskFeature = this.format.readFeature(t.geometry) as Feature;
-      return new TaskDraft(undefined, t.name, taskFeature.getGeometry());
+      return new TaskDraft(undefined, t.name, taskFeature.getGeometry(), 0);
     });
 
     this.taskDraftService.addTasks(taskDrafts);
+  }
+
+  /**
+   * Copies the project export properties and all tasks including the process points.
+   */
+  public importProject(project: ProjectExport): void {
+    // this.projectService.importProject(...)
   }
 }

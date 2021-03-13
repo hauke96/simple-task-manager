@@ -23,7 +23,7 @@ export class ProjectImportComponent implements OnInit {
 
   public addProjectExport(evt) {
     const project = JSON.parse(evt.target.result) as ProjectExport;
-    this.projectImportService.importProjectAsDraft(project);
+    this.projectImportService.importProjectAsNewProject(project);
   }
 
   private uploadFile(event: any, loadHandler: (evt) => void) {

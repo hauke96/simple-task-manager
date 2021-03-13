@@ -33,7 +33,7 @@ export class CopyProjectComponent implements OnInit {
       .getProjectExport(this.selectedProject.id)
       .subscribe(
         projectExport => {
-          this.projectImportService.importProjectAsDraft(projectExport);
+          this.projectImportService.importProjectAsNewProject(projectExport);
           this.selectedProject = undefined;
         },
         e => {

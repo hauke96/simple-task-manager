@@ -9,6 +9,7 @@ export class TaskDraftDto {
    */
   constructor(
     public maxProcessPoints: number,
+    public processPoints: number,
     public geometry: string
   ) {
   }
@@ -18,7 +19,8 @@ export class TaskDraft {
   constructor(
     public id: string,
     public name: string,
-    public geometry: Geometry
+    public geometry: Geometry,
+    public processPoints: number
   ) {
   }
 }
