@@ -1,7 +1,7 @@
 <h1 i18n>Projects</h1>
 <div *ngIf="projects?.length !== 0">
 	<div *ngFor="let p of projects" class="list-item" (click)="onProjectListItemClicked(p.id)">
-		<span>{{p.name}}</span>
+		<span class="wrap-label">{{p.name}}</span>
 		<div class="list-item-column">
 			<span class="light-label">({{p.doneProcessPoints}}/{{p.totalProcessPoints}})</span>
 			<app-progress-bar [progressPoints]="p.doneProcessPoints" [totalPoints]="p.totalProcessPoints"></app-progress-bar>

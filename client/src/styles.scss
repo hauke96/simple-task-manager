@@ -207,3 +207,9 @@ textarea.ng-invalid:not(form) {
 .error-color {
 	color: $color-error-dark;
 }
+
+.wrap-label {
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}

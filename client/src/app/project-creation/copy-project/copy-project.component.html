@@ -6,7 +6,7 @@
 	<div *ngFor="let p of projects" class="list-item project-list-row"
 		 [ngClass]="{'list-item-selected': p.id === selectedProjectId}"
 		 (click)="onProjectClicked(p.id)">
-		<span class="project-name">{{p.name}}</span>
+		<span class="wrap-label">{{p.name}}</span>
 	</div>
 </div>
 <button [disabled]="!selectedProjectId" class="import-button" i18n>Import</button>
