@@ -268,7 +268,7 @@ func importProject_v2_7(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(errors.Wrap(err, "error unmarshalling project export"))
 	}
 
-	addedProject, err := context.ExportService.ImportProject(&dto)
+	addedProject, err := context.ExportService.ImportProject(&dto, context.Token.UID)
 	if err != nil {
 		return InternalServerError(errors.Wrap(err, "error importing project with tasks"))
 	}

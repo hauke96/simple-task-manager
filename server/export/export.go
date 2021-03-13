@@ -8,18 +8,18 @@ import (
 )
 
 type ProjectExport struct {
-	Name         string `json:"name"`
-	Users        []string `json:"users"`
-	Owner        string `json:"owner"`
-	Description  string `json:"description"`
-	CreationDate *time.Time `json:"creationDate"`
+	Name         string        `json:"name"`
+	Users        []string      `json:"users"`
+	Owner        string        `json:"owner"`
+	Description  string        `json:"description"`
+	CreationDate *time.Time    `json:"creationDate"`
 	Tasks        []*TaskExport `json:"tasks"`
 }
 
 type TaskExport struct {
 	Name             string `json:"name"`
-	ProcessPoints    int `json:"processPoints"`
-	MaxProcessPoints int `json:"maxProcessPoints"`
+	ProcessPoints    int    `json:"processPoints"`
+	MaxProcessPoints int    `json:"maxProcessPoints"`
 	Geometry         string `json:"geometry"`
 	AssignedUser     string `json:"assignedUser"`
 }
@@ -45,12 +45,25 @@ func (s *ExportService) ExportProject(projectId string, potentialMemberId string
 	return toProjectExport(project), nil
 }
 
-func (s *ExportService) ImportProject(projectExport *ProjectExport) (*project.Project, error) {
+func (s *ExportService) ImportProject(projectExport *ProjectExport, requestingUserId string) (*project.Project, error) {
+	// Determine if the requesting user is part of this project. If not, then add him/her. It wouldn't make much sense
+	//if the requesting user won't be part of the project
+	alreadyContainsUser := false
+	for _, u := range projectExport.Users {
+		if u == requestingUserId {
+			alreadyContainsUser = true
+			break
+		}
+	}
+	if !alreadyContainsUser {
+		projectExport.Users = append(projectExport.Users, requestingUserId)
+	}
+
 	projectDraftDto := &project.ProjectDraftDto{
 		Name:        projectExport.Name,
 		Description: projectExport.Description,
 		Users:       projectExport.Users,
-		Owner:       projectExport.Owner,
+		Owner:       requestingUserId,
 	}
 
 	taskDraftDtos := make([]task.TaskDraftDto, len(projectExport.Tasks))
