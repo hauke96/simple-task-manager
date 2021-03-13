@@ -852,9 +852,9 @@
           <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="TABS_UPLOAD" datatype="html">
-        <source>Upload</source>
-        <target xml:lang="ja">アップロード</target>
+      <trans-unit id="TABS_IMPORT" datatype="html">
+        <source>Import</source>
+        <target xml:lang="ja">インポート</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">30</context>
