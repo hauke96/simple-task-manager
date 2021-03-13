@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/hauke96/simple-task-manager/server/config"
-	"github.com/hauke96/simple-task-manager/server/export"
 	"github.com/hauke96/simple-task-manager/server/permission"
 	"github.com/hauke96/simple-task-manager/server/task"
 	"github.com/hauke96/simple-task-manager/server/util"
@@ -112,10 +111,6 @@ func (s *ProjectService) AddProjectWithTasks(projectDraft *ProjectDraftDto, task
 	}
 
 	return addedProject, nil
-}
-
-func (s *ProjectService) ImportProjectWithTasks(projectExport *export.ProjectExport) (*Project, error) {
-	return nil, nil
 }
 
 // AddProject adds the project, as requested by user "userId". This does NOT fill the metadata information because

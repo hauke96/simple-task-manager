@@ -112,7 +112,7 @@ export class ShapeDivideComponent implements OnInit {
       // Turn geo GeoJSON polygon from turf.js into an openlayers polygon
       const geometry = new Polygon(g.geometry.coordinates);
 
-      return new TaskDraft(undefined, undefined, geometry);
+      return new TaskDraft(undefined, undefined, geometry, 0);
     });
   }
 

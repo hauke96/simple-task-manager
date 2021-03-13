@@ -86,7 +86,7 @@ export class ProjectListComponent extends Unsubscriber implements OnInit {
 
   public addProjectExport(evt) {
     const project = JSON.parse(evt.target.result) as ProjectExport;
-    this.projectImportService.importProjectAsNewProject(project);
+    this.projectImportService.importProject(project);
   }
 
   private uploadFile(event: any, loadHandler: (evt) => void) {

@@ -122,7 +122,7 @@ describe('TaskDraftService', () => {
   it('should return tasks', () => {
     expect(service.getTasks()).toEqual([]);
 
-    const tasks = [new TaskDraft('123', 'some name', new Polygon([]))];
+    const tasks = [new TaskDraft('123', 'some name', new Polygon([]), 0)];
     // @ts-ignore
     service.tasks = tasks;
     expect(service.getTasks()).toEqual(tasks);
@@ -133,9 +133,9 @@ describe('TaskDraftService', () => {
 
     const spyEvent = spyOn(service.taskSelected, 'emit');
     const tasks = [
-      new TaskDraft('1', 'some name', new Polygon([])),
-      new TaskDraft('123', 'some name', new Polygon([])),
-      new TaskDraft('238754', 'some name', new Polygon([]))
+      new TaskDraft('1', 'some name', new Polygon([]), 0),
+      new TaskDraft('123', 'some name', new Polygon([]), 0),
+      new TaskDraft('238754', 'some name', new Polygon([]), 0)
     ];
     // @ts-ignore
     service.tasks = tasks;
@@ -150,9 +150,9 @@ describe('TaskDraftService', () => {
 
     const spyEvent = spyOn(service.taskSelected, 'emit');
     const tasks = [
-      new TaskDraft('1', 'some name', new Polygon([])),
-      new TaskDraft('123', 'some name', new Polygon([])),
-      new TaskDraft('238754', 'some name', new Polygon([]))
+      new TaskDraft('1', 'some name', new Polygon([]), 0),
+      new TaskDraft('123', 'some name', new Polygon([]), 0),
+      new TaskDraft('238754', 'some name', new Polygon([]), 0)
     ];
     // @ts-ignore
     service.tasks = tasks;
@@ -165,9 +165,9 @@ describe('TaskDraftService', () => {
   it('should remove existing task', () => {
     const spyEvent = spyOn(service.taskRemoved, 'emit');
     const tasks = [
-      new TaskDraft('1', 'some name', new Polygon([])),
-      new TaskDraft('123', 'some name', new Polygon([])),
-      new TaskDraft('238754', 'some name', new Polygon([]))
+      new TaskDraft('1', 'some name', new Polygon([]), 0),
+      new TaskDraft('123', 'some name', new Polygon([]), 0),
+      new TaskDraft('238754', 'some name', new Polygon([]), 0)
     ];
     // @ts-ignore
     service.tasks = tasks;
@@ -180,9 +180,9 @@ describe('TaskDraftService', () => {
 
   it('should deselect removed task', () => {
     const tasks = [
-      new TaskDraft('1', 'some name', new Polygon([])),
-      new TaskDraft('123', 'some name', new Polygon([])),
-      new TaskDraft('238754', 'some name', new Polygon([]))
+      new TaskDraft('1', 'some name', new Polygon([]), 0),
+      new TaskDraft('123', 'some name', new Polygon([]), 0),
+      new TaskDraft('238754', 'some name', new Polygon([]), 0)
     ];
     // @ts-ignore
     service.tasks = tasks;
@@ -197,7 +197,7 @@ describe('TaskDraftService', () => {
   it('should rename task correctly', () => {
     const spyEvent = spyOn(service.taskChanged, 'emit');
     const tasks = [
-      new TaskDraft('123', 'some name', new Polygon([])),
+      new TaskDraft('123', 'some name', new Polygon([]), 0),
     ];
     // @ts-ignore
     service.tasks = tasks;
@@ -211,7 +211,7 @@ describe('TaskDraftService', () => {
   it('should also rename selected task correctly', () => {
     const spyEvent = spyOn(service.taskChanged, 'emit');
     const tasks = [
-      new TaskDraft('123', 'some name', new Polygon([])),
+      new TaskDraft('123', 'some name', new Polygon([]), 0),
     ];
     // @ts-ignore
     service.tasks = tasks;
@@ -225,6 +225,6 @@ describe('TaskDraftService', () => {
   });
 
   function createTaskDraftById(props?: any): TaskDraft {
-    return new TaskDraft(props?.id, props?.name, new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]]));
+    return new TaskDraft(props?.id, props?.name, new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]]), 0);
   }
 });

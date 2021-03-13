@@ -62,11 +62,15 @@ export class TaskDraftService {
     this.taskChanged.emit(task);
   }
 
+  /**
+   * Creates an empty (=no process points) tasks from a feature.
+   */
   public toTaskDraft(feature: Feature): TaskDraft {
     return new TaskDraft(
       feature.get('id'),
       feature.get('name'),
-      feature.getGeometry()
+      feature.getGeometry(),
+      0
     );
   }
 

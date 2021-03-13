@@ -45,6 +45,27 @@ func (s *ExportService) ExportProject(projectId string, potentialMemberId string
 	return toProjectExport(project), nil
 }
 
+func (s *ExportService) ImportProject(projectExport *ProjectExport) (*project.Project, error) {
+	projectDraftDto := &project.ProjectDraftDto{
+		Name:        projectExport.Name,
+		Description: projectExport.Description,
+		Users:       projectExport.Users,
+		Owner:       projectExport.Owner,
+	}
+
+	taskDraftDtos := make([]task.TaskDraftDto, len(projectExport.Tasks))
+	for i := 0; i < len(projectExport.Tasks); i++ {
+		t := projectExport.Tasks[i]
+		taskDraftDtos[i] = task.TaskDraftDto{
+			MaxProcessPoints: t.MaxProcessPoints,
+			ProcessPoints:    t.ProcessPoints,
+			Geometry:         t.Geometry,
+		}
+	}
+
+	return s.projectService.AddProjectWithTasks(projectDraftDto, taskDraftDtos)
+}
+
 func toProjectExport(project *project.Project) *ProjectExport {
 	return &ProjectExport{
 		Name:         project.Name,

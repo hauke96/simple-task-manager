@@ -83,6 +83,9 @@ export class ProjectService {
       .pipe(mergeMap(dto => this.toProject(dto)));
   }
 
+  /**
+   * Creates a new project on the server with empty tasks.
+   */
   public createNewProject(
     name: string,
     maxProcessPoints: number,
@@ -101,7 +104,7 @@ export class ProjectService {
 
     const p = new ProjectAddDto(
       new ProjectDraftDto(name, projectDescription, users, owner),
-      geometries.map(g => new TaskDraftDto(maxProcessPoints, g))
+      geometries.map(g => new TaskDraftDto(maxProcessPoints, 0, g))
     );
 
     return this.http.post<ProjectDto>(environment.url_projects, JSON.stringify(p))
@@ -151,6 +154,10 @@ export class ProjectService {
   // Gets user names and turns the DTO into a Project
   public toProject(dto: ProjectDto): Observable<Project> {
     return this.toProjects([dto]).pipe(map(p => p[0]));
+  }
+
+  importProject(projectExport: ProjectExport): Observable<any> {
+    return this.http.post(environment.url_projects_import, JSON.stringify(projectExport));
   }
 
   // Gets user names and turns the DTOs into Projects

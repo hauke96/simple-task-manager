@@ -7,6 +7,7 @@ import { Feature } from 'ol';
 import FeatureFormat from 'ol/format/Feature';
 import GeoJSON from 'ol/format/GeoJSON';
 import { ProjectService } from '../project/project.service';
+import { NotificationService } from '../common/notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,8 @@ export class ProjectImportService {
 
   constructor(
     private taskDraftService: TaskDraftService,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private notificationService: NotificationService
   ) {
   }
 
@@ -44,6 +46,8 @@ export class ProjectImportService {
    * Copies the project export properties and all tasks including the process points.
    */
   public importProject(project: ProjectExport): void {
-    // this.projectService.importProject(...)
+    // TODO subscribe and show notification
+    this.projectService.importProject(project)
+      .subscribe(() => this.notificationService.addInfo('Project imported'));
   }
 }
