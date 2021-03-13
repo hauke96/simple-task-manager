@@ -1,8 +1,8 @@
-This file describes the automatic creation of database backups.
+This file describes how the automatic creation of database backups works.
 
 # Setup
 
-See the main [server.md](server.md) file (section about automatic backup) on how to set up automatic backups.
+How to set up automatic backups? See the main [server.md](server.md) file (section about automatic backup) for that.
 
 # How it works
 

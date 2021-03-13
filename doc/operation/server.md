@@ -97,7 +97,7 @@ You can test the setup manually:
 * Start the service with `systemctl start stm-backup.service`
 * Take a look into the logs with `journalctl -u stm-backup.service` and watch for errors
 
-See the [automatic-backup.md](automatic-backup.md) for details on how this all works.  
+See the [automatic-backups.md](automatic-backups.md) for details on how this all works.  
 
 # 7 Check out the code
 
