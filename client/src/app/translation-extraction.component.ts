@@ -17,6 +17,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
         <span i18n="@@ERROR_LOAD_PROJECTS">Could not load projects</span>
         <span i18n="@@ERROR_LIVE_UPDATE">Could not initialize live-updates</span>
         <span i18n="@@ERROR_COULD_NOT_UPLOAD">Could not upload file '{{interp}}'</span>
+        <span i18n="@@ERROR_COULD_NOT_IMPORT">Could not import project '{{interp}}'</span>
         <span i18n="@@ERROR_OVERPASS_NO_POLYGONS">No polygons exist or data has unknown format. Supported formats are: GeoJson, OSM-XML, GPX, KML, EsriJson and WKT.</span>
         <span i18n="@@ERROR_UNABLE_LOAD_URL">Unable to load data from remote URL</span>
         <span i18n="@@WARN_ALREADY_MEMBER">User '{{interp}}' is already a member of this project</span>
