@@ -105,7 +105,7 @@ func (s *StorePg) addTasks(newTasks []TaskDraftDto, projectId string) ([]*Task, 
 
 func (s *StorePg) addTask(task *TaskDraftDto, projectId string) (string, error) {
 	query := fmt.Sprintf("INSERT INTO %s(process_points, max_process_points, geometry, assigned_user, project_id) VALUES($1, $2, $3, $4, $5) RETURNING %s;", s.Table, returnValues)
-	t, err := s.execQuery(query, 0, task.MaxProcessPoints, task.Geometry, "", projectId)
+	t, err := s.execQuery(query, task.ProcessPoints, task.MaxProcessPoints, task.Geometry, "", projectId)
 
 	if err != nil {
 		return "", err
