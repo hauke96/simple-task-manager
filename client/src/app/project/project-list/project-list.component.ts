@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CurrentUserService } from '../../user/current-user.service';
-import { Project } from '../project.material';
+import { Project, ProjectExport } from '../project.material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectService } from '../project.service';
 import { Unsubscriber } from '../../common/unsubscriber';
 import { NotificationService } from '../../common/notification.service';
+import { ProjectImportService } from '../../project-creation/project-import.service';
 
 @Component({
   selector: 'app-project-list',
@@ -19,7 +20,8 @@ export class ProjectListComponent extends Unsubscriber implements OnInit {
     private route: ActivatedRoute,
     private currentUserService: CurrentUserService,
     private projectService: ProjectService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private projectImportService: ProjectImportService
   ) {
     super();
   }
@@ -76,5 +78,27 @@ export class ProjectListComponent extends Unsubscriber implements OnInit {
 
   public onProjectListItemClicked(id: string) {
     this.router.navigate(['/project', id]);
+  }
+
+  onImportProjectClicked(event: Event) {
+    this.uploadFile(event, (e) => this.addProjectExport(e));
+  }
+
+  public addProjectExport(evt) {
+    const project = JSON.parse(evt.target.result) as ProjectExport;
+    this.projectImportService.importProjectAsDraft(project);
+  }
+
+  private uploadFile(event: any, loadHandler: (evt) => void) {
+    const reader = new FileReader();
+    const file = event.target.files[0];
+
+    reader.readAsText(file, 'UTF-8');
+
+    reader.onload = loadHandler;
+    reader.onerror = (evt) => {
+      console.error(evt);
+      this.notificationService.addError($localize`:@@ERROR_COULD_NOT_UPLOAD:Could not upload file '${(evt.target as any).files[0]}:INTERPOLATION:'`);
+    };
   }
 }

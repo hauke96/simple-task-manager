@@ -17,6 +17,10 @@
 </div>
 
 <div class="bottom-line">
-	<button [routerLink]="['/new-project']" i18n>Create project</button>
+	<div>
+		<button [routerLink]="['/new-project']" i18n>Create project</button>
+		<input id="projectInput" type="file" content="Upload" accept=".json" (change)="onImportProjectClicked($event)" style="display:none;">
+		<button class="import-button" onclick="document.getElementById('projectInput').click();" i18n>Import project</button>
+	</div>
 	<span class="light-label" *ngIf="projects?.length !== 0" i18n>* you own this project</span>
 </div>
