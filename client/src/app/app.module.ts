@@ -41,6 +41,7 @@ import { ProgressBarComponent } from './ui/progress-bar/progress-bar.component';
 import { TaskTitlePipe } from './task/task-title.pipe';
 import { GlobalErrorHandler } from './error-handler';
 import { ProjectImportComponent } from './project-creation/project-import/project-import.component';
+import { CopyProjectComponent } from './project-creation/copy-project/copy-project.component';
 
 @NgModule({
   declarations: [
@@ -75,7 +76,8 @@ import { ProjectImportComponent } from './project-creation/project-import/projec
     ZoomControlComponent,
     ProgressBarComponent,
     TaskTitlePipe,
-    ProjectImportComponent
+    ProjectImportComponent,
+    CopyProjectComponent
   ],
   imports: [
     BrowserModule,
