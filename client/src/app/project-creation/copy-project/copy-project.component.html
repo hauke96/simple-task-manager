@@ -1,12 +1,17 @@
 <h2 i18n>Duplicate:</h2>
 
 <div i18n>Copy and import an existing project you are a member of.</div>
-<p i18n>Available projects:</p>
-<div class="project-list">
-	<div *ngFor="let p of projects" class="list-item project-list-row"
-		 [ngClass]="{'list-item-selected': p.id === selectedProject?.id}"
-		 (click)="onProjectClicked(p)">
-		<span class="wrap-label">{{p.name}}</span>
-	</div>
+<div *ngIf="!projects || projects.length === 0">
+	<p>No projects available!</p>
 </div>
-<button [disabled]="!selectedProject" class="import-button" i18n (click)="onImportClicked()">Import</button>
+<div *ngIf="projects && projects.length > 0">
+	<p i18n>Available projects:</p>
+	<div class="project-list">
+		<div *ngFor="let p of projects" class="list-item project-list-row"
+			 [ngClass]="{'list-item-selected': p.id === selectedProject?.id}"
+			 (click)="onProjectClicked(p)">
+			<span class="wrap-label">{{p.name}}</span>
+		</div>
+	</div>
+	<button [disabled]="!selectedProject" class="import-button" i18n (click)="onImportClicked()">Import</button>
+</div>
