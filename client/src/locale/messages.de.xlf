@@ -108,6 +108,14 @@
           <context context-type="linenumber">22</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="05b067876f7b8b0134bc4d547a333da82b168098" datatype="html">
+        <source>Import project</source>
+        <target xml:lang="de-DE" state="translated">Projekt importieren</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project/project-list/project-list.component.html</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="05e16b88c8826cf9aae20fd255f4b6088aadfa2b" datatype="html">
         <source>* you own this project</source>
         <target xml:lang="de-DE" state="translated">* Du besitzt dieses Projekt</target>
@@ -672,9 +680,21 @@
       <trans-unit id="ERROR_COULD_NOT_UPLOAD" datatype="html">
         <source>Could not upload file '<x id="INTERPOLATION" equiv-text="{{interp}}"/>'</source>
         <target xml:lang="de-DE" state="translated">Konnte die Datei '<x id="INTERPOLATION" equiv-text="{{interp}}"/>' nicht hochladen</target>
-<context-group purpose="location">
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/project-import/project-import.component.ts</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.ts</context>
+          <context context-type="linenumber">49</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project/project-list/project-list.component.ts</context>
+          <context context-type="linenumber">101</context>
+        </context-group>
+        <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">6</context>
+          <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_OVERPASS_NO_POLYGONS" datatype="html">
@@ -927,6 +947,34 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
           <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="088c0351e15610a947eeb2641a4d4500a7d6ba5e" datatype="html">
+        <source>Available projects:</source>
+        <target>Verfügbare Projekte:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/copy-project/copy-project.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="a059709f71aa4c0ac219e160e78a738682ca6a36" datatype="html">
+        <source>Import</source>
+        <target>Importieren</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/copy-project/copy-project.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ERROR_COULD_NOT_IMPORT" datatype="html">
+        <source>Could not import project &apos;<x id="INTERPOLATION" equiv-text="this.selectedProject.name"/>&apos;</source>
+        <target>Konnte Projekt &apos;<x id="INTERPOLATION" equiv-text="this.selectedProject.name"/>&apos; nicht importieren</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/copy-project/copy-project.component.ts</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">20</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4f5724e5ad8f6385d335b6705c780eae7110ec70" datatype="html">

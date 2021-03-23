@@ -38,7 +38,7 @@ export class CopyProjectComponent implements OnInit {
         },
         e => {
           console.error(e);
-          this.notificationService.addError($localize`:@@ERROR_COULD_NOT_UPLOAD:Could not import project '${this.selectedProject.name}:INTERPOLATION:'`);
+          this.notificationService.addError($localize`:@@ERROR_COULD_NOT_IMPORT:Could not import project '${this.selectedProject.name}:INTERPOLATION:'`);
           this.selectedProject = undefined;
         });
   }
