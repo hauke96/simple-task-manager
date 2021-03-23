@@ -967,6 +967,14 @@
           <context context-type="linenumber">2</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="f896586cbd0e03acb0c814279a915abb0a1334a9" datatype="html">
+        <source>No projects available!</source>
+        <target>No projects available!</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/copy-project/copy-project.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="088c0351e15610a947eeb2641a4d4500a7d6ba5e" datatype="html">
         <source>Available projects:</source>
         <target>Available projects:</target>

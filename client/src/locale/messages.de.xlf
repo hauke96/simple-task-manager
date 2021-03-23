@@ -919,7 +919,7 @@
       </trans-unit>
       <trans-unit id="TASK_MAP_DONE" datatype="html">
         <source>DONE</source>
-        <target state="translated">FERTIG</target>
+        <target xml:lang="de-DE" state="translated">FERTIG</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">34</context>
@@ -927,7 +927,7 @@
       </trans-unit>
       <trans-unit id="TASK_YOU" datatype="html">
         <source>you</source>
-        <target state="translated">du</target>
+        <target xml:lang="de-DE" state="translated">du</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">35</context>
@@ -935,7 +935,7 @@
       </trans-unit>
       <trans-unit id="e28ee80cd3a124e109793180dfd1f8d8067dcc6b" datatype="html">
         <source>Zoom in</source>
-        <target>Vergrößern</target>
+        <target xml:lang="de-DE" state="translated">Vergrößern</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
           <context context-type="linenumber">1</context>
@@ -943,15 +943,23 @@
       </trans-unit>
       <trans-unit id="a3dfc58748f790fa096cf3c5fc331f90846e1772" datatype="html">
         <source>Zoom out</source>
-        <target>Verkleinern</target>
+        <target xml:lang="de-DE" state="translated">Verkleinern</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
           <context context-type="linenumber">2</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="f896586cbd0e03acb0c814279a915abb0a1334a9" datatype="html">
+        <source>No projects available!</source>
+        <target xml:lang="de-DE" state="translated">Keine Projekte verfügbar!</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/copy-project/copy-project.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="088c0351e15610a947eeb2641a4d4500a7d6ba5e" datatype="html">
         <source>Available projects:</source>
-        <target>Verfügbare Projekte:</target>
+        <target xml:lang="de-DE" state="translated">Verfügbare Projekte:</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/copy-project/copy-project.component.html</context>
           <context context-type="linenumber">8</context>
@@ -959,7 +967,7 @@
       </trans-unit>
       <trans-unit id="a059709f71aa4c0ac219e160e78a738682ca6a36" datatype="html">
         <source>Import</source>
-        <target>Importieren</target>
+        <target xml:lang="de-DE" state="translated">Importieren</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/copy-project/copy-project.component.html</context>
           <context context-type="linenumber">16</context>
@@ -967,7 +975,7 @@
       </trans-unit>
       <trans-unit id="ERROR_COULD_NOT_IMPORT" datatype="html">
         <source>Could not import project &apos;<x id="INTERPOLATION" equiv-text="this.selectedProject.name"/>&apos;</source>
-        <target>Konnte Projekt &apos;<x id="INTERPOLATION" equiv-text="this.selectedProject.name"/>&apos; nicht importieren</target>
+        <target xml:lang="de-DE" state="translated">Konnte Projekt &apos;<x id="INTERPOLATION" equiv-text="this.selectedProject.name"/>&apos; nicht importieren</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/copy-project/copy-project.component.ts</context>
           <context context-type="linenumber">41</context>
@@ -979,7 +987,7 @@
       </trans-unit>
       <trans-unit id="4f5724e5ad8f6385d335b6705c780eae7110ec70" datatype="html">
         <source>Draw new polygon</source>
-        <target>Neues Polygon zeichnen</target>
+        <target xml:lang="de-DE" state="translated">Neues Polygon zeichnen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
           <context context-type="linenumber">6</context>
@@ -987,7 +995,7 @@
       </trans-unit>
       <trans-unit id="46205b8c134572eadf2daeea8c8dce5974a32216" datatype="html">
         <source>Edit polygon</source>
-        <target>Polygon bearbeiten</target>
+        <target xml:lang="de-DE" state="translated">Polygon bearbeiten</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
           <context context-type="linenumber">7</context>
@@ -995,7 +1003,7 @@
       </trans-unit>
       <trans-unit id="07719975214d77aa88d781887c00cd217dec8be8" datatype="html">
         <source>Remove polygon</source>
-        <target>Polygon entfernen</target>
+        <target xml:lang="de-DE" state="translated">Polygon entfernen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
           <context context-type="linenumber">8</context>
@@ -1003,7 +1011,7 @@
       </trans-unit>
       <trans-unit id="628b295733edba52d46466df62992b41b162a162" datatype="html">
         <source>There are no tasks here yet. Use the pencil-tool to draw tasks or import tasks via the &quot;Upload&quot; or &quot;Remote&quot; tab.</source>
-        <target>Es existieren noch keine Aufgaben. Nutze das Stift-Werkzeug um welche zu erstellen oder importiere welche über den "Hochladen" oder "Remote" Tab.</target>
+        <target xml:lang="de-DE" state="translated">Es existieren noch keine Aufgaben. Nutze das Stift-Werkzeug um welche zu erstellen oder importiere welche über den "Hochladen" oder "Remote" Tab.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/task-draft-list/task-draft-list.component.html</context>
           <context context-type="linenumber">2</context>
