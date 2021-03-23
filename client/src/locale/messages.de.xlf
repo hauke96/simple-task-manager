@@ -132,6 +132,14 @@
           <context context-type="linenumber">3</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="115b4a7564b44aefb4535442a742bb8d7b9ed4a6" datatype="html">
+        <source>Project: <x id="INTERPOLATION" equiv-text="{{project?.name}}"/></source>
+        <target xml:lang="de-DE" state="translated">Projekt: <x id="INTERPOLATION" equiv-text="{{project?.name}}"/></target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project/project/project.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="918e8ff0f3bd063be422543b9423fc184b945b5c" datatype="html">
         <source>Created on: </source>
         <target xml:lang="de-DE" state="translated">Erstellt am: </target>
@@ -546,8 +554,8 @@
         </context-group>
       </trans-unit>
       <trans-unit id="52bceca85970cf340ba25a105c9dede10bc4afbe" datatype="html">
-        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;lnr lnr-warning error-color&quot;&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>Result with <x id="INTERPOLATION" equiv-text="{{amountTasksAfterDividing}}"/> tasks is too large, only <x id="INTERPOLATION_1" equiv-text="{{maxTasksPerProject}}"/> allowed.</source>
-        <target><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;lnr lnr-warning error-color&quot;&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>Ergebnis mit <x id="INTERPOLATION" equiv-text="{{amountTasksAfterDividing}}"/> Tasks ist zu groß, nur <x id="INTERPOLATION_1" equiv-text="{{maxTasksPerProject}}"/> erlaubt.</target>
+        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;lnr lnr-warning color-error&quot;&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>Result with <x id="INTERPOLATION" equiv-text="{{amountTasksAfterDividing}}"/> tasks is too large, only <x id="INTERPOLATION_1" equiv-text="{{maxTasksPerProject}}"/> allowed.</source>
+        <target><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;lnr lnr-warning color-error&quot;&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>Ergebnis mit <x id="INTERPOLATION" equiv-text="{{amountTasksAfterDividing}}"/> Tasks ist zu groß, nur <x id="INTERPOLATION_1" equiv-text="{{maxTasksPerProject}}"/> erlaubt.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
           <context context-type="linenumber">28</context>

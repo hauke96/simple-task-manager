@@ -378,7 +378,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="52bceca85970cf340ba25a105c9dede10bc4afbe" datatype="html">
-        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;lnr lnr-warning error-color&quot;&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>Result with <x id="INTERPOLATION" equiv-text="{{amountTasksAfterDividing}}"/> tasks is too large, only <x id="INTERPOLATION_1" equiv-text="{{maxTasksPerProject}}"/> allowed.</source>
+        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;lnr lnr-warning color-error&quot;&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>Result with <x id="INTERPOLATION" equiv-text="{{amountTasksAfterDividing}}"/> tasks is too large, only <x id="INTERPOLATION_1" equiv-text="{{maxTasksPerProject}}"/> allowed.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
           <context context-type="linenumber">28</context>
@@ -730,6 +730,13 @@
           <context context-type="linenumber">4</context>
         </context-group>
         <note priority="1" from="description">Back button</note>
+      </trans-unit>
+      <trans-unit id="115b4a7564b44aefb4535442a742bb8d7b9ed4a6" datatype="html">
+        <source>Project: <x id="INTERPOLATION" equiv-text="{{project?.name}}"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project/project/project.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="918e8ff0f3bd063be422543b9423fc184b945b5c" datatype="html">
         <source>Created on: </source>
