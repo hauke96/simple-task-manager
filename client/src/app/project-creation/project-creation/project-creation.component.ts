@@ -28,13 +28,14 @@ import { extend } from 'ol/extent';
 import { Size } from 'ol/size';
 import { ProjectImportService } from '../project-import.service';
 import { Project } from '../../project/project.material';
+import { Unsubscriber } from '../../common/unsubscriber';
 
 @Component({
   selector: 'app-project-creation',
   templateUrl: './project-creation.component.html',
   styleUrls: ['./project-creation.component.scss']
 })
-export class ProjectCreationComponent implements OnInit, AfterViewInit {
+export class ProjectCreationComponent extends Unsubscriber implements OnInit, AfterViewInit {
   public projectProperties: ProjectProperties = new ProjectProperties('', 100, '');
   public existingProjects: Observable<Project[]>;
 
@@ -63,31 +64,29 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     private router: Router,
     public config: ConfigProvider
   ) {
+    super();
   }
 
   ngOnInit(): void {
-    // TODO unsubscribable
-    this.taskDraftService.tasksAdded.subscribe((tasks: TaskDraft[]) => {
-      this.addTasks(tasks);
-    });
-
-    this.taskDraftService.taskRemoved.subscribe((id: string) => {
-      this.removeTask(id);
-    });
-
-    this.taskDraftService.taskSelected.subscribe(() => {
-      this.previewVectorSource.clear();
-      this.vectorLayer.changed();
-    });
-
-    this.taskDraftService.taskChanged.subscribe((task: TaskDraft) => {
-      this.removeTask(task.id);
-      this.addTasks([task]);
-    });
-
-    this.projectImportService.projectPropertiesImported.subscribe((properties: ProjectProperties) => {
-      this.projectProperties = properties;
-    });
+    this.unsubscribeLater(
+      this.taskDraftService.tasksAdded.subscribe((tasks: TaskDraft[]) => {
+        this.addTasks(tasks);
+      }),
+      this.taskDraftService.taskRemoved.subscribe((id: string) => {
+        this.removeTask(id);
+      }),
+      this.taskDraftService.taskSelected.subscribe(() => {
+        this.previewVectorSource.clear();
+        this.vectorLayer.changed();
+      }),
+      this.taskDraftService.taskChanged.subscribe((task: TaskDraft) => {
+        this.removeTask(task.id);
+        this.addTasks([task]);
+      }),
+      this.projectImportService.projectPropertiesImported.subscribe((properties: ProjectProperties) => {
+        this.projectProperties = properties;
+      })
+    );
 
     this.existingProjects = this.projectService.getProjects();
   }
