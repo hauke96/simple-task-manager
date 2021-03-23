@@ -1,6 +1,6 @@
 <app-toolbar>
 	<div>
-		<button [routerLink]="['/manager']" i18n>&#60; Cancel</button>
+		<button [routerLink]="['/manager']"><span class="lnr lnr-chevron-left cancel-button-icon"></span><span i18n>Cancel</span></button>
 		<button class="save-button" (click)="onSaveButtonClicked()" [disabled]="!creationForm.form.valid || !hasTasks"
 				i18n>
 			Save

@@ -129,9 +129,9 @@
           <context context-type="linenumber">24</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="553204f35cd5b8f9d341963cf371cc0439a9fb0a" datatype="html">
-        <source>&lt; Back</source>
-        <target state="translated">&lt; Retour</target>
+      <trans-unit id="cda31dbd724cf5f4fa7a4274d9120651490c8a8c" datatype="html">
+        <source>Back</source>
+        <target state="translated">Retour</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.html</context>
           <context context-type="linenumber">3</context>
@@ -299,9 +299,9 @@
           <context context-type="linenumber">1</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="5c5cd4f8e377c2f2bad0d4e26e401f83d777dbfc" datatype="html">
-        <source>&lt; Cancel</source>
-        <target state="translated">&lt; Annuler</target>
+      <trans-unit id="d7b35c384aecd25a516200d6921836374613dfe7" datatype="html">
+        <source>Cancel</source>
+        <target state="translated">Annuler</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">3</context>
