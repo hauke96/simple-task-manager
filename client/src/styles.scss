@@ -204,8 +204,12 @@ textarea.ng-invalid:not(form) {
 // UI elements
 // ===========
 
-.error-color {
+.color-error {
 	color: $color-error-dark;
+}
+
+.color-gray {
+	color: $color-gray-mid;
 }
 
 .wrap-label {

@@ -25,5 +25,5 @@
 	<button (click)="onPreviewButtonClicked()" [disabled]="!divisionForm.form.valid" i18n>Preview</button>
 	<button (click)="onDivideButtonClicked()" [disabled]="!divisionForm.form.valid || !canDivideTasks" class="divide-button" i18n>Divide</button>
 
-	<p class="error-color" *ngIf="!canDivideTasks" i18n><span class="lnr lnr-warning error-color"></span>Result with {{amountTasksAfterDividing}} tasks is too large, only {{maxTasksPerProject}} allowed.</p>
+	<p class="color-error" *ngIf="!canDivideTasks" i18n><span class="lnr lnr-warning color-error"></span>Result with {{amountTasksAfterDividing}} tasks is too large, only {{maxTasksPerProject}} allowed.</p>
 </form>
