@@ -10,6 +10,10 @@
 	align-items: center;
 }
 
+.no-wrap {
+	white-space: nowrap;
+}
+
 .light-label {
 	color: $color-gray-mid;
 }

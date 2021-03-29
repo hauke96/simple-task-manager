@@ -2,7 +2,7 @@
 <div *ngIf="projects?.length !== 0">
 	<div *ngFor="let p of projects" class="list-item" (click)="onProjectListItemClicked(p.id)">
 		<span class="wrap-label">{{p.name}}</span>
-		<div class="list-item-column">
+		<div class="list-item-column no-wrap">
 			<span class="light-label">({{p.doneProcessPoints}} / {{p.totalProcessPoints}})</span>
 			<app-progress-bar [progressPoints]="p.doneProcessPoints" [totalPoints]="p.totalProcessPoints"></app-progress-bar>
 			<div class="admin-label">
