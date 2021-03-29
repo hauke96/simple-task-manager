@@ -2,25 +2,20 @@ import { TestBed } from '@angular/core/testing';
 
 import { ShortcutService } from './shortcut.service';
 import { EventManager } from '@angular/platform-browser';
-import { DOCUMENT } from '@angular/common';
 import anything = jasmine.anything;
+import { DOCUMENT } from '@angular/common';
 
 describe('ShortcutService', () => {
   let service: ShortcutService;
   let eventManager: EventManager;
-  let document: Document;
+  let document: any;
 
   beforeEach(() => {
-    document = {documentElement: {}} as any;
-
-    TestBed.configureTestingModule({
-      providers: [
-        {provide: DOCUMENT, useValue: document},
-      ]
-    });
+    TestBed.configureTestingModule({});
     service = TestBed.inject(ShortcutService);
 
     eventManager = TestBed.inject(EventManager);
+    document = TestBed.inject(DOCUMENT);
   });
 
   it('should be created', () => {

@@ -9,7 +9,8 @@ import { DOCUMENT } from '@angular/common';
 export class ShortcutService {
 
   constructor(private eventManager: EventManager,
-              @Inject(DOCUMENT) document: Document) { }
+              @Inject(DOCUMENT) document: Document) {
+  }
 
   /**
    * @param shortcutString A string defining the shortcut. E.g. "shift.d" should say that the "shift" and "d" key must be pressed.
@@ -24,7 +25,7 @@ export class ShortcutService {
       };
 
       const removeHandlerCallback = this.eventManager.addEventListener(
-        {}as HTMLElement, eventString, handler
+        document.documentElement, eventString, handler
       );
 
       return () => {
