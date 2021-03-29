@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CopyProjectComponent } from './copy-project.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('CopyProjectComponent', () => {
   let component: CopyProjectComponent;
@@ -8,9 +9,10 @@ describe('CopyProjectComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CopyProjectComponent ]
+      declarations: [CopyProjectComponent],
+      imports: [HttpClientTestingModule]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

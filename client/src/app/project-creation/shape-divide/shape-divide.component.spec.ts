@@ -39,7 +39,7 @@ describe('ShapeDivideComponent', () => {
     fixture = TestBed.createComponent(ShapeDivideComponent);
     component = fixture.componentInstance;
 
-    component.selectedTask = new TaskDraft('0', 'foo', new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]]));
+    component.selectedTask = new TaskDraft('0', 'foo', new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]]), 0);
     component.gridCellSize = 100;
   });
 

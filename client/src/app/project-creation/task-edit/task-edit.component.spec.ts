@@ -33,7 +33,7 @@ describe('TaskEditComponent', () => {
   it('should call rename function on service', () => {
     const spy = spyOn(taskDraftService, 'changeTaskName');
 
-    component.task = new TaskDraft('123', 'some name', new Polygon([]));
+    component.task = new TaskDraft('123', 'some name', new Polygon([]), 0);
     component.onTaskNameChanged('new name');
 
     expect(spy).toHaveBeenCalledWith('123', 'new name');

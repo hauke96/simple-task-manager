@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProjectImportComponent } from './project-import.component';
 import { ProjectImportService } from '../project-import.service';
 import { NotificationService } from '../../common/notification.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('ProjectImportComponent', () => {
   let component: ProjectImportComponent;
@@ -12,9 +13,10 @@ describe('ProjectImportComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ProjectImportComponent ]
+      declarations: [ProjectImportComponent],
+      imports: [HttpClientTestingModule]
     })
-    .compileComponents();
+      .compileComponents();
 
     notificationService = TestBed.inject(NotificationService);
     projectImportService = TestBed.inject(ProjectImportService);
@@ -31,7 +33,7 @@ describe('ProjectImportComponent', () => {
   });
 
   it('should call service on added project export', () => {
-    const spy = spyOn(projectImportService, 'importProject');
+    const spy = spyOn(projectImportService, 'importProjectAsNewProject');
 
     component.addProjectExport({target: {result: exampleProjectExport}});
 
