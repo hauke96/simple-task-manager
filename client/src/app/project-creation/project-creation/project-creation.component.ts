@@ -245,7 +245,6 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
     const snap = new Snap({
       source: this.vectorSource
     });
-    // TODO modify on taskDraftService and create according event
     this.map.addInteraction(snap);
 
     this.modifyInteraction = new Modify({

@@ -44,7 +44,6 @@ export class Task {
     public processPoints: number,
     public maxProcessPoints: number,
     public geometry: Feature,
-    // TODO instead store an actual User object
     public assignedUser?: User
   ) {
   }
