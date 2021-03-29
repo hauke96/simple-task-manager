@@ -43,7 +43,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
           this.onAssignButtonClicked();
         }
       }),
-      this.shortcutService.add('u').subscribe(() => {
+      this.shortcutService.add('shift.a').subscribe(() => {
         // we need assignment on tasks  AND  current user is assigned
         if (this.needUserAssignment
           && !!this.task.assignedUser

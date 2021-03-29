@@ -144,7 +144,7 @@ describe('TaskDetailsComponent', () => {
 
       spyOn(shortcutService, 'add')
         .withArgs('a').and.returnValue(shortcutAssignSubject.asObservable())
-        .withArgs('u').and.returnValue(shortcutUnassignSubject.asObservable())
+        .withArgs('shift.a').and.returnValue(shortcutUnassignSubject.asObservable())
         .withArgs('d').and.returnValue(shortcutDoneSubject.asObservable())
         .withArgs('j').and.returnValue(shortcutJosmSubject.asObservable())
         .withArgs('i').and.returnValue(shortcutIdSubject.asObservable());
