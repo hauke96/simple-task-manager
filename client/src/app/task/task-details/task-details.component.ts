@@ -6,6 +6,7 @@ import { NotificationService } from '../../common/notification.service';
 import { User } from '../../user/user.material';
 import { UserService } from '../../user/user.service';
 import { Unsubscriber } from '../../common/unsubscriber';
+import { ShortcutService } from '../../common/shortcut.service';
 
 @Component({
   selector: 'app-task-details',
@@ -25,6 +26,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
     private currentUserService: CurrentUserService,
     private userService: UserService,
     private notificationService: NotificationService,
+    private shortcutService: ShortcutService
   ) {
     super();
   }
@@ -34,6 +36,35 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
     this.unsubscribeLater(
       this.taskService.selectedTaskChanged.subscribe((task: Task) => {
         this.selectTask(task);
+      }),
+      this.shortcutService.add('a').subscribe(() => {
+        // we need assignment on tasks  AND  no user assigned
+        if (this.needUserAssignment && !this.task.assignedUser) {
+          this.onAssignButtonClicked();
+        }
+      }),
+      this.shortcutService.add('u').subscribe(() => {
+        // we need assignment on tasks  AND  current user is assigned
+        if (this.needUserAssignment
+          && !!this.task.assignedUser
+          && this.task.assignedUser.uid === this.currentUserId
+        ) {
+          this.onUnassignButtonClicked();
+        }
+      }),
+      this.shortcutService.add('d').subscribe(() => {
+        // task not done  AND  ( we don't need assignment  OR  current user is assigned )
+        if (!this.task.isDone
+          && (!this.needUserAssignment || !!this.task.assignedUser && this.task.assignedUser.uid === this.currentUserId)
+        ) {
+          this.onDoneButtonClick();
+        }
+      }),
+      this.shortcutService.add('j').subscribe(() => {
+        this.onOpenJosmButtonClicked();
+      }),
+      this.shortcutService.add('i').subscribe(() => {
+        this.onOpenOsmOrgButtonClicked();
       })
     );
   }
