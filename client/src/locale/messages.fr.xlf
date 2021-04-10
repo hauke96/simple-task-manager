@@ -27,9 +27,9 @@
         </context-group>
         <note priority="1" from="description">logout button</note>
       </trans-unit>
-      <trans-unit id="55bdec1af5e4593361ebc9faa6dd2e53ec68cf92" datatype="html">
+      <trans-unit id="2fb7236e17579c8ce939310776ddda6e87db271c" datatype="html">
         <source>Duplicate:</source>
-        <target>Duplicate:</target>
+        <target state="translated">Copie:</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/copy-project/copy-project.component.html</context>
           <context context-type="linenumber">1</context>
