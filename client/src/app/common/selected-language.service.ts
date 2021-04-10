@@ -5,19 +5,29 @@ import { Language } from './language';
   providedIn: 'root'
 })
 export class SelectedLanguageService {
-  selectedLanguage: Language;
+  private selectedLanguage: Language | undefined;
 
   constructor() {
   }
 
-  // Load currently selected language from local storage and set it. This might trigger a reload if the current language in the URL is not
-  // the selected language.
+  /**
+   * Load currently selected language from local storage and set it. This might trigger a reload if the current language in the URL is not
+   * the selected language.
+   *
+   * @return true when no redirect took place and false when the language changes so that location.href has been set.
+   */
   public loadLanguageFromLocalStorage(): boolean {
     const selectedLanguageCode = localStorage.getItem('selected_language');
     if (!!selectedLanguageCode) {
       return this.selectLanguageByCode(selectedLanguageCode);
     } else {
-      return this.selectLanguageByCode(this.urlToLanguage(location.pathname)?.code);
+      const languageFromUrl = this.urlToLanguage(location.pathname);
+      if (!languageFromUrl) {
+        // true because location.href hasn't changed
+        return true;
+      }
+
+      return this.selectLanguageByCode(languageFromUrl.code);
     }
   }
 
@@ -32,21 +42,24 @@ export class SelectedLanguageService {
     ];
   }
 
-  public getSelectedLanguage(): Language {
+  public getSelectedLanguage(): Language | undefined {
     return this.selectedLanguage;
   }
 
-  public urlToLanguage(url: string): Language {
+  public urlToLanguage(url: string): Language | undefined {
     url = url.replace(/^\/*/g, ''); // remove leading slashes. Turn '//de/manager' into 'de/manager'
     const urlSegments = url.split('/'); // now split e.g. 'de/manager' into ['de', 'manager']
     const languageCode = urlSegments[0];
     return this.getLanguageByCode(languageCode);
   }
 
-  // This sets the "this.selectedLanguage" field and triggers a reload if a different language has been selected as the one currently active
-  // within the URL (location.pathname).
-  // Returns true when no redirect took place and false when the language changes so that location.href has been set.
-  public selectLanguageByCode(languageCode: string) {
+  /**
+   * This sets the "this.selectedLanguage" field and triggers a reload if a different language has been selected as the one currently active
+   * within the URL (location.pathname).
+   *
+   * @return true when no redirect took place and false when the language changes so that location.href has been set.
+   */
+  public selectLanguageByCode(languageCode: string): boolean {
     const language = this.getLanguageByCode(languageCode);
 
     if (!!language) {
@@ -71,7 +84,10 @@ export class SelectedLanguageService {
     location.href = newUrl;
   }
 
-  public getLanguageByCode(languageCode: string): Language {
+  /**
+   * @return The Language object or 'undefined' if language code not known by 'getKnownLanguages()'.
+   */
+  public getLanguageByCode(languageCode: string): Language | undefined {
     return this.getKnownLanguages().find(l => l.code === languageCode);
   }
 

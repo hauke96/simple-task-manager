@@ -17,16 +17,17 @@ export class AuthService {
 
   public setUserNameFromToken() {
     const encodedToken = localStorage.getItem('auth_token');
-    const decodedToken = atob(encodedToken);
+    const decodedToken = atob(encodedToken ?? '');
     const token = JSON.parse(decodedToken);
     this.currentUserService.setUser(token.user, token.uid);
   }
 
   public isAuthenticated(): boolean {
-    return !!localStorage.getItem('auth_token')
-      && localStorage.getItem('auth_token').trim() !== 'null'
-      && localStorage.getItem('auth_token').trim() !== 'undefined'
-      && localStorage.getItem('auth_token').trim().length > 0;
+    const item = localStorage.getItem('auth_token');
+    return !!item
+      && item.trim() !== 'null'
+      && item.trim() !== 'undefined'
+      && item.trim().length > 0;
   }
 
   // performs the authentication process, sets the user name in the UserService

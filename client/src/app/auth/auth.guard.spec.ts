@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { AuthGuard } from './auth.guard';
-import { ActivatedRouteSnapshot, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { MockRouter } from '../common/mock-router';
 import { AuthService } from './auth.service';
 
@@ -39,7 +39,7 @@ describe('AuthGuard', () => {
       routeConfig: {
         path: ''
       }
-    } as ActivatedRouteSnapshot, undefined);
+    } as ActivatedRouteSnapshot, {} as RouterStateSnapshot);
 
     expect(canActivate).toBeFalse();
   });
@@ -54,7 +54,7 @@ describe('AuthGuard', () => {
       routeConfig: {
         path: ''
       }
-    } as ActivatedRouteSnapshot, undefined);
+    } as ActivatedRouteSnapshot, {} as RouterStateSnapshot);
 
     expect(routerSpy).toHaveBeenCalledWith('/manager');
   });
@@ -66,7 +66,7 @@ describe('AuthGuard', () => {
       routeConfig: {
         path: 'manager'
       }
-    } as ActivatedRouteSnapshot, undefined);
+    } as ActivatedRouteSnapshot, {} as RouterStateSnapshot);
 
     expect(canActivate).toBeFalse();
   });
@@ -80,7 +80,7 @@ describe('AuthGuard', () => {
       routeConfig: {
         path: 'manager'
       }
-    } as ActivatedRouteSnapshot, undefined);
+    } as ActivatedRouteSnapshot, {} as RouterStateSnapshot);
 
     expect(routerSpy).toHaveBeenCalledWith('/');
   });
@@ -95,7 +95,7 @@ describe('AuthGuard', () => {
       routeConfig: {
         path: 'manager'
       }
-    } as ActivatedRouteSnapshot, undefined);
+    } as ActivatedRouteSnapshot, {} as RouterStateSnapshot);
 
     expect(canActivate).toBeTrue();
     expect(routerSpy).not.toHaveBeenCalled();
