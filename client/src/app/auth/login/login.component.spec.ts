@@ -16,7 +16,7 @@ describe('AuthComponent', () => {
 
   beforeEach(waitForAsync(() => {
     const mockNgZone = jasmine.createSpyObj('mockNgZone', ['run', 'runOutsideAngular']);
-    mockNgZone.run.and.callFake(fn => fn());
+    mockNgZone.run.and.callFake((fn: any) => fn());
 
     TestBed.configureTestingModule({
       declarations: [LoginComponent],
