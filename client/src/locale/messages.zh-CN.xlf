@@ -165,8 +165,8 @@
         </context-group>
 
       </trans-unit>
-      <trans-unit id="4d13a9cd5ed3dcee0eab22cb25198d43886942be" datatype="html">
-        <source>Users</source>
+      <trans-unit id="78870db886eeb5169a1d59babdb2ac0f57841edd" datatype="html">
+        <source>Users:</source>
         <target xml:lang="zh-CN">使用者</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.html</context>

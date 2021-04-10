@@ -28,7 +28,7 @@
 			</div>
 			<div *ngIf="tabs.tabIndex === 1" class="user-tab">
 				<div class="tab-container">
-					<h2 i18n>Users</h2>
+					<h2 i18n>Users:</h2>
 					<app-user-invitation *ngIf="isOwner()"
 										 class="tab-container-item"
 										 (userInvited)="onUserInvited($event)"
