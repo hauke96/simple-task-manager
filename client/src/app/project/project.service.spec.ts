@@ -35,6 +35,7 @@ describe('ProjectService', () => {
     const tasks = [
       new Task('1', 'name1', 0, 100, TestTaskFeature),
       new Task('2', 'name2', 0, 100, TestTaskFeature),
+      // @ts-ignore
       new Task('3', undefined, 0, 100, TestTaskFeature)
     ];
 
@@ -208,9 +209,9 @@ describe('ProjectService', () => {
     });
 
     const taskDtos = [
-      new TaskDto('7', undefined, 100, TestTaskGeometry, '2', 'bar'),
-      new TaskDto('8', undefined, 100, TestTaskGeometry, '1', 'foo'),
-      new TaskDto('9', undefined, 100, TestTaskGeometry)
+      new TaskDto('7', 0, 100, TestTaskGeometry, '2', 'bar'),
+      new TaskDto('8', 10, 100, TestTaskGeometry, '1', 'foo'),
+      new TaskDto('9', 100, 100, TestTaskGeometry)
     ];
 
     return {users, taskDtos};

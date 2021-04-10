@@ -167,7 +167,7 @@ export class ProjectService {
     }
 
     const projectUserIDs = dtos.map(p => [p.owner, ...p.users]); // array of arrays
-    let userIDs = [].concat.apply([], projectUserIDs); // array of strings
+    let userIDs = ([] as string[]).concat(...projectUserIDs); // array of strings
     userIDs = [...new Set(userIDs)]; // array of strings without duplicates
 
     return this.userService.getUsersByIds(userIDs)
@@ -179,6 +179,7 @@ export class ProjectService {
             const owner = allUsers.find(u => p.owner === u.uid);
             const users = allUsers.filter(u => p.users.includes(u.uid));
 
+            // @ts-ignore As we assume that getUsersByIds returns users for all given user IDs
             projects.push(this.toProjectWithTasks(p, users, owner));
           }
 

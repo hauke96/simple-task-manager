@@ -13,7 +13,7 @@ import { ProjectImportService } from '../../project-creation/project-import.serv
   styleUrls: ['./project-list.component.scss']
 })
 export class ProjectListComponent extends Unsubscriber implements OnInit {
-  public projects: Project[];
+  public projects: Project[] = [];
 
   constructor(
     private router: Router,
@@ -50,21 +50,21 @@ export class ProjectListComponent extends Unsubscriber implements OnInit {
         }
       }),
       this.projectService.projectDeleted.subscribe((removedProjectId: string) => {
-        if (!this.projects.map(p => p.id).includes(removedProjectId)) {
+        const project = this.projects.find(p => p.id === removedProjectId);
+        if (!project) {
           return;
         }
 
-        const project = this.projects.find(p => p.id === removedProjectId);
         this.notificationService.addInfo($localize`:@@WARN_PROJECT_REMOVED:The project '${project.name}:INTERPOLATION:' has been removed`);
 
         this.projects = this.projects.filter(p => p.id !== removedProjectId);
       }),
       this.projectService.projectUserRemoved.subscribe((projectId: string) => {
-        if (!this.projects.map(p => p.id).includes(projectId)) {
+        const project = this.projects.find(p => p.id === projectId);
+        if (!project) {
           return;
         }
 
-        const project = this.projects.find(p => p.id === projectId);
         this.notificationService.addInfo($localize`:@@WARN_REMOVED_USER_PROJECT:You have been removed from project '${project.name}:INTERPOLATION:'`);
 
         this.projects = this.projects.filter(p => p.id !== projectId);
@@ -84,12 +84,13 @@ export class ProjectListComponent extends Unsubscriber implements OnInit {
     this.uploadFile(event, (e) => this.addProjectExport(e));
   }
 
-  public addProjectExport(evt) {
-    const project = JSON.parse(evt.target.result) as ProjectExport;
+  public addProjectExport(evt: Event) {
+    // @ts-ignore
+    const project = JSON.parse(evt.target?.result) as ProjectExport;
     this.projectImportService.importProject(project);
   }
 
-  private uploadFile(event: any, loadHandler: (evt) => void) {
+  private uploadFile(event: any, loadHandler: (evt: Event) => void) {
     const reader = new FileReader();
     const file = event.target.files[0];
 

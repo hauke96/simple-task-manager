@@ -213,7 +213,7 @@ describe('ProjectListComponent', () => {
   });
 
   function createProject(): Project {
-    const t = new Task('567', undefined, 10, 100, TestTaskFeature);
+    const t = new Task('567', '', 10, 100, TestTaskFeature);
     const u1 = new User('test-user', '123');
     const u2 = new User('test-user2', '234');
     const u3 = new User('test-user3', '345');
