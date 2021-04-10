@@ -1,5 +1,5 @@
 export class Config {
   public sourceRepoUrl = '';
-  public maxTasksPerProject = '';
-  public maxDescriptionLength = '';
+  public maxTasksPerProject = 0;
+  public maxDescriptionLength = 0;
 }
