@@ -12,7 +12,7 @@ import { ProjectImportService } from '../project-import.service';
 export class CopyProjectComponent implements OnInit {
   @Input() projects: Project[];
 
-  public selectedProject: Project;
+  public selectedProject: Project | undefined;
 
   constructor(
     private projectService: ProjectService,
@@ -29,6 +29,10 @@ export class CopyProjectComponent implements OnInit {
   }
 
   onImportClicked(): void {
+    if (!this.selectedProject) {
+      return;
+    }
+
     this.projectService
       .getProjectExport(this.selectedProject.id)
       .subscribe(
@@ -38,6 +42,7 @@ export class CopyProjectComponent implements OnInit {
         },
         e => {
           console.error(e);
+          // @ts-ignore See above check
           this.notificationService.addError($localize`:@@ERROR_COULD_NOT_IMPORT:Could not import project '${this.selectedProject.name}:INTERPOLATION:'`);
           this.selectedProject = undefined;
         });

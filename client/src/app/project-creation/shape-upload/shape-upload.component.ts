@@ -23,8 +23,13 @@ export class ShapeUploadComponent implements OnInit {
     this.uploadFile(event, (e) => this.addTasks(e));
   }
 
-  public addTasks(evt) {
+  public addTasks(evt: Event) {
+    if (!evt || !evt.target) {
+      return;
+    }
+
     try {
+      // @ts-ignore
       const features = this.geometryService.parseData(evt.target.result);
 
       if (!!features && features.length !== 0) {
@@ -37,7 +42,7 @@ export class ShapeUploadComponent implements OnInit {
     }
   }
 
-  private uploadFile(event: any, loadHandler: (evt) => void) {
+  private uploadFile(event: any, loadHandler: (evt: Event) => void) {
     const reader = new FileReader();
     const file = event.target.files[0];
 

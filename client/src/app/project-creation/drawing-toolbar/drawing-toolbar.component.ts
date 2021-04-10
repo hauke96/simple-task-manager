@@ -9,11 +9,11 @@ import { Unsubscriber } from '../../common/unsubscriber';
   styleUrls: ['./drawing-toolbar.component.scss']
 })
 export class DrawingToolbarComponent extends Unsubscriber implements OnInit {
-  public readonly SELECTION_DRAW = 'draw';
-  public readonly SELECTION_EDIT = 'edit';
-  public readonly SELECTION_DELETE = 'delete';
+  public readonly SELECTION_DRAW: string = 'draw';
+  public readonly SELECTION_EDIT: string = 'edit';
+  public readonly SELECTION_DELETE: string = 'delete';
 
-  public selectedButton: string;
+  public selectedButton: string | undefined;
 
   @Input() public resetSelection: Subject<void>;
   @Input() public canAddTasks: boolean;

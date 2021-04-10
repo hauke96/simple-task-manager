@@ -12,7 +12,8 @@ export class ProjectImportComponent implements OnInit {
 
   constructor(
     private notificationService: NotificationService,
-    private projectImportService: ProjectImportService) { }
+    private projectImportService: ProjectImportService) {
+  }
 
   ngOnInit(): void {
   }
@@ -21,12 +22,17 @@ export class ProjectImportComponent implements OnInit {
     this.uploadFile(event, (e) => this.addProjectExport(e));
   }
 
-  public addProjectExport(evt) {
+  public addProjectExport(evt: Event) {
+    if (!evt || !evt.target) {
+      return;
+    }
+
+    // @ts-ignore
     const project = JSON.parse(evt.target.result) as ProjectExport;
     this.projectImportService.importProjectAsNewProject(project);
   }
 
-  private uploadFile(event: any, loadHandler: (evt) => void) {
+  private uploadFile(event: any, loadHandler: (evt: Event) => void) {
     const reader = new FileReader();
     const file = event.target.files[0];
 

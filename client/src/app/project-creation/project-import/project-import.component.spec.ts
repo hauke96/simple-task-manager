@@ -35,6 +35,7 @@ describe('ProjectImportComponent', () => {
   it('should call service on added project export', () => {
     const spy = spyOn(projectImportService, 'importProjectAsNewProject');
 
+    // @ts-ignore
     component.addProjectExport({target: {result: exampleProjectExport}});
 
     expect(spy).toHaveBeenCalled();

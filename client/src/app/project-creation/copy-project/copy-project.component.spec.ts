@@ -68,8 +68,19 @@ describe('CopyProjectComponent', () => {
     expect(component.selectedProject).toBeUndefined();
   });
 
+  it('should not import on undefined project', () => {
+    component.selectedProject = undefined;
+    const spyGetExport = spyOn(projectService, 'getProjectExport');
+    const spyImport = spyOn(projectImportService, 'importProjectAsNewProject');
+
+    component.onImportClicked();
+
+    expect(spyGetExport).not.toHaveBeenCalled();
+    expect(spyImport).not.toHaveBeenCalled();
+    expect(component.selectedProject).toBeUndefined();
+  });
+
   it('should show notification on import error', () => {
-    const projectExport = {name: 'my project'} as ProjectExport;
     component.selectedProject = {id: '123'} as Project;
     spyOn(projectService, 'getProjectExport').and.returnValue(throwError('some error'));
     const spy = spyOn(notificationService, 'addError');

@@ -205,17 +205,24 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
     this.vectorSource.addFeatures(newFeatures);
 
     // Subtract the padding from the map size. This padding will be added back to the map size below.
+    const mapSize = this.map.getSize();
+    if (!mapSize) {
+      this.notificationService.addError('Unable to get map size');
+      return;
+    }
+
     const paddedMapSize = [
-      this.map.getSize()[0] - 2 * mapPaddingPx,
-      this.map.getSize()[1] - 2 * mapPaddingPx
+      mapSize[0] - 2 * mapPaddingPx,
+      mapSize[1] - 2 * mapPaddingPx
     ] as Size;
     let overallExtent = this.map.getView().calculateExtent(paddedMapSize);
 
     // Try to extend the extent over all new features: If one feature is outside the current extent, then the map view should be adjusted
+    // @ts-ignore
     newFeatures.forEach(f => overallExtent = extend(overallExtent, f.getGeometry().getExtent()));
 
     this.map.getView().fit(overallExtent, {
-      size: this.map.getSize(),
+      size: mapSize,
       padding: [mapPaddingPx, mapPaddingPx, mapPaddingPx, mapPaddingPx] // in pixels
     });
 
@@ -224,8 +231,12 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
     }
   }
 
-  private removeTask(id: string) {
+  private removeTask(id: string | undefined) {
     const featureToRemove = this.vectorSource.getFeatures().find(f => f.get('id') === id);
+    if (!id || !featureToRemove) {
+      return;
+    }
+
     this.vectorSource.removeFeature(featureToRemove);
   }
 
@@ -267,7 +278,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
     // SELECT
     this.selectInteraction = new Select({
       layers: [this.vectorLayer],
-      style: null
+      style: undefined
     });
     this.selectInteraction.on('select', (e: SelectEvent) => {
       if (!!e.selected[0]) {
@@ -330,11 +341,23 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
   }
 
   onZoomIn() {
-    this.map.getView().setZoom(this.map.getView().getZoom() + 1);
+    const view = this.map.getView();
+    if (!view || !view.getZoom()) {
+      return;
+    }
+
+    // @ts-ignore See check above
+    view.setZoom(view.getZoom() + 1);
   }
 
   onZoomOut() {
-    this.map.getView().setZoom(this.map.getView().getZoom() - 1);
+    const view = this.map.getView();
+    if (!view || !view.getZoom()) {
+      return;
+    }
+
+    // @ts-ignore See check above
+    view.setZoom(view.getZoom() - 1);
   }
 
   onToggleDraw() {

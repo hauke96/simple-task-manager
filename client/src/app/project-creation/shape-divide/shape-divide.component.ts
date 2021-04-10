@@ -59,7 +59,7 @@ export class ShapeDivideComponent implements OnInit {
       throw new Error('Dividing tasks should not be able');
     }
 
-    const taskDrafts: TaskDraft[] = this.createTaskDrafts();
+    const taskDrafts = this.createTaskDrafts();
     if (!taskDrafts) {
       return;
     }
@@ -87,7 +87,7 @@ export class ShapeDivideComponent implements OnInit {
       const e = `Invalid cell size ${this.gridCellSize}`;
       console.error(e);
       this.notificationService.addError(e);
-      return undefined;
+      return [];
     }
 
     let grid;
@@ -105,14 +105,14 @@ export class ShapeDivideComponent implements OnInit {
         const e = `Unknown shape type ${this.gridCellShape}`;
         console.error(e);
         this.notificationService.addError(e);
-        return undefined;
+        return [];
     }
 
     return grid.features.map(g => {
       // Turn geo GeoJSON polygon from turf.js into an openlayers polygon
       const geometry = new Polygon(g.geometry.coordinates);
 
-      return new TaskDraft(undefined, undefined, geometry, 0);
+      return new TaskDraft(undefined, '', geometry, 0);
     });
   }
 

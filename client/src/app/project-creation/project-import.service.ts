@@ -34,8 +34,11 @@ export class ProjectImportService {
     const projectProperties = new ProjectProperties(project.name, maxProcessPoints, project.description);
     this.projectPropertiesImported.next(projectProperties);
 
-    const taskDrafts = project.tasks.map(t => {
+    const tasksWithGeometries = project.tasks.filter(t => !!t.geometry);
+
+    const taskDrafts = tasksWithGeometries.map(t => {
       const taskFeature = this.format.readFeature(t.geometry) as Feature;
+      // @ts-ignore
       return new TaskDraft(undefined, t.name, taskFeature.getGeometry(), 0);
     });
 

@@ -6,14 +6,15 @@ import { Polygon } from 'ol/geom';
 import { TaskDraft } from '../../task/task.material';
 import { TaskDraftService } from '../task-draft.service';
 import { ConfigProvider } from '../../config/config.provider';
+import Spy = jasmine.Spy;
 
 describe('ShapeDivideComponent', () => {
   let component: ShapeDivideComponent;
   let taskDraftService: TaskDraftService;
   let fixture: ComponentFixture<ShapeDivideComponent>;
   let configProvider: ConfigProvider;
-  let spyRemove;
-  let spyAdd;
+  let spyRemove: Spy;
+  let spyAdd: Spy;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -72,6 +73,7 @@ describe('ShapeDivideComponent', () => {
   it('should not divide anything on invalid shape size', () => {
     // Execute the same test for these NOT supported sizes
     [null, undefined, -1, -100].forEach(g => {
+      // @ts-ignore
       component.gridCellSize = g;
       component.onDivideButtonClicked();
     });

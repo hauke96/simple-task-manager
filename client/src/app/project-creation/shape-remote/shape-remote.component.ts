@@ -1,13 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Feature } from 'ol';
 import { NotificationService } from '../../common/notification.service';
 import { GeometryService } from '../../common/geometry.service';
 import { LoadingService } from '../../common/loading.service';
 import { TaskDraftService } from '../task-draft.service';
-import { EsriJSON, GeoJSON, GPX, KML, WKT } from 'ol/format';
-import OSMXML from 'ol/format/OSMXML';
-import FeatureFormat from 'ol/format/Feature';
 
 @Component({
   selector: 'app-shape-remote',

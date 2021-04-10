@@ -4,7 +4,6 @@ import { ShapeUploadComponent } from './shape-upload.component';
 import { NotificationService } from '../../common/notification.service';
 import { TaskDraftService } from '../task-draft.service';
 import { GeometryService } from '../../common/geometry.service';
-import { ProjectImportService } from '../project-import.service';
 
 describe('ShapeUploadComponent', () => {
   let component: ShapeUploadComponent;

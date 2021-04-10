@@ -110,6 +110,7 @@ describe('DrawingToolbarComponent', () => {
       component.selectedButton = undefined;
 
       shortcutDrawSubject.next();
+      // @ts-ignore
       expect(component.selectedButton).toEqual(component.SELECTION_DRAW);
 
       shortcutDrawSubject.next();
@@ -120,6 +121,7 @@ describe('DrawingToolbarComponent', () => {
       component.selectedButton = undefined;
 
       shortcutDeleteSubject.next();
+      // @ts-ignore
       expect(component.selectedButton).toEqual(component.SELECTION_DELETE);
 
       shortcutDeleteSubject.next();
@@ -130,6 +132,7 @@ describe('DrawingToolbarComponent', () => {
       component.selectedButton = undefined;
 
       shortcutEditSubject.next();
+      // @ts-ignore
       expect(component.selectedButton).toEqual(component.SELECTION_EDIT);
 
       shortcutEditSubject.next();

@@ -141,7 +141,7 @@ describe('TaskDraftService', () => {
     service.tasks = tasks;
     service.selectTask('123');
 
-    expect(service.getSelectedTask().id).toEqual('123');
+    expect(service.getSelectedTask()?.id).toEqual('123');
     expect(spyEvent).toHaveBeenCalled();
   });
 
@@ -220,7 +220,7 @@ describe('TaskDraftService', () => {
 
     service.changeTaskName('123', 'new name');
 
-    expect(service.getSelectedTask().name).toEqual('new name');
+    expect(service.getSelectedTask()?.name).toEqual('new name');
     expect(spyEvent).toHaveBeenCalledWith(tasks[0]);
   });
 

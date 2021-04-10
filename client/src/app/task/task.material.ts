@@ -17,7 +17,7 @@ export class TaskDraftDto {
 
 export class TaskDraft {
   constructor(
-    public id: string,
+    public id: string | undefined,
     public name: string,
     public geometry: Geometry,
     public processPoints: number
