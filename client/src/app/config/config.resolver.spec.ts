@@ -6,6 +6,7 @@ import { ConfigProvider } from './config.provider';
 import { HttpClient } from '@angular/common/http';
 import { Config } from './config';
 import { of } from 'rxjs';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
 describe('ConfigResolver', () => {
   let service: ConfigResolver;
@@ -36,7 +37,7 @@ describe('ConfigResolver', () => {
     const configProviderSpy = spyOn(configProvider, 'apply').and.callFake(() => {
     });
 
-    service.resolve(null, null).subscribe(() => {
+    service.resolve({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot).subscribe(() => {
       expect(configProviderSpy).toHaveBeenCalledWith(configFromServer);
     });
   });
