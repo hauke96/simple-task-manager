@@ -47,7 +47,7 @@ export class AuthService {
     const landingUrl = document.location.protocol + '//' + document.location.hostname + ':' + document.location.port + '/oauth-landing';
     window.open(environment.url_auth + '?+?t=' + new Date().getTime() + '&redirect=' + landingUrl, 'oauth_window', settings);
 
-    const localStorageTimer = setInterval(() => this.waitForLocalStorageToken(localStorageTimer, callback), 250);
+    const localStorageTimer: any = setInterval(() => this.waitForLocalStorageToken(localStorageTimer, callback), 250);
   }
 
   // Checks wether the local storate contains a token. If so, the user will be

@@ -22,12 +22,7 @@ export class SelectedLanguageService {
       return this.selectLanguageByCode(selectedLanguageCode);
     } else {
       const languageFromUrl = this.urlToLanguage(location.pathname);
-      if (!languageFromUrl) {
-        // true because location.href hasn't changed
-        return true;
-      }
-
-      return this.selectLanguageByCode(languageFromUrl.code);
+      return this.selectLanguageByCode(languageFromUrl?.code);
     }
   }
 
@@ -59,7 +54,7 @@ export class SelectedLanguageService {
    *
    * @return true when no redirect took place and false when the language changes so that location.href has been set.
    */
-  public selectLanguageByCode(languageCode: string): boolean {
+  public selectLanguageByCode(languageCode: string | undefined): boolean {
     const language = this.getLanguageByCode(languageCode);
 
     if (!!language) {
@@ -87,7 +82,7 @@ export class SelectedLanguageService {
   /**
    * @return The Language object or 'undefined' if language code not known by 'getKnownLanguages()'.
    */
-  public getLanguageByCode(languageCode: string): Language | undefined {
+  public getLanguageByCode(languageCode: string | undefined): Language | undefined {
     return this.getKnownLanguages().find(l => l.code === languageCode);
   }
 

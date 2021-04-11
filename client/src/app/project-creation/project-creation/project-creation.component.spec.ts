@@ -10,12 +10,12 @@ import { ProjectService } from '../../project/project.service';
 import { Project } from '../../project/project.material';
 import { Feature } from 'ol';
 import { MockRouter } from '../../common/mock-router';
-import { Task, TestTaskFeature } from '../../task/task.material';
+import { Task, TaskDraft, TestTaskFeature } from '../../task/task.material';
 import { User } from '../../user/user.material';
 import { SelectEvent } from 'ol/interaction/Select';
 import { DrawEvent } from 'ol/interaction/Draw';
 import { TaskDraftService } from '../task-draft.service';
-import { TaskDraft } from '../../task/task.material';
+import { CurrentUserService } from '../../user/current-user.service';
 
 describe('ProjectCreationComponent', () => {
   let component: ProjectCreationComponent;
@@ -23,6 +23,7 @@ describe('ProjectCreationComponent', () => {
   let projectService: ProjectService;
   let taskDraftService: TaskDraftService;
   let routerMock: MockRouter;
+  let currentUserService: CurrentUserService;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -43,6 +44,7 @@ describe('ProjectCreationComponent', () => {
 
     projectService = TestBed.inject(ProjectService);
     taskDraftService = TestBed.inject(TaskDraftService);
+    currentUserService = TestBed.inject(CurrentUserService);
     routerMock = TestBed.inject(Router);
   }));
 
@@ -81,6 +83,7 @@ describe('ProjectCreationComponent', () => {
   it('should correctly create project', () => {
     const name = 'test name';
 
+    spyOn(currentUserService, 'getUserId').and.returnValue('123');
     const spyService = spyOn(projectService, 'createNewProject').and.returnValue(of(createProject()));
     const spyRouter = spyOn(routerMock, 'navigate').and.callThrough();
 
@@ -95,6 +98,7 @@ describe('ProjectCreationComponent', () => {
   it('should not navigate on fail', () => {
     const name = 'test name';
 
+    spyOn(currentUserService, 'getUserId').and.returnValue('123');
     const spyService = spyOn(projectService, 'createNewProject').and.returnValue(throwError('BOOM'));
     const spyRouter = spyOn(routerMock, 'navigate').and.callThrough();
 
@@ -103,6 +107,21 @@ describe('ProjectCreationComponent', () => {
     component.createProject(name, 100, 'lorem ipsum', feature);
 
     expect(spyService).toHaveBeenCalled();
+    expect(spyRouter).not.toHaveBeenCalled();
+  });
+
+  it('should not create project with missing user ID', () => {
+    const name = 'test name';
+
+    spyOn(currentUserService, 'getUserId').and.returnValue(undefined);
+    const spyService = spyOn(projectService, 'createNewProject');
+    const spyRouter = spyOn(routerMock, 'navigate');
+
+    const feature = getDummyFeatures();
+
+    component.createProject(name, 100, 'lorem ipsum', feature);
+
+    expect(spyService).not.toHaveBeenCalled();
     expect(spyRouter).not.toHaveBeenCalled();
   });
 

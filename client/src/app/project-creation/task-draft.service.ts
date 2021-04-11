@@ -129,7 +129,9 @@ export class TaskDraftService {
     let currentId = 0;
 
     this.sortTasksById(tasks).forEach(f => {
-      if (!!f && !!f.id && +f.id === currentId) {
+      const id = f?.id;
+      // @ts-ignore +undefined results in NaN which is ok here
+      if (+id === currentId) {
         currentId++;
       }
     });

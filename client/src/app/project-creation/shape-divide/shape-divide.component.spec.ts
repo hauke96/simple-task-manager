@@ -59,26 +59,27 @@ describe('ShapeDivideComponent', () => {
     expect(spyAdd).toHaveBeenCalled();
   });
 
-  it('should not divide anything on invalid shape type', () => {
-    // Execute the same test for these NOT supported shapes
-    ['fooGrid', null, 0, undefined].forEach(g => {
-      component.gridCellShape = '' + g;
+  // Execute the same test for these NOT supported shapes
+  ['', 'fooGrid', 'null', 'undefined', null, 0, undefined].forEach(g => {
+    it(`should not divide anything on shape type '${g}'`, () => {
+      // @ts-ignore
+      component.gridCellShape = g;
       component.onDivideButtonClicked();
-    });
 
-    expect(spyRemove).not.toHaveBeenCalled();
-    expect(spyAdd).not.toHaveBeenCalled();
+      expect(spyRemove).not.toHaveBeenCalled();
+      expect(spyAdd).not.toHaveBeenCalled();
+    });
   });
 
-  it('should not divide anything on invalid shape size', () => {
-    // Execute the same test for these NOT supported sizes
-    [null, undefined, -1, -100].forEach(g => {
+  // Execute the same test for these NOT supported sizes
+  ['', '10', null, undefined, -1, -100].forEach(g => {
+    it(`should not divide anything on invalid shape size '${g}'`, () => {
       // @ts-ignore
       component.gridCellSize = g;
       component.onDivideButtonClicked();
-    });
 
-    expect(spyRemove).not.toHaveBeenCalled();
-    expect(spyAdd).not.toHaveBeenCalled();
+      expect(spyRemove).not.toHaveBeenCalled();
+      expect(spyAdd).not.toHaveBeenCalled();
+    });
   });
 });

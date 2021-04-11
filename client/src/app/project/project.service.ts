@@ -201,8 +201,8 @@ export class ProjectService {
       owner,
       p.needsAssignment,
       p.creationDate,
-      p.totalProcessPoints,
-      p.doneProcessPoints
+      p.totalProcessPoints ?? 0,
+      p.doneProcessPoints ?? 0
     ));
   }
 }

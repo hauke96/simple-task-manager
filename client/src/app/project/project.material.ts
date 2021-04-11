@@ -40,8 +40,8 @@ export class Project {
               public owner: User,
               public needsAssignment: boolean,
               public creationDate: Date,
-              public totalProcessPoints?: number,
-              public doneProcessPoints?: number
+              public totalProcessPoints: number,
+              public doneProcessPoints: number
   ) {
   }
 }

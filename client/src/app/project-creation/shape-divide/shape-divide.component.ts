@@ -33,7 +33,7 @@ export class ShapeDivideComponent implements OnInit {
   ngOnInit(): void {
     this.gridCellShape = 'squareGrid';
     this.gridCellSize = 1000;
-    this.previewTasks = this.createTaskDrafts();
+    this.previewTasks = this.createTaskDrafts() ?? [];
   }
 
   public get canDivideTasks(): boolean {
@@ -77,7 +77,7 @@ export class ShapeDivideComponent implements OnInit {
   /**
    * This just creates the tasks but does not add them to the TaskDraftService.
    */
-  private createTaskDrafts(): TaskDraft[] {
+  private createTaskDrafts(): TaskDraft[] | undefined {
     const polygon = this.selectedTask.geometry.clone() as Polygon;
     const extent = polygon.transform('EPSG:3857', 'EPSG:4326').getExtent();
 
@@ -92,7 +92,7 @@ export class ShapeDivideComponent implements OnInit {
       const e = `Invalid cell size ${this.gridCellSize}`;
       console.error(e);
       this.notificationService.addError(e);
-      return [];
+      return undefined;
     }
 
     let grid;
@@ -110,18 +110,18 @@ export class ShapeDivideComponent implements OnInit {
         const e = `Unknown shape type ${this.gridCellShape}`;
         console.error(e);
         this.notificationService.addError(e);
-        return [];
+        return undefined;
     }
 
     return grid.features.map(g => {
       // Turn geo GeoJSON polygon from turf.js into an openlayers polygon
       const geometry = new Polygon(g.geometry.coordinates);
 
-      return new TaskDraft(undefined, '', geometry, 0);
+      return new TaskDraft('', '', geometry, 0);
     });
   }
 
   public taskDividePropertyChanged() {
-    this.previewTasks = this.createTaskDrafts();
+    this.previewTasks = this.createTaskDrafts() ?? [];
   }
 }

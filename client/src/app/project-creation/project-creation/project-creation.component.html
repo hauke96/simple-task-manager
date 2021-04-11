@@ -44,7 +44,7 @@
 						<div class="hline"></div>
 						<app-project-import></app-project-import>
 						<div class="hline"></div>
-						<app-copy-project [projects]="existingProjects | async"></app-copy-project>
+						<app-copy-project [projects]="(existingProjects | async)!"></app-copy-project>
 					</div>
 				</div>
 

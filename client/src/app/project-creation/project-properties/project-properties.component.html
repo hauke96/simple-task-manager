@@ -16,7 +16,7 @@
 		<span class="font-small">{{descriptionInput.textLength}} / {{config.maxDescriptionLength}}</span>
 	</div>
 	<textarea name="description-text-area" class="description-text-area"
-			  #descriptionInput
+              #descriptionInput
 			  [(ngModel)]="projectProperties.projectDescription"
 			  [maxLength]="config.maxDescriptionLength"></textarea>
 </div>

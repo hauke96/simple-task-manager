@@ -2,27 +2,27 @@
 	<div class="toolbar-item">
 		<div class="back-button-container">
 			<button [routerLink]="['/manager']"><span class="lnr lnr-chevron-left back-button-icon"></span><span i18n="Back button">Back</span></button>
-			<p class="project-label" i18n>Project: {{project?.name}}</p>
+			<p class="project-label" i18n>Project: {{project.name}}</p>
 		</div>
-		<app-progress-bar class="progress-bar" [progressPoints]="project?.doneProcessPoints" [totalPoints]="project?.totalProcessPoints"></app-progress-bar>
+		<app-progress-bar class="progress-bar" [progressPoints]="project.doneProcessPoints" [totalPoints]="project.totalProcessPoints"></app-progress-bar>
 		<div class="created-at-label">
 			<span i18n>Created on: </span>
-			<span>{{project?.creationDate | date:'longDate'}}</span>
+			<span>{{project.creationDate | date:'longDate'}}</span>
 		</div>
 	</div>
 </app-toolbar>
 
 <div class="root-container">
 	<div class="task-list-details-container">
-		<div class="description-container" *ngIf="project?.description.trim().length !== 0">
+		<div class="description-container" *ngIf="project.description.trim().length !== 0">
 			<h2 class="description-label" i18n="Description label">Description:</h2>
-			<div class="description-text">{{project?.description}}</div>
+			<div class="description-text">{{project.description}}</div>
 		</div>
 		<app-tabs [tabs]="tabTitles" #tabs [borderless]="true">
 			<div *ngIf="tabs.tabIndex === 0" class="task-tab">
 				<div class="tab-container">
-					<app-task-details [needUserAssignment]="project?.needsAssignment"
-									  [projectId]="project?.id"></app-task-details>
+					<app-task-details [needUserAssignment]="project.needsAssignment"
+									  [projectId]="project.id"></app-task-details>
 					<app-task-list *ngIf="project.tasks" [tasks]="project.tasks" class="task-list"></app-task-list>
 				</div>
 			</div>
@@ -34,7 +34,7 @@
 										 (userInvited)="onUserInvited($event)"
 										 [users]="project.users">
 					</app-user-invitation>
-					<app-user-list [users]="project?.users"
+					<app-user-list [users]="project.users"
 								   [ownerUid]="project.owner.uid"
 								   (userRemoved)="onUserRemoved($event)"
 								   class="user-list">
