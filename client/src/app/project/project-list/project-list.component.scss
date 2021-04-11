@@ -18,6 +18,12 @@
 	color: $color-gray-mid;
 }
 
+.progress-bar {
+	width: 180px;
+	justify-content: end;
+	margin-right: $space-small;
+}
+
 .admin-label {
 	min-width: 10px;
 }
