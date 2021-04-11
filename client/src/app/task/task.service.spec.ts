@@ -30,7 +30,7 @@ describe('TaskService', () => {
 
   it('should set selected task correctly', () => {
     const spy = spyOn(service.selectedTaskChanged, 'emit');
-    const task = new Task('id123', undefined, 10, 100, TestTaskFeature);
+    const task = new Task('id123', '', 10, 100, TestTaskFeature);
 
     expect(service.getSelectedTask()).toBeFalsy();
 
@@ -66,7 +66,7 @@ describe('TaskService', () => {
 
   it('should call server to set process points', () => {
     const newProcessPoints = 50;
-    const task = new Task('id123', undefined, 10, 100, TestTaskFeature);
+    const task = new Task('id123', '', 10, 100, TestTaskFeature);
     service.selectTask(task);
 
     spyOn(httpClient, 'post').and.returnValue(
@@ -84,7 +84,7 @@ describe('TaskService', () => {
 
   it('should cancel setting process points when other task selected', () => {
     const newProcessPoints = 50;
-    const task = new Task('different-task', undefined, 10, 100, TestTaskFeature);
+    const task = new Task('different-task', '', 10, 100, TestTaskFeature);
     service.selectTask(task);
 
     const spy = spyOn(httpClient, 'post');
@@ -96,7 +96,7 @@ describe('TaskService', () => {
   });
 
   it('should call server on assign', () => {
-    const task = new Task('id123', undefined, 10, 100, TestTaskFeature);
+    const task = new Task('id123', '', 10, 100, TestTaskFeature);
     const userToAssign = 'mapper-dave';
     service.selectTask(task);
 
@@ -107,18 +107,18 @@ describe('TaskService', () => {
 
     service.assign('id123')
       .subscribe(
-        t => {
+        (t: Task | undefined) => {
           console.log(t);
           expect(t).not.toEqual(undefined);
-          expect(t.assignedUser).toBeTruthy();
-          expect(t.assignedUser.uid).toEqual('1');
-          expect(t.assignedUser.name).toEqual(userToAssign);
+          expect(t?.assignedUser).toBeTruthy();
+          expect(t?.assignedUser?.uid).toEqual('1');
+          expect(t?.assignedUser?.name).toEqual(userToAssign);
         },
         e => fail(e));
   });
 
   it('should abort assign when other task selected', () => {
-    const task = new Task('different-id', undefined, 10, 100, TestTaskFeature);
+    const task = new Task('different-id', '', 10, 100, TestTaskFeature);
     const spy = spyOn(httpClient, 'post');
 
     service.selectTask(task);
@@ -131,7 +131,7 @@ describe('TaskService', () => {
 
   it('should call server on unassign', () => {
     const userToUnassign = 'mapper-dave';
-    const task = new Task('id123', undefined, 10, 100, TestTaskFeature, new User(userToUnassign, '2'));
+    const task = new Task('id123', '', 10, 100, TestTaskFeature, new User(userToUnassign, '2'));
     service.selectTask(task);
 
     spyOn(httpClient, 'post').and.returnValue(
@@ -149,7 +149,7 @@ describe('TaskService', () => {
 
   it('should abort unassign when other task selected', () => {
     const userToUnassign = 'mapper-dave';
-    const task = new Task('different-id', undefined, 10, 100, TestTaskFeature, new User(userToUnassign, '2'));
+    const task = new Task('different-id', '', 10, 100, TestTaskFeature, new User(userToUnassign, '2'));
     const spy = spyOn(httpClient, 'post');
 
     service.selectTask(task);
@@ -161,7 +161,7 @@ describe('TaskService', () => {
   });
 
   it('should calculate the extent correctly', () => {
-    const task = new Task('id123', undefined, 10, 100, TestTaskFeature);
+    const task = new Task('id123', '', 10, 100, TestTaskFeature);
 
     const extent: Extent = service.getExtent(task);
 
@@ -183,7 +183,7 @@ describe('TaskService', () => {
       '<nd ref=\'-1\' />' +
       '</way></osm>';
 
-    const task = new Task('id123', undefined, 10, 100, TestTaskFeature);
+    const task = new Task('id123', '', 10, 100, TestTaskFeature);
 
     const osmString = service.getGeometryAsOsm(task);
 

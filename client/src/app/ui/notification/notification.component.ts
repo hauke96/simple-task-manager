@@ -33,7 +33,7 @@ export class NotificationComponent implements OnInit {
     return this.notificationService.remainingErrors();
   }
 
-  public get currentErrorText(): string {
+  public get currentErrorText(): string | undefined {
     return this.notificationService.getError();
   }
 
@@ -53,7 +53,7 @@ export class NotificationComponent implements OnInit {
     return this.notificationService.remainingWarning();
   }
 
-  public get currentWarningText(): string {
+  public get currentWarningText(): string | undefined {
     return this.notificationService.getWarning();
   }
 
@@ -73,7 +73,7 @@ export class NotificationComponent implements OnInit {
     return this.notificationService.remainingInfo();
   }
 
-  public get currentInfoText(): string {
+  public get currentInfoText(): string | undefined {
     return this.notificationService.getInfo();
   }
 

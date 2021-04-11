@@ -8,7 +8,7 @@ import { Language } from '../../common/language';
 describe('LanguageSelectionComponent', () => {
   let component: LanguageSelectionComponent;
   let fixture: ComponentFixture<LanguageSelectionComponent>;
-  let selectedLanguageService;
+  let selectedLanguageService: SelectedLanguageService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -45,6 +45,7 @@ describe('LanguageSelectionComponent', () => {
 
   it('should call service to set language', () => {
     const serviceSpy = spyOn(selectedLanguageService, 'selectLanguageByCode');
+    // @ts-ignore
     selectedLanguageService.selectedLanguage = new Language('en-US', 'English');
 
     component.onLanguageChange({target: {value: 'de'}});

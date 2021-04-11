@@ -12,7 +12,7 @@ export class MaxValidatorDirective implements Validator {
   constructor() {
   }
 
-  public validate(c: FormControl): { [appMaxValidator: string]: any } {
+  public validate(c: FormControl): { [appMaxValidator: string]: any } | null {
     const v = ('' + c.value).trim();
     return v.match('[-\+]?[0-9]+')
     && (+v <= this.appMaxValidator)

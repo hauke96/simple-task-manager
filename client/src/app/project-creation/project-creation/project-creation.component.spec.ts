@@ -224,7 +224,7 @@ describe('ProjectCreationComponent', () => {
       target: undefined,
       preventDefault: undefined,
       stopPropagation: undefined
-    } as DrawEvent);
+    } as unknown as DrawEvent);
 
     expect(component.vectorSource.getFeatures().length).toEqual(1);
     expect(component.vectorSource.getFeatures()[0].get('id')).toEqual('0');
@@ -245,7 +245,7 @@ describe('ProjectCreationComponent', () => {
       preventDefault: undefined,
       target: undefined,
       mapBrowserEvent: undefined
-    } as SelectEvent);
+    } as unknown as SelectEvent);
 
     expect(spy).toHaveBeenCalledWith('123');
   });
@@ -264,7 +264,7 @@ describe('ProjectCreationComponent', () => {
       preventDefault: undefined,
       target: undefined,
       mapBrowserEvent: undefined
-    } as SelectEvent);
+    } as unknown as SelectEvent);
 
     expect(spySelect).toHaveBeenCalledWith('123');
   });
@@ -279,7 +279,7 @@ describe('ProjectCreationComponent', () => {
   }
 
   function createProject() {
-    const t = new Task('567', undefined, 10, 100, TestTaskFeature);
+    const t = new Task('567', '', 10, 100, TestTaskFeature);
     const u1 = new User('test-user', '123');
     const u2 = new User('test-user2', '234');
     const u3 = new User('test-user3', '345');

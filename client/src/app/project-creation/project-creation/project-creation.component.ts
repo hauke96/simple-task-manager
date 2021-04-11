@@ -192,7 +192,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
     return this.taskDraftService.getTasks();
   }
 
-  public get selectedTask(): TaskDraft {
+  public get selectedTask(): TaskDraft | undefined {
     return this.taskDraftService.getSelectedTask();
   }
 
@@ -268,7 +268,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
     this.removeInteraction = new Select();
     this.removeInteraction.on('select', (e: SelectEvent) => {
       if (!!e.selected[0]) {
-        const id = e.selected[0].get('id');
+        const id = e.selected[0].get('id') as string;
         this.taskDraftService.removeTask(id);
       }
     });
@@ -319,6 +319,11 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
 
   public createProject(name: string, maxProcessPoints: number, projectDescription: string, features: Feature[]) {
     const owner = this.currentUserService.getUserId();
+    if (!owner) {
+      // TODO Show error notification
+      return;
+    }
+
     this.projectService.createNewProject(name, maxProcessPoints, projectDescription, features, [owner], owner)
       .subscribe(project => {
         this.router.navigate(['/manager']);
@@ -341,23 +346,21 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
   }
 
   onZoomIn() {
-    const view = this.map.getView();
-    if (!view || !view.getZoom()) {
+    const zoom = this.map.getView().getZoom();
+    if (!zoom) {
       return;
     }
 
-    // @ts-ignore See check above
-    view.setZoom(view.getZoom() + 1);
+    this.map.getView().setZoom(zoom + 1);
   }
 
   onZoomOut() {
-    const view = this.map.getView();
-    if (!view || !view.getZoom()) {
+    const zoom = this.map.getView().getZoom();
+    if (!zoom) {
       return;
     }
 
-    // @ts-ignore See check above
-    view.setZoom(view.getZoom() - 1);
+    this.map.getView().setZoom(zoom - 1);
   }
 
   onToggleDraw() {

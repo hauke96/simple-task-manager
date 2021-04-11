@@ -36,6 +36,7 @@ describe('ShapeUploadComponent', () => {
   it('should call service on added tasks', () => {
     const spy = spyOn(taskDraftService, 'addTasks');
 
+    // @ts-ignore
     component.addTasks({target: {result: exampleGeoJson}});
 
     expect(spy).toHaveBeenCalled();
@@ -44,6 +45,7 @@ describe('ShapeUploadComponent', () => {
   it('should show notification on invalid geometry', () => {
     const spy = spyOn(notificationService, 'addError');
 
+    // @ts-ignore
     component.addTasks({target: {result: '[]'}});
 
     expect(spy).toHaveBeenCalled();
@@ -53,6 +55,7 @@ describe('ShapeUploadComponent', () => {
     const spy = spyOn(notificationService, 'addError');
     spyOn(geometryService, 'parseData').and.throwError('test error');
 
+    // @ts-ignore
     component.addTasks({target: {result: '[]'}});
 
     expect(spy).toHaveBeenCalled();

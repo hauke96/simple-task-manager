@@ -127,7 +127,9 @@ describe('UserService', () => {
 
     const [cachedUsers, uncachedUsers] = service.getFromCacheById(['2', '3', '4', '5']);
 
+    // @ts-ignore
     expect(cachedUsers).toContain(userMap.get('2'));
+    // @ts-ignore
     expect(cachedUsers).toContain(userMap.get('4'));
     expect(uncachedUsers).toContain('3');
     expect(uncachedUsers).toContain('5');
@@ -138,12 +140,14 @@ describe('UserService', () => {
 
     service.getUserByName('test5').subscribe(
       user => {
+        // @ts-ignore
         expect(user).toEqual(undefined);
       },
       () => fail());
 
     service.getUserByName('test2').subscribe(
       user => {
+        // @ts-ignore
         expect(user).toEqual(userMap.get('2'));
       },
       () => fail());

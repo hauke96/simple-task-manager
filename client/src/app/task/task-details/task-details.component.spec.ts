@@ -12,6 +12,7 @@ import { UserService } from '../../user/user.service';
 import { User } from '../../user/user.material';
 import { TaskTitlePipe } from '../task-title.pipe';
 import { ShortcutService } from '../../common/shortcut.service';
+import Spy = jasmine.Spy;
 
 describe('TaskDetailsComponent', () => {
   let component: TaskDetailsComponent;
@@ -87,14 +88,16 @@ describe('TaskDetailsComponent', () => {
       component.onAssignButtonClicked();
 
       fixture.detectChanges();
-      expect(component.task.assignedUser.uid).toEqual(testUserId);
+      expect(component.task?.assignedUser?.uid).toEqual(testUserId);
     });
 
     it('should unassign and update task', () => {
+      // @ts-ignore
       component.task.assignedUser = new User('Foo', testUserId);
       component.onUnassignButtonClicked();
 
       fixture.detectChanges();
+      // @ts-ignore
       expect(component.task.assignedUser).toEqual(undefined);
     });
 
@@ -103,6 +106,7 @@ describe('TaskDetailsComponent', () => {
       component.onSaveButtonClick();
 
       fixture.detectChanges();
+      // @ts-ignore
       expect(component.task.processPoints).toEqual(50);
     });
 
@@ -111,6 +115,7 @@ describe('TaskDetailsComponent', () => {
       component.onDoneButtonClick();
 
       fixture.detectChanges();
+      // @ts-ignore
       expect(component.task.processPoints).toEqual(component.task.maxProcessPoints);
     });
   });
@@ -128,7 +133,7 @@ describe('TaskDetailsComponent', () => {
     expect(component.task.processPoints).toEqual(newProcessPoints);
   });
 
-  describe('with shortcuts', () => {
+  describe('with task and shortcuts', () => {
     let shortcutAssignSubject: Subject<void>;
     let shortcutUnassignSubject: Subject<void>;
     let shortcutDoneSubject: Subject<void>;
@@ -157,7 +162,7 @@ describe('TaskDetailsComponent', () => {
     });
 
     describe('assign shortcut', () => {
-      let spy;
+      let spy: Spy;
 
       beforeEach(() => {
         spy = spyOn(taskService, 'assign').and.callFake((id: string) => {
@@ -191,6 +196,7 @@ describe('TaskDetailsComponent', () => {
 
         describe('with already assigned user', () => {
           beforeEach(() => {
+            // @ts-ignore
             component.task.assignedUser = new User('Peter', testUserId);
           });
 
@@ -214,6 +220,7 @@ describe('TaskDetailsComponent', () => {
     describe('unassign shortcut', () => {
       describe('without no user assignment needed', () => {
         beforeEach(() => {
+          // @ts-ignore
           component.task.assignedUser = new User('Peter', testUserId);
           component.needUserAssignment = false;
         });
@@ -227,7 +234,8 @@ describe('TaskDetailsComponent', () => {
         });
       });
       describe('with user assignment needed', () => {
-        let spy;
+        let spy: Spy;
+
         beforeEach(() => {
           spy = spyOn(taskService, 'unassign').and.callFake((id: string) => {
             const task = createTask(10, id);
@@ -241,12 +249,14 @@ describe('TaskDetailsComponent', () => {
 
         describe('with current user assigned', () => {
           beforeEach(() => {
+            // @ts-ignore
             component.task.assignedUser = new User('Peter', testUserId);
           });
 
           it('should unassign current user on shortcut', () => {
             shortcutUnassignSubject.next();
 
+            // @ts-ignore
             expect(spy).toHaveBeenCalledWith(component.task.id);
           });
 
@@ -255,12 +265,14 @@ describe('TaskDetailsComponent', () => {
             shortcutUnassignSubject.next();
 
             expect(spy).toHaveBeenCalledTimes(1);
+            // @ts-ignore
             expect(spy).toHaveBeenCalledWith(component.task.id);
           });
         });
 
         describe('with other user assigned', () => {
           beforeEach(() => {
+            // @ts-ignore
             component.task.assignedUser = new User('Peter', 'some other id 789');
           });
 
@@ -274,7 +286,7 @@ describe('TaskDetailsComponent', () => {
     });
 
     describe('mark as done shortcut', () => {
-      let spy;
+      let spy: Spy;
 
       beforeEach(() => {
         spy = spyOn(taskService, 'setProcessPoints').and.returnValue(of());
@@ -283,6 +295,7 @@ describe('TaskDetailsComponent', () => {
       it('should mark task as done on shortcut', () => {
         shortcutDoneSubject.next();
 
+        // @ts-ignore
         expect(spy).toHaveBeenCalledWith(component.task.id, component.task.maxProcessPoints);
       });
 
@@ -290,6 +303,7 @@ describe('TaskDetailsComponent', () => {
         shortcutDoneSubject.next();
         shortcutDoneSubject.next();
 
+        // @ts-ignore
         expect(spy).toHaveBeenCalledWith(component.task.id, component.task.maxProcessPoints);
       });
     });
@@ -304,6 +318,7 @@ describe('TaskDetailsComponent', () => {
 
         shortcutJosmSubject.next();
 
+        // @ts-ignore
         expect(spy).toHaveBeenCalledWith(component.task, component.projectId);
       });
     });
@@ -318,12 +333,13 @@ describe('TaskDetailsComponent', () => {
 
         shortcutIdSubject.next();
 
+        // @ts-ignore
         expect(spy).toHaveBeenCalledWith(component.task, component.projectId);
       });
     });
   });
 
   function createTask(processPoints: number, id: string = '123'): Task {
-    return new Task(id, undefined, processPoints, 789, TestTaskFeature);
+    return new Task(id, '', processPoints, 789, TestTaskFeature);
   }
 });

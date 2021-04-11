@@ -19,6 +19,11 @@ export class TaskEditComponent implements OnInit {
   }
 
   onTaskNameChanged(enteredName: any) {
-    this.taskDraftService.changeTaskName(this.task.id, enteredName);
+    const taskId = this.task.id;
+    if (!taskId) {
+      return;
+    }
+
+    this.taskDraftService.changeTaskName(taskId, enteredName);
   }
 }

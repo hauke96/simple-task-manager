@@ -38,9 +38,9 @@ export class TaskDraftService {
     return this.selectedTask;
   }
 
-  public removeTask(id: string | undefined) {
+  public removeTask(id: string) {
     // Check if task exists before filtering anything.
-    if (!!id && this.tasks.filter(t => t.id === id).length !== 0) {
+    if (this.tasks.filter(t => t.id === id).length !== 0) {
       this.tasks = this.tasks.filter(t => t.id !== id);
 
       if (!!this.selectedTask && this.selectedTask.id === id) {
@@ -51,9 +51,9 @@ export class TaskDraftService {
     }
   }
 
-  public changeTaskName(id: string | undefined, name: string) {
+  public changeTaskName(id: string, name: string) {
     const task = this.tasks.find(t => t.id === id);
-    if (!id || !task) {
+    if (!task) {
       return;
     }
 

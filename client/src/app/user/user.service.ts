@@ -47,10 +47,12 @@ export class UserService {
 
     return this.http.get(changesetUrl, {responseType: 'text', headers: {ContentType: 'application/xml'}}).pipe(
       map(result => {
-        const user = this.extractUserFromXmlResult(result, 'changeset', 'user', 'uid')[0];
-        if (!user) {
+        const userFromXml = this.extractUserFromXmlResult(result, 'changeset', 'user', 'uid');
+        if (!userFromXml || !userFromXml[0]) {
           throw new Error('User \'' + userName + '\' not found in changesets');
         }
+
+        const user = userFromXml[0];
         this.cache.set(user.uid, user);
         return user;
       }),
@@ -75,7 +77,8 @@ export class UserService {
   }
 
   // Takes the name of a XML-node (e.g. "user" or "changeset" and finds the according attribute
-  private extractUserFromXmlResult(xmlString: string, nodeQualifier: string, nameQualifier: string, idQualifier: string): User[] {
+  private extractUserFromXmlResult(xmlString: string, nodeQualifier: string, nameQualifier: string, idQualifier: string)
+    : User[] | undefined {
     if (window.DOMParser) {
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString('' + xmlString, 'application/xml');
@@ -83,14 +86,17 @@ export class UserService {
 
       const userNames: User[] = [];
       for (let i = 0; i < userNodes.length; i++) {
+        // @ts-ignore
         const name = userNodes[i].attributes.getNamedItem(nameQualifier).value;
+        // @ts-ignore
         const uid = userNodes[i].attributes.getNamedItem(idQualifier).value;
         userNames[i] = new User(name, uid);
       }
 
       return userNames;
     }
-    return null;
+
+    return undefined;
   }
 
   private extractUserFromJsonResult(result: any): User[] {
@@ -103,7 +109,7 @@ export class UserService {
     return users;
   }
 
-  private extractDataFromComment(xmlString: string, userName: string): User {
+  private extractDataFromComment(xmlString: string, userName: string): User | undefined {
     if (window.DOMParser) {
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString('' + xmlString, 'application/xml');
@@ -117,11 +123,13 @@ export class UserService {
         const name = (commentNodes[i].getElementsByTagName('user'))[0].textContent;
         if (name === userName) {
           const uid = commentNodes[i].getElementsByTagName('uid')[0].textContent;
-          return new User(name, uid);
+          if (!!uid) {
+            return new User(name, uid);
+          }
         }
       }
     }
-    return null;
+    return undefined;
   }
 
   public getFromCacheById(userIds: string[]): [User[], string[]] {
@@ -141,7 +149,7 @@ export class UserService {
     return [cachedUsers, uncachedUsers];
   }
 
-  public getFromCacheByName(userName: string): User {
+  public getFromCacheByName(userName: string): User | undefined {
     for (const u of this.cache.values()) {
       if (u.name === userName) {
         return u;

@@ -72,7 +72,7 @@ export class ProjectListComponent extends Unsubscriber implements OnInit {
     );
   }
 
-  public get currentUserId(): string {
+  public get currentUserId(): string | undefined {
     return this.currentUserService.getUserId();
   }
 

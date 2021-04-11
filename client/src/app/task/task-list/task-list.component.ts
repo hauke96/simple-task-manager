@@ -62,6 +62,11 @@ export class TaskListComponent extends Unsubscriber implements AfterViewInit {
   }
 
   public onListItemClicked(id: string) {
-    this.taskService.selectTask(this._tasks.find(t => t.id === id));
+    const clickedTask = this._tasks.find(t => t.id === id);
+    if (!clickedTask) {
+      return;
+    }
+
+    this.taskService.selectTask(clickedTask);
   }
 }

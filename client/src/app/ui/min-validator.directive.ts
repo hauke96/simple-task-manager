@@ -12,7 +12,7 @@ export class MinValidatorDirective implements Validator {
   constructor() {
   }
 
-  public validate(c: FormControl): { [appMinValidator: string]: any } {
+  public validate(c: FormControl): { [appMinValidator: string]: any } | null {
     const v = ('' + c.value).trim();
     return v.match('[-\+]?[0-9]+')
     && (this.appMinValidator <= +v)

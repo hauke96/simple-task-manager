@@ -20,11 +20,11 @@ export class CurrentUserService {
     this.currentUser = undefined;
   }
 
-  public getUserName(): string {
-    return this.currentUser ? this.currentUser.name : '';
+  public getUserName(): string | undefined {
+    return this.currentUser?.name;
   }
 
-  public getUserId(): string {
-    return this.currentUser ? this.currentUser.uid : '';
+  public getUserId(): string | undefined {
+    return this.currentUser?.uid;
   }
 }

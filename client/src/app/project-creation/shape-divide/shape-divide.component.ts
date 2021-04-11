@@ -64,7 +64,12 @@ export class ShapeDivideComponent implements OnInit {
       return;
     }
 
-    this.taskDraftService.removeTask(this.taskDraftService.getSelectedTask().id);
+    const selectedTaskId = this.taskDraftService.getSelectedTask()?.id;
+    if (!selectedTaskId) {
+      return;
+    }
+
+    this.taskDraftService.removeTask(selectedTaskId);
     this.taskDraftService.addTasks(taskDrafts, true);
   }
 
