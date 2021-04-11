@@ -106,7 +106,7 @@
         <source>Could not import project &apos;<x id="INTERPOLATION" equiv-text="this.selectedProject.name"/>&apos;</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/copy-project/copy-project.component.ts</context>
-          <context context-type="linenumber">41</context>
+          <context context-type="linenumber">46</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
@@ -200,7 +200,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.ts</context>
-          <context context-type="linenumber">64</context>
+          <context context-type="linenumber">65</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
@@ -233,7 +233,7 @@
         <source>Could not create project</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.ts</context>
-          <context context-type="linenumber">316</context>
+          <context context-type="linenumber">332</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
@@ -265,15 +265,15 @@
         <source>Could not upload file &apos;<x id="INTERPOLATION" equiv-text="evt.target as any).files[0]"/>&apos;</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-import/project-import.component.ts</context>
-          <context context-type="linenumber">38</context>
+          <context context-type="linenumber">44</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.ts</context>
-          <context context-type="linenumber">49</context>
+          <context context-type="linenumber">54</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project-list/project-list.component.ts</context>
-          <context context-type="linenumber">101</context>
+          <context context-type="linenumber">102</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
@@ -314,7 +314,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.html</context>
-          <context context-type="linenumber">18</context>
+          <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ae9555ed661c4fc9adf8c6ec71e39c67f05513fe" datatype="html">
@@ -444,11 +444,11 @@
         <source>No polygons exist or data has unknown format. Supported formats are: GeoJson, OSM-XML, GPX, KML, EsriJson and WKT.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-remote/shape-remote.component.ts</context>
-          <context context-type="linenumber">44</context>
+          <context context-type="linenumber">40</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.ts</context>
-          <context context-type="linenumber">33</context>
+          <context context-type="linenumber">38</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
@@ -459,7 +459,7 @@
         <source>Unable to load data from remote URL</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-remote/shape-remote.component.ts</context>
-          <context context-type="linenumber">50</context>
+          <context context-type="linenumber">46</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
@@ -548,7 +548,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.ts</context>
-          <context context-type="linenumber">46</context>
+          <context context-type="linenumber">47</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
@@ -563,7 +563,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.ts</context>
-          <context context-type="linenumber">56</context>
+          <context context-type="linenumber">57</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
@@ -708,7 +708,7 @@
         <source>Could not load project &apos;<x id="INTERPOLATION" equiv-text="route.paramMap.get(&apos;id&apos;)"/>&apos;</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project.resolver.ts</context>
-          <context context-type="linenumber">22</context>
+          <context context-type="linenumber">26</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
@@ -734,15 +734,15 @@
         </context-group>
         <note priority="1" from="description">Back button</note>
       </trans-unit>
-      <trans-unit id="115b4a7564b44aefb4535442a742bb8d7b9ed4a6" datatype="html">
-        <source>Project: <x id="INTERPOLATION" equiv-text="{{project?.name}}"/></source>
+      <trans-unit id="bd1c4789c0a6d29940e3d32c7137c5713433c98e" datatype="html">
+        <source>Project: <x id="INTERPOLATION" equiv-text="{{project.name}}"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.html</context>
           <context context-type="linenumber">5</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="918e8ff0f3bd063be422543b9423fc184b945b5c" datatype="html">
-        <source>Created on: </source>
+      <trans-unit id="0a83964edbc84334e367fe38d7a699f8d36fc489" datatype="html">
+        <source>Created on: <x id="INTERPOLATION" equiv-text="{{project.creationDate | date:&apos;longDate&apos;}}"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.html</context>
           <context context-type="linenumber">9</context>
@@ -752,21 +752,21 @@
         <source>Users:</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.html</context>
-          <context context-type="linenumber">31</context>
+          <context context-type="linenumber">30</context>
         </context-group>
       </trans-unit>
       <trans-unit id="fbc3f04cdcff6259abdccd276ed730b1948e3c61" datatype="html">
         <source>Settings:</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.html</context>
-          <context context-type="linenumber">46</context>
+          <context context-type="linenumber">45</context>
         </context-group>
       </trans-unit>
       <trans-unit id="TABS_USERS" datatype="html">
         <source>Users</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.ts</context>
-          <context context-type="linenumber">65</context>
+          <context context-type="linenumber">66</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
@@ -777,7 +777,7 @@
         <source>Settings</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.ts</context>
-          <context context-type="linenumber">66</context>
+          <context context-type="linenumber">67</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
@@ -788,7 +788,7 @@
         <source>Could not remove user</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.ts</context>
-          <context context-type="linenumber">75</context>
+          <context context-type="linenumber">76</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
@@ -799,7 +799,7 @@
         <source>Could not invite user &apos;<x id="INTERPOLATION" equiv-text="user.name"/>&apos;</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.ts</context>
-          <context context-type="linenumber">84</context>
+          <context context-type="linenumber">85</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
@@ -878,7 +878,7 @@
         <source>Could not assign user</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/task/task-details/task-details.component.ts</context>
-          <context context-type="linenumber">108</context>
+          <context context-type="linenumber">112</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
@@ -889,7 +889,7 @@
         <source>Could not unassign user</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/task/task-details/task-details.component.ts</context>
-          <context context-type="linenumber">119</context>
+          <context context-type="linenumber">127</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
@@ -900,11 +900,11 @@
         <source>Could not set process points</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/task/task-details/task-details.component.ts</context>
-          <context context-type="linenumber">130</context>
+          <context context-type="linenumber">142</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/task/task-details/task-details.component.ts</context>
-          <context context-type="linenumber">141</context>
+          <context context-type="linenumber">157</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
@@ -915,7 +915,7 @@
         <source>Unable to open JOSM. Is it running?</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/task/task-details/task-details.component.ts</context>
-          <context context-type="linenumber">150</context>
+          <context context-type="linenumber">170</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
@@ -933,7 +933,7 @@
         <source>DONE</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/task/task-map/task-map.component.ts</context>
-          <context context-type="linenumber">147</context>
+          <context context-type="linenumber">168</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
@@ -944,7 +944,7 @@
         <source>you</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/task/task-map/task-map.component.ts</context>
-          <context context-type="linenumber">154</context>
+          <context context-type="linenumber">175</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>

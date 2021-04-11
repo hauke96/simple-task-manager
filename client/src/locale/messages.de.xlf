@@ -132,17 +132,17 @@
           <context context-type="linenumber">3</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="115b4a7564b44aefb4535442a742bb8d7b9ed4a6" datatype="html">
-        <source>Project: <x id="INTERPOLATION" equiv-text="{{project?.name}}"/></source>
-        <target xml:lang="de-DE" state="translated">Projekt: <x id="INTERPOLATION" equiv-text="{{project?.name}}"/></target>
+      <trans-unit id="bd1c4789c0a6d29940e3d32c7137c5713433c98e" datatype="html">
+        <source>Project: <x id="INTERPOLATION" equiv-text="{{project.name}}"/></source>
+        <target xml:lang="de-DE" state="translated">Projekt: <x id="INTERPOLATION" equiv-text="{{project.name}}"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.html</context>
           <context context-type="linenumber">5</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="918e8ff0f3bd063be422543b9423fc184b945b5c" datatype="html">
-        <source>Created on: </source>
-        <target xml:lang="de-DE" state="translated">Erstellt am: </target>
+      <trans-unit id="0a83964edbc84334e367fe38d7a699f8d36fc489" datatype="html">
+        <source>Created on: <x id="INTERPOLATION" equiv-text="{{project.creationDate | date:&apos;longDate&apos;}}"/></source>
+        <target xml:lang="de-DE" state="translated">Erstellt am: <x id="INTERPOLATION" equiv-text="{{project.creationDate | date:&apos;longDate&apos;}}"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.html</context>
           <context context-type="linenumber">9</context>
