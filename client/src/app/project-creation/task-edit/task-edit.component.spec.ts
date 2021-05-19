@@ -34,7 +34,7 @@ describe('TaskEditComponent', () => {
     const spy = spyOn(taskDraftService, 'changeTaskName');
 
     component.task = new TaskDraft('123', 'some name', new Polygon([]), 0);
-    component.onTaskNameChanged('new name');
+    component.onTaskNameChanged({target: {value: 'new name'} as unknown as EventTarget} as Event);
 
     expect(spy).toHaveBeenCalledWith('123', 'new name');
   });
