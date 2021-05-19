@@ -113,7 +113,7 @@ func TestImportProject(t *testing.T) {
 		if result.Name != "Test project" {
 			return errors.New("Project name not matching")
 		}
-		if len(result.Users) != 3 {
+		if len(result.Users) != 2 {
 			return errors.New("Number of users not matching")
 		}
 		if *result.CreationDate == time {
@@ -122,7 +122,7 @@ func TestImportProject(t *testing.T) {
 		if result.Description != "foo" {
 			return errors.New("Project description not matching")
 		}
-		if result.Owner != "42" {
+		if result.Owner != "123" {
 			return errors.New("Project description not matching")
 		}
 		if len(result.Tasks) != 1 {
