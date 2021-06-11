@@ -276,4 +276,22 @@ export class TaskService {
       assignedUser
     );
   }
+
+  public toTaskWithUsers(dto: TaskDto, users: User[]): Task {
+    const feature = (this.format.readFeature(dto.geometry) as Feature);
+    let assignedUser: User | undefined;
+
+    if (dto.assignedUser) {
+      assignedUser = users.find(u => u.uid === dto.assignedUser);
+    }
+
+    return new Task(
+      dto.id,
+      feature.get('name'),
+      dto.processPoints,
+      dto.maxProcessPoints,
+      feature,
+      assignedUser
+    );
+  }
 }

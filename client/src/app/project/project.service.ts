@@ -196,7 +196,7 @@ export class ProjectService {
       p.id,
       p.name,
       p.description,
-      p.tasks.map(dto => this.taskService.toTask(dto)),
+      p.tasks.map(dto => this.taskService.toTaskWithUsers(dto, users)),
       users,
       owner,
       p.needsAssignment,

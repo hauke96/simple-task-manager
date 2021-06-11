@@ -180,6 +180,10 @@ describe('ProjectService', () => {
       expect(project.tasks.map(t => t.id)).toContain(tasks[1].id);
       expect(project.tasks.map(t => t.id)).toContain(tasks[2].id);
 
+      expect(project.tasks.find(t => t.id === tasks[0].id)?.assignedUser?.name).toEqual(users[0].name);
+      expect(project.tasks.find(t => t.id === tasks[1].id)?.assignedUser?.name).toEqual(users[1].name);
+      expect(project.tasks.find(t => t.id === tasks[2].id)?.assignedUser).toBeUndefined();
+
       expect(project.users).toContain(users[0]);
       expect(project.users).toContain(users[1]);
       expect(project.users).toContain(users[2]);
@@ -209,8 +213,8 @@ describe('ProjectService', () => {
     });
 
     const taskDtos = [
-      new TaskDto('7', 0, 100, TestTaskGeometry, '2', 'bar'),
-      new TaskDto('8', 10, 100, TestTaskGeometry, '1', 'foo'),
+      new TaskDto('7', 0, 100, TestTaskGeometry, '1'),
+      new TaskDto('8', 10, 100, TestTaskGeometry, '2'),
       new TaskDto('9', 100, 100, TestTaskGeometry)
     ];
 

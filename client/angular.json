@@ -61,6 +61,18 @@
                 }
               ]
             },
+            "dev": {
+              "buildOptimizer": false,
+              "optimization": {
+                "scripts": false,
+                "styles": false,
+                "fonts": false
+              },
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            },
             "ja": {
               "localize": [
                 "ja"
@@ -142,7 +154,8 @@
                 }
               ]
             }
-          }
+          },
+          "defaultConfiguration": "dev"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -170,6 +183,9 @@
             },
             "fr-FR": {
               "browserTarget": "simple-task-manager:build:fr-FR"
+            },
+            "dev": {
+              "browserTarget": "simple-task-manager:build:dev"
             }
           }
         },
