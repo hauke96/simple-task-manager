@@ -6,16 +6,20 @@ import { FormControl, NG_VALIDATORS, Validator } from '@angular/forms';
   providers: [{provide: NG_VALIDATORS, useExisting: MinValidatorDirective, multi: true}]
 })
 export class MinValidatorDirective implements Validator {
-  @Input()
-  public appMinValidator: number;
+  private appMinValidatorNumber: number;
 
   constructor() {
   }
 
-  public validate(c: FormControl): { [appMinValidator: string]: any } {
+  @Input()
+  set appMinValidator(value: number | string) {
+    this.appMinValidatorNumber = +value;
+  }
+
+  public validate(c: FormControl): { [appMinValidator: string]: any } | null {
     const v = ('' + c.value).trim();
     return v.match('[-\+]?[0-9]+')
-    && (this.appMinValidator <= +v)
+    && (this.appMinValidatorNumber <= +v)
       ? null
       : {appMinValidator: true};
   }

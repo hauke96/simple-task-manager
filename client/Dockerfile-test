@@ -1,15 +1,13 @@
 ## Stage 1 : Install dependencies
 FROM node:15.7.0 as builder
 
-RUN npm i -g @angular/cli
-
-COPY package.json /tmp/package.json
-COPY package-lock.json /tmp/package-lock.json
-RUN cd /tmp && npm install
-
 RUN mkdir /stm-client
 WORKDIR /stm-client/
-RUN cp -r /tmp/node_modules ./
+
+COPY package.json /stm-client/package.json
+COPY package-lock.json /stm-client/package-lock.json
+
+RUN npm install
 
 
 

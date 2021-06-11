@@ -13,6 +13,7 @@ import { ProcessPointColorService } from '../../common/process-point-color.servi
 import { Unsubscriber } from '../../common/unsubscriber';
 import { intersects } from 'ol/extent';
 import { Coordinate } from 'ol/coordinate';
+import { FeatureLike } from 'ol/Feature';
 
 @Component({
   selector: 'app-task-map',
@@ -79,6 +80,10 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
       // style and highlights the correct geometry on the map.
       this.map.forEachFeatureAtPixel(evt.pixel, (feature) => {
         const clickedTask = this.tasks.find(t => t.id === feature.get('task_id'));
+        if (!clickedTask) {
+          return;
+        }
+
         this.taskService.selectTask(clickedTask);
       });
     });
@@ -92,13 +97,19 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
     this.selectTask(this.taskService.getSelectedTask());
   }
 
-  private selectTask(task) {
+  private selectTask(task: Task): void {
     this.task = task;
     this.vectorSource.changed();
 
     if (!!this.task) {
       // Center view when the task isn't visible on the map
       const feature = this.getTaskFeature();
+      if (!feature || !feature.getGeometry()) {
+        console.error(feature);
+        throw new Error('Task feature or feature geometry undefined');
+      }
+
+      // @ts-ignore
       const taskGeometryVisible = intersects(this.map.getView().calculateExtent(), feature.getGeometry().getExtent());
       if (!taskGeometryVisible) {
         this.map.getView().setCenter(this.getTaskCenter());
@@ -107,17 +118,27 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
   }
 
   private getTaskCenter(): Coordinate {
-    const e = this.getTaskFeature().getGeometry().getExtent();
+    const taskFeature = this.getTaskFeature();
+    if (!taskFeature || !taskFeature.getGeometry()) {
+      console.error(taskFeature);
+      throw new Error('Task feature or feature geometry undefined');
+    }
+
+    // @ts-ignore
+    const e = taskFeature.getGeometry().getExtent();
     const center = [e[0] + (e[2] - e[0]) / 2, e[1] + (e[3] - e[1]) / 2];
     return center;
   }
 
-  private getTaskFeature(): Feature {
+  private getTaskFeature(): Feature | undefined {
     return this.vectorSource.getFeatures().find(f => f.get('task_id') === this.task.id);
   }
 
-  public getStyle(feature): Style {
+  public getStyle(feature: FeatureLike): Style {
     const task = this.tasks.find(t => t.id === feature.get('task_id'));
+    if (!task) {
+      throw new Error(`Task with task_id ${feature.get('task_id')} not found`);
+    }
 
     const hasAssignedUser = !!task.assignedUser && task.assignedUser.uid !== '';
     const currentUserTask = task.assignedUser && this.currentUserService.getUserId() === task.assignedUser.uid;
@@ -153,6 +174,7 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
     if (currentUserTask) {
       labelText += '\n(' + $localize`:@@TASK_YOU:you` + ')';
     } else if (hasAssignedUser) {
+      // @ts-ignore "hasAssignedUser" ensures that we have an assignedUser
       labelText += '\n(' + task.assignedUser.name + ')';
     }
 
@@ -174,17 +196,27 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
   private showTaskPolygon(task: Task) {
     // Without clone(), the tasks geometry would be changes inline.
     const feature = task.geometry.clone();
-    feature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
+    feature.getGeometry()?.transform('EPSG:4326', 'EPSG:3857');
     feature.set('task_id', task.id);
 
     this.vectorSource.addFeature(feature);
   }
 
   onZoomIn() {
-    this.map.getView().setZoom(this.map.getView().getZoom() + 1);
+    const zoom = this.map.getView().getZoom();
+    if (!zoom) {
+      return;
+    }
+
+    this.map.getView().setZoom(zoom + 1);
   }
 
   onZoomOut() {
-    this.map.getView().setZoom(this.map.getView().getZoom() - 1);
+    const zoom = this.map.getView().getZoom();
+    if (!zoom) {
+      return;
+    }
+
+    this.map.getView().setZoom(zoom - 1);
   }
 }

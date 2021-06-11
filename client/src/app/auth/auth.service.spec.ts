@@ -41,11 +41,13 @@ describe('AuthService', () => {
   });
 
   it('should interpret null as not authenticated', () => {
+    // @ts-ignore
     localStorage.setItem('auth_token', null);
     expect(service.isAuthenticated()).toBeFalse();
   });
 
   it('should interpret undefined as not authenticated', () => {
+    // @ts-ignore
     localStorage.setItem('auth_token', undefined);
     expect(service.isAuthenticated()).toBeFalse();
   });

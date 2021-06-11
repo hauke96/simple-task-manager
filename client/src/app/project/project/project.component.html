@@ -1,36 +1,39 @@
 <app-toolbar>
 	<div class="toolbar-item">
 		<div class="back-button-container">
-			<button [routerLink]="['/manager']" i18n="Back button">&#60; Back</button>
-			<p class="project-label">Project: {{project?.name}}</p>
+			<button [routerLink]="['/manager']"><span class="lnr lnr-chevron-left back-button-icon"></span><span i18n="Back button">Back</span></button>
+			<p class="project-label" i18n>Project: {{project.name}}</p>
 		</div>
-		<app-progress-bar [progressPoints]="project?.doneProcessPoints" [totalPoints]="project?.totalProcessPoints"></app-progress-bar>
+		<app-progress-bar class="progress-bar" [progressPoints]="project.doneProcessPoints" [totalPoints]="project.totalProcessPoints"></app-progress-bar>
+		<div class="created-at-label">
+			<span i18n>Created on: {{project.creationDate | date:'longDate'}}</span>
+		</div>
 	</div>
 </app-toolbar>
 
 <div class="root-container">
 	<div class="task-list-details-container">
-		<div class="description-container" *ngIf="project?.description.trim().length !== 0">
+		<div class="description-container" *ngIf="project.description.trim().length !== 0">
 			<h2 class="description-label" i18n="Description label">Description:</h2>
-			<div class="description-text">{{project?.description}}</div>
+			<div class="description-text">{{project.description}}</div>
 		</div>
 		<app-tabs [tabs]="tabTitles" #tabs [borderless]="true">
 			<div *ngIf="tabs.tabIndex === 0" class="task-tab">
 				<div class="tab-container">
-					<app-task-details [needUserAssignment]="project?.needsAssignment"
-									  [projectId]="project?.id"></app-task-details>
+					<app-task-details [needUserAssignment]="project.needsAssignment"
+									  [projectId]="project.id"></app-task-details>
 					<app-task-list *ngIf="project.tasks" [tasks]="project.tasks" class="task-list"></app-task-list>
 				</div>
 			</div>
 			<div *ngIf="tabs.tabIndex === 1" class="user-tab">
 				<div class="tab-container">
-					<h2 i18n>Users</h2>
+					<h2 i18n>Users:</h2>
 					<app-user-invitation *ngIf="isOwner()"
 										 class="tab-container-item"
 										 (userInvited)="onUserInvited($event)"
 										 [users]="project.users">
 					</app-user-invitation>
-					<app-user-list [users]="project?.users"
+					<app-user-list [users]="project.users"
 								   [ownerUid]="project.owner.uid"
 								   (userRemoved)="onUserRemoved($event)"
 								   class="user-list">
@@ -39,7 +42,7 @@
 			</div>
 			<div *ngIf="tabs.tabIndex === 2">
 				<div class="tab-container">
-					<h2 i18n>Settings</h2>
+					<h2 i18n>Settings:</h2>
 					<app-project-settings [projectId]="project.id"
 										  [projectOwner]="project.owner"
 										  [projectName]="project.name"

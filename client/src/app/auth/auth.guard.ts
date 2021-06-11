@@ -29,7 +29,7 @@ export class AuthGuard implements CanActivate {
     }
 
     // The login component has the route '/' and therefore the path is ''
-    const requestLoginComponent = route.routeConfig.path === '';
+    const requestLoginComponent = route.routeConfig?.path === '';
 
     if (requestLoginComponent && this.authService.isAuthenticated()) {
       // Token exists and login component should be loaded -> redirect to manager

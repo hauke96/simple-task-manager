@@ -39,15 +39,10 @@
         </context-group>
       </trans-unit>
       <trans-unit id="LOGIN_CHANGELOG" datatype="html">
-        <source><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Changes in 1.3.0:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;
-					"/> New features: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;
-						"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>More language selection drop-down menus<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Task list is now sorted by process state<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/> Bug fixes: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;
-						"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Reduce unnecessary logging<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Project creation: Save button enabled but data wasn&apos;t completely entered<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Task name sometimes not shown<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Remove unnecessary zoom buttons<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Fix broken styling of very long notifications<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Show task name instead of ID<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>All kind of errors will now be catched<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/> Infrastructure: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;
-						"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>The server now makes daily database backups<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/> Internals: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;
-						"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Tasks are now withing the project DTO class<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Added swagger UI as better API documentation<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/></source>
+        <source><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Changes in 1.4.0:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;"/> New features: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Export and import of projects<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Add some basic shortcuts<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Copy existing project to create new one<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Projects now have a maximum size<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Store and show creation date of project<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/> Internals: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Typescript-strict mode enabled<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/login/login.component.html</context>
-          <context context-type="linenumber">21,45</context>
+          <context context-type="linenumber">21,33</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1a6adc5f5c4e0ee07c9edbbdb843d417930db480" datatype="html">
@@ -72,6 +67,52 @@
         </context-group>
         <note priority="1" from="description">logout button</note>
       </trans-unit>
+      <trans-unit id="2fb7236e17579c8ce939310776ddda6e87db271c" datatype="html">
+        <source>Copy:</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/copy-project/copy-project.component.html</context>
+          <context context-type="linenumber">1</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4bd22b3271b9d55e8e9dbdc8348e6a26c297a2f5" datatype="html">
+        <source>Copy and import an existing project you are a member of.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/copy-project/copy-project.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="f896586cbd0e03acb0c814279a915abb0a1334a9" datatype="html">
+        <source>No projects available!</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/copy-project/copy-project.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="088c0351e15610a947eeb2641a4d4500a7d6ba5e" datatype="html">
+        <source>Available projects:</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/copy-project/copy-project.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="a059709f71aa4c0ac219e160e78a738682ca6a36" datatype="html">
+        <source>Import</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/copy-project/copy-project.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ERROR_COULD_NOT_IMPORT" datatype="html">
+        <source>Could not import project &apos;<x id="INTERPOLATION" equiv-text="this.selectedProject.name"/>&apos;</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/copy-project/copy-project.component.ts</context>
+          <context context-type="linenumber">46</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="4f5724e5ad8f6385d335b6705c780eae7110ec70" datatype="html">
         <source>Draw new polygon</source>
         <context-group purpose="location">
@@ -93,8 +134,8 @@
           <context context-type="linenumber">3</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="5c5cd4f8e377c2f2bad0d4e26e401f83d777dbfc" datatype="html">
-        <source>&lt; Cancel</source>
+      <trans-unit id="d7b35c384aecd25a516200d6921836374613dfe7" datatype="html">
+        <source>Cancel</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">3</context>
@@ -111,88 +152,132 @@
         <source>Properties:</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
-          <context context-type="linenumber">16</context>
+          <context context-type="linenumber">17</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
-          <context context-type="linenumber">26</context>
+          <context context-type="linenumber">31</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project-settings/project-settings.component.html</context>
-          <context context-type="linenumber">28</context>
+          <context context-type="linenumber">30</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ed9b07e91b831a27867345b0555adb38712cfff3" datatype="html">
         <source>Tasks:</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
-          <context context-type="linenumber">21</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/task/task-list/task-list.component.html</context>
+          <context context-type="linenumber">1</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1ce4ea38f6f8dd51a865b801914b8e75e43cf2bc" datatype="html">
         <source>Subdivide:</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
-          <context context-type="linenumber">29</context>
+          <context context-type="linenumber">34</context>
         </context-group>
       </trans-unit>
       <trans-unit id="TABS_PROPERTIES" datatype="html">
         <source>Properties</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.ts</context>
-          <context context-type="linenumber">168</context>
+          <context context-type="linenumber">180</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">44</context>
+          <context context-type="linenumber">46</context>
         </context-group>
       </trans-unit>
       <trans-unit id="TABS_TASKS" datatype="html">
         <source>Tasks</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.ts</context>
-          <context context-type="linenumber">169</context>
+          <context context-type="linenumber">181</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.ts</context>
-          <context context-type="linenumber">64</context>
+          <context context-type="linenumber">65</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">39</context>
+          <context context-type="linenumber">41</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="TABS_UPLOAD" datatype="html">
-        <source>Upload</source>
+      <trans-unit id="TABS_IMPORT" datatype="html">
+        <source>Import</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.ts</context>
-          <context context-type="linenumber">170</context>
+          <context context-type="linenumber">182</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">42</context>
+          <context context-type="linenumber">44</context>
         </context-group>
       </trans-unit>
       <trans-unit id="TABS_REMOTE" datatype="html">
         <source>Remote</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.ts</context>
-          <context context-type="linenumber">171</context>
+          <context context-type="linenumber">183</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">43</context>
+          <context context-type="linenumber">45</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_NOT_CREATE_PROJ" datatype="html">
         <source>Could not create project</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.ts</context>
-          <context context-type="linenumber">285</context>
+          <context context-type="linenumber">332</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ad4ff0b5dabb73b45a369d9b8b75c4cccab8cdea" datatype="html">
+        <source>Import:</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/project-import/project-import.component.html</context>
+          <context context-type="linenumber">1</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="f9cc69a618eda0298d87de6903f37c3a98c1fef5" datatype="html">
+        <source>Import an existing project from your computer. Existing properties will be overwritten.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/project-import/project-import.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="82f7c3df9268079ecc5edc0e0662c956d90dff5b" datatype="html">
+        <source>Upload project</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/project-import/project-import.component.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ERROR_COULD_NOT_UPLOAD" datatype="html">
+        <source>Could not upload file &apos;<x id="INTERPOLATION" equiv-text="evt.target as any).files[0]"/>&apos;</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/project-import/project-import.component.ts</context>
+          <context context-type="linenumber">44</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.ts</context>
+          <context context-type="linenumber">54</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project/project-list/project-list.component.ts</context>
+          <context context-type="linenumber">102</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
       <trans-unit id="616e206cb4f25bd5885fc35925365e43cf5fb929" datatype="html">
@@ -207,7 +292,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project-settings/project-settings.component.html</context>
-          <context context-type="linenumber">30</context>
+          <context context-type="linenumber">32</context>
         </context-group>
       </trans-unit>
       <trans-unit id="d46dcf6ff2f4a17168e3bdb14102b9ba787ba741" datatype="html">
@@ -221,15 +306,15 @@
         <source>Description:</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-properties/project-properties.component.html</context>
-          <context context-type="linenumber">14</context>
+          <context context-type="linenumber">15</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project-settings/project-settings.component.html</context>
-          <context context-type="linenumber">34</context>
+          <context context-type="linenumber">36</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.html</context>
-          <context context-type="linenumber">14</context>
+          <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ae9555ed661c4fc9adf8c6ec71e39c67f05513fe" datatype="html">
@@ -250,49 +335,56 @@
         <source>meters</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
-          <context context-type="linenumber">10</context>
+          <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1f672a38e8b9e8fc29a0ce0a4f926c00e8da15a3" datatype="html">
         <source>Shape:</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
-          <context context-type="linenumber">15</context>
+          <context context-type="linenumber">16</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6e644e34744b7ab4dae805ec4fb40a7fa50c8cb5" datatype="html">
         <source>square</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
-          <context context-type="linenumber">17</context>
+          <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
       <trans-unit id="99dafbec7a39a738b6672303e7dacc04cd343352" datatype="html">
         <source>hexagon</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
-          <context context-type="linenumber">18</context>
+          <context context-type="linenumber">20</context>
         </context-group>
       </trans-unit>
       <trans-unit id="579b21eef0e6bdd79af799ade0059691149f324e" datatype="html">
         <source>triangle</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
-          <context context-type="linenumber">19</context>
+          <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3e2a583f531f7dd9f089f68a6968e444c372c3e8" datatype="html">
         <source>Preview</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
-          <context context-type="linenumber">23</context>
+          <context context-type="linenumber">25</context>
         </context-group>
       </trans-unit>
       <trans-unit id="64da6b784c67223a7ce9517cbd42c453e652df2a" datatype="html">
         <source>Divide</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
-          <context context-type="linenumber">24</context>
+          <context context-type="linenumber">26</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="52bceca85970cf340ba25a105c9dede10bc4afbe" datatype="html">
+        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;lnr lnr-warning color-error&quot;&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>Result with <x id="INTERPOLATION" equiv-text="{{amountTasksAfterDividing}}"/> tasks is too large, only <x id="INTERPOLATION_1" equiv-text="{{maxTasksPerProject}}"/> allowed.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
+          <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
       <trans-unit id="d8ef47c8eceb33c1cef17101c49af48ce53295f8" datatype="html">
@@ -352,33 +444,40 @@
         <source>No polygons exist or data has unknown format. Supported formats are: GeoJson, OSM-XML, GPX, KML, EsriJson and WKT.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-remote/shape-remote.component.ts</context>
-          <context context-type="linenumber">44</context>
+          <context context-type="linenumber">40</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.ts</context>
-          <context context-type="linenumber">35</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">20</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="ERROR_UNABLE_LOAD_URL" datatype="html">
-        <source>Unable to load data from remote URL</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project-creation/shape-remote/shape-remote.component.ts</context>
-          <context context-type="linenumber">50</context>
+          <context context-type="linenumber">38</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="ERROR_UNABLE_LOAD_URL" datatype="html">
+        <source>Unable to load data from remote URL</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-remote/shape-remote.component.ts</context>
+          <context context-type="linenumber">46</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="19229f72ffd8a140a8336dbac75fd95cf0702648" datatype="html">
+        <source>Upload:</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.html</context>
+          <context context-type="linenumber">1</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="1c222c958cc86240c7e3e7f38ce8c730fda6f17f" datatype="html">
         <source>Upload a GeoJSON, OSM-XML, GPX, EsriJson, KML or WKT file, which contains polygons. Each polygon will result in a single task.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.html</context>
-          <context context-type="linenumber">1</context>
+          <context context-type="linenumber">3</context>
         </context-group>
       </trans-unit>
       <trans-unit id="30425abcb2ca17bc7f74857afd2d4a74e31b9b2b" datatype="html">
@@ -386,17 +485,6 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.html</context>
           <context context-type="linenumber">6</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="ERROR_COULD_NOT_UPLOAD" datatype="html">
-        <source>Could not upload file &apos;<x id="INTERPOLATION" equiv-text="evt.target as any).files[0]"/>&apos;</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.ts</context>
-          <context context-type="linenumber">43</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
       <trans-unit id="628b295733edba52d46466df62992b41b162a162" datatype="html">
@@ -435,44 +523,51 @@
         <source>Create project</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project-list/project-list.component.html</context>
-          <context context-type="linenumber">20</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="05b067876f7b8b0134bc4d547a333da82b168098" datatype="html">
+        <source>Import project</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project/project-list/project-list.component.html</context>
+          <context context-type="linenumber">23</context>
         </context-group>
       </trans-unit>
       <trans-unit id="05e16b88c8826cf9aae20fd255f4b6088aadfa2b" datatype="html">
         <source>* you own this project</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project-list/project-list.component.html</context>
-          <context context-type="linenumber">21</context>
+          <context context-type="linenumber">25</context>
         </context-group>
       </trans-unit>
       <trans-unit id="WARN_PROJECT_REMOVED" datatype="html">
         <source>The project &apos;<x id="INTERPOLATION" equiv-text="project.name"/>&apos; has been removed</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project-list/project-list.component.ts</context>
-          <context context-type="linenumber">56</context>
+          <context context-type="linenumber">58</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.ts</context>
-          <context context-type="linenumber">46</context>
+          <context context-type="linenumber">47</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">35</context>
+          <context context-type="linenumber">37</context>
         </context-group>
       </trans-unit>
       <trans-unit id="WARN_REMOVED_USER_PROJECT" datatype="html">
         <source>You have been removed from project &apos;<x id="INTERPOLATION" equiv-text="project.name"/>&apos;</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project-list/project-list.component.ts</context>
-          <context context-type="linenumber">66</context>
+          <context context-type="linenumber">68</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.ts</context>
-          <context context-type="linenumber">56</context>
+          <context context-type="linenumber">57</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">36</context>
+          <context context-type="linenumber">38</context>
         </context-group>
       </trans-unit>
       <trans-unit id="d9d8be77cf88cf6bfb0cd5bdfdd3290c58380422" datatype="html">
@@ -525,11 +620,18 @@
           <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="5f19586aba912ec6eb123ec5ab609a3bcc073066" datatype="html">
+        <source>Export</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project/project-settings/project-settings.component.html</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="52c9a103b812f258bcddc3d90a6e3f46871d25fe" datatype="html">
         <source>Save</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project-settings/project-settings.component.html</context>
-          <context context-type="linenumber">39</context>
+          <context context-type="linenumber">41</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/task/task-details/task-details.component.html</context>
@@ -544,7 +646,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">31</context>
+          <context context-type="linenumber">32</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_ONT_DELETE_PROJ" datatype="html">
@@ -555,7 +657,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">30</context>
+          <context context-type="linenumber">31</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_LEAVE_PROJ" datatype="html">
@@ -566,7 +668,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">32</context>
+          <context context-type="linenumber">33</context>
         </context-group>
       </trans-unit>
       <trans-unit id="INFO_SUCCESS_UPDATE_PROJ" datatype="html">
@@ -577,7 +679,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">33</context>
+          <context context-type="linenumber">34</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_UPDATE_PROJ_TITLE" datatype="html">
@@ -588,18 +690,29 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">34</context>
+          <context context-type="linenumber">35</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ERROR_NOT_LOAD_PROJ" datatype="html">
-        <source>Could not load project &apos;<x id="INTERPOLATION" equiv-text="route.paramMap.get(&apos;id&apos;) "/>&apos;</source>
+      <trans-unit id="ERROR_EXPORT_PROJ" datatype="html">
+        <source>Creating project export failed</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/project/project.resolver.ts</context>
-          <context context-type="linenumber">22</context>
+          <context context-type="sourcefile">src/app/project/project-settings/project-settings.component.ts</context>
+          <context context-type="linenumber">129</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">29</context>
+          <context context-type="linenumber">36</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ERROR_NOT_LOAD_PROJ" datatype="html">
+        <source>Could not load project &apos;<x id="INTERPOLATION" equiv-text="route.paramMap.get(&apos;id&apos;)"/>&apos;</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project/project.resolver.ts</context>
+          <context context-type="linenumber">26</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">30</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_LIVE_UPDATE" datatype="html">
@@ -613,70 +726,84 @@
           <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="553204f35cd5b8f9d341963cf371cc0439a9fb0a" datatype="html">
-        <source>&lt; Back</source>
+      <trans-unit id="cda31dbd724cf5f4fa7a4274d9120651490c8a8c" datatype="html">
+        <source>Back</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.html</context>
           <context context-type="linenumber">4</context>
         </context-group>
         <note priority="1" from="description">Back button</note>
       </trans-unit>
-      <trans-unit id="4d13a9cd5ed3dcee0eab22cb25198d43886942be" datatype="html">
-        <source>Users</source>
+      <trans-unit id="bd1c4789c0a6d29940e3d32c7137c5713433c98e" datatype="html">
+        <source>Project: <x id="INTERPOLATION" equiv-text="{{project.name}}"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.html</context>
-          <context context-type="linenumber">27</context>
+          <context context-type="linenumber">5</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="121cc5391cd2a5115bc2b3160379ee5b36cd7716" datatype="html">
-        <source>Settings</source>
+      <trans-unit id="0a83964edbc84334e367fe38d7a699f8d36fc489" datatype="html">
+        <source>Created on: <x id="INTERPOLATION" equiv-text="{{project.creationDate | date:&apos;longDate&apos;}}"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.html</context>
-          <context context-type="linenumber">42</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="78870db886eeb5169a1d59babdb2ac0f57841edd" datatype="html">
+        <source>Users:</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project/project/project.component.html</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="fbc3f04cdcff6259abdccd276ed730b1948e3c61" datatype="html">
+        <source>Settings:</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project/project/project.component.html</context>
+          <context context-type="linenumber">45</context>
         </context-group>
       </trans-unit>
       <trans-unit id="TABS_USERS" datatype="html">
         <source>Users</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.ts</context>
-          <context context-type="linenumber">65</context>
+          <context context-type="linenumber">66</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">40</context>
+          <context context-type="linenumber">42</context>
         </context-group>
       </trans-unit>
       <trans-unit id="TABS_SETTINGS" datatype="html">
         <source>Settings</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.ts</context>
-          <context context-type="linenumber">66</context>
+          <context context-type="linenumber">67</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">41</context>
+          <context context-type="linenumber">43</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_NOT_REMOVE_USER" datatype="html">
         <source>Could not remove user</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.ts</context>
-          <context context-type="linenumber">75</context>
+          <context context-type="linenumber">76</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">37</context>
+          <context context-type="linenumber">39</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_NOT_INVITE_USER" datatype="html">
         <source>Could not invite user &apos;<x id="INTERPOLATION" equiv-text="user.name"/>&apos;</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.ts</context>
-          <context context-type="linenumber">84</context>
+          <context context-type="linenumber">85</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">38</context>
+          <context context-type="linenumber">40</context>
         </context-group>
       </trans-unit>
       <trans-unit id="9c95e79714babddbf9f35af7a271f780e6d7589d" datatype="html">
@@ -740,66 +867,59 @@
         <source>Unable to load assigned user</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/task/task-details/task-details.component.ts</context>
-          <context context-type="linenumber">65</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">24</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="ERROR_ASSIGN_USER" datatype="html">
-        <source>Could not assign user</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/task/task-details/task-details.component.ts</context>
-          <context context-type="linenumber">77</context>
+          <context context-type="linenumber">96</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">25</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ERROR_UNASSIGN_USER" datatype="html">
-        <source>Could not unassign user</source>
+      <trans-unit id="ERROR_ASSIGN_USER" datatype="html">
+        <source>Could not assign user</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/task/task-details/task-details.component.ts</context>
-          <context context-type="linenumber">88</context>
+          <context context-type="linenumber">112</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">26</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ERROR_PROCESS_POINTS" datatype="html">
-        <source>Could not set process points</source>
+      <trans-unit id="ERROR_UNASSIGN_USER" datatype="html">
+        <source>Could not unassign user</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/task/task-details/task-details.component.ts</context>
-          <context context-type="linenumber">99</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/task/task-details/task-details.component.ts</context>
-          <context context-type="linenumber">110</context>
+          <context context-type="linenumber">127</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">27</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ERROR_OPEN_JOSM" datatype="html">
-        <source>Unable to open JOSM. Is it running?</source>
+      <trans-unit id="ERROR_PROCESS_POINTS" datatype="html">
+        <source>Could not set process points</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/task/task-details/task-details.component.ts</context>
-          <context context-type="linenumber">119</context>
+          <context context-type="linenumber">142</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/task/task-details/task-details.component.ts</context>
+          <context context-type="linenumber">157</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="586a5fd72602b5b14ec0c55f84814de47bb21e3a" datatype="html">
-        <source>Tasks</source>
+      <trans-unit id="ERROR_OPEN_JOSM" datatype="html">
+        <source>Unable to open JOSM. Is it running?</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/task/task-list/task-list.component.html</context>
-          <context context-type="linenumber">1</context>
+          <context context-type="sourcefile">src/app/task/task-details/task-details.component.ts</context>
+          <context context-type="linenumber">170</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">29</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bc545564a19ac8305bff6a4c3f2d0810792b08c4" datatype="html">
@@ -813,29 +933,29 @@
         <source>DONE</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/task/task-map/task-map.component.ts</context>
-          <context context-type="linenumber">147</context>
+          <context context-type="linenumber">168</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">45</context>
+          <context context-type="linenumber">47</context>
         </context-group>
       </trans-unit>
       <trans-unit id="TASK_YOU" datatype="html">
         <source>you</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/task/task-map/task-map.component.ts</context>
-          <context context-type="linenumber">154</context>
+          <context context-type="linenumber">175</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">46</context>
+          <context context-type="linenumber">48</context>
         </context-group>
       </trans-unit>
       <trans-unit id="WARN_ALREADY_MEMBER" datatype="html">
         <source>User &apos;<x id="INTERPOLATION" equiv-text="{{interp}}"/>&apos; is already a member of this project</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">22</context>
+          <context context-type="linenumber">23</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user/user-invitation/user-invitation.component.ts</context>
@@ -846,7 +966,7 @@
         <source>Could not load user ID for user &apos;<x id="INTERPOLATION" equiv-text="{{interp}}"/>&apos;. The user must have at least one changeset or note.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">23</context>
+          <context context-type="linenumber">24</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user/user-invitation/user-invitation.component.ts</context>

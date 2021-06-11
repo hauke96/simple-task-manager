@@ -31,10 +31,10 @@ describe('TaskMapComponent', () => {
     component = fixture.componentInstance;
 
     component.tasks = [
-      new Task('1', undefined, 0, 100, getFeature()),
-      new Task('2', undefined, 10, 100, getFeature()),
-      new Task('3', undefined, 50, 100, getFeature()),
-      new Task('4', undefined, 100, 100, getFeature()),
+      new Task('1', '', 0, 100, getFeature()),
+      new Task('2', '', 10, 100, getFeature()),
+      new Task('3', '', 50, 100, getFeature()),
+      new Task('4', '', 100, 100, getFeature()),
     ];
 
     component.ngAfterViewInit();

@@ -11,7 +11,12 @@
 		   appMinValidator="1">
 </div>
 <div class="form-entry">
-	<p i18n>Description:</p>
+	<div class="description-text-area-head">
+		<p i18n>Description:</p>
+		<span class="font-small">{{descriptionInput.textLength}} / {{config.maxDescriptionLength}}</span>
+	</div>
 	<textarea name="description-text-area" class="description-text-area"
-			  [(ngModel)]="projectProperties.projectDescription"></textarea>
+              #descriptionInput
+			  [(ngModel)]="projectProperties.projectDescription"
+			  [maxLength]="config.maxDescriptionLength"></textarea>
 </div>

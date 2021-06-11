@@ -16,22 +16,28 @@ import { CurrentUserService } from '../../user/current-user.service';
 import Snap from 'ol/interaction/Snap';
 import Modify from 'ol/interaction/Modify';
 import Select, { SelectEvent } from 'ol/interaction/Select';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import Interaction from 'ol/interaction/Interaction';
 import { ProjectProperties } from '../project-properties';
 import { DrawEvent } from 'ol/interaction/Draw';
 import { TaskDraftService } from '../task-draft.service';
 import { TaskDraft } from '../../task/task.material';
 import { FeatureLike } from 'ol/Feature';
+import { ConfigProvider } from '../../config/config.provider';
+import { extend } from 'ol/extent';
+import { Size } from 'ol/size';
+import { ProjectImportService } from '../project-import.service';
+import { Project } from '../../project/project.material';
+import { Unsubscriber } from '../../common/unsubscriber';
 
 @Component({
   selector: 'app-project-creation',
   templateUrl: './project-creation.component.html',
-  styleUrls: ['./project-creation.component.scss'],
-  providers: [TaskDraftService]
+  styleUrls: ['./project-creation.component.scss']
 })
-export class ProjectCreationComponent implements OnInit, AfterViewInit {
+export class ProjectCreationComponent extends Unsubscriber implements OnInit, AfterViewInit {
   public projectProperties: ProjectProperties = new ProjectProperties('', 100, '');
+  public existingProjects: Observable<Project[]>;
 
   // public for tests
   public modifyInteraction: Modify;
@@ -54,29 +60,35 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     private taskDraftService: TaskDraftService,
     private notificationService: NotificationService,
     private currentUserService: CurrentUserService,
-    private router: Router
+    private projectImportService: ProjectImportService,
+    private router: Router,
+    public config: ConfigProvider
   ) {
+    super();
   }
 
   ngOnInit(): void {
-    // TODO unsubscribable
-    this.taskDraftService.tasksAdded.subscribe((tasks: TaskDraft[]) => {
-      this.addTasks(tasks);
-    });
+    this.unsubscribeLater(
+      this.taskDraftService.tasksAdded.subscribe((tasks: TaskDraft[]) => {
+        this.addTasks(tasks);
+      }),
+      this.taskDraftService.taskRemoved.subscribe((id: string) => {
+        this.removeTask(id);
+      }),
+      this.taskDraftService.taskSelected.subscribe(() => {
+        this.previewVectorSource.clear();
+        this.vectorLayer.changed();
+      }),
+      this.taskDraftService.taskChanged.subscribe((task: TaskDraft) => {
+        this.removeTask(task.id);
+        this.addTasks([task]);
+      }),
+      this.projectImportService.projectPropertiesImported.subscribe((properties: ProjectProperties) => {
+        this.projectProperties = properties;
+      })
+    );
 
-    this.taskDraftService.taskRemoved.subscribe((id: string) => {
-      this.removeTask(id);
-    });
-
-    this.taskDraftService.taskSelected.subscribe(() => {
-      this.previewVectorSource.clear();
-      this.vectorLayer.changed();
-    });
-
-    this.taskDraftService.taskChanged.subscribe((task: TaskDraft) => {
-      this.removeTask(task.id);
-      this.addTasks([task]);
-    });
+    this.existingProjects = this.projectService.getProjects();
   }
 
   ngAfterViewInit(): void {
@@ -167,33 +179,64 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     return [
       $localize`:@@TABS_PROPERTIES:Properties`,
       $localize`:@@TABS_TASKS:Tasks`,
-      $localize`:@@TABS_UPLOAD:Upload`,
+      $localize`:@@TABS_IMPORT:Import`,
       $localize`:@@TABS_REMOTE:Remote`
     ];
+  }
+
+  public get canAddTasks(): boolean {
+    return this.taskDraftService.getTasks().length < this.config.maxTasksPerProject;
   }
 
   public get taskDrafts(): TaskDraft[] {
     return this.taskDraftService.getTasks();
   }
 
-  public get selectedTask(): TaskDraft {
+  public get selectedTask(): TaskDraft | undefined {
     return this.taskDraftService.getSelectedTask();
   }
 
+  /**
+   * Called after a task has been added to the task draft service.
+   */
   private addTasks(tasks: TaskDraft[]) {
-    this.vectorSource.addFeatures(tasks.map(t => this.toFeature(t)));
+    const mapPaddingPx = 25;
+    const newFeatures = tasks.map(t => this.toFeature(t));
+    this.vectorSource.addFeatures(newFeatures);
 
-    // TODO check is anythin/everythin? already visible. If not -> fit view
-    // if (fitViewToFeatures) {
-    this.map.getView().fit(this.vectorSource.getExtent(), {
-      size: this.map.getSize(),
-      padding: [25, 25, 25, 25] // in pixels
+    // Subtract the padding from the map size. This padding will be added back to the map size below.
+    const mapSize = this.map.getSize();
+    if (!mapSize) {
+      this.notificationService.addError('Unable to get map size');
+      return;
+    }
+
+    const paddedMapSize = [
+      mapSize[0] - 2 * mapPaddingPx,
+      mapSize[1] - 2 * mapPaddingPx
+    ] as Size;
+    let overallExtent = this.map.getView().calculateExtent(paddedMapSize);
+
+    // Try to extend the extent over all new features: If one feature is outside the current extent, then the map view should be adjusted
+    // @ts-ignore
+    newFeatures.forEach(f => overallExtent = extend(overallExtent, f.getGeometry().getExtent()));
+
+    this.map.getView().fit(overallExtent, {
+      size: mapSize,
+      padding: [mapPaddingPx, mapPaddingPx, mapPaddingPx, mapPaddingPx] // in pixels
     });
-    // }
+
+    if (!this.canAddTasks) {
+      this.setInteraction(this.drawInteraction, false);
+    }
   }
 
-  private removeTask(id: string) {
+  private removeTask(id: string | undefined) {
     const featureToRemove = this.vectorSource.getFeatures().find(f => f.get('id') === id);
+    if (!id || !featureToRemove) {
+      return;
+    }
+
     this.vectorSource.removeFeature(featureToRemove);
   }
 
@@ -213,7 +256,6 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     const snap = new Snap({
       source: this.vectorSource
     });
-    // TODO modify on taskDraftService and create according event
     this.map.addInteraction(snap);
 
     this.modifyInteraction = new Modify({
@@ -226,7 +268,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     this.removeInteraction = new Select();
     this.removeInteraction.on('select', (e: SelectEvent) => {
       if (!!e.selected[0]) {
-        const id = e.selected[0].get('id');
+        const id = e.selected[0].get('id') as string;
         this.taskDraftService.removeTask(id);
       }
     });
@@ -236,7 +278,7 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
     // SELECT
     this.selectInteraction = new Select({
       layers: [this.vectorLayer],
-      style: null
+      style: undefined
     });
     this.selectInteraction.on('select', (e: SelectEvent) => {
       if (!!e.selected[0]) {
@@ -277,6 +319,11 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
 
   public createProject(name: string, maxProcessPoints: number, projectDescription: string, features: Feature[]) {
     const owner = this.currentUserService.getUserId();
+    if (!owner) {
+      // TODO Show error notification
+      return;
+    }
+
     this.projectService.createNewProject(name, maxProcessPoints, projectDescription, features, [owner], owner)
       .subscribe(project => {
         this.router.navigate(['/manager']);
@@ -299,11 +346,21 @@ export class ProjectCreationComponent implements OnInit, AfterViewInit {
   }
 
   onZoomIn() {
-    this.map.getView().setZoom(this.map.getView().getZoom() + 1);
+    const zoom = this.map.getView().getZoom();
+    if (!zoom) {
+      return;
+    }
+
+    this.map.getView().setZoom(zoom + 1);
   }
 
   onZoomOut() {
-    this.map.getView().setZoom(this.map.getView().getZoom() - 1);
+    const zoom = this.map.getView().getZoom();
+    if (!zoom) {
+      return;
+    }
+
+    this.map.getView().setZoom(zoom - 1);
   }
 
   onToggleDraw() {

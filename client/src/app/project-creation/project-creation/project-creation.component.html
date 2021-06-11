@@ -1,6 +1,6 @@
 <app-toolbar>
 	<div>
-		<button [routerLink]="['/manager']" i18n>&#60; Cancel</button>
+		<button [routerLink]="['/manager']"><span class="lnr lnr-chevron-left cancel-button-icon"></span><span i18n>Cancel</span></button>
 		<button class="save-button" (click)="onSaveButtonClicked()" [disabled]="!creationForm.form.valid || !hasTasks"
 				i18n>
 			Save
@@ -12,13 +12,18 @@
 		<form #creationForm="ngForm" class="root-form">
 			<app-tabs #rootTabs [tabs]="rootTabTitles" [borderless]="true" class="root-tabs"
 					  (tabSelected)="onTabSelected()">
+				<!-- Properties -->
 				<div *ngIf="rootTabs.tabIndex === 0">
 					<h2 class="properties-label" i18n>Properties:</h2>
 					<app-project-properties [projectProperties]="projectProperties"></app-project-properties>
 				</div>
 
+				<!-- Tasks -->
 				<div *ngIf="rootTabs.tabIndex === 1" class="tab-container">
-					<h2 class="properties-label" i18n>Tasks:</h2>
+					<div class="task-head">
+						<h2 class="properties-label" i18n>Tasks:</h2>
+						<span class="font-small">{{taskDrafts.length}} / {{config.maxTasksPerProject}}</span>
+					</div>
 					<app-task-draft-list [tasks]="taskDrafts"
 										 [selectedTask]="selectedTask"></app-task-draft-list>
 
@@ -32,12 +37,18 @@
 					</div>
 				</div>
 
+				<!-- Import -->
 				<div *ngIf="rootTabs.tabIndex === 2">
 					<div class="tab-container">
 						<app-shape-upload></app-shape-upload>
+						<div class="hline"></div>
+						<app-project-import></app-project-import>
+						<div class="hline"></div>
+						<app-copy-project [projects]="(existingProjects | async)!"></app-copy-project>
 					</div>
 				</div>
 
+				<!-- Remote -->
 				<div *ngIf="rootTabs.tabIndex === 3">
 					<div class="tab-container">
 						<app-shape-remote></app-shape-remote>
@@ -58,6 +69,7 @@
 					(buttonDraw)="onToggleDraw()"
 					(buttonEdit)="onToggleEdit()"
 					(buttonDelete)="onToggleDelete()"
+					[canAddTasks]="canAddTasks"
 			></app-drawing-toolbar>
 		</div>
 		<div id="map"></div>

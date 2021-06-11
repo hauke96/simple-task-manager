@@ -125,10 +125,10 @@ describe('ProjectComponent', () => {
   });
 
   function createProject() {
-    const t = new Task('567', undefined, 10, 100, TestTaskFeature);
+    const t = new Task('567', '', 10, 100, TestTaskFeature);
     const u1 = new User('test-user', '123');
     const u2 = new User('test-user2', '234');
     const u3 = new User('test-user3', '345');
-    return new Project('1', 'test project', 'lorem ipsum', [t], [u1, u2, u3], u1);
+    return new Project('1', 'test project', 'lorem ipsum', [t], [u1, u2, u3], u1, true, new Date(), 0, 0);
   }
 });

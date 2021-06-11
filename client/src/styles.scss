@@ -24,7 +24,8 @@ b {
 	font-weight: 500;
 }
 
-small {
+small,
+.font-small {
 	font-size: $font-small;
 }
 
@@ -138,6 +139,11 @@ select {
 	border-top: none;
 }
 
+.list-item-selected {
+	background-color: $color-very-light;
+}
+
+
 ul {
 	list-style: none;
 	padding-left: $space-huge;
@@ -157,7 +163,7 @@ li {
 }
 
 input,
-textarea{
+textarea {
 	// So when setting "width", the input/textarea outer size really matched the given width. Otherwise the inner width
 	// would be set. When then using "width:100px" we would actually have a width of 122px
 	// (100px + 2 * 10px padding + 2 * 1px border). The "border-box" value prevents this strange behavior.
@@ -179,7 +185,7 @@ textarea:focus {
 }
 
 input.ng-invalid:not(form),
-textarea.ng-invalid:not(form)  {
+textarea.ng-invalid:not(form) {
 	border: 1px solid $color-error;
 }
 
@@ -190,5 +196,24 @@ textarea.ng-invalid:not(form)  {
 
 .hline {
 	border-bottom: 1px solid $color-gray-light;
-	margin: $space-large $space-base;
+	margin-top: $space-large;
+	margin-bottom: $space-large;
+}
+
+// ===========
+// UI elements
+// ===========
+
+.color-error {
+	color: $color-error-dark;
+}
+
+.color-gray {
+	color: $color-gray-mid;
+}
+
+.wrap-label {
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
 }

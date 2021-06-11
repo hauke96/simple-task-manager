@@ -19,7 +19,7 @@ export class ManagerComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  public get userName(): string {
+  public get userName(): string | undefined {
     return this.currentUserService.getUserName();
   }
 

@@ -5,7 +5,7 @@ import { Task } from './task.material';
   name: 'taskTitle'
 })
 export class TaskTitlePipe implements PipeTransform {
-  transform(value: Task, ...args: unknown[]): unknown {
+  transform(value: Task | undefined, ...args: unknown[]): unknown {
     if (!value) {
       return '';
     }

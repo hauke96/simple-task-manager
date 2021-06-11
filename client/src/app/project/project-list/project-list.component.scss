@@ -10,8 +10,18 @@
 	align-items: center;
 }
 
+.no-wrap {
+	white-space: nowrap;
+}
+
 .light-label {
 	color: $color-gray-mid;
+}
+
+.progress-bar {
+	width: 180px;
+	justify-content: end;
+	margin-right: $space-small;
 }
 
 .admin-label {
@@ -22,4 +32,8 @@
 	margin-top: $space-large;
 	display: flex;
 	justify-content: space-between;
+}
+
+.import-button {
+	margin-left: $space-base;
 }

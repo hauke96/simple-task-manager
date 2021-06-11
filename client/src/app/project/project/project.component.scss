@@ -1,4 +1,5 @@
 @import '../../../styles';
+@import '../../../icons';
 
 // Making the task list content scrollable was made with the help of this article:
 // https://moduscreate.com/blog/how-to-fix-overflow-issues-in-css-flex-layouts/
@@ -15,6 +16,10 @@
 	color: $color-white;
 }
 
+.back-button-icon {
+	margin-right: $space-small;
+}
+
 .toolbar-item {
 	display: flex;
 	justify-content: flex-start;
@@ -23,7 +28,16 @@
 .back-button-container {
 	display: flex;
 	align-items: center;
-	margin-right: $space-huge;
+}
+
+.progress-bar {
+	margin-left: $space-huge;
+}
+
+.created-at-label {
+	display: flex;
+	align-items: center;
+	margin-left: $space-huge;
 }
 
 .root-container {

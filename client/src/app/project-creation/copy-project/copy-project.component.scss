@@ -1,0 +1,14 @@
+@import '../../../styles';
+
+.project-list {
+	overflow-y: auto;
+}
+
+.project-list-row {
+	display: flex;
+	justify-content: space-between;
+}
+
+.import-button {
+	margin-top: $space-base;
+}

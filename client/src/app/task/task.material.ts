@@ -9,6 +9,7 @@ export class TaskDraftDto {
    */
   constructor(
     public maxProcessPoints: number,
+    public processPoints: number,
     public geometry: string
   ) {
   }
@@ -18,7 +19,8 @@ export class TaskDraft {
   constructor(
     public id: string,
     public name: string,
-    public geometry: Geometry
+    public geometry: Geometry,
+    public processPoints: number
   ) {
   }
 }
@@ -42,13 +44,22 @@ export class Task {
     public processPoints: number,
     public maxProcessPoints: number,
     public geometry: Feature,
-    // TODO instead store an actual User object
     public assignedUser?: User
   ) {
   }
 
   public get isDone(): boolean {
     return this.processPoints === this.maxProcessPoints;
+  }
+}
+
+export class TaskExport {
+  constructor(
+    public name: string,
+    public processPoints: number,
+    public maxProcessPoints: number,
+    public geometry: string,
+    public assignedUser?: string) {
   }
 }
 

@@ -6,16 +6,20 @@ import { FormControl, NG_VALIDATORS, Validator } from '@angular/forms';
   providers: [{provide: NG_VALIDATORS, useExisting: MaxValidatorDirective, multi: true}]
 })
 export class MaxValidatorDirective implements Validator {
-  @Input()
-  public appMaxValidator: number;
+  private appMaxValidatorNumber: number;
 
   constructor() {
   }
 
-  public validate(c: FormControl): { [appMaxValidator: string]: any } {
+  @Input()
+  set appMaxValidator(value: number | string) {
+    this.appMaxValidatorNumber = +value;
+  }
+
+  public validate(c: FormControl): { [appMaxValidator: string]: any } | null {
     const v = ('' + c.value).trim();
     return v.match('[-\+]?[0-9]+')
-    && (+v <= this.appMaxValidator)
+    && (+v <= this.appMaxValidatorNumber)
       ? null
       : {appMaxValidator: true};
   }

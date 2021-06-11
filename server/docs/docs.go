@@ -102,7 +102,26 @@ var doc = `{
                 ]
             }
         },
-        "/v2.6/project/{id}": {
+        "/v2.7/config": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "config"
+                ],
+                "summary": "Gets the servers configuration containing important information for the client.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/config.ConfigDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/v2.7/project/{id}": {
             "get": {
                 "description": "Gets a specific project. The requesting user must be a member of the project.",
                 "produces": [
@@ -131,7 +150,7 @@ var doc = `{
                 }
             }
         },
-        "/v2.6/projects": {
+        "/v2.7/projects": {
             "get": {
                 "produces": [
                     "application/json"
@@ -181,7 +200,7 @@ var doc = `{
                 }
             }
         },
-        "/v2.6/projects/{id}": {
+        "/v2.7/projects/{id}": {
             "delete": {
                 "description": "Deletes the specified project. The requesting user must be the owner of the project.",
                 "tags": [
@@ -199,7 +218,7 @@ var doc = `{
                 ]
             }
         },
-        "/v2.6/projects/{id}/description": {
+        "/v2.7/projects/{id}/description": {
             "put": {
                 "description": "Update the projects description. The requesting user must be the owner of the project.",
                 "produces": [
@@ -237,7 +256,36 @@ var doc = `{
                 }
             }
         },
-        "/v2.6/projects/{id}/name": {
+        "/v2.7/projects/{id}/export": {
+            "get": {
+                "description": "This aims to transfer a project to another STM instance or to simply create a backup of a project.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Get a JSON representation of the project.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the project",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/project.Project"
+                        }
+                    }
+                }
+            }
+        },
+        "/v2.7/projects/{id}/name": {
             "put": {
                 "description": "Updates the projects name/title. The requesting user must be the owner of the project.",
                 "produces": [
@@ -275,7 +323,7 @@ var doc = `{
                 }
             }
         },
-        "/v2.6/projects/{id}/users": {
+        "/v2.7/projects/{id}/users": {
             "post": {
                 "description": "Adds the given user to the project. The requesting user must be the owner of the project.",
                 "produces": [
@@ -327,7 +375,7 @@ var doc = `{
                 ]
             }
         },
-        "/v2.6/projects/{id}/users/{uid}": {
+        "/v2.7/projects/{id}/users/{uid}": {
             "delete": {
                 "description": "Removes a user from the project. The requesting user must be the owner of the project and cannot be removed.",
                 "produces": [
@@ -363,7 +411,7 @@ var doc = `{
                 }
             }
         },
-        "/v2.6/tasks/{id}/assignedUser": {
+        "/v2.7/tasks/{id}/assignedUser": {
             "post": {
                 "description": "Assigns the requesting user to the given task. The requesting user must be a member of the project.",
                 "produces": [
@@ -419,7 +467,7 @@ var doc = `{
                 }
             }
         },
-        "/v2.6/tasks/{id}/processPoints": {
+        "/v2.7/tasks/{id}/processPoints": {
             "post": {
                 "description": "Sets the process points of a task. The requesting user must be a member of the project. If the project has more than one member, the requesting user must be assigned to the given task.",
                 "produces": [
@@ -456,7 +504,7 @@ var doc = `{
                 }
             }
         },
-        "/v2.6/updates": {
+        "/v2.7/updates": {
             "get": {
                 "description": "Established an websocket connection to receive updates on projects. This requires the same authentication as normal HTTP endpoints. See the GitHub repo '/doc/api' for information on the messaging protocol.",
                 "tags": [
@@ -492,40 +540,67 @@ var doc = `{
                 }
             }
         },
+        "config.ConfigDto": {
+            "type": "object",
+            "properties": {
+                "maxDescriptionLength": {
+                    "description": "Maximum length for the project description in characters. Default: 1000.",
+                    "type": "integer"
+                },
+                "maxTasksPerProject": {
+                    "description": "Maximum amount of tasks allowed for a project.",
+                    "type": "integer"
+                },
+                "sourceRepoUrl": {
+                    "description": "URL to the source code repository.",
+                    "type": "string"
+                }
+            }
+        },
         "project.Project": {
             "type": "object",
             "properties": {
+                "creationDate": {
+                    "description": "UTC Date in RFC 3339 format, can be NIL because of old data in the database. Example: \"2006-01-02 15:04:05.999999999 -0700 MST\"",
+                    "type": "string"
+                },
                 "description": {
+                    "description": "Some description, can be empty. Will not be NULL but might be empty.",
                     "type": "string"
                 },
                 "doneProcessPoints": {
-                    "description": "Sum of all process points that have been set",
+                    "description": "Sum of all process points that have been set. It applies \"0 \u003c= doneProcessPoints \u003c= totalProcessPoints\".",
                     "type": "integer"
                 },
                 "id": {
+                    "description": "The ID of the project.",
                     "type": "string"
                 },
                 "name": {
+                    "description": "The name of the project. Will not be NULL or empty.",
                     "type": "string"
                 },
                 "needsAssignment": {
-                    "description": "When \"true\", the tasks of this project need to have an assigned user",
+                    "description": "When \"true\", the tasks of this project need to have an assigned user.",
                     "type": "boolean"
                 },
                 "owner": {
+                    "description": "User-ID of the owner/creator of this project. Will not be NULL or empty.",
                     "type": "string"
                 },
                 "tasks": {
+                    "description": "List of tasks of the project. Will not be NULL or empty.",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/task.Task"
                     }
                 },
                 "totalProcessPoints": {
-                    "description": "Sum of all maximum process points of all tasks",
+                    "description": "Sum of all maximum process points of all tasks.",
                     "type": "integer"
                 },
                 "users": {
+                    "description": "Array of user-IDs (=members of this project). Will not be NULL or empty.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -537,15 +612,19 @@ var doc = `{
             "type": "object",
             "properties": {
                 "description": {
+                    "description": "Description of the project. Must not be NULL but cam be empty.",
                     "type": "string"
                 },
                 "name": {
+                    "description": "Name of the project. Must not be NULL or empty.",
                     "type": "string"
                 },
                 "owner": {
+                    "description": "The user-ID who created this project. Must not be NULL or empty.",
                     "type": "string"
                 },
                 "users": {
+                    "description": "A non-empty list of user-IDs. At least the owner should be in here.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -557,21 +636,27 @@ var doc = `{
             "type": "object",
             "properties": {
                 "assignedUser": {
+                    "description": "The user-ID of the user who is currently assigned to this task. Will never be NULL but might be empty.",
                     "type": "string"
                 },
                 "geometry": {
+                    "description": "A GeoJson feature of the task wit a polygon or multipolygon geometry. Will never be NULL or empty.",
                     "type": "string"
                 },
                 "id": {
+                    "description": "The ID of the task.",
                     "type": "string"
                 },
                 "maxProcessPoints": {
+                    "description": "The maximum amount of process points of this task. Is larger than zero.",
                     "type": "integer"
                 },
                 "name": {
+                    "description": "The name of the task. If the properties of the geometry feature contain the field \"name\", this field is used here. If no name has been set, this field will be empty.",
                     "type": "string"
                 },
                 "processPoints": {
+                    "description": "The amount of process points that have been set by the user. It applies that \"0 \u003c= processPoints \u003c= maxProcessPoints\".",
                     "type": "integer"
                 }
             }
@@ -580,9 +665,11 @@ var doc = `{
             "type": "object",
             "properties": {
                 "geometry": {
+                    "description": "A GeoJson feature with a polygon or multi-polygon geometry. If the feature properties contain the field \"name\", then this will be used as the name of the task.",
                     "type": "string"
                 },
                 "maxProcessPoints": {
+                    "description": "The maximum amount of process points of this task. Must be larger than zero.",
                     "type": "integer"
                 }
             }

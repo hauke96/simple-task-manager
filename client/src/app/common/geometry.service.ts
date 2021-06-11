@@ -56,7 +56,7 @@ export class GeometryService {
         return [];
       }
 
-      return [].concat(...features.map(f => this.toUsableTaskFeature(f)));
+      return ([] as Feature[]).concat(...features.map(f => this.toUsableTaskFeature(f)));
     } catch {
       return [];
     }
@@ -69,7 +69,12 @@ export class GeometryService {
       return [];
     }
 
-    const expandedGeometries = this.expandToPolygonLike(feature.getGeometry());
+    const geometry = feature.getGeometry();
+    if (!geometry) {
+      return [];
+    }
+
+    const expandedGeometries = this.expandToPolygonLike(geometry);
 
     return expandedGeometries.map((geom: Geometry) => {
       const props = feature.getProperties();

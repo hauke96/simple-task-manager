@@ -67,9 +67,10 @@ describe('UserInvitationComponent', () => {
 
   it('should so nothing when adding user twice', () => {
     const inviteUserSpy = spyOn(component.userInvited, 'emit').and.callThrough();
-    const userServiceSpy = spyOn(userService, 'getUserByName').and.callFake(user => {
-      component.users.push(new User(user, user));
-      return of(undefined);
+    const userServiceSpy = spyOn(userService, 'getUserByName').and.callFake((userName: string) => {
+      const user = new User(userName, userName);
+      component.users.push(user);
+      return of(user);
     });
 
     component.enteredUserName = 'test-user';

@@ -54,11 +54,19 @@ func printRoutes(router *mux.Router) {
 	})
 }
 
+func simpleHandler(handler func(r *http.Request, logger *util.Logger) *ApiResponse) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+
+		handleRequest(w, r, handler)
+	}
+}
+
 func authenticatedTransactionHandler(handler func(r *http.Request, context *Context) *ApiResponse) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 
-		prepareAndHandle(w, r, handler)
+		handleAuthenticatedRequest(w, r, handler)
 	}
 }
 
@@ -94,10 +102,54 @@ func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request,
 	}
 }
 
-// prepareAndHandle gets and verifies the token from the request, creates the context, starts a transaction, manages
+// handleRequest creates the context, calls the handler and also does error handling. When this function returns,
+// everything should have a valid state: The response as well as the transaction (database).
+func handleRequest(w http.ResponseWriter, r *http.Request, handler func(r *http.Request, logger *util.Logger) *ApiResponse) {
+	// temporary logger before there's a context
+	logger := util.NewLogger()
+	logger.Log("Simple call from to %s %s", r.Method, r.URL.Path)
+
+	//
+	// We don't create a context here until we need one in un-authenticated requests.
+	//
+
+	// Recover from panic and perform rollback on transaction
+	defer func() {
+		if r := recover(); r != nil {
+			var err error
+			switch r := r.(type) {
+			case error:
+				err = r
+			default:
+				err = fmt.Errorf("%v", r)
+			}
+
+			logger.Err(fmt.Sprintf("!! PANIC !! Recover from panic:"))
+			logger.Stack(err)
+
+			util.ResponseInternalError(w, logger, err)
+		}
+	}()
+
+	// Call actual logic
+	var response *ApiResponse
+	response = handler(r, logger)
+
+	if response.statusCode != http.StatusOK {
+		// Cause panic which will be recovered using the above function. This will then trigger a transaction rollback.
+		panic(response.data.(error))
+	}
+
+	if response.data != nil {
+		encoder := json.NewEncoder(w)
+		encoder.Encode(response.data)
+	}
+}
+
+// handleAuthenticatedRequest gets and verifies the token from the request, creates the context, starts a transaction, manages
 // commit/rollback, calls the handler and also does error handling. When this function returns, everything should have a
 // valid state: The response as well as the transaction (database).
-func prepareAndHandle(w http.ResponseWriter, r *http.Request, handler func(r *http.Request, context *Context) *ApiResponse) {
+func handleAuthenticatedRequest(w http.ResponseWriter, r *http.Request, handler func(r *http.Request, context *Context) *ApiResponse) {
 	// temporary logger before there's a context
 	logger := util.NewLogger()
 

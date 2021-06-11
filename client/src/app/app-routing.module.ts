@@ -9,6 +9,7 @@ import { ProjectCreationComponent } from './project-creation/project-creation/pr
 import { AllProjectsResolver } from './project/all-projects.resolver';
 import { ProjectResolver } from './project/project.resolver';
 import { SelectedLanguageGuard } from './common/selected-language.guard';
+import { ConfigResolver } from './config/config.resolver';
 
 const routes: Routes = [
   {path: '', component: LoginComponent, canActivate: [AuthGuard, SelectedLanguageGuard]},
@@ -16,7 +17,7 @@ const routes: Routes = [
     path: 'manager',
     component: ManagerComponent,
     canActivate: [AuthGuard, SelectedLanguageGuard],
-    resolve: {projects: AllProjectsResolver}
+    resolve: {projects: AllProjectsResolver, config: ConfigResolver}
   },
   {
     path: 'project/:id',
@@ -26,13 +27,18 @@ const routes: Routes = [
       project: ProjectResolver
     }
   },
-  {path: 'new-project', component: ProjectCreationComponent, canActivate: [AuthGuard, SelectedLanguageGuard]},
+  {
+    path: 'new-project',
+    component: ProjectCreationComponent,
+    canActivate: [AuthGuard, SelectedLanguageGuard],
+    resolve: {config: ConfigResolver}
+  },
   {path: 'oauth-landing', component: OauthLandingComponent},
   {path: '**', redirectTo: ''},
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
+  imports: [RouterModule.forRoot(routes, {relativeLinkResolution: 'legacy'})],
   exports: [RouterModule]
 })
 export class AppRoutingModule {

@@ -1,4 +1,4 @@
-<div *ngIf="isInTestMode" class="test-label">
-	<span>This is a <b>test instance</b> of the SimpleTaskManager.</span>
+<div [class.host-in-test-mode]="isInTestMode" [class.host-in-prod-mode]="!isInTestMode">
+	<span *ngIf="isInTestMode" class="test-label">This is a <b>test instance</b> of the SimpleTaskManager.</span>
+	<router-outlet></router-outlet>
 </div>
-<router-outlet></router-outlet>

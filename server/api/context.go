@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"github.com/hauke96/simple-task-manager/server/auth"
 	"github.com/hauke96/simple-task-manager/server/database"
+	"github.com/hauke96/simple-task-manager/server/export"
 	"github.com/hauke96/simple-task-manager/server/permission"
 	"github.com/hauke96/simple-task-manager/server/project"
 	"github.com/hauke96/simple-task-manager/server/task"
@@ -18,6 +19,7 @@ type Context struct {
 	Transaction     *sql.Tx
 	ProjectService  *project.ProjectService
 	TaskService     *task.TaskService
+	ExportService   *export.ExportService
 	WebsocketSender *websocket.WebsocketSender
 }
 
@@ -37,6 +39,7 @@ func createContext(token *auth.Token, logger *util.Logger) (*Context, error) {
 	permissionService := permission.Init(tx, ctx.Logger)
 	ctx.TaskService = task.Init(tx, ctx.Logger, permissionService)
 	ctx.ProjectService = project.Init(tx, ctx.Logger, ctx.TaskService, permissionService)
+	ctx.ExportService = export.Init(logger, ctx.ProjectService)
 	ctx.WebsocketSender = websocket.Init(ctx.Logger)
 
 	return ctx, nil

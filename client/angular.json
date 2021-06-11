@@ -61,6 +61,18 @@
                 }
               ]
             },
+            "dev": {
+              "buildOptimizer": false,
+              "optimization": {
+                "scripts": false,
+                "styles": false,
+                "fonts": false
+              },
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            },
             "ja": {
               "localize": [
                 "ja"
@@ -88,7 +100,14 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "optimization": true,
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": true
+                },
+                "fonts": true
+              },
               "outputHashing": "all",
               "sourceMap": false,
               "namedChunks": false,
@@ -103,7 +122,7 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "9kb",
+                  "maximumWarning": "10kb",
                   "maximumError": "15kb"
                 }
               ]
@@ -135,7 +154,8 @@
                 }
               ]
             }
-          }
+          },
+          "defaultConfiguration": "dev"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -163,6 +183,9 @@
             },
             "fr-FR": {
               "browserTarget": "simple-task-manager:build:fr-FR"
+            },
+            "dev": {
+              "browserTarget": "simple-task-manager:build:dev"
             }
           }
         },

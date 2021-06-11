@@ -27,10 +27,11 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
     private notificationService: NotificationService
   ) {
     super();
+
+    this.project = this.route.snapshot.data.project;
   }
 
   ngOnInit(): void {
-    this.project = this.route.snapshot.data.project;
     this.taskService.selectTask(this.project.tasks[0]);
 
     this.unsubscribeLater(

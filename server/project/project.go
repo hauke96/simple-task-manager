@@ -9,25 +9,27 @@ import (
 	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/pkg/errors"
 	"strings"
+	"time"
 )
 
 type ProjectDraftDto struct {
-	Name        string   `json:"name"`
-	Description string   `json:"description"`
-	Users       []string `json:"users"`
-	Owner       string   `json:"owner"`
+	Name        string   `json:"name"`        // Name of the project. Must not be NULL or empty.
+	Description string   `json:"description"` // Description of the project. Must not be NULL but cam be empty.
+	Users       []string `json:"users"`       // A non-empty list of user-IDs. At least the owner should be in here.
+	Owner       string   `json:"owner"`       // The user-ID who created this project. Must not be NULL or empty.
 }
 
 type Project struct {
-	Id                 string       `json:"id"`
-	Name               string       `json:"name"`
-	Tasks              []*task.Task `json:"tasks"`
-	Users              []string     `json:"users"`
-	Owner              string       `json:"owner"`
-	Description        string       `json:"description"`
-	NeedsAssignment    bool         `json:"needsAssignment"`    // When "true", the tasks of this project need to have an assigned user
-	TotalProcessPoints int          `json:"totalProcessPoints"` // Sum of all maximum process points of all tasks
-	DoneProcessPoints  int          `json:"doneProcessPoints"`  // Sum of all process points that have been set
+	Id                 string       `json:"id"`                 // The ID of the project.
+	Name               string       `json:"name"`               // The name of the project. Will not be NULL or empty.
+	Tasks              []*task.Task `json:"tasks"`              // List of tasks of the project. Will not be NULL or empty.
+	Users              []string     `json:"users"`              // Array of user-IDs (=members of this project). Will not be NULL or empty.
+	Owner              string       `json:"owner"`              // User-ID of the owner/creator of this project. Will not be NULL or empty.
+	Description        string       `json:"description"`        // Some description, can be empty. Will not be NULL but might be empty.
+	NeedsAssignment    bool         `json:"needsAssignment"`    // When "true", the tasks of this project need to have an assigned user.
+	TotalProcessPoints int          `json:"totalProcessPoints"` // Sum of all maximum process points of all tasks.
+	DoneProcessPoints  int          `json:"doneProcessPoints"`  // Sum of all process points that have been set. It applies "0 <= doneProcessPoints <= totalProcessPoints".
+	CreationDate       *time.Time   `json:"creationDate"`       // UTC Date in RFC 3339 format, can be NIL because of old data in the database. Example: "2006-01-02 15:04:05.999999999 -0700 MST"
 }
 
 type ProjectService struct {
@@ -36,10 +38,6 @@ type ProjectService struct {
 	permissionService *permission.PermissionService
 	taskService       *task.TaskService
 }
-
-var (
-	maxDescriptionLength = 10000
-)
 
 func Init(tx *sql.Tx, logger *util.Logger, taskService *task.TaskService, permissionService *permission.PermissionService) *ProjectService {
 	return &ProjectService{
@@ -91,20 +89,14 @@ func (s *ProjectService) AddProjectWithTasks(projectDraft *ProjectDraftDto, task
 		return nil, errors.New(fmt.Sprintf("Maximum %d tasks allowed", config.Conf.MaxTasksPerProject))
 	}
 
-	//
 	// Store project
-	//
-
 	addedProject, err := s.AddProject(projectDraft)
 	if err != nil {
 		return nil, err
 	}
 	s.Log("Added project %s", addedProject.Id)
 
-	//
 	// Store tasks
-	//
-
 	tasks, err := s.taskService.AddTasks(taskDrafts, addedProject.Id)
 	if err != nil {
 		return nil, err
@@ -112,9 +104,7 @@ func (s *ProjectService) AddProjectWithTasks(projectDraft *ProjectDraftDto, task
 	addedProject.Tasks = tasks
 	s.Log("Added tasks")
 
-	//
 	// Add Metadata now, that we have tasks
-	//
 	err = s.addTasksAndMetadata(addedProject)
 	if err != nil {
 		return nil, err
@@ -143,13 +133,12 @@ func (s *ProjectService) AddProject(projectDraft *ProjectDraftDto) (*Project, er
 		return nil, errors.New("Project must have a title")
 	}
 
-	if len(projectDraft.Description) > maxDescriptionLength {
-		return nil, errors.New(fmt.Sprintf("Description too long. Maximum allowed are %d characters.", maxDescriptionLength))
+	if len(projectDraft.Description) > config.Conf.MaxDescriptionLength {
+		return nil, errors.New(fmt.Sprintf("Description too long. Allowed are %d characters but found %d.", config.Conf.MaxDescriptionLength, len(projectDraft.Description)))
 	}
 
 	// Actually add project
-
-	project, err := s.store.addProject(projectDraft)
+	project, err := s.store.addProject(projectDraft, time.Now().UTC())
 	if err != nil {
 		return nil, err
 	}
@@ -349,6 +338,10 @@ func (s *ProjectService) UpdateDescription(projectId string, newDescription stri
 
 	if len(strings.TrimSpace(newDescription)) == 0 {
 		return nil, errors.New("No description specified")
+	}
+
+	if len(newDescription) > config.Conf.MaxDescriptionLength {
+		return nil, errors.New(fmt.Sprintf("Description too long. Allowed are %d characters but found %d.", config.Conf.MaxDescriptionLength, len(newDescription)))
 	}
 
 	project, err := s.store.updateDescription(projectId, newDescription)

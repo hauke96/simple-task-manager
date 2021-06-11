@@ -131,3 +131,5 @@ do
 
 	check_untranslated_units "$LANG"
 done
+
+rm *.units

@@ -24,7 +24,7 @@ export class LoggedInInterceptor implements HttpInterceptor {
       setHeaders: {
         Authorization: token
       }
-    });
+    } as unknown as HttpRequest<unknown>);
 
     return next.handle(request)
       .pipe(catchError((e: HttpErrorResponse) => {

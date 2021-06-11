@@ -25,7 +25,22 @@
           <context context-type="sourcefile">src/app/manager/manager.component.html</context>
           <context context-type="linenumber">4</context>
         </context-group>
-
+      </trans-unit>
+      <trans-unit id="2fb7236e17579c8ce939310776ddda6e87db271c" datatype="html">
+        <source>Copy:</source>
+        <target xml:lang="de-DE" state="translated">Kopieren:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/copy-project/copy-project.component.html</context>
+          <context context-type="linenumber">1</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4bd22b3271b9d55e8e9dbdc8348e6a26c297a2f5" datatype="html">
+        <source>Copy and import an existing project you are a member of.</source>
+        <target xml:lang="de-DE" state="translated">Kopiere und importiere ein Projekt bei dem du beteiligt bist.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/copy-project/copy-project.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="a40a5da1275dd0b1cba2d4eb75b3c874db4a8858" datatype="html">
         <source>Welcome to the SimpleTaskManager for <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>OpenStreetMap<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/></source>
@@ -44,18 +59,8 @@
         </context-group>
       </trans-unit>
       <trans-unit id="LOGIN_CHANGELOG" datatype="html">
-        <source><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Changes in 1.3.0:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;
-					"/> New features: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;
-						"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>More language selection drop-down menus<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Task list is now sorted by process state<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/> Bug fixes: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;
-						"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Reduce unnecessary logging<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Project creation: Save button enabled but data wasn&apos;t completely entered<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Task name sometimes not shown<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Remove unnecessary zoom buttons<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Fix broken styling of very long notifications<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Show task name instead of ID<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>All kind of errors will now be catched<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/> Infrastructure: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;
-						"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>The server now makes daily database backups<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/> Internals: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;
-						"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Tasks are now withing the project DTO class<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Added swagger UI as better API documentation<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/></source>
-        <target><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Änderungen in 1.3.0:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;
-					"/> Neue Funktionen: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;
-						"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Mehr Auswahlmenüs der Sprachen<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Die Liste der Tasks ist nun nach deren Status sortiert<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/> Behobene Fehler: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;
-						"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Unnötiges logging reduziert<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Projekt Erstellung: Speichern-Button war bei unvollständigen Daten aktiviert<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Name von Tasks wurde manchmal nicht angezeigt<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Entfernt unnötige Zoom-Buttons<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Behebt Fehler in Darstellung langer Benachrichtigungen<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Zeigt Name statt ID von Tasks an<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Behandle global alle möglichen Fehler<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/> Infrastruktur: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;
-						"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Der Server macht nun tägliche Datenbank Sicherungen<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/> Internes: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;
-						"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Tasks befinden sich nun innerhalb der ProjectDto Klasse<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Swagger UI als bessere API Dokumentation hinzugefügt<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/></target>
+        <source><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Changes in 1.4.0:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;"/> New features: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Export and import of projects<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Add some basic shortcuts<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Copy existing project to create new one<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Projects now have a maximum size<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Store and show creation date of project<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/> Internals: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Typescript-strict mode enabled<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/></source>
+        <target><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Änderungen in 1.4.0:<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/><x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;"/> Neue Funktionen: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Export und Import von Projekten<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Grundlegende Shortcuts (Tastenkürzel) hinzugefügt<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Kopiere ein Projekt um ein neues zu erstellen<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Projekte haben ab jetzt eine maximale Größe<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Erstelldatum wird gespeichert und angezeigt<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/> Internes: <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul&gt;"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li&gt;"/>Typescript-strict Modus aktiviert<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li&gt;"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul&gt;"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/login/login.component.html</context>
           <context context-type="linenumber">21,45</context>
@@ -93,6 +98,14 @@
           <context context-type="linenumber">22</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="05b067876f7b8b0134bc4d547a333da82b168098" datatype="html">
+        <source>Import project</source>
+        <target xml:lang="de-DE" state="translated">Projekt importieren</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project/project-list/project-list.component.html</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="05e16b88c8826cf9aae20fd255f4b6088aadfa2b" datatype="html">
         <source>* you own this project</source>
         <target xml:lang="de-DE" state="translated">* Du besitzt dieses Projekt</target>
@@ -101,14 +114,29 @@
           <context context-type="linenumber">23</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="553204f35cd5b8f9d341963cf371cc0439a9fb0a" datatype="html">
-        <source>&lt; Back</source>
-        <target xml:lang="de-DE">&lt; Zurück</target>
+      <trans-unit id="cda31dbd724cf5f4fa7a4274d9120651490c8a8c" datatype="html">
+        <source>Back</source>
+        <target xml:lang="de-DE" state="translated">Zurück</target>
 <note from="description" priority="1">Back button</note><context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.html</context>
           <context context-type="linenumber">3</context>
         </context-group>
-
+      </trans-unit>
+      <trans-unit id="bd1c4789c0a6d29940e3d32c7137c5713433c98e" datatype="html">
+        <source>Project: <x id="INTERPOLATION" equiv-text="{{project.name}}"/></source>
+        <target xml:lang="de-DE" state="translated">Projekt: <x id="INTERPOLATION" equiv-text="{{project.name}}"/></target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project/project/project.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="0a83964edbc84334e367fe38d7a699f8d36fc489" datatype="html">
+        <source>Created on: <x id="INTERPOLATION" equiv-text="{{project.creationDate | date:&apos;longDate&apos;}}"/></source>
+        <target xml:lang="de-DE" state="translated">Erstellt am: <x id="INTERPOLATION" equiv-text="{{project.creationDate | date:&apos;longDate&apos;}}"/></target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project/project/project.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="4a22c6843133f0b0d7dc0d28f864f2f90c1de7ad" datatype="html">
         <source>Description:</source>
@@ -127,28 +155,20 @@
         </context-group>
 
       </trans-unit>
-      <trans-unit id="4d13a9cd5ed3dcee0eab22cb25198d43886942be" datatype="html">
-        <source>Users</source>
-        <target xml:lang="de-DE">Benutzer</target>
+      <trans-unit id="78870db886eeb5169a1d59babdb2ac0f57841edd" datatype="html">
+        <source>Users:</source>
+        <target xml:lang="de-DE">Benutzer:</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.html</context>
           <context context-type="linenumber">24</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="121cc5391cd2a5115bc2b3160379ee5b36cd7716" datatype="html">
-        <source>Settings</source>
-        <target xml:lang="de-DE">Einstellungen</target>
+      <trans-unit id="fbc3f04cdcff6259abdccd276ed730b1948e3c61" datatype="html">
+        <source>Settings:</source>
+        <target xml:lang="de-DE">Einstellungen:</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project/project.component.html</context>
           <context context-type="linenumber">39</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="586a5fd72602b5b14ec0c55f84814de47bb21e3a" datatype="html">
-        <source>Tasks</source>
-        <target xml:lang="de-DE">Aufgaben</target>
-<context-group purpose="location">
-          <context context-type="sourcefile">src/app/task/task-list/task-list.component.html</context>
-          <context context-type="linenumber">1</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bc545564a19ac8305bff6a4c3f2d0810792b08c4" datatype="html">
@@ -223,9 +243,9 @@
           <context context-type="linenumber">1</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="5c5cd4f8e377c2f2bad0d4e26e401f83d777dbfc" datatype="html">
-        <source>&lt; Cancel</source>
-        <target xml:lang="de-DE" state="translated">&lt; Abbrechen</target>
+      <trans-unit id="d7b35c384aecd25a516200d6921836374613dfe7" datatype="html">
+        <source>Cancel</source>
+        <target xml:lang="de-DE" state="translated">Abbrechen</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">3</context>
@@ -261,6 +281,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/project-creation/project-creation.component.html</context>
           <context context-type="linenumber">20</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/task/task-list/task-list.component.html</context>
+          <context context-type="linenumber">1</context>
         </context-group>
       </trans-unit>
       <trans-unit id="616e206cb4f25bd5885fc35925365e43cf5fb929" datatype="html">
@@ -353,6 +377,14 @@
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/project-settings/project-settings.component.html</context>
           <context context-type="linenumber">18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5f19586aba912ec6eb123ec5ab609a3bcc073066" datatype="html">
+        <source>Export</source>
+        <target xml:lang="de-DE" state="translated">Exportieren</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project/project-settings/project-settings.component.html</context>
+          <context context-type="linenumber">24</context>
         </context-group>
       </trans-unit>
       <trans-unit id="52c9a103b812f258bcddc3d90a6e3f46871d25fe" datatype="html">
@@ -507,6 +539,14 @@
           <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="52bceca85970cf340ba25a105c9dede10bc4afbe" datatype="html">
+        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;lnr lnr-warning color-error&quot;&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>Result with <x id="INTERPOLATION" equiv-text="{{amountTasksAfterDividing}}"/> tasks is too large, only <x id="INTERPOLATION_1" equiv-text="{{maxTasksPerProject}}"/> allowed.</source>
+        <target><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;lnr lnr-warning color-error&quot;&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>Ergebnis mit <x id="INTERPOLATION" equiv-text="{{amountTasksAfterDividing}}"/> Tasks ist zu groß, nur <x id="INTERPOLATION_1" equiv-text="{{maxTasksPerProject}}"/> erlaubt.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-divide/shape-divide.component.html</context>
+          <context context-type="linenumber">28</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="1c222c958cc86240c7e3e7f38ce8c730fda6f17f" datatype="html">
         <source>Upload a GeoJSON, OSM-XML, GPX, EsriJson, KML or WKT file, which contains polygons. Each polygon will result in a single task.</source>
         <target xml:lang="de-DE" state="translated">Eine Datei im GeoJSON, OSM-XML, GPX, EsriJson, KML oder WKT Format hochladen, die Polygone enthält. Jedes Polygon wird zu einer eigenen Aufgabe.</target>
@@ -521,6 +561,30 @@
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/project/shape-upload/shape-upload.component.html</context>
           <context context-type="linenumber">6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ad4ff0b5dabb73b45a369d9b8b75c4cccab8cdea" datatype="html">
+        <source>Import:</source>
+        <target xml:lang="de-DE" state="translated">Import:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="f9cc69a618eda0298d87de6903f37c3a98c1fef5" datatype="html">
+        <source>Import an existing project from your computer. Existing properties will be overwritten.</source>
+        <target xml:lang="de-DE" state="translated">Importiere ein bestehendes Projekt von deinem Computer. Bereits gesetzte Eigenschaften werden überschrieben.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="82f7c3df9268079ecc5edc0e0662c956d90dff5b" datatype="html">
+        <source>Upload project</source>
+        <target xml:lang="de-DE" state="translated">Projekt hochladen</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.html</context>
+          <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
       <trans-unit id="d8ef47c8eceb33c1cef17101c49af48ce53295f8" datatype="html">
@@ -618,9 +682,21 @@
       <trans-unit id="ERROR_COULD_NOT_UPLOAD" datatype="html">
         <source>Could not upload file '<x id="INTERPOLATION" equiv-text="{{interp}}"/>'</source>
         <target xml:lang="de-DE" state="translated">Konnte die Datei '<x id="INTERPOLATION" equiv-text="{{interp}}"/>' nicht hochladen</target>
-<context-group purpose="location">
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/project-import/project-import.component.ts</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.ts</context>
+          <context context-type="linenumber">49</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project/project-list/project-list.component.ts</context>
+          <context context-type="linenumber">101</context>
+        </context-group>
+        <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
-          <context context-type="linenumber">6</context>
+          <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ERROR_OVERPASS_NO_POLYGONS" datatype="html">
@@ -637,6 +713,14 @@
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="19229f72ffd8a140a8336dbac75fd95cf0702648" datatype="html">
+        <source>Upload:</source>
+        <target xml:lang="de-DE" state="translated">Hochladen:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/shape-upload/shape-upload.component.html</context>
+          <context context-type="linenumber">1</context>
         </context-group>
       </trans-unit>
       <trans-unit id="WARN_ALREADY_MEMBER" datatype="html">
@@ -743,6 +827,18 @@
           <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="ERROR_EXPORT_PROJ" datatype="html">
+        <source>Creating project export failed</source>
+        <target xml:lang="de-DE" state="translated">Erstellung des Projekt-Exports fehlgeschlagen</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project/project-settings/project-settings.component.ts</context>
+          <context context-type="linenumber">129</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="WARN_PROJECT_REMOVED" datatype="html">
         <source>The project &apos;<x id="INTERPOLATION" equiv-text="{{interp}}"/>&apos; has been removed</source>
         <target xml:lang="de-DE" state="translated">Das Projekt &apos;<x id="INTERPOLATION" equiv-text="{{interp}}"/>&apos; wurde entfernt</target>
@@ -799,9 +895,9 @@
           <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="TABS_UPLOAD" datatype="html">
-        <source>Upload</source>
-        <target xml:lang="de-DE" state="translated">Hochladen</target>
+      <trans-unit id="TABS_IMPORT" datatype="html">
+        <source>Import</source>
+        <target xml:lang="de-DE" state="translated">Importieren</target>
 <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">30</context>
@@ -825,7 +921,7 @@
       </trans-unit>
       <trans-unit id="TASK_MAP_DONE" datatype="html">
         <source>DONE</source>
-        <target state="translated">FERTIG</target>
+        <target xml:lang="de-DE" state="translated">FERTIG</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">34</context>
@@ -833,7 +929,7 @@
       </trans-unit>
       <trans-unit id="TASK_YOU" datatype="html">
         <source>you</source>
-        <target state="translated">du</target>
+        <target xml:lang="de-DE" state="translated">du</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
           <context context-type="linenumber">35</context>
@@ -841,7 +937,7 @@
       </trans-unit>
       <trans-unit id="e28ee80cd3a124e109793180dfd1f8d8067dcc6b" datatype="html">
         <source>Zoom in</source>
-        <target>Vergrößern</target>
+        <target xml:lang="de-DE" state="translated">Vergrößern</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
           <context context-type="linenumber">1</context>
@@ -849,15 +945,51 @@
       </trans-unit>
       <trans-unit id="a3dfc58748f790fa096cf3c5fc331f90846e1772" datatype="html">
         <source>Zoom out</source>
-        <target>Verkleinern</target>
+        <target xml:lang="de-DE" state="translated">Verkleinern</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
           <context context-type="linenumber">2</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="f896586cbd0e03acb0c814279a915abb0a1334a9" datatype="html">
+        <source>No projects available!</source>
+        <target xml:lang="de-DE" state="translated">Keine Projekte verfügbar!</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/copy-project/copy-project.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="088c0351e15610a947eeb2641a4d4500a7d6ba5e" datatype="html">
+        <source>Available projects:</source>
+        <target xml:lang="de-DE" state="translated">Verfügbare Projekte:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/copy-project/copy-project.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="a059709f71aa4c0ac219e160e78a738682ca6a36" datatype="html">
+        <source>Import</source>
+        <target xml:lang="de-DE" state="translated">Importieren</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/copy-project/copy-project.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ERROR_COULD_NOT_IMPORT" datatype="html">
+        <source>Could not import project &apos;<x id="INTERPOLATION" equiv-text="this.selectedProject.name"/>&apos;</source>
+        <target xml:lang="de-DE" state="translated">Konnte Projekt &apos;<x id="INTERPOLATION" equiv-text="this.selectedProject.name"/>&apos; nicht importieren</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/project-creation/copy-project/copy-project.component.ts</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/translation-extraction.component.ts</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="4f5724e5ad8f6385d335b6705c780eae7110ec70" datatype="html">
         <source>Draw new polygon</source>
-        <target>Neues Polygon zeichnen</target>
+        <target xml:lang="de-DE" state="translated">Neues Polygon zeichnen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
           <context context-type="linenumber">6</context>
@@ -865,7 +997,7 @@
       </trans-unit>
       <trans-unit id="46205b8c134572eadf2daeea8c8dce5974a32216" datatype="html">
         <source>Edit polygon</source>
-        <target>Polygon bearbeiten</target>
+        <target xml:lang="de-DE" state="translated">Polygon bearbeiten</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
           <context context-type="linenumber">7</context>
@@ -873,7 +1005,7 @@
       </trans-unit>
       <trans-unit id="07719975214d77aa88d781887c00cd217dec8be8" datatype="html">
         <source>Remove polygon</source>
-        <target>Polygon entfernen</target>
+        <target xml:lang="de-DE" state="translated">Polygon entfernen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/drawing-toolbar/drawing-toolbar.component.html</context>
           <context context-type="linenumber">8</context>
@@ -881,7 +1013,7 @@
       </trans-unit>
       <trans-unit id="628b295733edba52d46466df62992b41b162a162" datatype="html">
         <source>There are no tasks here yet. Use the pencil-tool to draw tasks or import tasks via the &quot;Upload&quot; or &quot;Remote&quot; tab.</source>
-        <target>Es existieren noch keine Aufgaben. Nutze das Stift-Werkzeug um welche zu erstellen oder importiere welche über den "Hochladen" oder "Remote" Tab.</target>
+        <target xml:lang="de-DE" state="translated">Es existieren noch keine Aufgaben. Nutze das Stift-Werkzeug um welche zu erstellen oder importiere welche über den "Hochladen" oder "Remote" Tab.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/project-creation/task-draft-list/task-draft-list.component.html</context>
           <context context-type="linenumber">2</context>

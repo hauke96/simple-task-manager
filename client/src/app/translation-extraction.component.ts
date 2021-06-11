@@ -17,6 +17,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
         <span i18n="@@ERROR_LOAD_PROJECTS">Could not load projects</span>
         <span i18n="@@ERROR_LIVE_UPDATE">Could not initialize live-updates</span>
         <span i18n="@@ERROR_COULD_NOT_UPLOAD">Could not upload file '{{interp}}'</span>
+        <span i18n="@@ERROR_COULD_NOT_IMPORT">Could not import project '{{interp}}'</span>
         <span i18n="@@ERROR_OVERPASS_NO_POLYGONS">No polygons exist or data has unknown format. Supported formats are: GeoJson, OSM-XML, GPX, KML, EsriJson and WKT.</span>
         <span i18n="@@ERROR_UNABLE_LOAD_URL">Unable to load data from remote URL</span>
         <span i18n="@@WARN_ALREADY_MEMBER">User '{{interp}}' is already a member of this project</span>
@@ -32,6 +33,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
         <span i18n="@@ERROR_LEAVE_PROJ">Could not leave project</span>
         <span i18n="@@INFO_SUCCESS_UPDATE_PROJ">Successfully updated project</span>
         <span i18n="@@ERROR_UPDATE_PROJ_TITLE">Unable to update project title and/or description</span>
+        <span i18n="@@ERROR_EXPORT_PROJ">Creating project export failed</span>
         <span i18n="@@WARN_PROJECT_REMOVED">The project '{{interp}}' has been removed</span>
         <span i18n="@@WARN_REMOVED_USER_PROJECT">You have been removed from project '{{interp}}'</span>
         <span i18n="@@ERROR_NOT_REMOVE_USER">Could not remove user</span>
@@ -39,7 +41,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 		    <span i18n="@@TABS_TASKS">Tasks</span>
 		    <span i18n="@@TABS_USERS">Users</span>
 		    <span i18n="@@TABS_SETTINGS">Settings</span>
-		    <span i18n="@@TABS_UPLOAD">Upload</span>
+		    <span i18n="@@TABS_IMPORT">Import</span>
 		    <span i18n="@@TABS_REMOTE">Remote</span>
 		    <span i18n="@@TABS_PROPERTIES">Properties</span>
 		    <span i18n="@@TASK_MAP_DONE">DONE</span>

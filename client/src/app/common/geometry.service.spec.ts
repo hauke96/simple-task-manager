@@ -44,10 +44,12 @@ describe('GeometryService', () => {
     expect(newFeature[0].get('__123')).toEqual('456__');
   });
 
-  it('should not fail on null', () => {
+  it('should not fail on empty geometry', () => {
+    // @ts-ignore
     let f = service.toUsableTaskFeature(null);
     expect(f).toEqual([]);
 
+    // @ts-ignore
     f = service.toUsableTaskFeature(undefined);
     expect(f).toEqual([]);
 
@@ -57,6 +59,9 @@ describe('GeometryService', () => {
 
     // @ts-ignore
     f = service.toUsableTaskFeature('');
+    expect(f).toEqual([]);
+
+    f = service.toUsableTaskFeature(new Feature());
     expect(f).toEqual([]);
   });
 
@@ -99,7 +104,9 @@ describe('GeometryService', () => {
     expect(service.parseData('{}')).toEqual([]);
     expect(service.parseData('{a:"b"}')).toEqual([]);
     expect(service.parseData('{\n"type": "FeatureCollection",\n"crs": {\n"type": "name",\n"properties": {\n"name": "EPSG:3857"\n}\n},\n"features": [{\n"type": "Feature",\n"geometry": {\n"type": "Point",\n"coordinates": [0,')).toEqual([]);
+    // @ts-ignore
     expect(service.parseData(null)).toEqual([]);
+    // @ts-ignore
     expect(service.parseData(undefined)).toEqual([]);
     expect(service.parseData(new ArrayBuffer(0))).toEqual([]);
   });

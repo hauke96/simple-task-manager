@@ -8,16 +8,18 @@ import (
 	"github.com/lib/pq"
 	"github.com/pkg/errors"
 	"strconv"
+	"time"
 )
 
 // Helper struct to read raw data from database. The "Project" struct has higher-level structure (e.g. arrays), which we
 // don't have in the database columns.
 type projectRow struct {
-	id          int
-	name        string
-	users       []string
-	owner       string
-	description string
+	id           int
+	name         string
+	users        []string
+	owner        string
+	description  string
+	creationDate *time.Time
 }
 
 type storePg struct {
@@ -81,9 +83,9 @@ func (s *storePg) getProjectByTask(taskId string) (*Project, error) {
 }
 
 // addProject adds the given project draft and assigns an ID to the project.
-func (s *storePg) addProject(draft *ProjectDraftDto) (*Project, error) {
-	query := fmt.Sprintf("INSERT INTO %s (name, description, users, owner) VALUES($1, $2, $3, $4) RETURNING *", s.table)
-	params := []interface{}{draft.Name, draft.Description, pq.Array(draft.Users), draft.Owner}
+func (s *storePg) addProject(draft *ProjectDraftDto, creationDate time.Time) (*Project, error) {
+	query := fmt.Sprintf("INSERT INTO %s (name, description, users, owner, creation_date) VALUES($1, $2, $3, $4, $5) RETURNING *", s.table)
+	params := []interface{}{draft.Name, draft.Description, pq.Array(draft.Users), draft.Owner, creationDate}
 
 	s.LogQuery(query, params...)
 	project, err := s.execQueryWithoutTasks(query, params...)
@@ -181,7 +183,7 @@ func (s *storePg) execQuery(query string, params ...interface{}) (*Project, erro
 // rowToProject turns the current row into a Project object. This does not close the row.
 func (s *storePg) rowToProject(rows *sql.Rows) (*Project, error) {
 	var p projectRow
-	err := rows.Scan(&p.id, &p.name, &p.owner, &p.description, pq.Array(&p.users))
+	err := rows.Scan(&p.id, &p.name, &p.owner, &p.description, pq.Array(&p.users), &p.creationDate)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not scan rows")
 	}
@@ -193,6 +195,11 @@ func (s *storePg) rowToProject(rows *sql.Rows) (*Project, error) {
 	result.Users = p.users
 	result.Owner = p.owner
 	result.Description = p.description
+
+	if p.creationDate != nil {
+		t := p.creationDate.UTC()
+		result.CreationDate = &t
+	}
 
 	return &result, nil
 }

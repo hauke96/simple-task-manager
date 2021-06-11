@@ -10,12 +10,12 @@ import { ProjectService } from '../../project/project.service';
 import { Project } from '../../project/project.material';
 import { Feature } from 'ol';
 import { MockRouter } from '../../common/mock-router';
-import { Task, TestTaskFeature } from '../../task/task.material';
+import { Task, TaskDraft, TestTaskFeature } from '../../task/task.material';
 import { User } from '../../user/user.material';
 import { SelectEvent } from 'ol/interaction/Select';
 import { DrawEvent } from 'ol/interaction/Draw';
 import { TaskDraftService } from '../task-draft.service';
-import { TaskDraft } from '../../task/task.material';
+import { CurrentUserService } from '../../user/current-user.service';
 
 describe('ProjectCreationComponent', () => {
   let component: ProjectCreationComponent;
@@ -23,6 +23,7 @@ describe('ProjectCreationComponent', () => {
   let projectService: ProjectService;
   let taskDraftService: TaskDraftService;
   let routerMock: MockRouter;
+  let currentUserService: CurrentUserService;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -42,13 +43,14 @@ describe('ProjectCreationComponent', () => {
       .compileComponents();
 
     projectService = TestBed.inject(ProjectService);
+    taskDraftService = TestBed.inject(TaskDraftService);
+    currentUserService = TestBed.inject(CurrentUserService);
     routerMock = TestBed.inject(Router);
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ProjectCreationComponent);
     component = fixture.componentInstance;
-    taskDraftService = fixture.debugElement.injector.get(TaskDraftService);
     fixture.detectChanges();
   });
 
@@ -81,6 +83,7 @@ describe('ProjectCreationComponent', () => {
   it('should correctly create project', () => {
     const name = 'test name';
 
+    spyOn(currentUserService, 'getUserId').and.returnValue('123');
     const spyService = spyOn(projectService, 'createNewProject').and.returnValue(of(createProject()));
     const spyRouter = spyOn(routerMock, 'navigate').and.callThrough();
 
@@ -93,6 +96,9 @@ describe('ProjectCreationComponent', () => {
   });
 
   it('should not navigate on fail', () => {
+    const name = 'test name';
+
+    spyOn(currentUserService, 'getUserId').and.returnValue('123');
     const spyService = spyOn(projectService, 'createNewProject').and.returnValue(throwError('BOOM'));
     const spyRouter = spyOn(routerMock, 'navigate').and.callThrough();
 
@@ -101,6 +107,21 @@ describe('ProjectCreationComponent', () => {
     component.createProject(name, 100, 'lorem ipsum', feature);
 
     expect(spyService).toHaveBeenCalled();
+    expect(spyRouter).not.toHaveBeenCalled();
+  });
+
+  it('should not create project with missing user ID', () => {
+    const name = 'test name';
+
+    spyOn(currentUserService, 'getUserId').and.returnValue(undefined);
+    const spyService = spyOn(projectService, 'createNewProject');
+    const spyRouter = spyOn(routerMock, 'navigate');
+
+    const feature = getDummyFeatures();
+
+    component.createProject(name, 100, 'lorem ipsum', feature);
+
+    expect(spyService).not.toHaveBeenCalled();
     expect(spyRouter).not.toHaveBeenCalled();
   });
 
@@ -222,7 +243,7 @@ describe('ProjectCreationComponent', () => {
       target: undefined,
       preventDefault: undefined,
       stopPropagation: undefined
-    } as DrawEvent);
+    } as unknown as DrawEvent);
 
     expect(component.vectorSource.getFeatures().length).toEqual(1);
     expect(component.vectorSource.getFeatures()[0].get('id')).toEqual('0');
@@ -243,7 +264,7 @@ describe('ProjectCreationComponent', () => {
       preventDefault: undefined,
       target: undefined,
       mapBrowserEvent: undefined
-    } as SelectEvent);
+    } as unknown as SelectEvent);
 
     expect(spy).toHaveBeenCalledWith('123');
   });
@@ -262,7 +283,7 @@ describe('ProjectCreationComponent', () => {
       preventDefault: undefined,
       target: undefined,
       mapBrowserEvent: undefined
-    } as SelectEvent);
+    } as unknown as SelectEvent);
 
     expect(spySelect).toHaveBeenCalledWith('123');
   });
@@ -277,11 +298,11 @@ describe('ProjectCreationComponent', () => {
   }
 
   function createProject() {
-    const t = new Task('567', undefined, 10, 100, TestTaskFeature);
+    const t = new Task('567', '', 10, 100, TestTaskFeature);
     const u1 = new User('test-user', '123');
     const u2 = new User('test-user2', '234');
     const u3 = new User('test-user3', '345');
-    return new Project('1', 'test project', 'lorem ipsum', [t], [u1, u2, u3], u1);
+    return new Project('1', 'test project', 'lorem ipsum', [t], [u1, u2, u3], u1, true, new Date(), 0, 0);
   }
 
   function getDummyFeatures() {
@@ -293,8 +314,8 @@ describe('ProjectCreationComponent', () => {
 
   function getDummyTasks(): TaskDraft[] {
     return [
-      new TaskDraft('1', 'name 1', new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]])),
-      new TaskDraft('1', 'name 1', new Polygon([[[4000, 4000], [5000, 6000], [6000, 4000], [4000, 4000]]]))
+      new TaskDraft('1', 'name 1', new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]]), 0),
+      new TaskDraft('1', 'name 1', new Polygon([[[4000, 4000], [5000, 6000], [6000, 4000], [4000, 4000]]]), 0)
     ];
   }
 });

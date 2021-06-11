@@ -1,10 +1,10 @@
 <h1 i18n>Projects</h1>
 <div *ngIf="projects?.length !== 0">
 	<div *ngFor="let p of projects" class="list-item" (click)="onProjectListItemClicked(p.id)">
-		<span>{{p.name}}</span>
-		<div class="list-item-column">
-			<span class="light-label">({{p.doneProcessPoints}}/{{p.totalProcessPoints}})</span>
-			<app-progress-bar [progressPoints]="p.doneProcessPoints" [totalPoints]="p.totalProcessPoints"></app-progress-bar>
+		<span class="wrap-label">{{p.name}}</span>
+		<div class="list-item-column no-wrap">
+			<span class="light-label">({{p.doneProcessPoints}} / {{p.totalProcessPoints}})</span>
+			<app-progress-bar class="progress-bar" [progressPoints]="p.doneProcessPoints" [totalPoints]="p.totalProcessPoints"></app-progress-bar>
 			<div class="admin-label">
 				<span class="light-label" *ngIf="p.owner.uid === currentUserId">*</span>
 			</div>
@@ -17,6 +17,10 @@
 </div>
 
 <div class="bottom-line">
-	<button [routerLink]="['/new-project']" i18n>Create project</button>
+	<div>
+		<button [routerLink]="['/new-project']" i18n>Create project</button>
+		<input id="projectInput" type="file" content="Upload" accept=".json" (change)="onImportProjectClicked($event)" style="display:none;">
+		<button class="import-button" onclick="document.getElementById('projectInput').click();" i18n>Import project</button>
+	</div>
 	<span class="light-label" *ngIf="projects?.length !== 0" i18n>* you own this project</span>
 </div>

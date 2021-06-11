@@ -27,7 +27,7 @@ export class NotificationService {
   }
 
   // Returns the oldest message
-  public getError(): string {
+  public getError(): string | undefined {
     return this.errorMessages[0];
   }
 
@@ -53,7 +53,7 @@ export class NotificationService {
   }
 
   // Returns the oldest message
-  public getInfo(): string {
+  public getInfo(): string | undefined {
     return this.infoMessages[0];
   }
 
@@ -79,7 +79,7 @@ export class NotificationService {
   }
 
   // Returns the oldest message
-  public getWarning(): string {
+  public getWarning(): string | undefined {
     return this.warningMessages[0];
   }
 

@@ -10,10 +10,10 @@ import (
 	"github.com/hauke96/simple-task-manager/server/task"
 	"github.com/hauke96/simple-task-manager/server/test"
 	"github.com/hauke96/simple-task-manager/server/util"
+	_ "github.com/lib/pq" // Make driver "postgres" usable
 	"github.com/pkg/errors"
 	"testing"
-
-	_ "github.com/lib/pq" // Make driver "postgres" usable
+	"time"
 )
 
 var (
@@ -33,7 +33,7 @@ func TestMain(m *testing.M) {
 
 func setup() {
 	config.LoadConfig("../config/test.json")
-	test.InitWithDummyData()
+	test.InitWithDummyData(config.Conf.DbUsername, config.Conf.DbPassword)
 	sigolo.LogLevel = sigolo.LOG_DEBUG
 
 	logger := util.NewLogger()
@@ -52,7 +52,10 @@ func setup() {
 
 func TestGetProjects(t *testing.T) {
 	h.Run(t, func() error {
-		// For Maria (being part of project 1 and 2)
+		//
+		// Maria
+		// Member of project 1 and 2
+		//
 		userProjects, err := s.GetProjects("Maria")
 		if err != nil {
 			return err
@@ -80,20 +83,37 @@ func TestGetProjects(t *testing.T) {
 			userProjects[1].Tasks[4].Id != "7" {
 			return errors.New("Tasks of project 1 not matching")
 		}
+		if userProjects[0].CreationDate != nil {
+			return errors.New(fmt.Sprintf("Creation date of project 1 should be NIL but was %s", userProjects[0].CreationDate))
+		}
+		projectCreationDate := time.Date(2021,2,13,5,16,55,150015000, time.UTC)
+		if !userProjects[1].CreationDate.Equal(projectCreationDate) {
+			return errors.New(fmt.Sprintf("Creation date of project 1 should be %s but was %s", projectCreationDate, userProjects[1].CreationDate))
+		}
 
-		// For Peter (being part of only project 1)
-		userProjects, err = s.GetProjects("Peter")
+		//
+		// Otto
+		// Member of project 3
+		//
+		userProjects, err = s.GetProjects("Otto")
 		if err != nil {
 			return errors.New(fmt.Sprintf("Getting should work: %+v", err))
 		}
-		if !contains("1", userProjects) {
-			return errors.New("Peter is in deed project 1")
+		if !contains("3", userProjects) {
+			return errors.New("Peter should be in project 3")
+		}
+		if contains("1", userProjects) {
+			return errors.New("Peter is not in project 1")
 		}
 		if contains("2", userProjects) {
 			return errors.New("Peter is not in project 2")
 		}
-		if userProjects[0].TotalProcessPoints != 10 || userProjects[0].DoneProcessPoints != 0 {
+		if userProjects[0].TotalProcessPoints != 2000 || userProjects[0].DoneProcessPoints != 345 {
 			return errors.New("Process points on project not set correctly")
+		}
+		projectCreationDate = time.Date(2020,12,22,14,25,23,672123000, time.UTC)
+		if !userProjects[0].CreationDate.Equal(projectCreationDate) {
+			return errors.New(fmt.Sprintf("Creation date of project 3 should be %s but was %s", projectCreationDate, userProjects[0].CreationDate))
 		}
 
 		return nil
@@ -223,6 +243,9 @@ func TestAddAndGetProject(t *testing.T) {
 		if newProject.Owner != user {
 			return errors.New(fmt.Sprintf("Owner should be '%s' but was '%s'", user, newProject.Owner))
 		}
+		if newProject.CreationDate == nil {
+			return errors.New("Creation date should be set but was NIL")
+		}
 		return nil
 	})
 }
@@ -260,7 +283,7 @@ func TestAddProjectWithInvalidParameters(t *testing.T) {
 		}
 
 		// Too long description not allowed
-		maxDescriptionLength = 10 // lower the border for test purposes
+		config.Conf.MaxDescriptionLength = 10 // lower the border for test purposes
 		p = ProjectDraftDto{
 			Owner:       "foo",
 			Users:       []string{"foo"},
@@ -601,19 +624,42 @@ func TestUpdateDescription(t *testing.T) {
 			return errors.New(fmt.Sprintf("Process points on project not set correctly"))
 		}
 
-		// With non-owner (Maria)
+		return nil
+	})
+}
 
-		_, err = s.UpdateDescription("1", "skfgkf", "Maria")
+func TestUpdateDescriptionWithNonOwnerUser(t *testing.T) {
+	h.Run(t, func() error {
+		_, err := s.UpdateDescription("1", "skfgkf", "Maria")
 		if err == nil {
 			return errors.New("Updating description should not be possible for non-owner user Maria")
 		}
 
-		// Empty description
+		return nil
+	})
+}
 
-		_, err = s.UpdateDescription("1", "  ", "Peter")
+func TestUpdateDescriptionWithEmptyText(t *testing.T) {
+	h.Run(t, func() error {
+		_, err := s.UpdateDescription("1", "  ", "Peter")
 		if err == nil {
 			return errors.New("Updating description should not be possible with empty description")
 		}
+
+		return nil
+	})
+}
+
+func TestUpdateDescriptionWithTooLargeText(t *testing.T) {
+	h.Run(t, func() error {
+		config.Conf.MaxDescriptionLength = 10 // lower the border for test purposes
+		newDescription := "This is some too long description"
+
+		_, err := s.UpdateDescription("1", newDescription, "Peter")
+		if err == nil {
+			return errors.New(fmt.Sprintf("Updating project description should not work. Allowed description length %d but was %d", config.Conf.MaxDescriptionLength, len(newDescription)))
+		}
+
 		return nil
 	})
 }

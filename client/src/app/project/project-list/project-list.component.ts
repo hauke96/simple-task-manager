@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CurrentUserService } from '../../user/current-user.service';
-import { Project } from '../project.material';
+import { Project, ProjectExport } from '../project.material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectService } from '../project.service';
 import { Unsubscriber } from '../../common/unsubscriber';
 import { NotificationService } from '../../common/notification.service';
+import { ProjectImportService } from '../../project-creation/project-import.service';
 
 @Component({
   selector: 'app-project-list',
@@ -12,14 +13,15 @@ import { NotificationService } from '../../common/notification.service';
   styleUrls: ['./project-list.component.scss']
 })
 export class ProjectListComponent extends Unsubscriber implements OnInit {
-  public projects: Project[];
+  public projects: Project[] = [];
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private currentUserService: CurrentUserService,
     private projectService: ProjectService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private projectImportService: ProjectImportService
   ) {
     super();
   }
@@ -48,33 +50,56 @@ export class ProjectListComponent extends Unsubscriber implements OnInit {
         }
       }),
       this.projectService.projectDeleted.subscribe((removedProjectId: string) => {
-        if (!this.projects.map(p => p.id).includes(removedProjectId)) {
+        const project = this.projects.find(p => p.id === removedProjectId);
+        if (!project) {
           return;
         }
 
-        const project = this.projects.find(p => p.id === removedProjectId);
         this.notificationService.addInfo($localize`:@@WARN_PROJECT_REMOVED:The project '${project.name}:INTERPOLATION:' has been removed`);
 
         this.projects = this.projects.filter(p => p.id !== removedProjectId);
       }),
       this.projectService.projectUserRemoved.subscribe((projectId: string) => {
-        if (!this.projects.map(p => p.id).includes(projectId)) {
+        const project = this.projects.find(p => p.id === projectId);
+        if (!project) {
           return;
         }
 
-        const project = this.projects.find(p => p.id === projectId);
         this.notificationService.addInfo($localize`:@@WARN_REMOVED_USER_PROJECT:You have been removed from project '${project.name}:INTERPOLATION:'`);
 
         this.projects = this.projects.filter(p => p.id !== projectId);
-      })
+      }),
     );
   }
 
-  public get currentUserId(): string {
+  public get currentUserId(): string | undefined {
     return this.currentUserService.getUserId();
   }
 
   public onProjectListItemClicked(id: string) {
     this.router.navigate(['/project', id]);
+  }
+
+  onImportProjectClicked(event: Event) {
+    this.uploadFile(event, (e) => this.addProjectExport(e));
+  }
+
+  public addProjectExport(evt: Event) {
+    // @ts-ignore
+    const project = JSON.parse(evt.target?.result) as ProjectExport;
+    this.projectImportService.importProject(project);
+  }
+
+  private uploadFile(event: any, loadHandler: (evt: Event) => void) {
+    const reader = new FileReader();
+    const file = event.target.files[0];
+
+    reader.readAsText(file, 'UTF-8');
+
+    reader.onload = loadHandler;
+    reader.onerror = (evt) => {
+      console.error(evt);
+      this.notificationService.addError($localize`:@@ERROR_COULD_NOT_UPLOAD:Could not upload file '${(evt.target as any).files[0]}:INTERPOLATION:'`);
+    };
   }
 }

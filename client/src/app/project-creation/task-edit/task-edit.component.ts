@@ -18,7 +18,13 @@ export class TaskEditComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onTaskNameChanged(enteredName: any) {
-    this.taskDraftService.changeTaskName(this.task.id, enteredName);
+  onTaskNameChanged(evt: Event) {
+    const taskId = this.task.id;
+    if (!taskId) {
+      return;
+    }
+
+    // @ts-ignore
+    this.taskDraftService.changeTaskName(taskId, evt.target?.value);
   }
 }

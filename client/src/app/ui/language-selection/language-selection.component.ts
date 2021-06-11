@@ -18,7 +18,7 @@ export class LanguageSelectionComponent implements OnInit {
     this.languages = this.selectedLanguageService.getKnownLanguages();
   }
 
-  get selectedLanguage(): Language {
+  get selectedLanguage(): Language | undefined {
     return this.selectedLanguageService.getSelectedLanguage();
   }
 

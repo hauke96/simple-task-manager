@@ -31,7 +31,7 @@ func TestMain(m *testing.M) {
 
 func setup() {
 	config.LoadConfig("../config/test.json")
-	test.InitWithDummyData()
+	test.InitWithDummyData(config.Conf.DbUsername, config.Conf.DbPassword)
 	sigolo.LogLevel = sigolo.LOG_DEBUG
 
 	logger := util.NewLogger()
@@ -94,6 +94,7 @@ func TestAddTasks(t *testing.T) {
 	h.Run(t, func() error {
 		rawTask := TaskDraftDto{
 			MaxProcessPoints: 250,
+			ProcessPoints:    123,
 			Geometry:         "{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[0,0],[1,0]]]},\"properties\":null}",
 		}
 
@@ -106,7 +107,7 @@ func TestAddTasks(t *testing.T) {
 		if addedTask.AssignedUser != "" ||
 			addedTask.MaxProcessPoints != rawTask.MaxProcessPoints ||
 			addedTask.Geometry != rawTask.Geometry ||
-			addedTask.ProcessPoints != 0 {
+			addedTask.ProcessPoints != rawTask.ProcessPoints {
 			return errors.New(fmt.Sprintf("Added task does not match:\n%v\n%v\n", rawTask, addedTask))
 		}
 		return nil

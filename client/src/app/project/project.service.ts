@@ -1,8 +1,8 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, mergeMap, tap } from 'rxjs/operators';
-import { Project, ProjectAddDto, ProjectDraftDto, ProjectDto } from './project.material';
-import { Task, TaskDraftDto, TaskDto } from './../task/task.material';
+import { Project, ProjectAddDto, ProjectDraftDto, ProjectDto, ProjectExport } from './project.material';
+import { TaskDraftDto } from './../task/task.material';
 import { TaskService } from './../task/task.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
@@ -83,6 +83,9 @@ export class ProjectService {
       .pipe(mergeMap(dto => this.toProject(dto)));
   }
 
+  /**
+   * Creates a new project on the server with empty tasks.
+   */
   public createNewProject(
     name: string,
     maxProcessPoints: number,
@@ -101,7 +104,7 @@ export class ProjectService {
 
     const p = new ProjectAddDto(
       new ProjectDraftDto(name, projectDescription, users, owner),
-      geometries.map(g => new TaskDraftDto(maxProcessPoints, g))
+      geometries.map(g => new TaskDraftDto(maxProcessPoints, 0, g))
     );
 
     return this.http.post<ProjectDto>(environment.url_projects, JSON.stringify(p))
@@ -140,6 +143,10 @@ export class ProjectService {
       );
   }
 
+  public getProjectExport(projectId: string): Observable<ProjectExport> {
+    return this.http.get<ProjectExport>(environment.url_projects_export.replace('{id}', projectId));
+  }
+
   public leaveProject(projectId: string): Observable<any> {
     return this.http.delete(environment.url_projects_users.replace('{id}', projectId));
   }
@@ -149,6 +156,10 @@ export class ProjectService {
     return this.toProjects([dto]).pipe(map(p => p[0]));
   }
 
+  importProject(projectExport: ProjectExport): Observable<any> {
+    return this.http.post(environment.url_projects_import, JSON.stringify(projectExport));
+  }
+
   // Gets user names and turns the DTOs into Projects
   public toProjects(dtos: ProjectDto[]): Observable<Project[]> {
     if (!dtos || dtos.length === 0) {
@@ -156,7 +167,7 @@ export class ProjectService {
     }
 
     const projectUserIDs = dtos.map(p => [p.owner, ...p.users]); // array of arrays
-    let userIDs = [].concat.apply([], projectUserIDs); // array of strings
+    let userIDs = ([] as string[]).concat(...projectUserIDs); // array of strings
     userIDs = [...new Set(userIDs)]; // array of strings without duplicates
 
     return this.userService.getUsersByIds(userIDs)
@@ -168,6 +179,7 @@ export class ProjectService {
             const owner = allUsers.find(u => p.owner === u.uid);
             const users = allUsers.filter(u => p.users.includes(u.uid));
 
+            // @ts-ignore As we assume that getUsersByIds returns users for all given user IDs
             projects.push(this.toProjectWithTasks(p, users, owner));
           }
 
@@ -184,12 +196,13 @@ export class ProjectService {
       p.id,
       p.name,
       p.description,
-      p.tasks.map(dto => this.taskService.toTask(dto)),
+      p.tasks.map(dto => this.taskService.toTaskWithUsers(dto, users)),
       users,
       owner,
       p.needsAssignment,
-      p.totalProcessPoints,
-      p.doneProcessPoints
+      p.creationDate,
+      p.totalProcessPoints ?? 0,
+      p.doneProcessPoints ?? 0
     ));
   }
 }

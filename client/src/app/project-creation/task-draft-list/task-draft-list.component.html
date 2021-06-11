@@ -3,7 +3,7 @@
 </div>
 <div *ngFor="let t of tasks" class="list-item"
 	 [ngClass]="{'list-item-selected': t.id === selectedTask?.id}"
-	(click)="onTaskClicked(t.id)">
+	 (click)="onTaskClicked(t.id)">
 	<div>
 		{{t.name}}
 	</div>

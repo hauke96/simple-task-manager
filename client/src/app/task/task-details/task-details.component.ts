@@ -6,6 +6,7 @@ import { NotificationService } from '../../common/notification.service';
 import { User } from '../../user/user.material';
 import { UserService } from '../../user/user.service';
 import { Unsubscriber } from '../../common/unsubscriber';
+import { ShortcutService } from '../../common/shortcut.service';
 
 @Component({
   selector: 'app-task-details',
@@ -16,15 +17,16 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
   @Input() public projectId: string;
   @Input() public needUserAssignment: boolean;
 
-  public task: Task;
+  public task?: Task;
   public newProcessPoints: number;
-  public assignedUserName: string;
+  public assignedUserName?: string;
 
   constructor(
     private taskService: TaskService,
     private currentUserService: CurrentUserService,
     private userService: UserService,
     private notificationService: NotificationService,
+    private shortcutService: ShortcutService
   ) {
     super();
   }
@@ -34,6 +36,35 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
     this.unsubscribeLater(
       this.taskService.selectedTaskChanged.subscribe((task: Task) => {
         this.selectTask(task);
+      }),
+      this.shortcutService.add('a').subscribe(() => {
+        // we need assignment on tasks  AND  no user assigned
+        if (this.needUserAssignment && !this.task?.assignedUser) {
+          this.onAssignButtonClicked();
+        }
+      }),
+      this.shortcutService.add('shift.a').subscribe(() => {
+        // we need assignment on tasks  AND  current user is assigned
+        if (this.needUserAssignment
+          && !!this.task?.assignedUser
+          && this.task?.assignedUser.uid === this.currentUserId
+        ) {
+          this.onUnassignButtonClicked();
+        }
+      }),
+      this.shortcutService.add('d').subscribe(() => {
+        // task not done  AND  ( we don't need assignment  OR  current user is assigned )
+        if (!this.task?.isDone
+          && (!this.needUserAssignment || !!this.task?.assignedUser && this.task.assignedUser.uid === this.currentUserId)
+        ) {
+          this.onDoneButtonClick();
+        }
+      }),
+      this.shortcutService.add('j').subscribe(() => {
+        this.onOpenJosmButtonClicked();
+      }),
+      this.shortcutService.add('i').subscribe(() => {
+        this.onOpenOsmOrgButtonClicked();
       })
     );
   }
@@ -46,7 +77,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
     this.updateUser();
   }
 
-  public get currentUserId(): string {
+  public get currentUserId(): string | undefined {
     return this.currentUserService.getUserId();
   }
 
@@ -68,6 +99,10 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
   }
 
   public onAssignButtonClicked() {
+    if (!this.task) {
+      return;
+    }
+
     this.taskService.assign(this.task.id)
       .subscribe(
         () => {
@@ -79,6 +114,10 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
   }
 
   public onUnassignButtonClicked() {
+    if (!this.task) {
+      return;
+    }
+
     this.taskService.unassign(this.task.id)
       .subscribe(
         () => {
@@ -90,6 +129,10 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
   }
 
   public onSaveButtonClick() {
+    if (!this.task) {
+      return;
+    }
+
     this.taskService.setProcessPoints(this.task.id, this.newProcessPoints)
       .subscribe(
         () => {
@@ -101,6 +144,10 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
   }
 
   public onDoneButtonClick() {
+    if (!this.task) {
+      return;
+    }
+
     this.taskService.setProcessPoints(this.task.id, this.task.maxProcessPoints)
       .subscribe(
         () => {
@@ -112,6 +159,10 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
   }
 
   public onOpenJosmButtonClicked() {
+    if (!this.task) {
+      return;
+    }
+
     this.taskService.openInJosm(this.task, this.projectId)
       .subscribe(() => {
         },
@@ -121,6 +172,10 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
   }
 
   public onOpenOsmOrgButtonClicked() {
+    if (!this.task) {
+      return;
+    }
+
     this.taskService.openInOsmOrg(this.task, this.projectId);
   }
 }

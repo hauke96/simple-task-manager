@@ -7,7 +7,6 @@
 
 .percentage-label {
 	color: $color-gray-mid;
-	width: 7ex;
 	text-align: end;
 }
 
@@ -15,8 +14,6 @@
 	width: 100px;
 	padding: 2px;
 	margin-left: $space-base;
-	margin-right: $space-base;
-	//border-radius: 50%;
 	border: 1px solid $color-light;
 	display: flex;
 	justify-content: flex-start;

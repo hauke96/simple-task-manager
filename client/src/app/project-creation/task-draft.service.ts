@@ -2,10 +2,12 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { TaskDraft } from '../task/task.material';
 import { Feature } from 'ol';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class TaskDraftService {
   private tasks: TaskDraft[] = [];
-  private selectedTask: TaskDraft;
+  private selectedTask: TaskDraft | undefined;
 
   public tasksAdded: EventEmitter<TaskDraft[]> = new EventEmitter<TaskDraft[]>();
   public taskRemoved: EventEmitter<string> = new EventEmitter<string>();
@@ -32,7 +34,7 @@ export class TaskDraftService {
     this.taskSelected.emit(undefined);
   }
 
-  public getSelectedTask(): TaskDraft {
+  public getSelectedTask(): TaskDraft | undefined {
     return this.selectedTask;
   }
 
@@ -51,6 +53,10 @@ export class TaskDraftService {
 
   public changeTaskName(id: string, name: string) {
     const task = this.tasks.find(t => t.id === id);
+    if (!task) {
+      return;
+    }
+
     task.name = name;
 
     if (!!this.selectedTask && this.selectedTask.id === id) {
@@ -60,11 +66,17 @@ export class TaskDraftService {
     this.taskChanged.emit(task);
   }
 
+  /**
+   * Creates an empty (=no process points) tasks from a feature.
+   */
   public toTaskDraft(feature: Feature): TaskDraft {
     return new TaskDraft(
       feature.get('id'),
       feature.get('name'),
-      feature.getGeometry()
+      // TODO Handle not existing geometry
+      // @ts-ignore
+      feature.getGeometry(),
+      0
     );
   }
 
@@ -117,7 +129,9 @@ export class TaskDraftService {
     let currentId = 0;
 
     this.sortTasksById(tasks).forEach(f => {
-      if (+f.id === currentId) {
+      const id = f?.id;
+      // @ts-ignore +undefined results in NaN which is ok here
+      if (+id === currentId) {
         currentId++;
       }
     });
@@ -134,7 +148,7 @@ export class TaskDraftService {
         return this.hasIntegerId(f);
       })
       .sort((f1: TaskDraft, f2: TaskDraft) => {
-        return +f1.id - +f2.id;
+        return +(f1?.id ?? 0) - +(f2?.id ?? 0);
       });
   }
 
@@ -146,7 +160,7 @@ export class TaskDraftService {
    * Examples when this function will return *false*: -1, '-1, undefined, null, 'one', ''
    */
   private hasIntegerId(f: TaskDraft): boolean {
-    const id: number = parseFloat(f.id);
+    const id: number = parseFloat(f?.id ?? '');
     return Number.isInteger(id) && id >= 0;
   }
 

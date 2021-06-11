@@ -3,7 +3,7 @@ import { Task, TaskDto } from './task.material';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
 import { from, Observable, of, throwError } from 'rxjs';
-import { concatMap, mergeMap, map, tap } from 'rxjs/operators';
+import { concatMap, map, mergeMap, tap } from 'rxjs/operators';
 import { Polygon } from 'ol/geom';
 import { Extent } from 'ol/extent';
 import { User } from '../user/user.material';
@@ -100,7 +100,11 @@ export class TaskService {
       );
   }
 
-  public openInJosm(task: Task, projectId: string) {
+  public openInJosm(task: Task, projectId: string): Observable<string> {
+    if (!task || !task.geometry.getGeometry()) {
+      throwError('Task or geometry of task undefined');
+    }
+
     const e = this.getExtent(task);
 
     // Make sequential requests to these URLs
@@ -117,7 +121,11 @@ export class TaskService {
       );
   }
 
-  public openInOsmOrg(task: Task, projectId: string) {
+  public openInOsmOrg(task: Task, projectId: string): void {
+    if (!task || !task.geometry.getGeometry()) {
+      throwError('Task or geometry of task undefined');
+    }
+
     const e = this.getExtent(task);
     const mapView = this.fitExtentToScreen(e, window.screen.availWidth, window.screen.availHeight);
 
@@ -187,7 +195,16 @@ export class TaskService {
     };
   }
 
+  /**
+   * @param task The task to get the extent from. Must not be falsy and also need to have a geometry (task.geometry.getGeometry() must not
+   * be falsy).
+   */
   public getExtent(task: Task): Extent {
+    if (!task || !task.geometry.getGeometry()) {
+      throwError('Task or geometry of task undefined');
+    }
+
+    // @ts-ignore
     return task.geometry.getGeometry().getExtent();
   }
 
@@ -226,6 +243,7 @@ export class TaskService {
       return of(tasks);
     }
 
+    // @ts-ignore
     return this.userService.getUsersByIds(userIDs)
       .pipe(
         map((users: User[]) => {
@@ -247,7 +265,25 @@ export class TaskService {
   public toTask(dto: TaskDto): Task {
     const feature = (this.format.readFeature(dto.geometry) as Feature);
 
-    const assignedUser = dto.assignedUser ? new User(dto.assignedUserName, dto.assignedUser) : undefined;
+    const assignedUser = dto.assignedUser && dto.assignedUserName ? new User(dto.assignedUserName, dto.assignedUser) : undefined;
+
+    return new Task(
+      dto.id,
+      feature.get('name'),
+      dto.processPoints,
+      dto.maxProcessPoints,
+      feature,
+      assignedUser
+    );
+  }
+
+  public toTaskWithUsers(dto: TaskDto, users: User[]): Task {
+    const feature = (this.format.readFeature(dto.geometry) as Feature);
+    let assignedUser: User | undefined;
+
+    if (dto.assignedUser) {
+      assignedUser = users.find(u => u.uid === dto.assignedUser);
+    }
 
     return new Task(
       dto.id,

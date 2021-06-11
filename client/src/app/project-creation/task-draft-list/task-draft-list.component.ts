@@ -9,7 +9,7 @@ import { TaskDraftService } from '../task-draft.service';
 })
 export class TaskDraftListComponent {
   @Input() public tasks: TaskDraft[];
-  @Input() public selectedTask: TaskDraft;
+  @Input() public selectedTask: TaskDraft | undefined;
 
   constructor(
     private taskDraftService: TaskDraftService
