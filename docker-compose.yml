@@ -2,37 +2,33 @@ version: '3.4'
 
 services:
   stm-server:
+    image: simpletaskmanager/stm-server:1.4.1
     environment:
       - OAUTH_CONSUMER_KEY
       - OAUTH_SECRET
       - STM_DB_USERNAME
       - STM_DB_PASSWORD
-    build:
-      network: host
-      context: ./server/
-    container_name: stm-server
     network_mode: host
     restart: unless-stopped
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
+      - $STM_SERVER_CONFIG:/stm-server/config.json
 # 2020-12-09 hauke96: See systemd issue below
 #    depends_on:
 #      - "stm-db"
     logging:
       driver: 'journald'
   stm-client:
-    build:
-      network: host
-      context: ./client/
-    container_name: stm-client
+    image: simpletaskmanager/stm-client:1.4.1
     network_mode: host
     restart: unless-stopped
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
+      - $STM_NGINX_CONFIG:/etc/nginx/conf.d/default.conf
     logging:
       driver: 'journald'
   stm-db:
-    image: postgres:12.3
+    image: postgres:12
     container_name: stm-db
     restart: unless-stopped
     network_mode: host
@@ -40,7 +36,7 @@ services:
       - POSTGRES_USER=${STM_DB_USERNAME}
       - POSTGRES_PASSWORD=${STM_DB_PASSWORD}
     volumes:
-      - "./postgres-data:/var/lib/postgresql/data"
+      - ./postgres-data:/var/lib/postgresql/data
 # 2020-12-09 hauke96: Because health checks are creating mount points, newer
 # systemd versions are flodding the logs with succeed-messages rendering the
 # logs more or less useless, because they are way too large. I disable health
