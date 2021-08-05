@@ -21,7 +21,7 @@ After that, you can write the logic you want to test.
 
 ## Run tests
 
-**! IMPORTANT !** All data in your `postgres-data` folder and your `stm-db` docker container will be removed.
+**Important: ** All data in your `postgres-data` folder and your `stm-db` docker container will be removed.
 
 * go into `/server/test`
 * execute `./run.sh`

@@ -90,8 +90,8 @@ So you need to have an account there and also need to register your local applic
 
 To perform a login (even a login of your locally running application), you'll need OAuth credentials (so the OAuth consumer-key and -secret) within environment variables:
 
-* `export OAUTH_CONSUMER_KEY="Eln7...rY66"`
-* `export OAUTH_SECRET="fgg1...kl09"`
+* `export STM_OAUTH_CONSUMER_KEY="Eln7...rY66"`
+* `export STM_OAUTH_SECRET="fgg1...kl09"`
 
 You can export these variables each time you start a new terminal or just put it into a file of your choice (e.g. `.bashrc`) to load then e.g. after your system booted.
 

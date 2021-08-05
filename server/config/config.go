@@ -17,8 +17,8 @@ var (
 const (
 	EnvVarDbUsername       = "STM_DB_USERNAME"
 	EnvVarDbPassword       = "STM_DB_PASSWORD"
-	EnvVarOAuthConsumerKey = "OAUTH_CONSUMER_KEY"
-	EnvVarOAuthSecret      = "OAUTH_SECRET"
+	EnvVarOAuthConsumerKey = "STM_OAUTH_CONSUMER_KEY"
+	EnvVarOAuthSecret      = "STM_OAUTH_SECRET"
 
 	DefaultTokenInvalidityDuration = "24h"
 	DefaultDbUsername              = "stm"

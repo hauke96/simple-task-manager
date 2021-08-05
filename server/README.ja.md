@@ -91,8 +91,8 @@
 
 ログインを実行するには(ローカルで実行しているアプリケーションのログインであっても)、環境変数内にOAuth証明書(つまりOAuthコンシューマキーと秘密鍵)が必要です。
 
-* `export OAUTH_CONSUMER_KEY="Eln7...rY66"`
-* `export OAUTH_SECRET="fgg1...kl09"`
+* `export STM_OAUTH_CONSUMER_KEY="Eln7...rY66"`
+* `export STM_OAUTH_SECRET="fgg1...kl09"`
 
 これらの変数は、新しい端末を起動するたびにエクスポートすることも、任意のファイル(`.bashrc`など)に格納してロードすることもできます。
 

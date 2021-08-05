@@ -5,7 +5,10 @@ This file describes the REST-like API provided by the Server.
 The server hosts its own API doc.
 For `localhost` it's [`http://localhost:8080/doc/`](http://localhost:8080/doc/).
 
-## v2.6
+## Changelog
+
+**Changes in v2.7**
+* Add export/import endpoints to projects
 
 **Changes in v2.6**
 * The `ProjectDto` now contains the tasks

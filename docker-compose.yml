@@ -4,8 +4,8 @@ services:
   stm-server:
     image: simpletaskmanager/stm-server:1.4.1
     environment:
-      - OAUTH_CONSUMER_KEY
-      - OAUTH_SECRET
+      - STM_OAUTH_CONSUMER_KEY
+      - STM_OAUTH_SECRET
       - STM_DB_USERNAME
       - STM_DB_PASSWORD
     network_mode: host
