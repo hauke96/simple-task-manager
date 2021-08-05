@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   stm-server:
-    image: simpletaskmanager/stm-server:1.4.1
+    image: simpletaskmanager/stm-server:1.4.2-SNAPSHOT.1
     environment:
       - STM_OAUTH_CONSUMER_KEY
       - STM_OAUTH_SECRET
@@ -19,7 +19,7 @@ services:
     logging:
       driver: 'journald'
   stm-client:
-    image: simpletaskmanager/stm-client:1.4.1
+    image: simpletaskmanager/stm-client:1.4.2-SNAPSHOT.1
     network_mode: host
     restart: unless-stopped
     volumes:
