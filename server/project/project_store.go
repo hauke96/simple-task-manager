@@ -38,7 +38,7 @@ func getStore(tx *sql.Tx, taskStore *task.StorePg, logger *util.Logger) *storePg
 	}
 }
 
-func (s *storePg) getProjects(userId string) ([]*Project, error) {
+func (s *storePg) getAllProjectsOfUser(userId string) ([]*Project, error) {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE $1 = ANY(users)", s.table)
 
 	s.LogQuery(query, userId)
@@ -77,7 +77,7 @@ func (s *storePg) getProject(projectId string) (*Project, error) {
 	return s.execQuery(query, projectId)
 }
 
-func (s *storePg) getProjectByTask(taskId string) (*Project, error) {
+func (s *storePg) getProjectOfTask(taskId string) (*Project, error) {
 	query := fmt.Sprintf("SELECT p.* FROM %s p, %s t WHERE $1 = t.id AND t.project_id = p.id", s.table, s.taskStore.Table)
 	return s.execQuery(query, taskId)
 }
@@ -205,7 +205,7 @@ func (s *storePg) rowToProject(rows *sql.Rows) (*Project, error) {
 }
 
 func (s *storePg) addTasksToProject(project *Project) error {
-	tasks, err := s.taskStore.GetTasks(project.Id)
+	tasks, err := s.taskStore.GetAllTasksOfProject(project.Id)
 	if err != nil {
 		return err
 	}

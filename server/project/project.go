@@ -49,7 +49,7 @@ func Init(tx *sql.Tx, logger *util.Logger, taskService *task.TaskService, permis
 }
 
 func (s *ProjectService) GetProjects(userId string) ([]*Project, error) {
-	projects, err := s.store.getProjects(userId)
+	projects, err := s.store.getAllProjectsOfUser(userId)
 	if err != nil {
 		s.Err(fmt.Sprintf("Error getting projects for user %s", userId))
 		return nil, err
@@ -67,7 +67,7 @@ func (s *ProjectService) GetProjects(userId string) ([]*Project, error) {
 }
 
 func (s *ProjectService) GetProjectByTask(taskId string) (*Project, error) {
-	project, err := s.store.getProjectByTask(taskId)
+	project, err := s.store.getProjectOfTask(taskId)
 	if err != nil {
 		s.Err("Error getting project with task %s", taskId)
 		return nil, err

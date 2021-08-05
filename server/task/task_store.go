@@ -36,7 +36,7 @@ func GetStore(tx *sql.Tx, logger *util.Logger) *StorePg {
 	}
 }
 
-func (s *StorePg) GetTasks(projectId string) ([]*Task, error) {
+func (s *StorePg) GetAllTasksOfProject(projectId string) ([]*Task, error) {
 	query := fmt.Sprintf("SELECT id,process_points,max_process_points,geometry,assigned_user FROM %s WHERE project_id = $1;", s.Table)
 	s.LogQuery(query, projectId)
 
@@ -100,7 +100,7 @@ func (s *StorePg) addTasks(newTasks []TaskDraftDto, projectId string) ([]*Task, 
 		taskIds = append(taskIds, id)
 	}
 
-	return s.GetTasks(projectId)
+	return s.GetAllTasksOfProject(projectId)
 }
 
 func (s *StorePg) addTask(task *TaskDraftDto, projectId string) (string, error) {

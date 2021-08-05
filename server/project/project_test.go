@@ -546,7 +546,7 @@ func TestDeleteProject(t *testing.T) {
 			return errors.New("The project should not exist anymore")
 		}
 
-		_, err = s.store.taskStore.GetTasks(id)
+		_, err = s.store.taskStore.GetAllTasksOfProject(id)
 		if err == nil {
 			return errors.New("The tasks should not exist anymore")
 		}
