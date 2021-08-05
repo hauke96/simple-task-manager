@@ -17,9 +17,7 @@ COPY --from=builder /stm-server/database/scripts ./database/scripts
 COPY --from=builder /stm-server/database/init-db.sh ./database/init-db.sh
 COPY --from=builder /stm-server/config/default.json ./config.json
 
-RUN apk add --no-cache bash
-RUN apk add --no-cache postgresql-client
-# To make go-binary executable:
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache bash grep postgresql-client libc6-compat
+# "libc6-compat" needed to make go-binary executable
 
 ENTRYPOINT cd database && ./init-db.sh && cd .. && ./server -c ./config.json
