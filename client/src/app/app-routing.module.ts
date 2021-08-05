@@ -12,7 +12,12 @@ import { SelectedLanguageGuard } from './common/selected-language.guard';
 import { ConfigResolver } from './config/config.resolver';
 
 const routes: Routes = [
-  {path: '', component: LoginComponent, canActivate: [AuthGuard, SelectedLanguageGuard]},
+  {
+    path: '',
+    component: LoginComponent,
+    canActivate: [AuthGuard, SelectedLanguageGuard],
+    resolve: {config: ConfigResolver}
+  },
   {
     path: 'manager',
     component: ManagerComponent,

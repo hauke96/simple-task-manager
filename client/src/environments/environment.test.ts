@@ -3,7 +3,6 @@ const usedApi = 'v2.7';
 
 export const environment = {
   production: true,
-  test_mode: true,
   oauth_landing: document.location.origin + '/oauth-landing',
   osm_api_url: 'https://api.openstreetmap.org/api/0.6',
 

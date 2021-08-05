@@ -55,6 +55,9 @@ func TestInitConfig(t *testing.T) {
 		if Conf.MaxDescriptionLength != DefaultMaxDescriptionLength {
 			return errors.New(fmt.Sprintf("Default value of 'MaxDescriptionLength' wrong: Wanted %d but was %d", DefaultMaxDescriptionLength, Conf.MaxDescriptionLength))
 		}
+		if Conf.TestEnvironment != DefaultTestEnvironment {
+			return errors.New(fmt.Sprintf("Default value of 'TestEnvironment' wrong: Wanted %t but was %t", DefaultTestEnvironment, Conf.TestEnvironment))
+		}
 
 		return nil
 	})

@@ -135,6 +135,7 @@ The following things can be configured:
 * ```token-validity```: Duration of a token until it's not valid anymore (e.g. `24h` or other valid duration strings according to golang `time.ParseDuration` function).
 * ```source-repo-url```: URL to the GitHub/GitLab/Gitea/... repo. Just used for the info-page.
 * ```max-task-per-project```: Maximum amount of tasks that are allowed per project.
+* ```test-env```: Set to `true` to inform clients that this is a test instance. This will e.g. show the test-banner in the STM-client.
 
 ## Environment variables
 

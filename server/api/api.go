@@ -90,7 +90,12 @@ func addInfoHandler(router *mux.Router) {
 // @Produce text/html
 // @Router /doc [GET]
 func addDocHandler(router *mux.Router) {
+	router.HandleFunc("/doc", redirectDocHandler)
 	router.PathPrefix("/doc").Handler(httpSwagger.WrapHandler)
+}
+
+func redirectDocHandler(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, "/doc/index.html", 302)
 }
 
 // OAuth login

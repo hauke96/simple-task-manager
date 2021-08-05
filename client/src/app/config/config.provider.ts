@@ -17,5 +17,6 @@ export class ConfigProvider extends Config {
     this.sourceRepoUrl = config.sourceRepoUrl;
     this.maxTasksPerProject = config.maxTasksPerProject;
     this.maxDescriptionLength = config.maxDescriptionLength;
+    this.testEnvironment = config.testEnvironment;
   }
 }

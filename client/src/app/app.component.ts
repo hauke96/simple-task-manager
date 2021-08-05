@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { environment } from '../environments/environment';
+import { ConfigProvider } from './config/config.provider';
 
 @Component({
   selector: 'app-root',
@@ -7,9 +7,10 @@ import { environment } from '../environments/environment';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'simple-task-manager';
+  constructor(private config: ConfigProvider) {
+  }
 
   get isInTestMode(): boolean {
-    return environment.test_mode;
+    return this.config.testEnvironment;
   }
 }
