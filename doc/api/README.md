@@ -54,7 +54,7 @@ After installation, go into the `server` folder and execute the command `swag in
 If the `swag` command is not available, use `go run` for that: `go run <something>/github.com/swaggo/swag/cmd/swag/main.go init`
 
 Now the `server/docs` folder contains new generated files.
-Start the server normally and you'll have an updated swagger UI.
+Start the server normally, and you'll have an updated swagger UI.
 
 ## Requirements to the API
 

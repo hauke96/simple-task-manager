@@ -183,6 +183,29 @@
                 }
             }
         },
+        "/v2.7/projects/import": {
+            "post": {
+                "description": "This aims to import a project from e.g. a backup or to migrate to another STM instance.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Imports a previously exported project.",
+                "parameters": [
+                    {
+                        "description": "The project to import",
+                        "name": "projectExport",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/export.ProjectExport"
+                        }
+                    }
+                ]
+            }
+        },
         "/v2.7/projects/{id}": {
             "delete": {
                 "description": "Deletes the specified project. The requesting user must be the owner of the project.",
@@ -537,6 +560,59 @@
                 "sourceRepoUrl": {
                     "description": "URL to the source code repository.",
                     "type": "string"
+                },
+                "testEnvironment": {
+                    "description": "True when the server runs in an test environment",
+                    "type": "boolean"
+                }
+            }
+        },
+        "export.ProjectExport": {
+            "type": "object",
+            "properties": {
+                "creationDate": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "owner": {
+                    "type": "string"
+                },
+                "tasks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/export.TaskExport"
+                    }
+                },
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "export.TaskExport": {
+            "type": "object",
+            "properties": {
+                "assignedUser": {
+                    "type": "string"
+                },
+                "geometry": {
+                    "type": "string"
+                },
+                "maxProcessPoints": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "processPoints": {
+                    "type": "integer"
                 }
             }
         },
@@ -653,6 +729,10 @@
                 },
                 "maxProcessPoints": {
                     "description": "The maximum amount of process points of this task. Must be larger than zero.",
+                    "type": "integer"
+                },
+                "processPoints": {
+                    "description": "The amount of process points that have been set by the user. It applies that \"0 \u003c= processPoints \u003c= maxProcessPoints\".",
                     "type": "integer"
                 }
             }
