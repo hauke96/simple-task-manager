@@ -1,4 +1,4 @@
-package util
+package auth
 
 // Structs when requesting user information
 type Osm struct {

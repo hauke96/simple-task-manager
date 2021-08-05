@@ -12,6 +12,15 @@ package config <<Frame>> {
     class config.config
 }
 
+package websocket <<Frame>> {
+    class websocket.websocket
+}
+
+' Alignment:
+main -[hidden]down- util
+main -[hidden]right- websocket
+util -[hidden]right- config
+
 package api <<Frame>> {
     class api.api {
     }
@@ -20,8 +29,9 @@ package api <<Frame>> {
 
     api.api --> api.api_vX
 
-    api.api_vX --> project.project
-    api.api_vX --> task.task
+    api.api_vX --> project.service
+    api.api_vX --> task.service
+    api.api_vX --> export.service
 }
 
 package auth <<Frame>> {
@@ -35,44 +45,50 @@ package auth <<Frame>> {
 }
 
 package project <<Frame>> {
-    class project.project {
+    class project.service {
     }
 
-    class project.project_store_pg {
+    class project.store {
     }
 
-    project.project --> project_store_pg
+    project.service --> store
 }
 
 package task <<Frame>> {
-    class task.task {
+    class task.service {
     }
 
-    class task.task_store_pg {
+    class task.store {
     }
 
-    task.task --> task_store_pg
+    task.service --> store
+}
+
+package export <<Frame>> {
+    class export.service{
+    }
 }
 
 package permission <<Frame>> {
-    class permission.permission{
+    class permission.store{
     }
 }
 
-main.main --> api.api : Init()
-main.main --> auth.auth : Init()
-main.main --> project : Init()
-main.main --> task : Init()
-main.main --> permission : Init()
+'main.main --> api.api : Init()
+'main.main --> auth.auth : Init()
+'main.main --> project : Init()
+'main.main --> task : Init()
+'main.main --> permission : Init()
 
 api.api --> auth.auth
 api.api_vX --> auth.auth
 
-task.task --> permission.permission
+task.service --> permission.store
 
-project.project --> task.task
-project.project --> permission.permission
-project.project_store_pg --> task.task
+project.service --> task.service
+project.service --> permission.store
+project.store --> task.service
 
+export.service --> project.service
 
 @enduml

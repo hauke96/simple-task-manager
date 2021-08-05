@@ -12,39 +12,19 @@ import (
 	"time"
 )
 
-type ProjectDraftDto struct {
-	Name        string   `json:"name"`        // Name of the project. Must not be NULL or empty.
-	Description string   `json:"description"` // Description of the project. Must not be NULL but cam be empty.
-	Users       []string `json:"users"`       // A non-empty list of user-IDs. At least the owner should be in here.
-	Owner       string   `json:"owner"`       // The user-ID who created this project. Must not be NULL or empty.
-}
-
-type Project struct {
-	Id                 string       `json:"id"`                 // The ID of the project.
-	Name               string       `json:"name"`               // The name of the project. Will not be NULL or empty.
-	Tasks              []*task.Task `json:"tasks"`              // List of tasks of the project. Will not be NULL or empty.
-	Users              []string     `json:"users"`              // Array of user-IDs (=members of this project). Will not be NULL or empty.
-	Owner              string       `json:"owner"`              // User-ID of the owner/creator of this project. Will not be NULL or empty.
-	Description        string       `json:"description"`        // Some description, can be empty. Will not be NULL but might be empty.
-	NeedsAssignment    bool         `json:"needsAssignment"`    // When "true", the tasks of this project need to have an assigned user.
-	TotalProcessPoints int          `json:"totalProcessPoints"` // Sum of all maximum process points of all tasks.
-	DoneProcessPoints  int          `json:"doneProcessPoints"`  // Sum of all process points that have been set. It applies "0 <= doneProcessPoints <= totalProcessPoints".
-	CreationDate       *time.Time   `json:"creationDate"`       // UTC Date in RFC 3339 format, can be NIL because of old data in the database. Example: "2006-01-02 15:04:05.999999999 -0700 MST"
-}
-
 type ProjectService struct {
 	*util.Logger
-	store             *storePg
-	permissionService *permission.PermissionService
-	taskService       *task.TaskService
+	store                *storePg
+	permissionStore *permission.PermissionStore
+	taskService          *task.TaskService
 }
 
-func Init(tx *sql.Tx, logger *util.Logger, taskService *task.TaskService, permissionService *permission.PermissionService) *ProjectService {
+func Init(tx *sql.Tx, logger *util.Logger, taskService *task.TaskService, permissionStore *permission.PermissionStore) *ProjectService {
 	return &ProjectService{
-		Logger:            logger,
-		store:             getStore(tx, task.GetStore(tx, logger), logger),
-		permissionService: permissionService,
-		taskService:       taskService,
+		Logger:               logger,
+		store:                getStore(tx, task.GetStore(tx, logger), logger),
+		permissionStore: permissionStore,
+		taskService:          taskService,
 	}
 }
 
@@ -148,7 +128,7 @@ func (s *ProjectService) AddProject(projectDraft *ProjectDraftDto) (*Project, er
 }
 
 func (s *ProjectService) GetProject(projectId string, potentialMemberId string) (*Project, error) {
-	err := s.permissionService.VerifyMembershipProject(projectId, potentialMemberId)
+	err := s.permissionStore.VerifyMembershipProject(projectId, potentialMemberId)
 	if err != nil {
 		return nil, err
 	}
@@ -175,7 +155,7 @@ func (s *ProjectService) addTasksAndMetadata(project *Project) error {
 		project.TotalProcessPoints += t.MaxProcessPoints
 	}
 
-	needsAssignment, err := s.permissionService.AssignmentInProjectNeeded(project.Id)
+	needsAssignment, err := s.permissionStore.AssignmentInProjectNeeded(project.Id)
 	if err != nil {
 		s.Err("unable to get assignment requirement for project %s", project.Id)
 		return err
@@ -188,7 +168,7 @@ func (s *ProjectService) addTasksAndMetadata(project *Project) error {
 }
 
 func (s *ProjectService) AddUser(projectId, userId, potentialOwnerId string) (*Project, error) {
-	err := s.permissionService.VerifyOwnership(projectId, potentialOwnerId)
+	err := s.permissionStore.VerifyOwnership(projectId, potentialOwnerId)
 	if err != nil {
 		return nil, err
 	}
@@ -223,23 +203,23 @@ func (s *ProjectService) AddUser(projectId, userId, potentialOwnerId string) (*P
 func (s *ProjectService) RemoveUser(projectId, requestingUserId, userIdToRemove string) (*Project, error) {
 	// Both users have to be member of the project
 	// TODO I think this is unnecessary: First check whether requestingUserId == userIdToRemove
-	err := s.permissionService.VerifyMembershipProject(projectId, requestingUserId)
+	err := s.permissionStore.VerifyMembershipProject(projectId, requestingUserId)
 	if err != nil {
 		return nil, err
 	}
 
-	err = s.permissionService.VerifyMembershipProject(projectId, userIdToRemove)
+	err = s.permissionStore.VerifyMembershipProject(projectId, userIdToRemove)
 	if err != nil {
 		return nil, err
 	}
 
 	// It's not possible to remove the owner
-	err = s.permissionService.VerifyOwnership(projectId, userIdToRemove)
+	err = s.permissionStore.VerifyOwnership(projectId, userIdToRemove)
 	if err == nil {
 		return nil, errors.New("removing the owner is not allowed")
 	}
 
-	err = s.permissionService.VerifyOwnership(projectId, requestingUserId)
+	err = s.permissionStore.VerifyOwnership(projectId, requestingUserId)
 	requestingUserIsOwner := err == nil
 
 	// When a user tries to remove a different user, only the owner is allowed to do that
@@ -256,7 +236,7 @@ func (s *ProjectService) RemoveUser(projectId, requestingUserId, userIdToRemove 
 	// Unassign removed user from all tasks
 	newTasks := make([]*task.Task, len(project.Tasks))
 	for i, t := range project.Tasks {
-		err := s.permissionService.VerifyAssignment(t.Id, userIdToRemove)
+		err := s.permissionStore.VerifyAssignment(t.Id, userIdToRemove)
 
 		// err != nil means: The user is assigned to the task 't'
 		if err == nil {
@@ -287,7 +267,7 @@ func (s *ProjectService) RemoveUser(projectId, requestingUserId, userIdToRemove 
 }
 
 func (s *ProjectService) DeleteProject(projectId, potentialOwnerId string) error {
-	err := s.permissionService.VerifyOwnership(projectId, potentialOwnerId)
+	err := s.permissionStore.VerifyOwnership(projectId, potentialOwnerId)
 	if err != nil {
 		return err
 	}
@@ -303,7 +283,7 @@ func (s *ProjectService) DeleteProject(projectId, potentialOwnerId string) error
 }
 
 func (s *ProjectService) UpdateName(projectId string, newName string, requestingUserId string) (*Project, error) {
-	err := s.permissionService.VerifyOwnership(projectId, requestingUserId)
+	err := s.permissionStore.VerifyOwnership(projectId, requestingUserId)
 	if err != nil {
 		return nil, err
 	}
@@ -331,7 +311,7 @@ func (s *ProjectService) UpdateName(projectId string, newName string, requesting
 }
 
 func (s *ProjectService) UpdateDescription(projectId string, newDescription string, requestingUserId string) (*Project, error) {
-	err := s.permissionService.VerifyOwnership(projectId, requestingUserId)
+	err := s.permissionStore.VerifyOwnership(projectId, requestingUserId)
 	if err != nil {
 		return nil, err
 	}

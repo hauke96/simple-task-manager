@@ -15,7 +15,7 @@ import (
 
 var (
 	tx *sql.Tx
-	s  *PermissionService
+	s  *PermissionStore
 	h  *test.TestHelper
 )
 

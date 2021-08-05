@@ -36,9 +36,9 @@ func createContext(token *auth.Token, logger *util.Logger) (*Context, error) {
 	}
 	ctx.Transaction = tx
 
-	permissionService := permission.Init(tx, ctx.Logger)
-	ctx.TaskService = task.Init(tx, ctx.Logger, permissionService)
-	ctx.ProjectService = project.Init(tx, ctx.Logger, ctx.TaskService, permissionService)
+	permissionStore := permission.Init(tx, ctx.Logger)
+	ctx.TaskService = task.Init(tx, ctx.Logger, permissionStore)
+	ctx.ProjectService = project.Init(tx, ctx.Logger, ctx.TaskService, permissionStore)
 	ctx.ExportService = export.Init(logger, ctx.ProjectService)
 	ctx.WebsocketSender = websocket.Init(ctx.Logger)
 

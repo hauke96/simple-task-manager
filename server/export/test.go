@@ -44,9 +44,9 @@ func setup() {
 	}
 
 	h.Tx = tx
-	permissionService := permission.Init(tx, logger)
-	taskService := task.Init(tx, logger, permissionService)
-	projectService := project.Init(tx, logger, taskService, permissionService)
+	permissionStore := permission.Init(tx, logger)
+	taskService := task.Init(tx, logger, permissionStore)
+	projectService := project.Init(tx, logger, taskService, permissionStore)
 
 	s = Init(logger, projectService)
 }

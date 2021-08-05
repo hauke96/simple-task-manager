@@ -8,7 +8,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-type PermissionService struct {
+type PermissionStore struct {
 	*util.Logger
 	tx *sql.Tx
 }
@@ -18,16 +18,16 @@ var (
 	projectTable = "projects"
 )
 
-// Init the permission service for the project and task table.
-func Init(tx *sql.Tx, logger *util.Logger) *PermissionService {
-	return &PermissionService{
+// Init the permission store for the project and task table.
+func Init(tx *sql.Tx, logger *util.Logger) *PermissionStore {
+	return &PermissionStore{
 		Logger: logger,
 		tx:     tx,
 	}
 }
 
 // VerifyOwnership check if the given user is the owner of the given project.
-func (s *PermissionService) VerifyOwnership(projectId string, user string) error {
+func (s *PermissionStore) VerifyOwnership(projectId string, user string) error {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE id=$1 AND owner=$2", projectTable)
 
 	s.LogQuery(query, projectId, user)
@@ -46,7 +46,7 @@ func (s *PermissionService) VerifyOwnership(projectId string, user string) error
 }
 
 // VerifyMembershipProject checks if "user" is a member of the project "id".
-func (s *PermissionService) VerifyMembershipProject(projectId string, user string) error {
+func (s *PermissionStore) VerifyMembershipProject(projectId string, user string) error {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE id=$1 AND $2=ANY(users)", projectTable)
 
 	s.LogQuery(query, projectId, user)
@@ -65,7 +65,7 @@ func (s *PermissionService) VerifyMembershipProject(projectId string, user strin
 }
 
 // VerifyMembershipTask checks if "user" is a member of the project, where the given task with "id" is in.
-func (s *PermissionService) VerifyMembershipTask(taskId string, user string) error {
+func (s *PermissionStore) VerifyMembershipTask(taskId string, user string) error {
 	query := fmt.Sprintf("SELECT * FROM %s p, %s t WHERE t.project_id = p.id AND t.id = $1 AND $2=ANY(p.users);", projectTable, taskTable)
 
 	s.LogQuery(query, taskId, user)
@@ -84,7 +84,7 @@ func (s *PermissionService) VerifyMembershipTask(taskId string, user string) err
 }
 
 // VerifyMembershipTask checks if "user" is a member of the projects, where the given tasks are in.
-func (s *PermissionService) VerifyMembershipTasks(taskIds []string, user string) error {
+func (s *PermissionStore) VerifyMembershipTasks(taskIds []string, user string) error {
 	query := fmt.Sprintf("SELECT COUNT(*) FROM %s p, %s t WHERE t.project_id = p.id AND t.id = ANY($1) AND $2=ANY(p.users);", projectTable, taskTable)
 
 	s.LogQuery(query, pq.Array(taskIds), user)
@@ -113,7 +113,7 @@ func (s *PermissionService) VerifyMembershipTasks(taskIds []string, user string)
 }
 
 // VerifyAssignment returns an error when the given user is not assigned to the given task.
-func (s *PermissionService) VerifyAssignment(taskId string, user string) error {
+func (s *PermissionStore) VerifyAssignment(taskId string, user string) error {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE id=$1 AND assigned_user=$2;", taskTable)
 
 	s.LogQuery(query, taskId, user)
@@ -131,8 +131,8 @@ func (s *PermissionService) VerifyAssignment(taskId string, user string) error {
 	return nil
 }
 
-// AssignmentNeeded determines whether a user needs to be assigned to tasks in this project.
-func (s *PermissionService) AssignmentInProjectNeeded(projectId string) (bool, error) {
+// AssignmentInProjectNeeded determines whether a user needs to be assigned to tasks in this project.
+func (s *PermissionStore) AssignmentInProjectNeeded(projectId string) (bool, error) {
 	query := fmt.Sprintf("SELECT ARRAY_LENGTH(users, 1) FROM %s WHERE id=$1;", projectTable)
 
 	s.LogQuery(query, projectId)
@@ -157,7 +157,7 @@ func (s *PermissionService) AssignmentInProjectNeeded(projectId string) (bool, e
 }
 
 // AssignmentInTaskNeeded determines whether a user needs to be assigned to this task.
-func (s *PermissionService) AssignmentInTaskNeeded(taskId string) (bool, error) {
+func (s *PermissionStore) AssignmentInTaskNeeded(taskId string) (bool, error) {
 	query := fmt.Sprintf("SELECT ARRAY_LENGTH(p.users, 1) FROM %s p, %s t WHERE $1 = t.id AND t.project_id = p.id;", projectTable, taskTable)
 
 	s.LogQuery(query, taskId)

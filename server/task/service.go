@@ -10,32 +10,17 @@ import (
 	"strings"
 )
 
-type TaskDraftDto struct {
-	MaxProcessPoints int    `json:"maxProcessPoints"` // The maximum amount of process points of this task. Must be larger than zero.
-	ProcessPoints    int    `json:"processPoints"`    // The amount of process points that have been set by the user. It applies that "0 <= processPoints <= maxProcessPoints".
-	Geometry         string `json:"geometry"`         // A GeoJson feature with a polygon or multi-polygon geometry. If the feature properties contain the field "name", then this will be used as the name of the task.
-}
-
-type Task struct {
-	Id               string `json:"id"`               // The ID of the task.
-	Name             string `json:"name"`             // The name of the task. If the properties of the geometry feature contain the field "name", this field is used here. If no name has been set, this field will be empty.
-	ProcessPoints    int    `json:"processPoints"`    // The amount of process points that have been set by the user. It applies that "0 <= processPoints <= maxProcessPoints".
-	MaxProcessPoints int    `json:"maxProcessPoints"` // The maximum amount of process points of this task. Is larger than zero.
-	Geometry         string `json:"geometry"`         // A GeoJson feature of the task wit a polygon or multipolygon geometry. Will never be NULL or empty.
-	AssignedUser     string `json:"assignedUser"`     // The user-ID of the user who is currently assigned to this task. Will never be NULL but might be empty.
-}
-
 type TaskService struct {
 	*util.Logger
-	store             *StorePg
-	permissionService *permission.PermissionService
+	store                *StorePg
+	permissionStore *permission.PermissionStore
 }
 
-func Init(tx *sql.Tx, logger *util.Logger, permissionService *permission.PermissionService) *TaskService {
+func Init(tx *sql.Tx, logger *util.Logger, permissionStore *permission.PermissionStore) *TaskService {
 	return &TaskService{
-		Logger:            logger,
-		store:             GetStore(tx, logger),
-		permissionService: permissionService,
+		Logger:               logger,
+		store:                GetStore(tx, logger),
+		permissionStore: permissionStore,
 	}
 }
 
@@ -110,7 +95,7 @@ func (s *TaskService) AssignUser(taskId, userId string) (*Task, error) {
 }
 
 func (s *TaskService) UnassignUser(taskId, requestingUserId string) (*Task, error) {
-	err := s.permissionService.VerifyAssignment(taskId, requestingUserId)
+	err := s.permissionStore.VerifyAssignment(taskId, requestingUserId)
 	if err != nil {
 		return nil, err
 	}
@@ -127,17 +112,17 @@ func (s *TaskService) UnassignUser(taskId, requestingUserId string) (*Task, erro
 // SetProcessPoints updates the process points on task "id". When "needsAssignedUser" is true on the project, this
 // function also checks, whether the assigned user is equal to the requesting User.
 func (s *TaskService) SetProcessPoints(taskId string, newPoints int, requestingUserId string) (*Task, error) {
-	needsAssignment, err := s.permissionService.AssignmentInTaskNeeded(taskId)
+	needsAssignment, err := s.permissionStore.AssignmentInTaskNeeded(taskId)
 	if err != nil {
 		return nil, err
 	}
 	if needsAssignment {
-		err := s.permissionService.VerifyAssignment(taskId, requestingUserId)
+		err := s.permissionStore.VerifyAssignment(taskId, requestingUserId)
 		if err != nil {
 			return nil, err
 		}
 	} else { // when no assignment is needed, the requesting user at least needs to be a member
-		err := s.permissionService.VerifyMembershipTask(taskId, requestingUserId)
+		err := s.permissionStore.VerifyMembershipTask(taskId, requestingUserId)
 		if err != nil {
 			s.Err("user not a member of the project, the task %s belongs to", taskId)
 			return nil, err
@@ -168,7 +153,7 @@ func (s *TaskService) SetProcessPoints(taskId string, newPoints int, requestingU
 // left (from a project to a not existing task). So: USE WITH CARE!!!
 // This relates to the github issue https://github.com/hauke96/simple-task-manager/issues/33
 func (s *TaskService) Delete(taskIds []string, requestingUserId string) error {
-	err := s.permissionService.VerifyMembershipTasks(taskIds, requestingUserId)
+	err := s.permissionStore.VerifyMembershipTasks(taskIds, requestingUserId)
 	if err != nil {
 		return err
 	}
