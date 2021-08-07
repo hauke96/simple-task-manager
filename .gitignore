@@ -16,3 +16,6 @@ postgres-data
 
 # Backups
 *.sql.gz
+
+# Example files
+example*
