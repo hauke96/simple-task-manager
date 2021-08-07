@@ -9,6 +9,7 @@ services:
       - STM_OAUTH_SECRET
       - STM_DB_USERNAME
       - STM_DB_PASSWORD
+      - STM_DB_HOST
     network_mode: host
     restart: unless-stopped
     volumes:
