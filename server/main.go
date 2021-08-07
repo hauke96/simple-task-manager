@@ -1,12 +1,12 @@
 package main
 
 import (
-	"github.com/hauke96/kingpin"
-	"github.com/hauke96/sigolo"
-	"github.com/hauke96/simple-task-manager/server/api"
+	"github.com/alecthomas/kingpin"
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 	"os"
 
+	"github.com/hauke96/sigolo"
+	"github.com/hauke96/simple-task-manager/server/api"
 	"github.com/hauke96/simple-task-manager/server/auth"
 	"github.com/hauke96/simple-task-manager/server/config"
 	_ "github.com/hauke96/simple-task-manager/server/docs"

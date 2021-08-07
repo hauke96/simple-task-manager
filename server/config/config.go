@@ -17,12 +17,14 @@ var (
 const (
 	EnvVarDbUsername       = "STM_DB_USERNAME"
 	EnvVarDbPassword       = "STM_DB_PASSWORD"
+	EnvVarDbHost           = "STM_DB_HOST"
 	EnvVarOAuthConsumerKey = "STM_OAUTH_CONSUMER_KEY"
 	EnvVarOAuthSecret      = "STM_OAUTH_SECRET"
 
 	DefaultTokenInvalidityDuration = "24h"
 	DefaultDbUsername              = "stm"
 	DefaultDbPassword              = "secret"
+	DefaultDbHost                  = "localhost"
 	DefaultMaxTaskPerProject       = 1000
 	DefaultMaxDescriptionLength    = 1000
 	DefaultTestEnvironment         = false
@@ -45,6 +47,7 @@ type Config struct {
 	// Can only be set via environment variables:
 	DbUsername       string `json:"-"`
 	DbPassword       string `json:"-"`
+	DbHost           string `json:"-"`
 	OauthConsumerKey string `json:"-"`
 	OauthSecret      string `json:"-"`
 }
@@ -65,24 +68,40 @@ func LoadConfig(file string) {
 	}
 
 	// OSM Oauth configs
-	oauthConsumerKey, _ := os.LookupEnv(EnvVarOAuthConsumerKey)
-	oauthSecret, _ := os.LookupEnv(EnvVarOAuthSecret)
-	Conf.OauthConsumerKey = oauthConsumerKey
-	Conf.OauthSecret = oauthSecret
+	oauthConsumerKey, ok := os.LookupEnv(EnvVarOAuthConsumerKey)
+	if len(oauthConsumerKey) == 0 || !ok {
+		sigolo.Error("Environment variable %s for the database user not set and no default value will be used.", EnvVarOAuthConsumerKey)
+	} else {
+		Conf.OauthConsumerKey = oauthConsumerKey
+	}
+
+	oauthSecret, ok := os.LookupEnv(EnvVarOAuthSecret)
+	if len(oauthSecret) == 0 || !ok {
+		sigolo.Error("Environment variable %s for the database user not set and no default value will be used.", EnvVarOAuthSecret)
+	} else {
+		Conf.OauthSecret = oauthSecret
+	}
 
 	// Database configs
 	dbUsername, ok := os.LookupEnv(EnvVarDbUsername)
 	if len(dbUsername) == 0 || !ok {
-		sigolo.Info("Environment variable %s for the database user not set. Use default instead.", EnvVarDbUsername)
+		sigolo.Info("Environment variable %s for the database user not set. Use default '%s' instead.", EnvVarDbUsername, DefaultDbUsername)
 	} else {
 		Conf.DbUsername = dbUsername
 	}
 
-	dbPassword, _ := os.LookupEnv(EnvVarDbPassword)
+	dbPassword, ok := os.LookupEnv(EnvVarDbPassword)
 	if len(dbUsername) == 0 || !ok {
-		sigolo.Info("Environment variable %s for the database user not set. Use default instead.", EnvVarDbPassword)
+		sigolo.Info("Environment variable %s for the database user not set. Use default '%s' instead.", EnvVarDbPassword, DefaultDbPassword)
 	} else {
 		Conf.DbPassword = dbPassword
+	}
+
+	dbHost, ok := os.LookupEnv(EnvVarDbHost)
+	if len(dbHost) == 0 || !ok {
+		sigolo.Info("Environment variable %s for the database user not set. Use default '%s' instead.", EnvVarDbHost, DefaultDbHost)
+	} else {
+		Conf.DbHost = dbHost
 	}
 }
 
@@ -91,6 +110,7 @@ func InitDefaultConfig() {
 	Conf.TokenValidityDuration = DefaultTokenInvalidityDuration
 	Conf.DbUsername = DefaultDbUsername
 	Conf.DbPassword = DefaultDbPassword
+	Conf.DbHost = DefaultDbHost
 	Conf.MaxTasksPerProject = DefaultMaxTaskPerProject
 	Conf.MaxDescriptionLength = DefaultMaxDescriptionLength
 	Conf.TestEnvironment = DefaultTestEnvironment
