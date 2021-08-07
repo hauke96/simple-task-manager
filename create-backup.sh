@@ -1,7 +1,18 @@
 #!/bin/bash
 
+set -e
+
+echo "Start backup job"
+
 DIR=backups
+YESTERDAY=$(date --date="yesterday" +%Y-%m-%d)
 
-mkdir $DIR
+echo "Create output folder"
+mkdir -p $DIR
+echo "Done"
 
-pg_dump -h localhost -U $STM_DB_USERNAME --create -d stm | gzip -9 > $DIR/stm-db-backup_$(date --date="yesterday" +%Y-%m-%d).sql.gz
+echo "Create compressed database dump"
+pg_dump -h $STM_DB_HOST -U $STM_DB_USERNAME --create -d stm | gzip -9 > "$DIR/stm-db-backup_$YESTERDAY.sql.gz"
+echo "Done"
+
+echo "Finished backup job"
