@@ -8,6 +8,7 @@ import FeatureFormat from 'ol/format/Feature';
 import GeoJSON from 'ol/format/GeoJSON';
 import { ProjectService } from '../project/project.service';
 import { NotificationService } from '../common/notification.service';
+import { Geometry } from 'ol/geom';
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +38,7 @@ export class ProjectImportService {
     const tasksWithGeometries = project.tasks.filter(t => !!t.geometry);
 
     const taskDrafts = tasksWithGeometries.map(t => {
-      const taskFeature = this.format.readFeature(t.geometry) as Feature;
+      const taskFeature = this.format.readFeature(t.geometry) as Feature<Geometry>;
       // @ts-ignore
       return new TaskDraft(undefined, t.name, taskFeature.getGeometry(), 0);
     });

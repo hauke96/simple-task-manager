@@ -1,3 +1,4 @@
+@use "sass:math";
 @import "colors.scss";
 
 // =====================
@@ -5,7 +6,7 @@
 // =====================
 
 $space-base: 10px;
-$space-small: $space-base / 2;
+$space-small: math.div($space-base, 2);
 $space-large: $space-base * 2;
 $space-huge: $space-base * 3.5;
 

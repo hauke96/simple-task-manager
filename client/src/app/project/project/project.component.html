@@ -4,7 +4,7 @@
 			<button [routerLink]="['/manager']"><span class="lnr lnr-chevron-left back-button-icon"></span><span i18n="Back button">Back</span></button>
 			<p class="project-label" i18n>Project: {{project.name}}</p>
 		</div>
-		<app-progress-bar class="progress-bar" [progressPoints]="project.doneProcessPoints" [totalPoints]="project.totalProcessPoints"></app-progress-bar>
+		<app-progress-bar [progressPoints]="project.doneProcessPoints" [totalPoints]="project.totalProcessPoints"></app-progress-bar>
 		<div class="created-at-label">
 			<span i18n>Created on: {{project.creationDate | date:'longDate'}}</span>
 		</div>

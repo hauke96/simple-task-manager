@@ -14,9 +14,9 @@ export class GeometryService {
   constructor() {
   }
 
-  public parseData(data: string | ArrayBuffer): Feature[] {
+  public parseData(data: string | ArrayBuffer): Feature<Geometry>[] {
     let format: FeatureFormat = new GeoJSON();
-    let features: Feature[] = this.dataToFeatures(format, data);
+    let features: Feature<Geometry>[] = this.dataToFeatures(format, data);
 
     const formats = [
       new GeoJSON(),
@@ -48,15 +48,14 @@ export class GeometryService {
     return features;
   }
 
-  private dataToFeatures(format: FeatureFormat, data: string | ArrayBuffer): Feature[] {
+  private dataToFeatures(format: FeatureFormat, data: string | ArrayBuffer): Feature<Geometry>[] {
     try {
-      const features = format.readFeatures(data) as Feature[];
+      const features = format.readFeatures(data) as Feature<Geometry>[];
 
       if (!features || features.length === 0) {
         return [];
       }
-
-      return ([] as Feature[]).concat(...features.map(f => this.toUsableTaskFeature(f)));
+      return ([] as Feature<Geometry>[]).concat(...features.map(f => this.toUsableTaskFeature(f)));
     } catch {
       return [];
     }
@@ -64,7 +63,7 @@ export class GeometryService {
 
   // Some editors (like JOSM) dont create a "Polygon" feature for a closed ring but a "LineString" feature. This, however, is not usable for
   // tasks where we need Polygons or MultiPolygons.
-  public toUsableTaskFeature(feature: Feature): Feature[] {
+  public toUsableTaskFeature(feature: Feature<Geometry>): Feature<Geometry>[] {
     if (!feature) {
       return [];
     }

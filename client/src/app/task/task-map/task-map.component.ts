@@ -14,6 +14,7 @@ import { Unsubscriber } from '../../common/unsubscriber';
 import { intersects } from 'ol/extent';
 import { Coordinate } from 'ol/coordinate';
 import { FeatureLike } from 'ol/Feature';
+import { Geometry } from 'ol/geom';
 
 @Component({
   selector: 'app-task-map',
@@ -25,7 +26,7 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
 
   private map: Map;
   task: Task;
-  private vectorSource: VectorSource;
+  private vectorSource: VectorSource<Geometry>;
 
   constructor(
     private taskService: TaskService,
@@ -130,7 +131,7 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
     return center;
   }
 
-  private getTaskFeature(): Feature | undefined {
+  private getTaskFeature(): Feature<Geometry> | undefined {
     return this.vectorSource.getFeatures().find(f => f.get('task_id') === this.task.id);
   }
 

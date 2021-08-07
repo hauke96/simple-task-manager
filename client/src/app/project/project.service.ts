@@ -13,6 +13,7 @@ import { WebsocketMessage, WebsocketMessageType } from '../common/websocket-mess
 import { NotificationService } from '../common/notification.service';
 import { Feature } from 'ol';
 import GeoJSON from 'ol/format/GeoJSON';
+import { Geometry } from 'ol/geom';
 
 @Injectable({
   providedIn: 'root'
@@ -90,7 +91,7 @@ export class ProjectService {
     name: string,
     maxProcessPoints: number,
     projectDescription: string,
-    features: Feature[],
+    features: Feature<Geometry>[],
     users: string[],
     owner: string
   ): Observable<Project> {

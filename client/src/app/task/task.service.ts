@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
 import { from, Observable, of, throwError } from 'rxjs';
 import { concatMap, map, mergeMap, tap } from 'rxjs/operators';
-import { Polygon } from 'ol/geom';
+import { Geometry, Polygon } from 'ol/geom';
 import { Extent } from 'ol/extent';
 import { User } from '../user/user.material';
 import { UserService } from '../user/user.service';
@@ -263,7 +263,7 @@ export class TaskService {
   }
 
   public toTask(dto: TaskDto): Task {
-    const feature = (this.format.readFeature(dto.geometry) as Feature);
+    const feature = (this.format.readFeature(dto.geometry) as Feature<Geometry>);
 
     const assignedUser = dto.assignedUser && dto.assignedUserName ? new User(dto.assignedUserName, dto.assignedUser) : undefined;
 
@@ -278,7 +278,7 @@ export class TaskService {
   }
 
   public toTaskWithUsers(dto: TaskDto, users: User[]): Task {
-    const feature = (this.format.readFeature(dto.geometry) as Feature);
+    const feature = (this.format.readFeature(dto.geometry) as Feature<Geometry>);
     let assignedUser: User | undefined;
 
     if (dto.assignedUser) {

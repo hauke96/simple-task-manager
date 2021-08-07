@@ -7,7 +7,7 @@ import { OSM } from 'ol/source';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import { Attribution, ScaleLine } from 'ol/control';
-import { Polygon } from 'ol/geom';
+import { Geometry, Polygon } from 'ol/geom';
 import { Fill, Stroke, Style } from 'ol/style';
 import { Draw } from 'ol/interaction';
 import { NotificationService } from '../../common/notification.service';
@@ -45,10 +45,10 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
   public removeInteraction: Select;
   public selectInteraction: Select;
 
-  public vectorSource: VectorSource;
-  private vectorLayer: VectorLayer;
-  public previewVectorSource: VectorSource;
-  private previewVectorLayer: VectorLayer;
+  public vectorSource: VectorSource<Geometry>;
+  private vectorLayer: VectorLayer<VectorSource<Geometry>>;
+  public previewVectorSource: VectorSource<Geometry>;
+  private previewVectorLayer: VectorLayer<VectorSource<Geometry>>;
 
   // For the toolbar
   public resetToolbarSelectionSubject: Subject<void> = new Subject<void>();
@@ -297,7 +297,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
 
   // TODO pass TaskDrafts here to "createProject"
   public onSaveButtonClicked() {
-    const features: Feature[] = this.vectorSource.getFeatures().map(f => {
+    const features: Feature<Geometry>[] = this.vectorSource.getFeatures().map(f => {
       f = f.clone(); // otherwise we would change the polygons on the map
       let polygon = (f.getGeometry() as Polygon);
 
@@ -317,7 +317,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
     );
   }
 
-  public createProject(name: string, maxProcessPoints: number, projectDescription: string, features: Feature[]) {
+  public createProject(name: string, maxProcessPoints: number, projectDescription: string, features: Feature<Geometry>[]) {
     const owner = this.currentUserService.getUserId();
     if (!owner) {
       // TODO Show error notification
@@ -398,7 +398,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
     this.previewVectorSource.addFeatures(taskDrafts.map(t => this.toFeature(t)));
   }
 
-  public toFeature(task: TaskDraft): Feature {
+  public toFeature(task: TaskDraft): Feature<Geometry> {
     const f = new Feature(task.geometry);
     f.set('id', task.id);
     f.set('name', task.name);
