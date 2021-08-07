@@ -1,5 +1,5 @@
 # Stage 1: Buil
-FROM node:14 AS builder
+FROM node:16-alpine AS builder
 
 COPY . /stm-client
 WORKDIR /stm-client/
@@ -9,10 +9,10 @@ COPY package-lock.json /stm-client/package-lock.json
 
 RUN npm install
 
-RUN NODE_OPTIONS="--max_old_space_size=4096" npm run build-prod
+RUN NODE_OPTIONS="--max_old_space_size=4096" npm run build
 
 # Stage 2: Run
-FROM nginx:1.19.6
+FROM nginx:1.21.1-alpine
 
 RUN rm -rf /usr/share/nginx/html/*
 COPY --from=builder /stm-client/dist/simple-task-manager /usr/share/nginx/html
