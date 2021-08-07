@@ -90,18 +90,7 @@ allowed, etc. etc. However, this should block the most basic things: SSH on 22.
 
 # 6 Automatic backups
 
-This step is optional but recommended!
-
-* Copy the service and timer files from this directory to `/lib/systemd/system/`
-* Enable both with `systemctl enable stm-backup.service` and `.timer` accordingly
-* Start the timer with `systemctl start stm-backup.timer`
-
-You can test the setup manually:
-
-* Start the service with `systemctl start stm-backup.service`
-* Take a look into the logs with `journalctl -u stm-backup.service` and watch for errors
-
-See the [automatic-backups.md](automatic-backups.md) for details on how this all works.
+This step is optional but recommended and described in the [automatic-backups.md](automatic-backups.md) file.
 
 # 7 Get STM
 
