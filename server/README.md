@@ -49,6 +49,7 @@ To make this permanent, you probably want to add this to the `.bachrc` or simila
 * done
 
 The `docker-compose.yml` defines such container, just execute `docker-compose up --build stm-db` to start it.
+**Notice: ** This just starts the database server, the database tables are created in the next step.
 
 ### Initialize database 
 

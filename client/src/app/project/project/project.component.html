@@ -54,6 +54,7 @@
 	</div>
 
 	<div class="map-container">
-		<app-task-map *ngIf="project.tasks" [tasks]="project.tasks" class="map"></app-task-map>
+		<app-map class="map"></app-map>
+		<app-task-map *ngIf="project.tasks" [tasks]="project.tasks"></app-task-map>
 	</div>
 </div>

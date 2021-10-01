@@ -42,6 +42,7 @@ import { TaskTitlePipe } from './task/task-title.pipe';
 import { GlobalErrorHandler } from './error-handler';
 import { ProjectImportComponent } from './project-creation/project-import/project-import.component';
 import { CopyProjectComponent } from './project-creation/copy-project/copy-project.component';
+import { MapComponent } from './common/components/map/map.component';
 
 @NgModule({
   declarations: [
@@ -77,7 +78,8 @@ import { CopyProjectComponent } from './project-creation/copy-project/copy-proje
     ProgressBarComponent,
     TaskTitlePipe,
     ProjectImportComponent,
-    CopyProjectComponent
+    CopyProjectComponent,
+    MapComponent
   ],
   imports: [
     BrowserModule,

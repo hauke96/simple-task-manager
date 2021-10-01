@@ -2,12 +2,9 @@ import { AfterViewInit, Component, Input } from '@angular/core';
 import { TaskService } from '../task.service';
 import { CurrentUserService } from '../../user/current-user.service';
 import { Task } from '../task.material';
-import { Feature, Map, View } from 'ol';
-import TileLayer from 'ol/layer/Tile';
-import { OSM } from 'ol/source';
+import { Feature } from 'ol';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
-import { Attribution, ScaleLine } from 'ol/control';
 import { Fill, Stroke, Style, Text } from 'ol/style';
 import { ProcessPointColorService } from '../../common/services/process-point-color.service';
 import { Unsubscriber } from '../../common/unsubscriber';
@@ -15,6 +12,8 @@ import { intersects } from 'ol/extent';
 import { Coordinate } from 'ol/coordinate';
 import { FeatureLike } from 'ol/Feature';
 import { Geometry } from 'ol/geom';
+import { MapLayerService } from '../../common/services/map-layer.service';
+import { FrameState } from 'ol/PluggableMap';
 
 @Component({
   selector: 'app-task-map',
@@ -24,14 +23,14 @@ import { Geometry } from 'ol/geom';
 export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
   @Input() tasks: Task[];
 
-  private map: Map;
   task: Task;
   private vectorSource: VectorSource<Geometry>;
 
   constructor(
     private taskService: TaskService,
     private currentUserService: CurrentUserService,
-    private processPointColorService: ProcessPointColorService
+    private processPointColorService: ProcessPointColorService,
+    private layerService: MapLayerService
   ) {
     super();
   }
@@ -44,49 +43,25 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
       style: (f, r) => this.getStyle(f)
     });
 
-    this.map = new Map({
-      target: 'map',
-      controls: [
-        new ScaleLine(),
-        new Attribution()
-      ],
-      layers: [
-        new TileLayer({
-          source: new OSM()
-        }),
-        vectorLayer
-      ],
-      view: new View({
-        center: [1110161, 7085688],
-        projection: 'EPSG:3857',
-        zoom: 14,
-        minZoom: 0,
-        maxZoom: 19
-      })
-    });
-
     this.tasks.forEach(t => {
       this.showTaskPolygon(t);
-      this.map.getView().fit(this.vectorSource.getExtent(), {
-        size: this.map.getSize(),
-        padding: [25, 25, 25, 25] // in pixels
-      });
+      this.layerService.fitView(this.vectorSource.getExtent());
     });
 
     // Clicking on the map selects the clicked polygon (and therefore the according task)
-    this.map.on('click', (evt) => {
+    this.layerService.onMapClicked.subscribe((coordinate: Coordinate) => {
       // When a feature was found on the map, it'll be selected in the task
       // service. This will trigger the "selectedTaskChanged" event and causes
       // the source-refresh below in the handler. This will then update the map
       // style and highlights the correct geometry on the map.
-      this.map.forEachFeatureAtPixel(evt.pixel, (feature) => {
+      vectorLayer.getRenderer().forEachFeatureAtCoordinate(coordinate, {} as FrameState, 0, (feature) => {
         const clickedTask = this.tasks.find(t => t.id === feature.get('task_id'));
         if (!clickedTask) {
           return;
         }
 
         this.taskService.selectTask(clickedTask);
-      });
+      }, []);
     });
 
     this.unsubscribeLater(
@@ -96,6 +71,8 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
       })
     );
     this.selectTask(this.taskService.getSelectedTask());
+
+    this.layerService.addLayer(vectorLayer);
   }
 
   private selectTask(task: Task): void {
@@ -110,11 +87,11 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
         throw new Error('Task feature or feature geometry undefined');
       }
 
-      // @ts-ignore
-      const taskGeometryVisible = intersects(this.map.getView().calculateExtent(), feature.getGeometry().getExtent());
-      if (!taskGeometryVisible) {
-        this.map.getView().setCenter(this.getTaskCenter());
-      }
+      // TODO
+      // const taskGeometryVisible = intersects(this.map.getView().calculateExtent(), feature.getGeometry().getExtent());
+      // if (!taskGeometryVisible) {
+      //   this.map.getView().setCenter(this.getTaskCenter());
+      // }
     }
   }
 
@@ -201,23 +178,5 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
     feature.set('task_id', task.id);
 
     this.vectorSource.addFeature(feature);
-  }
-
-  onZoomIn() {
-    const zoom = this.map.getView().getZoom();
-    if (!zoom) {
-      return;
-    }
-
-    this.map.getView().setZoom(zoom + 1);
-  }
-
-  onZoomOut() {
-    const zoom = this.map.getView().getZoom();
-    if (!zoom) {
-      return;
-    }
-
-    this.map.getView().setZoom(zoom - 1);
   }
 }
