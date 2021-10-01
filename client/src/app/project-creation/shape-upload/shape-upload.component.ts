@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { NotificationService } from '../../common/notification.service';
-import { GeometryService } from '../../common/geometry.service';
+import { NotificationService } from '../../common/services/notification.service';
+import { GeometryService } from '../../common/services/geometry.service';
 import { TaskDraftService } from '../task-draft.service';
 
 @Component({

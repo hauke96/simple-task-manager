@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { LoadingService } from './loading.service';
 import { ReplaySubject } from 'rxjs';
 import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterEvent } from '@angular/router';
-import { MockRouter } from './mock-router';
+import { MockRouter } from '../mock-router';
 
 describe('LoadingService', () => {
   let service: LoadingService;

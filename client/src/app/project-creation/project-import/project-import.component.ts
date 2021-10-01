@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ProjectExport } from '../../project/project.material';
 import { ProjectImportService } from '../project-import.service';
-import { NotificationService } from '../../common/notification.service';
+import { NotificationService } from '../../common/services/notification.service';
 
 @Component({
   selector: 'app-project-import',

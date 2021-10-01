@@ -10,7 +10,7 @@ import { Attribution, ScaleLine } from 'ol/control';
 import { Geometry, Polygon } from 'ol/geom';
 import { Fill, Stroke, Style } from 'ol/style';
 import { Draw } from 'ol/interaction';
-import { NotificationService } from '../../common/notification.service';
+import { NotificationService } from '../../common/services/notification.service';
 import GeometryType from 'ol/geom/GeometryType';
 import { CurrentUserService } from '../../user/current-user.service';
 import Snap from 'ol/interaction/Snap';

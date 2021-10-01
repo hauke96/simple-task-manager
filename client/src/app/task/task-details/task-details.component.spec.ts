@@ -7,11 +7,11 @@ import { Task, TestTaskFeature } from '../task.material';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
 import { of, Subject } from 'rxjs';
-import { WebsocketClientService } from '../../common/websocket-client.service';
+import { WebsocketClientService } from '../../common/services/websocket-client.service';
 import { UserService } from '../../user/user.service';
 import { User } from '../../user/user.material';
 import { TaskTitlePipe } from '../task-title.pipe';
-import { ShortcutService } from '../../common/shortcut.service';
+import { ShortcutService } from '../../common/services/shortcut.service';
 import Spy = jasmine.Spy;
 
 describe('TaskDetailsComponent', () => {

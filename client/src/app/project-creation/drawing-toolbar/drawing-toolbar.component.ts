@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Subject } from 'rxjs';
-import { ShortcutService } from '../../common/shortcut.service';
+import { ShortcutService } from '../../common/services/shortcut.service';
 import { Unsubscriber } from '../../common/unsubscriber';
 
 @Component({

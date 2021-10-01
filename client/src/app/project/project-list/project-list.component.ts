@@ -4,7 +4,7 @@ import { Project, ProjectExport } from '../project.material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectService } from '../project.service';
 import { Unsubscriber } from '../../common/unsubscriber';
-import { NotificationService } from '../../common/notification.service';
+import { NotificationService } from '../../common/services/notification.service';
 import { ProjectImportService } from '../../project-creation/project-import.service';
 
 @Component({

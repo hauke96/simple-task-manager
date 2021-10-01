@@ -5,7 +5,7 @@ import hexGrid from '@turf/hex-grid';
 import triangleGrid from '@turf/triangle-grid';
 import BBox from '@turf/helpers';
 import { Polygon } from 'ol/geom';
-import { NotificationService } from '../../common/notification.service';
+import { NotificationService } from '../../common/services/notification.service';
 import { TaskDraft } from '../../task/task.material';
 import { TaskDraftService } from '../task-draft.service';
 import { ConfigProvider } from '../../config/config.provider';

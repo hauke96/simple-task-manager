@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProgressBarComponent } from './progress-bar.component';
-import { ProcessPointColorService } from '../../common/process-point-color.service';
+import { ProcessPointColorService } from '../../common/services/process-point-color.service';
 
 describe('ProjectProgressBarComponent', () => {
   let component: ProgressBarComponent;

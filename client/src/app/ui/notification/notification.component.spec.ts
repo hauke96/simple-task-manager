@@ -2,8 +2,8 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { NotificationComponent } from './notification.component';
 import { RouterTestingModule } from '@angular/router/testing';
-import { LoadingService } from '../../common/loading.service';
-import { NotificationService } from '../../common/notification.service';
+import { LoadingService } from '../../common/services/loading.service';
+import { NotificationService } from '../../common/services/notification.service';
 
 describe('NotificationComponent', () => {
   let component: NotificationComponent;

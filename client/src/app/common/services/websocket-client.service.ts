@@ -1,6 +1,6 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
-import { WebsocketMessage } from './websocket-message';
+import { environment } from '../../../environments/environment';
+import { WebsocketMessage } from '../entities/websocket-message';
 import { WebSocketSubject } from 'rxjs/webSocket';
 import { delay, retryWhen, tap } from 'rxjs/operators';
 

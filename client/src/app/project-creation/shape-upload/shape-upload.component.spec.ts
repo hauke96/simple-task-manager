@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ShapeUploadComponent } from './shape-upload.component';
-import { NotificationService } from '../../common/notification.service';
+import { NotificationService } from '../../common/services/notification.service';
 import { TaskDraftService } from '../task-draft.service';
-import { GeometryService } from '../../common/geometry.service';
+import { GeometryService } from '../../common/services/geometry.service';
 
 describe('ShapeUploadComponent', () => {
   let component: ShapeUploadComponent;

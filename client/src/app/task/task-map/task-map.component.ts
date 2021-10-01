@@ -9,7 +9,7 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import { Attribution, ScaleLine } from 'ol/control';
 import { Fill, Stroke, Style, Text } from 'ol/style';
-import { ProcessPointColorService } from '../../common/process-point-color.service';
+import { ProcessPointColorService } from '../../common/services/process-point-color.service';
 import { Unsubscriber } from '../../common/unsubscriber';
 import { intersects } from 'ol/extent';
 import { Coordinate } from 'ol/coordinate';

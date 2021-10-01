@@ -3,7 +3,7 @@ import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthService } from './auth.service';
-import { NotificationService } from '../common/notification.service';
+import { NotificationService } from '../common/services/notification.service';
 import { environment } from '../../environments/environment';
 
 @Injectable()

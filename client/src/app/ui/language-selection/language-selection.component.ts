@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Language } from '../../common/language';
-import { SelectedLanguageService } from '../../common/selected-language.service';
+import { Language } from '../../common/entities/language';
+import { SelectedLanguageService } from '../../common/services/selected-language.service';
 
 @Component({
   selector: 'app-language-selection',

@@ -6,7 +6,7 @@ import { Project, ProjectExport } from '../../project/project.material';
 import { ProjectService } from '../../project/project.service';
 import { of, throwError } from 'rxjs';
 import { ProjectImportService } from '../project-import.service';
-import { NotificationService } from '../../common/notification.service';
+import { NotificationService } from '../../common/services/notification.service';
 
 describe('CopyProjectComponent', () => {
   let component: CopyProjectComponent;

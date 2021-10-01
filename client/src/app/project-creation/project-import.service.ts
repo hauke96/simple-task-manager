@@ -7,7 +7,7 @@ import { Feature } from 'ol';
 import FeatureFormat from 'ol/format/Feature';
 import GeoJSON from 'ol/format/GeoJSON';
 import { ProjectService } from '../project/project.service';
-import { NotificationService } from '../common/notification.service';
+import { NotificationService } from '../common/services/notification.service';
 import { Geometry } from 'ol/geom';
 
 @Injectable({

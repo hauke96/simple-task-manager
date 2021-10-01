@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DrawingToolbarComponent } from './drawing-toolbar.component';
 import { Subject } from 'rxjs';
-import { ShortcutService } from '../../common/shortcut.service';
+import { ShortcutService } from '../../common/services/shortcut.service';
 
 describe('DrawingToolbarComponent', () => {
   let component: DrawingToolbarComponent;

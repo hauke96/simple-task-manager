@@ -5,7 +5,7 @@ import { TaskService } from '../../task/task.service';
 import { Project } from '../project.material';
 import { CurrentUserService } from '../../user/current-user.service';
 import { UserService } from '../../user/user.service';
-import { NotificationService } from '../../common/notification.service';
+import { NotificationService } from '../../common/services/notification.service';
 import { Unsubscriber } from '../../common/unsubscriber';
 import { User } from '../../user/user.material';
 

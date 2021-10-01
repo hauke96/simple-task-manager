@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ProjectService } from '../project.service';
 import { Router } from '@angular/router';
 import { CurrentUserService } from '../../user/current-user.service';
-import { NotificationService } from '../../common/notification.service';
+import { NotificationService } from '../../common/services/notification.service';
 import { User } from '../../user/user.material';
 import { forkJoin, Observable } from 'rxjs';
 import { Project } from '../project.material';

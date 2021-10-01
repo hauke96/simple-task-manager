@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { CurrentUserService } from '../user/current-user.service';
 import { Router } from '@angular/router';
-import { NotificationService } from '../common/notification.service';
+import { NotificationService } from '../common/services/notification.service';
 
 @Injectable({
   providedIn: 'root'

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { NotificationService } from '../../common/notification.service';
-import { GeometryService } from '../../common/geometry.service';
-import { LoadingService } from '../../common/loading.service';
+import { NotificationService } from '../../common/services/notification.service';
+import { GeometryService } from '../../common/services/geometry.service';
+import { LoadingService } from '../../common/services/loading.service';
 import { TaskDraftService } from '../task-draft.service';
 
 @Component({

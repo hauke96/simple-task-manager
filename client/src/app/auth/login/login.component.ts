@@ -1,7 +1,7 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
-import { WebsocketClientService } from '../../common/websocket-client.service';
+import { WebsocketClientService } from '../../common/services/websocket-client.service';
 
 @Component({
   selector: 'app-login',
