@@ -84,25 +84,8 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
         throw new Error('Task feature or feature geometry undefined');
       }
 
-      // TODO
-      // const taskGeometryVisible = intersects(this.map.getView().calculateExtent(), feature.getGeometry().getExtent());
-      // if (!taskGeometryVisible) {
-      //   this.map.getView().setCenter(this.getTaskCenter());
-      // }
+      this.layerService.moveToOutsideGeometry(feature.getGeometry().getExtent());
     }
-  }
-
-  private getTaskCenter(): Coordinate {
-    const taskFeature = this.getTaskFeature();
-    if (!taskFeature || !taskFeature.getGeometry()) {
-      console.error(taskFeature);
-      throw new Error('Task feature or feature geometry undefined');
-    }
-
-    // @ts-ignore
-    const e = taskFeature.getGeometry().getExtent();
-    const center = [e[0] + (e[2] - e[0]) / 2, e[1] + (e[3] - e[1]) / 2];
-    return center;
   }
 
   private getTaskFeature(): Feature<Geometry> | undefined {

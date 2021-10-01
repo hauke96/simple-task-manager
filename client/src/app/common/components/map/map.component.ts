@@ -6,7 +6,7 @@ import { OSM } from 'ol/source';
 import { MapLayerService } from '../../services/map-layer.service';
 import BaseLayer from 'ol/layer/Base';
 import { Unsubscriber } from '../../unsubscriber';
-import { Extent } from 'ol/extent';
+import { Extent, intersects } from 'ol/extent';
 
 @Component({
   selector: 'app-map',
@@ -52,23 +52,30 @@ export class MapComponent extends Unsubscriber implements OnInit {
           padding: [25, 25, 25, 25] // in pixels
         })
     ));
+    this.unsubscribeLater(this.layerService.onMoveToOutsideGeometry.subscribe((extent: Extent) => {
+      const geometryVisible = intersects(this.map.getView().calculateExtent(), extent);
+      if (!geometryVisible) {
+        const center = [extent[0] + (extent[2] - extent[0]) / 2, extent[1] + (extent[3] - extent[1]) / 2];
+        this.map.getView().setCenter(center);
+      }
+    }));
   }
 
-  onZoomIn() {
-    const zoom = this.map.getView().getZoom();
+  onZoomIn(): void {
+    const zoom = this.map?.getView()?.getZoom();
     if (!zoom) {
       return;
     }
 
-    this.map.getView().setZoom(zoom + 1);
+    this.map?.getView().animate({ zoom: zoom + 0.5, duration: 250 });
   }
 
-  onZoomOut() {
-    const zoom = this.map.getView().getZoom();
+  onZoomOut(): void {
+    const zoom = this.map?.getView()?.getZoom();
     if (!zoom) {
       return;
     }
 
-    this.map.getView().setZoom(zoom - 1);
+    this.map?.getView().animate({ zoom: zoom - 0.5, duration: 250 });
   }
 }

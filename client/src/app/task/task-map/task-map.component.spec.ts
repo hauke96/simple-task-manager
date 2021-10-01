@@ -90,7 +90,7 @@ describe('TaskMapComponent', () => {
     expect(s.getStroke().getWidth()).toEqual(expectedBorderWidth);
   }
 
-  function getFeature(): Feature {
+  function getFeature(): Feature<Polygon> {
     return new Feature(new Polygon([[[0, 0], [1, 1], [1, 2]]]));
   }
 });

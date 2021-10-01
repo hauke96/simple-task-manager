@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ProjectCreationComponent } from './project-creation.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
-import { Polygon } from 'ol/geom';
+import { Geometry, Polygon } from 'ol/geom';
 import { of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { ProjectService } from '../../project/project.service';
@@ -136,8 +136,8 @@ describe('ProjectCreationComponent', () => {
     component.addTasks(tasks);
 
     expect(vectorSourceClearSpy).not.toHaveBeenCalled();
-    expect((vectorSourceAddSpy.calls.first().args[0] as Feature[])[0].getGeometry()).toEqual(tasks[0].geometry);
-    expect((vectorSourceAddSpy.calls.first().args[0] as Feature[])[1].getGeometry()).toEqual(tasks[1].geometry);
+    expect((vectorSourceAddSpy.calls.first().args[0] as Feature<Geometry>[])[0].getGeometry()).toEqual(tasks[0].geometry);
+    expect((vectorSourceAddSpy.calls.first().args[0] as Feature<Geometry>[])[1].getGeometry()).toEqual(tasks[1].geometry);
     expect(spyView).toHaveBeenCalled();
   });
 
@@ -306,7 +306,7 @@ describe('ProjectCreationComponent', () => {
   }
 
   function getDummyFeatures() {
-    const feature: Feature[] = [];
+    const feature: Feature<Geometry>[] = [];
     feature.push(new Feature(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]])));
     feature.push(new Feature(new Polygon([[[4000, 4000], [5000, 6000], [6000, 4000], [4000, 4000]]])));
     return feature;
