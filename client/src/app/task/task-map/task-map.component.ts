@@ -8,12 +8,11 @@ import VectorSource from 'ol/source/Vector';
 import { Fill, Stroke, Style, Text } from 'ol/style';
 import { ProcessPointColorService } from '../../common/services/process-point-color.service';
 import { Unsubscriber } from '../../common/unsubscriber';
-import { intersects } from 'ol/extent';
 import { Coordinate } from 'ol/coordinate';
 import { FeatureLike } from 'ol/Feature';
 import { Geometry } from 'ol/geom';
 import { MapLayerService } from '../../common/services/map-layer.service';
-import { FrameState } from 'ol/PluggableMap';
+import RenderFeature from 'ol/render/Feature';
 
 @Component({
   selector: 'app-task-map',
@@ -49,19 +48,17 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
     });
 
     // Clicking on the map selects the clicked polygon (and therefore the according task)
-    this.layerService.onMapClicked.subscribe((coordinate: Coordinate) => {
+    this.layerService.onMapClicked.subscribe((features: (Feature<any> | RenderFeature)[]) => {
       // When a feature was found on the map, it'll be selected in the task
       // service. This will trigger the "selectedTaskChanged" event and causes
       // the source-refresh below in the handler. This will then update the map
       // style and highlights the correct geometry on the map.
-      vectorLayer.getRenderer().forEachFeatureAtCoordinate(coordinate, {} as FrameState, 0, (feature) => {
-        const clickedTask = this.tasks.find(t => t.id === feature.get('task_id'));
-        if (!clickedTask) {
-          return;
-        }
 
-        this.taskService.selectTask(clickedTask);
-      }, []);
+      const featureTaskIds = features.map(f => f.get('task_id'));
+      const clickedTasks = this.tasks.filter(task => featureTaskIds.includes(task.id));
+      if (clickedTasks.length > 0) {
+        this.taskService.selectTask(clickedTasks[0]);
+      }
     });
 
     this.unsubscribeLater(

@@ -2,8 +2,10 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import BaseLayer from 'ol/layer/Base';
 import { Extent } from 'ol/extent';
-import { MapBrowserEvent } from 'ol';
+import { Feature, MapBrowserEvent } from 'ol';
 import { Coordinate } from 'ol/coordinate';
+import { Geometry } from 'ol/geom';
+import RenderFeature from 'ol/render/Feature';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +14,7 @@ export class MapLayerService {
 
   private $onLayerAdded: Subject<BaseLayer> = new Subject<BaseLayer>();
   private $onFitView: Subject<Extent> = new Subject<Extent>();
-  private $onMapClicked: Subject<Coordinate> = new Subject<Coordinate>();
+  private $onMapClicked: Subject<(Feature<any> | RenderFeature)[]> = new Subject();
 
   get onLayerAdded(): Observable<BaseLayer> {
     return this.$onLayerAdded.asObservable();
@@ -22,7 +24,7 @@ export class MapLayerService {
     return this.$onFitView.asObservable();
   }
 
-  get onMapClicked(): Observable<Coordinate> {
+  get onMapClicked(): Observable<(Feature<any> | RenderFeature)[]> {
     return this.$onMapClicked.asObservable();
   }
 
@@ -34,7 +36,7 @@ export class MapLayerService {
     this.$onFitView.next(extent);
   }
 
-  public mapClicked(coordinate: Coordinate): void {
-    this.$onMapClicked.next(coordinate);
+  public mapClicked(clickedFeatures: (Feature<any> | RenderFeature)[]): void {
+    this.$onMapClicked.next(clickedFeatures);
   }
 }
