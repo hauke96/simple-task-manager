@@ -37,7 +37,7 @@ describe('TaskMapComponent', () => {
       new Task('4', '', 100, 100, getFeature()),
     ];
 
-    component.ngAfterViewInit();
+    component.ngOnInit();
 
     fixture.detectChanges();
   });
@@ -52,7 +52,7 @@ describe('TaskMapComponent', () => {
     taskService.selectTask(task);
 
     // @ts-ignore
-    expect(component.task).toEqual(task);
+    expect(component.selectedTask).toEqual(task);
   });
 
   it('should create fillColor correctly', () => {
@@ -81,7 +81,7 @@ describe('TaskMapComponent', () => {
 
   function checkStyle(taskIndex: number, expectedColor: string, expectedBorderWidth: number, select: boolean = false) {
     if (select) {
-      component.task = component.tasks[taskIndex];
+      component.selectedTask = component.tasks[taskIndex];
     }
     const f = new Feature({task_id: component.tasks[taskIndex].id});
     const s = component.getStyle(f);

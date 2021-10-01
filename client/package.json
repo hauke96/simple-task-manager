@@ -10,7 +10,8 @@
     "dev-fr": "ng serve --watch --configuration=fr",
     "dev-local": "ng serve --watch -c local",
     "build": "ng build -c production --localize",
-    "test": "ng test --source-map --watch=true --browsers=ChromeHeadlessNoSandbox --code-coverage",
+    "test": "ng test --source-map --watch=true --browsers=HeadlessFirefox --code-coverage",
+    "test-chrome": "ng test --source-map --watch=true --browsers=ChromeHeadlessNoSandbox --code-coverage",
     "lint": "ng lint --fix",
     "i18n": "ng extract-i18n --output-path src/locale",
     "update": "npx npm-check-updates -u"

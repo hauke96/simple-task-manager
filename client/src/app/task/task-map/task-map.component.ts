@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { TaskService } from '../task.service';
 import { CurrentUserService } from '../../user/current-user.service';
 import { Task } from '../task.material';
@@ -8,7 +8,6 @@ import VectorSource from 'ol/source/Vector';
 import { Fill, Stroke, Style, Text } from 'ol/style';
 import { ProcessPointColorService } from '../../common/services/process-point-color.service';
 import { Unsubscriber } from '../../common/unsubscriber';
-import { Coordinate } from 'ol/coordinate';
 import { FeatureLike } from 'ol/Feature';
 import { Geometry } from 'ol/geom';
 import { MapLayerService } from '../../common/services/map-layer.service';
@@ -19,11 +18,13 @@ import RenderFeature from 'ol/render/Feature';
   templateUrl: './task-map.component.html',
   styleUrls: ['./task-map.component.scss']
 })
-export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
+export class TaskMapComponent extends Unsubscriber implements OnInit, OnDestroy {
   @Input() tasks: Task[];
 
-  task: Task;
+  selectedTask: Task;
+
   private vectorSource: VectorSource<Geometry>;
+  private vectorLayer: VectorLayer<VectorSource<Geometry>>;
 
   constructor(
     private taskService: TaskService,
@@ -34,10 +35,10 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
     super();
   }
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
     // this vector source contains all the task geometries
     this.vectorSource = new VectorSource();
-    const vectorLayer = new VectorLayer({
+    this.vectorLayer = new VectorLayer({
       source: this.vectorSource,
       style: (f, r) => this.getStyle(f)
     });
@@ -69,14 +70,20 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
     );
     this.selectTask(this.taskService.getSelectedTask());
 
-    this.layerService.addLayer(vectorLayer);
+    this.layerService.addLayer(this.vectorLayer);
+  }
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+
+    this.layerService.removeLayer(this.vectorLayer);
   }
 
   private selectTask(task: Task): void {
-    this.task = task;
+    this.selectedTask = task;
     this.vectorSource.changed();
 
-    if (!!this.task) {
+    if (!!this.selectedTask) {
       // Center view when the task isn't visible on the map
       const feature = this.getTaskFeature();
       if (!feature || !feature.getGeometry()) {
@@ -89,7 +96,7 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
   }
 
   private getTaskFeature(): Feature<Geometry> | undefined {
-    return this.vectorSource.getFeatures().find(f => f.get('task_id') === this.task.id);
+    return this.vectorSource.getFeatures().find(f => f.get('task_id') === this.selectedTask.id);
   }
 
   public getStyle(feature: FeatureLike): Style {
@@ -100,7 +107,7 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit {
 
     const hasAssignedUser = !!task.assignedUser && task.assignedUser.uid !== '';
     const currentUserTask = task.assignedUser && this.currentUserService.getUserId() === task.assignedUser.uid;
-    const isSelected = this.task && this.task.id === feature.get('task_id');
+    const isSelected = this.selectedTask && this.selectedTask.id === feature.get('task_id');
     const borderColor = '#009688';
 
     // Convert process point count to color (0 points = red; max points = green)

@@ -45,6 +45,7 @@ export class MapComponent extends Unsubscriber implements OnInit {
     this.map.on('click', (event: MapBrowserEvent<UIEvent>) => this.layerService.mapClicked(this.map.getFeaturesAtPixel(event.pixel)));
 
     this.unsubscribeLater(this.layerService.onLayerAdded.subscribe((layer: BaseLayer) => this.map.addLayer(layer)));
+    this.unsubscribeLater(this.layerService.onLayerRemoved.subscribe((layer: BaseLayer) => this.map.removeLayer(layer)));
     this.unsubscribeLater(this.layerService.onFitView.subscribe((extent: Extent) =>
       this.map.getView().fit(
         extent, {

@@ -3,8 +3,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MapComponent } from './map.component';
 import { MapLayerService } from '../../services/map-layer.service';
 import BaseLayer from 'ol/layer/Base';
-import { Feature } from 'ol';
-import { OnReturn } from 'ol/Observable';
 
 describe('MapComponent', () => {
   let component: MapComponent;
@@ -94,6 +92,19 @@ describe('MapComponent', () => {
     it('should add layer', () => {
       // @ts-ignore
       expect(component.map.getLayers().item(1)).toEqual(layer); // index 0 is the OSM base layer
+    });
+
+    describe('with remove call', () => {
+      beforeEach(() => {
+        mapLayerService.removeLayer(layer);
+      });
+
+      it('should remove layer from map', () => {
+        // @ts-ignore
+        expect(component.map.getLayers().getLength()).toEqual(1);
+        // @ts-ignore
+        expect(component.map.getLayers().item(0)).not.toEqual(layer);
+      });
     });
   });
 

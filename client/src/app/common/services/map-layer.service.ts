@@ -12,12 +12,17 @@ import RenderFeature from 'ol/render/Feature';
 export class MapLayerService {
 
   private $onLayerAdded: Subject<BaseLayer> = new Subject();
+  private $onLayerRemoved: Subject<BaseLayer> = new Subject();
   private $onFitView: Subject<Extent> = new Subject();
   private $onMoveToOutsideGeometry: Subject<Extent> = new Subject();
   private $onMapClicked: Subject<(Feature<any> | RenderFeature)[]> = new Subject();
 
   get onLayerAdded(): Observable<BaseLayer> {
     return this.$onLayerAdded.asObservable();
+  }
+
+  get onLayerRemoved(): Observable<BaseLayer> {
+    return this.$onLayerRemoved.asObservable();
   }
 
   get onFitView(): Observable<Extent> {
@@ -34,6 +39,10 @@ export class MapLayerService {
 
   public addLayer(layer: BaseLayer): void {
     this.$onLayerAdded.next(layer);
+  }
+
+  public removeLayer(layer: BaseLayer): void {
+    this.$onLayerRemoved.next(layer);
   }
 
   public fitView(extent: Extent): void {
