@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProjectService } from '../../project/project.service';
 import { Feature } from 'ol';
@@ -32,23 +32,20 @@ import { MapLayerService } from '../../common/services/map-layer.service';
   templateUrl: './project-creation.component.html',
   styleUrls: ['./project-creation.component.scss']
 })
-export class ProjectCreationComponent extends Unsubscriber implements OnInit, AfterViewInit {
+export class ProjectCreationComponent extends Unsubscriber implements OnInit, OnDestroy, AfterViewInit {
   public projectProperties: ProjectProperties = new ProjectProperties('', 100, '');
   public existingProjects: Observable<Project[]>;
-
-  // public for tests
-  public modifyInteraction: Modify;
-  public drawInteraction: Draw;
-  public removeInteraction: Select;
-  public selectInteraction: Select;
-
-  public vectorSource: VectorSource<Geometry>;
-  private vectorLayer: VectorLayer<VectorSource<Geometry>>;
-  public previewVectorSource: VectorSource<Geometry>;
-  private previewVectorLayer: VectorLayer<VectorSource<Geometry>>;
-
-  // For the toolbar
   public resetToolbarSelectionSubject: Subject<void> = new Subject<void>();
+
+  private modifyInteraction: Modify;
+  private drawInteraction: Draw;
+  private removeInteraction: Select;
+  private selectInteraction: Select;
+
+  private vectorSource: VectorSource<Geometry>;
+  private vectorLayer: VectorLayer<VectorSource<Geometry>>;
+  private previewVectorSource: VectorSource<Geometry>;
+  private previewVectorLayer: VectorLayer<VectorSource<Geometry>>;
 
   constructor(
     private projectService: ProjectService,
@@ -112,6 +109,13 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
     }
 
     this.addMapInteractions();
+  }
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+
+    this.mapLayerService.removeLayer(this.vectorLayer);
+    this.mapLayerService.removeLayer(this.previewVectorLayer);
   }
 
   onMoveEnd(mapCenter: Coordinate) {

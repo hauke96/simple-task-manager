@@ -66,11 +66,13 @@ describe('ProjectCreationComponent', () => {
     const spy = spyOn(mapLayerService, 'fitToFeatures');
 
     const tasks = getDummyTasks();
+    // @ts-ignore
     expect(component.vectorSource.getFeatures().length).toEqual(0);
 
     // @ts-ignore
     component.addTasks(tasks);
 
+    // @ts-ignore
     expect(component.vectorSource.getFeatures().length).toEqual(tasks.length);
     expect(spy).toHaveBeenCalled();
   });
@@ -129,7 +131,9 @@ describe('ProjectCreationComponent', () => {
   });
 
   it('should add uploaded shape correctly', () => {
+    // @ts-ignore
     const vectorSourceClearSpy = spyOn(component.vectorSource, 'clear');
+    // @ts-ignore
     const vectorSourceAddSpy = spyOn(component.vectorSource, 'addFeatures');
     // @ts-ignore
     const spy = spyOn(mapLayerService, 'fitToFeatures');
@@ -157,6 +161,7 @@ describe('ProjectCreationComponent', () => {
     component.projectProperties.projectDescription = description;
     component.projectProperties.maxProcessPoints = maxProcessPoints;
     component.projectProperties.projectName = name;
+    // @ts-ignore
     component.vectorSource.addFeature(feature);
 
     component.onSaveButtonClicked();
@@ -167,8 +172,11 @@ describe('ProjectCreationComponent', () => {
   it('should deactivate interactions on tab selection', () => {
     component.onTabSelected();
 
+    // @ts-ignore
     expect(component.drawInteraction.getActive()).toEqual(false);
+    // @ts-ignore
     expect(component.modifyInteraction.getActive()).toEqual(false);
+    // @ts-ignore
     expect(component.removeInteraction.getActive()).toEqual(false);
   });
 
@@ -183,9 +191,13 @@ describe('ProjectCreationComponent', () => {
   it('should toggle draw and modify interactions correctly', () => {
     component.onToggleDraw();
 
+    // @ts-ignore
     expect(component.drawInteraction.getActive()).toEqual(true);
+    // @ts-ignore
     expect(component.modifyInteraction.getActive()).toEqual(false);
+    // @ts-ignore
     expect(component.removeInteraction.getActive()).toEqual(false);
+    // @ts-ignore
     expect(component.selectInteraction.getActive()).toEqual(false);
 
     component.onToggleDraw();
@@ -196,9 +208,13 @@ describe('ProjectCreationComponent', () => {
   it('should toggle delete interactions correctly', () => {
     component.onToggleDelete();
 
+    // @ts-ignore
     expect(component.drawInteraction.getActive()).toEqual(false);
+    // @ts-ignore
     expect(component.modifyInteraction.getActive()).toEqual(false);
+    // @ts-ignore
     expect(component.removeInteraction.getActive()).toEqual(true);
+    // @ts-ignore
     expect(component.selectInteraction.getActive()).toEqual(false);
 
     component.onToggleDelete();
@@ -209,9 +225,13 @@ describe('ProjectCreationComponent', () => {
   it('should toggle edit interactions correctly', () => {
     component.onToggleEdit();
 
+    // @ts-ignore
     expect(component.drawInteraction.getActive()).toEqual(false);
+    // @ts-ignore
     expect(component.modifyInteraction.getActive()).toEqual(true);
+    // @ts-ignore
     expect(component.removeInteraction.getActive()).toEqual(false);
+    // @ts-ignore
     expect(component.selectInteraction.getActive()).toEqual(false);
 
     component.onToggleEdit();
@@ -220,6 +240,7 @@ describe('ProjectCreationComponent', () => {
   });
 
   it('should add feature on draw interaction', () => {
+    // @ts-ignore
     component.drawInteraction.dispatchEvent({
       type: 'drawend',
       feature: new Feature(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]])),
@@ -228,8 +249,11 @@ describe('ProjectCreationComponent', () => {
       stopPropagation: undefined
     } as unknown as DrawEvent);
 
+    // @ts-ignore
     expect(component.vectorSource.getFeatures().length).toEqual(1);
+    // @ts-ignore
     expect(component.vectorSource.getFeatures()[0].get('id')).toEqual('0');
+    // @ts-ignore
     expect(component.vectorSource.getFeatures()[0].get('name')).toEqual('0');
   });
 
@@ -239,6 +263,7 @@ describe('ProjectCreationComponent', () => {
     const feature = new Feature(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]]));
     feature.set('id', '123');
 
+    // @ts-ignore
     component.removeInteraction.dispatchEvent({
       type: 'select',
       selected: [feature],
@@ -258,6 +283,7 @@ describe('ProjectCreationComponent', () => {
     const feature = new Feature(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]]));
     feature.set('id', '123');
 
+    // @ts-ignore
     component.selectInteraction.dispatchEvent({
       type: 'select',
       selected: [feature],
@@ -271,12 +297,27 @@ describe('ProjectCreationComponent', () => {
     expect(spySelect).toHaveBeenCalledWith('123');
   });
 
+  it('should remove layers on destroy', () => {
+    const spy = spyOn(mapLayerService, 'removeLayer');
+
+    component.ngOnDestroy();
+
+    // @ts-ignore
+    expect(spy).toHaveBeenCalledWith(component.vectorLayer);
+    // @ts-ignore
+    expect(spy).toHaveBeenCalledWith(component.previewVectorLayer);
+  });
+
   function expectInteractionsToBeInDefaultState() {
+    // @ts-ignore
     expect(component.drawInteraction.getActive()).toEqual(false);
+    // @ts-ignore
     expect(component.modifyInteraction.getActive()).toEqual(false);
+    // @ts-ignore
     expect(component.removeInteraction.getActive()).toEqual(false);
 
     // Selection is enabled when all other interactions aren't
+    // @ts-ignore
     expect(component.selectInteraction.getActive()).toEqual(true);
   }
 
