@@ -6,10 +6,12 @@ import { OSM } from 'ol/source';
 import { MapLayerService } from '../../services/map-layer.service';
 import BaseLayer from 'ol/layer/Base';
 import { Unsubscriber } from '../../unsubscriber';
-import { Extent, intersects } from 'ol/extent';
+import { extend, Extent, intersects } from 'ol/extent';
 import RenderFeature from 'ol/render/Feature';
 import { Coordinate } from 'ol/coordinate';
 import { Interaction } from 'ol/interaction';
+import { Geometry } from 'ol/geom';
+import { Size } from 'ol/size';
 
 @Component({
   selector: 'app-map',
@@ -58,6 +60,7 @@ export class MapComponent extends Unsubscriber implements OnInit {
     this.unsubscribeLater(this.layerService.onInteractionRemoved.subscribe(
       (interaction: Interaction) => this.removeInteraction(interaction)));
     this.unsubscribeLater(this.layerService.onFitView.subscribe((extent: Extent) => this.fitMapView(extent)));
+    this.unsubscribeLater(this.layerService.onFitToFeatures.subscribe((features: Feature<Geometry>[]) => this.fitToFeatures(features)));
     this.unsubscribeLater(this.layerService.onCenterView.subscribe((coordinate: Coordinate) => this.centerMapView(coordinate)));
     this.unsubscribeLater(this.layerService.onMoveToOutsideGeometry.subscribe((extent: Extent) => this.moveToOutsideGeometry(extent)));
   }
@@ -114,5 +117,16 @@ export class MapComponent extends Unsubscriber implements OnInit {
       const center = [extent[0] + (extent[2] - extent[0]) / 2, extent[1] + (extent[3] - extent[1]) / 2];
       this.map.getView().setCenter(center);
     }
+  }
+
+  private fitToFeatures(features: Feature<Geometry>[]) {
+    // Subtract the padding from the map size. This padding will be added back to the map size below.
+    let overallExtent = features[0].getGeometry().getExtent();
+
+    // Try to extend the extent over all new features: If one feature is outside the current extent, then the map view should be adjusted
+    // @ts-ignore
+    features.forEach(f => overallExtent = extend(overallExtent, f.getGeometry().getExtent()));
+
+    this.fitMapView(overallExtent);
   }
 }

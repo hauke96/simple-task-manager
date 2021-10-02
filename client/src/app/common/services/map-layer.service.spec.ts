@@ -2,7 +2,6 @@ import { TestBed } from '@angular/core/testing';
 
 import { MapLayerService } from './map-layer.service';
 import BaseLayer from 'ol/layer/Base';
-import RenderFeature from 'ol/render/Feature';
 import createSpy = jasmine.createSpy;
 
 describe('MapLayerService', () => {
@@ -54,18 +53,5 @@ describe('MapLayerService', () => {
 
     // Assert
     expect(spy).toHaveBeenCalledOnceWith(extent);
-  });
-
-  it('should call map clicked handler', () => {
-    // Arrange
-    const spy = createSpy();
-    service.onMapClicked.subscribe(spy);
-    const features = [new RenderFeature('point', [], [], {}, 42)];
-
-    // Act
-    service.mapClicked(features);
-
-    // Assert
-    expect(spy).toHaveBeenCalledOnceWith(features);
   });
 });

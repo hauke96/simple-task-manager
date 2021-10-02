@@ -16,6 +16,7 @@ import { SelectEvent } from 'ol/interaction/Select';
 import { DrawEvent } from 'ol/interaction/Draw';
 import { TaskDraftService } from '../task-draft.service';
 import { CurrentUserService } from '../../user/current-user.service';
+import { MapLayerService } from '../../common/services/map-layer.service';
 
 describe('ProjectCreationComponent', () => {
   let component: ProjectCreationComponent;
@@ -24,6 +25,7 @@ describe('ProjectCreationComponent', () => {
   let taskDraftService: TaskDraftService;
   let routerMock: MockRouter;
   let currentUserService: CurrentUserService;
+  let mapLayerService: MapLayerService;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -46,6 +48,7 @@ describe('ProjectCreationComponent', () => {
     taskDraftService = TestBed.inject(TaskDraftService);
     currentUserService = TestBed.inject(CurrentUserService);
     routerMock = TestBed.inject(Router);
+    mapLayerService = TestBed.inject(MapLayerService);
   }));
 
   beforeEach(() => {
@@ -60,7 +63,7 @@ describe('ProjectCreationComponent', () => {
 
   it('should add new tasks to map', () => {
     // @ts-ignore
-    const spyMapView = spyOn(component.map.getView(), 'fit');
+    const spy = spyOn(mapLayerService, 'fitToFeatures');
 
     const tasks = getDummyTasks();
     expect(component.vectorSource.getFeatures().length).toEqual(0);
@@ -69,7 +72,7 @@ describe('ProjectCreationComponent', () => {
     component.addTasks(tasks);
 
     expect(component.vectorSource.getFeatures().length).toEqual(tasks.length);
-    expect(spyMapView).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalled();
   });
 
   it('should return tasks correctly', () => {
@@ -129,7 +132,7 @@ describe('ProjectCreationComponent', () => {
     const vectorSourceClearSpy = spyOn(component.vectorSource, 'clear');
     const vectorSourceAddSpy = spyOn(component.vectorSource, 'addFeatures');
     // @ts-ignore
-    const spyView = spyOn(component.map.getView(), 'fit');
+    const spy = spyOn(mapLayerService, 'fitToFeatures');
 
     const tasks = getDummyTasks();
     // @ts-ignore
@@ -138,7 +141,7 @@ describe('ProjectCreationComponent', () => {
     expect(vectorSourceClearSpy).not.toHaveBeenCalled();
     expect((vectorSourceAddSpy.calls.first().args[0] as Feature<Geometry>[])[0].getGeometry()).toEqual(tasks[0].geometry);
     expect((vectorSourceAddSpy.calls.first().args[0] as Feature<Geometry>[])[1].getGeometry()).toEqual(tasks[1].geometry);
-    expect(spyView).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalled();
   });
 
   it('should create project with all properties', () => {
@@ -175,26 +178,6 @@ describe('ProjectCreationComponent', () => {
     component.onTabSelected();
 
     expect(spy).toHaveBeenCalled();
-  });
-
-  it('should zoom in', () => {
-    // @ts-ignore
-    const z = component.map.getView().getZoom();
-
-    component.onZoomIn();
-
-    // @ts-ignore
-    expect(component.map.getView().getZoom()).toEqual(z + 1);
-  });
-
-  it('should zoom out', () => {
-    // @ts-ignore
-    const z = component.map.getView().getZoom();
-
-    component.onZoomOut();
-
-    // @ts-ignore
-    expect(component.map.getView().getZoom()).toEqual(z - 1);
   });
 
   it('should toggle draw and modify interactions correctly', () => {

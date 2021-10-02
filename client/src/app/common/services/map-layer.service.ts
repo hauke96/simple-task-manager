@@ -4,6 +4,8 @@ import BaseLayer from 'ol/layer/Base';
 import { Extent } from 'ol/extent';
 import { Coordinate } from 'ol/coordinate';
 import { Interaction } from 'ol/interaction';
+import { Feature } from 'ol';
+import { Geometry } from 'ol/geom';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +17,7 @@ export class MapLayerService {
   private $onInteractionAdded: Subject<Interaction> = new Subject();
   private $onInteractionRemoved: Subject<Interaction> = new Subject();
   private $onFitView: Subject<Extent> = new Subject();
+  private $onFitToFeatures: Subject<Feature<Geometry>[]> = new Subject();
   private $onCenterView: Subject<Coordinate> = new Subject();
   private $onMoveToOutsideGeometry: Subject<Extent> = new Subject();
 
@@ -36,6 +39,10 @@ export class MapLayerService {
 
   get onFitView(): Observable<Extent> {
     return this.$onFitView.asObservable();
+  }
+
+  get onFitToFeatures(): Observable<Feature<Geometry>[]> {
+    return this.$onFitToFeatures.asObservable();
   }
 
   get onCenterView(): Observable<Coordinate> {
@@ -64,6 +71,10 @@ export class MapLayerService {
 
   public fitView(extent: Extent): void {
     this.$onFitView.next(extent);
+  }
+
+  public fitToFeatures(features: Feature<Geometry>[]): void {
+    this.$onFitToFeatures.next(features);
   }
 
   public centerView(newCenter: Coordinate): void {

@@ -3,6 +3,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MapComponent } from './map.component';
 import { MapLayerService } from '../../services/map-layer.service';
 import BaseLayer from 'ol/layer/Base';
+import { Feature } from 'ol';
+import { Geometry, Point } from 'ol/geom';
+import { Interaction } from 'ol/interaction';
+import Select from 'ol/interaction/Select';
 
 describe('MapComponent', () => {
   let component: MapComponent;
@@ -27,6 +31,16 @@ describe('MapComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should have one initial layer', () => {
+    // @ts-ignore
+    expect(component.map.getLayers().getLength()).toBe(1);
+  });
+
+  it('should not have initial interactions', () => {
+    // @ts-ignore
+    expect(component.map.getInteractions().getLength()).toBe(9); // default interactions
   });
 
   describe('with zoom and spy', () => {
@@ -127,6 +141,62 @@ describe('MapComponent', () => {
     it('should adjust view fit', () => {
       // @ts-ignore
       expect(spy).toHaveBeenCalledOnceWith(extent, {size: mockSize, padding});
+    });
+  });
+
+  describe('with fit to features call', () => {
+    let spy: jasmine.Spy;
+
+    beforeEach(() => {
+      // @ts-ignore
+      spy = spyOn(component.map.getView(), 'fit'); // @ts-ignore
+
+      mapLayerService.fitToFeatures([new Feature<Geometry>(new Point([10, 10]))]);
+    });
+
+    it('should adjust view fit', () => {
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('with center map view call', () => {
+    const newCenter = [23, 45];
+    let spy: jasmine.Spy;
+
+    beforeEach(() => {
+      // @ts-ignore
+      spy = spyOn(component.map.getView(), 'setCenter'); // @ts-ignore
+
+      mapLayerService.centerView(newCenter);
+    });
+
+    it('should adjust view center', () => {
+      expect(spy).toHaveBeenCalledWith(newCenter);
+    });
+  });
+
+  describe('with add interaction call', () => {
+    let interaction: Interaction;
+
+    beforeEach(() => {
+      interaction = new Select();
+      mapLayerService.addInteraction(interaction);
+    });
+
+    it('should have one interaction', () => {
+      // @ts-ignore
+      expect(component.map.getInteractions().getLength()).toBe(10);
+    });
+
+    describe('with remove interaction call', () => {
+      beforeEach(() => {
+        mapLayerService.removeInteraction(interaction);
+      });
+
+      it('should have no interaction anymore', () => {
+        // @ts-ignore
+        expect(component.map.getInteractions().getLength()).toBe(9); // default interactions remain
+      });
     });
   });
 

@@ -191,31 +191,10 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
    * Called after a task has been added to the task draft service.
    */
   private addTasks(tasks: TaskDraft[]) {
-    const mapPaddingPx = 25;
     const newFeatures = tasks.map(t => this.toFeature(t));
     this.vectorSource.addFeatures(newFeatures);
 
-    // // Subtract the padding from the map size. This padding will be added back to the map size below.
-    // const mapSize = this.map.getSize();
-    // if (!mapSize) {
-    //   this.notificationService.addError('Unable to get map size');
-    //   return;
-    // }
-    //
-    // const paddedMapSize = [
-    //   mapSize[0] - 2 * mapPaddingPx,
-    //   mapSize[1] - 2 * mapPaddingPx
-    // ] as Size;
-    // let overallExtent = this.map.getView().calculateExtent(paddedMapSize);
-    //
-    // // Try to extend the extent over all new features: If one feature is outside the current extent, then the map view should be adjusted
-    // // @ts-ignore
-    // newFeatures.forEach(f => overallExtent = extend(overallExtent, f.getGeometry().getExtent()));
-    //
-    // this.map.getView().fit(overallExtent, {
-    //   size: mapSize,
-    //   padding: [mapPaddingPx, mapPaddingPx, mapPaddingPx, mapPaddingPx] // in pixels
-    // });
+    this.mapLayerService.fitToFeatures(newFeatures);
 
     if (!this.canAddTasks) {
       this.setInteraction(this.drawInteraction, false);

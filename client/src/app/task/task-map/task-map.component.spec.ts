@@ -37,7 +37,7 @@ describe('TaskMapComponent', () => {
       new Task('4', '', 100, 100, getFeature()),
     ];
 
-    component.ngOnInit();
+    component.ngAfterViewInit();
 
     fixture.detectChanges();
   });
