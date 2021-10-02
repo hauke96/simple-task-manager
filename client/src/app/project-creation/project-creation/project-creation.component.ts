@@ -29,6 +29,7 @@ import { Size } from 'ol/size';
 import { ProjectImportService } from '../project-import.service';
 import { Project } from '../../project/project.material';
 import { Unsubscriber } from '../../common/unsubscriber';
+import { Coordinate } from 'ol/coordinate';
 
 @Component({
   selector: 'app-project-creation',
@@ -129,17 +130,30 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
     });
 
     // Restore map center
-    const center = localStorage.getItem('project_creation_map_center');
-    if (!!center) {
-      this.map.getView().setCenter(JSON.parse(center));
+    const center = this.getLastLocation();
+    if (center) {
+      this.map.getView().setCenter(center);
     }
 
     // Update map center after map has been moved
-    this.map.on('moveend', (e: MapEvent) => {
-      localStorage.setItem('project_creation_map_center', JSON.stringify(e.map.getView().getCenter()));
-    });
+    this.map.on('moveend', (e: MapEvent) => this.storeLastLocation(e));
 
     this.addMapInteractions();
+  }
+
+  private getLastLocation(): Coordinate | undefined {
+    let lastLocation;
+    const jsonValue = localStorage.getItem('project_creation_map_center');
+
+    if (jsonValue) {
+      lastLocation = JSON.parse(jsonValue);
+    }
+
+    return lastLocation;
+  }
+
+  private storeLastLocation(e: MapEvent) {
+    localStorage.setItem('project_creation_map_center', JSON.stringify(e.map.getView().getCenter()));
   }
 
   private getStyle(feature: FeatureLike): Style {
