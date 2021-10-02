@@ -53,8 +53,5 @@
 		</app-tabs>
 	</div>
 
-	<div class="map-container">
-		<app-map class="map"></app-map>
-		<app-task-map *ngIf="project.tasks" [tasks]="project.tasks"></app-task-map>
-	</div>
+	<app-task-map class="map-container" *ngIf="project.tasks" [tasks]="project.tasks"></app-task-map>
 </div>

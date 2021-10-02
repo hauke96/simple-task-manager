@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Map, MapBrowserEvent, View } from 'ol';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Feature, Map, MapBrowserEvent, View } from 'ol';
 import { Attribution, ScaleLine } from 'ol/control';
 import TileLayer from 'ol/layer/Tile';
 import { OSM } from 'ol/source';
@@ -7,6 +7,7 @@ import { MapLayerService } from '../../services/map-layer.service';
 import BaseLayer from 'ol/layer/Base';
 import { Unsubscriber } from '../../unsubscriber';
 import { Extent, intersects } from 'ol/extent';
+import RenderFeature from 'ol/render/Feature';
 
 @Component({
   selector: 'app-map',
@@ -14,6 +15,8 @@ import { Extent, intersects } from 'ol/extent';
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent extends Unsubscriber implements OnInit {
+  @Output()
+  public mapClicked: EventEmitter<(Feature<any> | RenderFeature)[]> = new EventEmitter();
 
   private map: Map;
 
@@ -42,7 +45,7 @@ export class MapComponent extends Unsubscriber implements OnInit {
       })
     });
 
-    this.map.on('click', (event: MapBrowserEvent<UIEvent>) => this.layerService.mapClicked(this.map.getFeaturesAtPixel(event.pixel)));
+    this.map.on('click', (event: MapBrowserEvent<UIEvent>) => this.mapClicked.next(this.map.getFeaturesAtPixel(event.pixel)));
 
     this.unsubscribeLater(this.layerService.onLayerAdded.subscribe((layer: BaseLayer) => this.map.addLayer(layer)));
     this.unsubscribeLater(this.layerService.onLayerRemoved.subscribe((layer: BaseLayer) => this.map.removeLayer(layer)));

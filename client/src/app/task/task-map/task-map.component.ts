@@ -18,7 +18,7 @@ import RenderFeature from 'ol/render/Feature';
   templateUrl: './task-map.component.html',
   styleUrls: ['./task-map.component.scss']
 })
-export class TaskMapComponent extends Unsubscriber implements OnInit, OnDestroy {
+export class TaskMapComponent extends Unsubscriber implements AfterViewInit, OnDestroy {
   @Input() tasks: Task[];
 
   selectedTask: Task;
@@ -35,7 +35,7 @@ export class TaskMapComponent extends Unsubscriber implements OnInit, OnDestroy 
     super();
   }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     // this vector source contains all the task geometries
     this.vectorSource = new VectorSource();
     this.vectorLayer = new VectorLayer({
@@ -46,20 +46,6 @@ export class TaskMapComponent extends Unsubscriber implements OnInit, OnDestroy 
     this.tasks.forEach(t => {
       this.showTaskPolygon(t);
       this.layerService.fitView(this.vectorSource.getExtent());
-    });
-
-    // Clicking on the map selects the clicked polygon (and therefore the according task)
-    this.layerService.onMapClicked.subscribe((features: (Feature<any> | RenderFeature)[]) => {
-      // When a feature was found on the map, it'll be selected in the task
-      // service. This will trigger the "selectedTaskChanged" event and causes
-      // the source-refresh below in the handler. This will then update the map
-      // style and highlights the correct geometry on the map.
-
-      const featureTaskIds = features.map(f => f.get('task_id'));
-      const clickedTasks = this.tasks.filter(task => featureTaskIds.includes(task.id));
-      if (clickedTasks.length > 0) {
-        this.taskService.selectTask(clickedTasks[0]);
-      }
     });
 
     this.unsubscribeLater(
@@ -77,6 +63,20 @@ export class TaskMapComponent extends Unsubscriber implements OnInit, OnDestroy 
     super.ngOnDestroy();
 
     this.layerService.removeLayer(this.vectorLayer);
+  }
+
+  // Clicking on the map selects the clicked polygon (and therefore the according task)
+  onMapClicked(clickedFeatures: (Feature<any> | RenderFeature)[]): void {
+    // When a feature was found on the map, it'll be selected in the task
+    // service. This will trigger the "selectedTaskChanged" event and causes
+    // the source-refresh below in the handler. This will then update the map
+    // style and highlights the correct geometry on the map.
+
+    const featureTaskIds = clickedFeatures.map(f => f.get('task_id'));
+    const clickedTasks = this.tasks.filter(task => featureTaskIds.includes(task.id));
+    if (clickedTasks.length > 0) {
+      this.taskService.selectTask(clickedTasks[0]);
+    }
   }
 
   private selectTask(task: Task): void {
