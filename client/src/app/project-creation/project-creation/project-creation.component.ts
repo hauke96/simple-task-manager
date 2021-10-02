@@ -107,8 +107,8 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
 
     // Restore map center
     const center = this.getLastLocation();
-    if (center) {
-      // TODO this.mapLayerService.centerView(center);
+    if (!!center) {
+      this.mapLayerService.centerView(center);
     }
 
     this.addMapInteractions();

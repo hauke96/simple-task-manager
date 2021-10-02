@@ -15,6 +15,7 @@ export class MapLayerService {
   private $onInteractionAdded: Subject<Interaction> = new Subject();
   private $onInteractionRemoved: Subject<Interaction> = new Subject();
   private $onFitView: Subject<Extent> = new Subject();
+  private $onCenterView: Subject<Coordinate> = new Subject();
   private $onMoveToOutsideGeometry: Subject<Extent> = new Subject();
 
   get onLayerAdded(): Observable<BaseLayer> {
@@ -35,6 +36,10 @@ export class MapLayerService {
 
   get onFitView(): Observable<Extent> {
     return this.$onFitView.asObservable();
+  }
+
+  get onCenterView(): Observable<Coordinate> {
+    return this.$onCenterView.asObservable();
   }
 
   get onMoveToOutsideGeometry(): Observable<Extent> {
@@ -59,6 +64,10 @@ export class MapLayerService {
 
   public fitView(extent: Extent): void {
     this.$onFitView.next(extent);
+  }
+
+  public centerView(newCenter: Coordinate): void {
+    this.$onCenterView.next(newCenter);
   }
 
   /**

@@ -57,6 +57,7 @@ export class MapComponent extends Unsubscriber implements OnInit {
     this.unsubscribeLater(this.layerService.onInteractionAdded.subscribe((interaction: Interaction) => this.addInteraction(interaction)));
     this.unsubscribeLater(this.layerService.onInteractionRemoved.subscribe((interaction: Interaction) => this.removeInteraction(interaction)));
     this.unsubscribeLater(this.layerService.onFitView.subscribe((extent: Extent) => this.fitMapView(extent)));
+    this.unsubscribeLater(this.layerService.onCenterView.subscribe((coordinate: Coordinate) => this.centerMapView(coordinate)));
     this.unsubscribeLater(this.layerService.onMoveToOutsideGeometry.subscribe((extent: Extent) => this.moveToOutsideGeometry(extent)));
   }
 
@@ -100,6 +101,10 @@ export class MapComponent extends Unsubscriber implements OnInit {
         size: this.map.getSize(),
         padding: [25, 25, 25, 25] // in pixels
       });
+  }
+
+  private centerMapView(coordinate: Coordinate): void {
+    this.map.getView().setCenter(coordinate);
   }
 
   private moveToOutsideGeometry(extent: number[]) {
