@@ -1,12 +1,9 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProjectService } from '../../project/project.service';
-import { Feature, Map, MapEvent, View } from 'ol';
-import TileLayer from 'ol/layer/Tile';
-import { OSM } from 'ol/source';
+import { Feature } from 'ol';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
-import { Attribution, ScaleLine } from 'ol/control';
 import { Geometry, Polygon } from 'ol/geom';
 import { Fill, Stroke, Style } from 'ol/style';
 import { Draw } from 'ol/interaction';
@@ -24,12 +21,11 @@ import { TaskDraftService } from '../task-draft.service';
 import { TaskDraft } from '../../task/task.material';
 import { FeatureLike } from 'ol/Feature';
 import { ConfigProvider } from '../../config/config.provider';
-import { extend } from 'ol/extent';
-import { Size } from 'ol/size';
 import { ProjectImportService } from '../project-import.service';
 import { Project } from '../../project/project.material';
 import { Unsubscriber } from '../../common/unsubscriber';
 import { Coordinate } from 'ol/coordinate';
+import { MapLayerService } from '../../common/services/map-layer.service';
 
 @Component({
   selector: 'app-project-creation',
@@ -54,14 +50,13 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
   // For the toolbar
   public resetToolbarSelectionSubject: Subject<void> = new Subject<void>();
 
-  private map: Map;
-
   constructor(
     private projectService: ProjectService,
     private taskDraftService: TaskDraftService,
     private notificationService: NotificationService,
     private currentUserService: CurrentUserService,
     private projectImportService: ProjectImportService,
+    private mapLayerService: MapLayerService,
     private router: Router,
     public config: ConfigProvider
   ) {
@@ -107,38 +102,20 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
       style: this.getPreviewStyle()
     });
 
-    this.map = new Map({
-      target: 'map',
-      controls: [
-        new ScaleLine(),
-        new Attribution()
-      ],
-      layers: [
-        new TileLayer({
-          source: new OSM()
-        }),
-        this.vectorLayer,
-        this.previewVectorLayer
-      ],
-      view: new View({
-        center: [1111000, 7086000],
-        projection: 'EPSG:3857',
-        zoom: 14,
-        minZoom: 0,
-        maxZoom: 19
-      })
-    });
+    this.mapLayerService.addLayer(this.vectorLayer);
+    this.mapLayerService.addLayer(this.previewVectorLayer);
 
     // Restore map center
     const center = this.getLastLocation();
     if (center) {
-      this.map.getView().setCenter(center);
+      // TODO this.mapLayerService.centerView(center);
     }
 
-    // Update map center after map has been moved
-    this.map.on('moveend', (e: MapEvent) => this.storeLastLocation(e));
-
     this.addMapInteractions();
+  }
+
+  onMoveEnd(mapCenter: Coordinate) {
+    this.storeLastLocation(mapCenter);
   }
 
   private getLastLocation(): Coordinate | undefined {
@@ -152,8 +129,8 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
     return lastLocation;
   }
 
-  private storeLastLocation(e: MapEvent) {
-    localStorage.setItem('project_creation_map_center', JSON.stringify(e.map.getView().getCenter()));
+  private storeLastLocation(coordinate: Coordinate) {
+    localStorage.setItem('project_creation_map_center', JSON.stringify(coordinate));
   }
 
   private getStyle(feature: FeatureLike): Style {
@@ -218,27 +195,27 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
     const newFeatures = tasks.map(t => this.toFeature(t));
     this.vectorSource.addFeatures(newFeatures);
 
-    // Subtract the padding from the map size. This padding will be added back to the map size below.
-    const mapSize = this.map.getSize();
-    if (!mapSize) {
-      this.notificationService.addError('Unable to get map size');
-      return;
-    }
-
-    const paddedMapSize = [
-      mapSize[0] - 2 * mapPaddingPx,
-      mapSize[1] - 2 * mapPaddingPx
-    ] as Size;
-    let overallExtent = this.map.getView().calculateExtent(paddedMapSize);
-
-    // Try to extend the extent over all new features: If one feature is outside the current extent, then the map view should be adjusted
-    // @ts-ignore
-    newFeatures.forEach(f => overallExtent = extend(overallExtent, f.getGeometry().getExtent()));
-
-    this.map.getView().fit(overallExtent, {
-      size: mapSize,
-      padding: [mapPaddingPx, mapPaddingPx, mapPaddingPx, mapPaddingPx] // in pixels
-    });
+    // // Subtract the padding from the map size. This padding will be added back to the map size below.
+    // const mapSize = this.map.getSize();
+    // if (!mapSize) {
+    //   this.notificationService.addError('Unable to get map size');
+    //   return;
+    // }
+    //
+    // const paddedMapSize = [
+    //   mapSize[0] - 2 * mapPaddingPx,
+    //   mapSize[1] - 2 * mapPaddingPx
+    // ] as Size;
+    // let overallExtent = this.map.getView().calculateExtent(paddedMapSize);
+    //
+    // // Try to extend the extent over all new features: If one feature is outside the current extent, then the map view should be adjusted
+    // // @ts-ignore
+    // newFeatures.forEach(f => overallExtent = extend(overallExtent, f.getGeometry().getExtent()));
+    //
+    // this.map.getView().fit(overallExtent, {
+    //   size: mapSize,
+    //   padding: [mapPaddingPx, mapPaddingPx, mapPaddingPx, mapPaddingPx] // in pixels
+    // });
 
     if (!this.canAddTasks) {
       this.setInteraction(this.drawInteraction, false);
@@ -264,19 +241,19 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
       // Add shaped but do not transform them (first *false*) and do not move map view (second *false)
       this.taskDraftService.addTasks([this.taskDraftService.toTaskDraft(e.feature)], false);
     });
-    this.map.addInteraction(this.drawInteraction);
+    this.mapLayerService.addInteraction(this.drawInteraction);
 
     // MODIFY
     const snap = new Snap({
       source: this.vectorSource
     });
-    this.map.addInteraction(snap);
+    this.mapLayerService.addInteraction(snap);
 
     this.modifyInteraction = new Modify({
       source: this.vectorSource
     });
     this.modifyInteraction.setActive(false);
-    this.map.addInteraction(this.modifyInteraction);
+    this.mapLayerService.addInteraction(this.modifyInteraction);
 
     // DELETE
     this.removeInteraction = new Select();
@@ -287,7 +264,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
       }
     });
     this.removeInteraction.setActive(false);
-    this.map.addInteraction(this.removeInteraction);
+    this.mapLayerService.addInteraction(this.removeInteraction);
 
     // SELECT
     this.selectInteraction = new Select({
@@ -301,7 +278,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
         this.taskDraftService.deselectTask();
       }
     });
-    this.map.addInteraction(this.selectInteraction);
+    this.mapLayerService.addInteraction(this.selectInteraction);
   }
 
   // See if the vector layer has some features.
@@ -357,24 +334,6 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
     this.previewVectorSource.clear();
 
     this.resetToolbarSelectionSubject.next();
-  }
-
-  onZoomIn() {
-    const zoom = this.map.getView().getZoom();
-    if (!zoom) {
-      return;
-    }
-
-    this.map.getView().setZoom(zoom + 1);
-  }
-
-  onZoomOut() {
-    const zoom = this.map.getView().getZoom();
-    if (!zoom) {
-      return;
-    }
-
-    this.map.getView().setZoom(zoom - 1);
   }
 
   onToggleDraw() {

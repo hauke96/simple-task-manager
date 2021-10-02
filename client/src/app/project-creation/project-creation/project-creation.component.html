@@ -59,11 +59,6 @@
 	</div>
 	<div class="map-container">
 		<div class="drawing-toolbar">
-			<app-zoom-control
-					class="zoom-control"
-					(buttonZoomIn)="onZoomIn()"
-					(buttonZoomOut)="onZoomOut()"
-			></app-zoom-control>
 			<app-drawing-toolbar
 					[resetSelection]="resetToolbarSelectionSubject"
 					(buttonDraw)="onToggleDraw()"
@@ -72,6 +67,6 @@
 					[canAddTasks]="canAddTasks"
 			></app-drawing-toolbar>
 		</div>
-		<div id="map"></div>
+		<app-map class="map" (moveEnd)="onMoveEnd($event)"></app-map>
 	</div>
 </div>

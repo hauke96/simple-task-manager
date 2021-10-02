@@ -53,13 +53,14 @@
 	left: 0px;
 	top: 0px;
 	margin: $space-base;
+	margin-top: 100px; // TODO move whole button menu into map
 }
 
 .zoom-control {
 	margin-bottom: $space-base;
 }
 
-#map {
+.map {
 	height: 100%;
 	width: 100%;
 }

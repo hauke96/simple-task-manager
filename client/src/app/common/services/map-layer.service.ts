@@ -2,9 +2,8 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import BaseLayer from 'ol/layer/Base';
 import { Extent } from 'ol/extent';
-import { Feature } from 'ol';
 import { Coordinate } from 'ol/coordinate';
-import RenderFeature from 'ol/render/Feature';
+import { Interaction } from 'ol/interaction';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +12,8 @@ export class MapLayerService {
 
   private $onLayerAdded: Subject<BaseLayer> = new Subject();
   private $onLayerRemoved: Subject<BaseLayer> = new Subject();
+  private $onInteractionAdded: Subject<Interaction> = new Subject();
+  private $onInteractionRemoved: Subject<Interaction> = new Subject();
   private $onFitView: Subject<Extent> = new Subject();
   private $onMoveToOutsideGeometry: Subject<Extent> = new Subject();
 
@@ -24,11 +25,19 @@ export class MapLayerService {
     return this.$onLayerRemoved.asObservable();
   }
 
+  get onInteractionAdded(): Observable<Interaction> {
+    return this.$onInteractionAdded.asObservable();
+  }
+
+  get onInteractionRemoved(): Observable<Interaction> {
+    return this.$onInteractionRemoved.asObservable();
+  }
+
   get onFitView(): Observable<Extent> {
     return this.$onFitView.asObservable();
   }
 
-  get onMoveToOutsideGeometry(): Observable<Coordinate> {
+  get onMoveToOutsideGeometry(): Observable<Extent> {
     return this.$onMoveToOutsideGeometry.asObservable();
   }
 
@@ -38,6 +47,14 @@ export class MapLayerService {
 
   public removeLayer(layer: BaseLayer): void {
     this.$onLayerRemoved.next(layer);
+  }
+
+  public addInteraction(interaction: Interaction): void {
+    this.$onInteractionAdded.next(interaction);
+  }
+
+  public removeInteraction(interaction: Interaction): void {
+    this.$onInteractionRemoved.next(interaction);
   }
 
   public fitView(extent: Extent): void {
