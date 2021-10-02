@@ -12,6 +12,7 @@ import { FeatureLike } from 'ol/Feature';
 import { Geometry } from 'ol/geom';
 import { MapLayerService } from '../../common/services/map-layer.service';
 import RenderFeature from 'ol/render/Feature';
+import { Coordinate } from 'ol/coordinate';
 
 @Component({
   selector: 'app-task-map',
