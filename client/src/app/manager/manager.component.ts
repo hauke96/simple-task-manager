@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CurrentUserService } from '../user/current-user.service';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
+import { NotificationService } from '../common/services/notification.service';
+import { LoadingService } from '../common/services/loading.service';
 
 @Component({
   selector: 'app-manager',
@@ -23,7 +25,7 @@ export class ManagerComponent implements OnInit {
     return this.currentUserService.getUserName();
   }
 
-  public onLogoutClicked() {
+  public onLogoutClicked(): void {
     this.authService.logout();
   }
 }

@@ -1,11 +1,11 @@
 <div class="notification-container">
-	<div *ngIf="isLoading" class="loading-container">
+	<div *ngIf="isLoading" class="loading-container border">
 		<span class="text-box" i18n>Loading ...</span>
-		<div class="loader simple-circle"></div>
+		<div class="loader"></div>
 	</div>
 
 	<!-- Error -->
-	<div *ngIf="hasError" class="error-container">
+	<div *ngIf="hasError" class="error-container border">
 		<div class="notification-text-container">
 			<div class="error-text" i18n>ERROR:</div>&nbsp;
 			<span>{{currentErrorText}}</span>
@@ -20,7 +20,7 @@
 	</div>
 
 	<!-- Warning -->
-	<div *ngIf="hasWarning" class="warning-container">
+	<div *ngIf="hasWarning" class="warning-container border">
 		<div class="notification-text-container">
 			<div class="warn-text" i18n>WARNING:</div>&nbsp;
 			<span>{{currentWarningText}}</span>
@@ -35,7 +35,7 @@
 	</div>
 
 	<!-- Info -->
-	<div *ngIf="hasInfo" class="info-container">
+	<div *ngIf="hasInfo" class="info-container border">
 		<div class="notification-text-container">
 			<span>{{currentInfoText}}</span>
 		</div>

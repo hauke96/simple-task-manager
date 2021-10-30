@@ -25,11 +25,11 @@ export class LoadingService {
     return this.loading;
   }
 
-  public start() {
+  public start(): void {
     this.loading = true;
   }
 
-  public end() {
+  public end(): void {
     this.loading = false;
   }
 }

@@ -37,7 +37,7 @@ export class NotificationComponent implements OnInit {
     return this.notificationService.getError();
   }
 
-  public onCloseErrorButtonClicked() {
+  public onCloseErrorButtonClicked(): void {
     this.notificationService.dropError();
   }
 
@@ -57,7 +57,7 @@ export class NotificationComponent implements OnInit {
     return this.notificationService.getWarning();
   }
 
-  public onCloseWarningButtonClicked() {
+  public onCloseWarningButtonClicked(): void {
     this.notificationService.dropWarning();
   }
 
@@ -77,7 +77,7 @@ export class NotificationComponent implements OnInit {
     return this.notificationService.getInfo();
   }
 
-  public onCloseInfoButtonClicked() {
+  public onCloseInfoButtonClicked(): void {
     this.notificationService.dropInfo();
   }
 }

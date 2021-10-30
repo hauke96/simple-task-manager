@@ -22,7 +22,7 @@ export class NotificationService {
     return this.errorMessages.length !== 0;
   }
 
-  public remainingErrors() {
+  public remainingErrors(): number {
     return this.errorMessages.length;
   }
 
@@ -32,11 +32,11 @@ export class NotificationService {
   }
 
   // Drops/removes the oldest error reported by "getError()"
-  public dropError() {
+  public dropError(): void {
     this.errorMessages.shift();
   }
 
-  public addError(message: string) {
+  public addError(message: string): void {
     this.errorMessages.push(message);
   }
 
@@ -48,7 +48,7 @@ export class NotificationService {
     return this.infoMessages.length !== 0;
   }
 
-  public remainingInfo() {
+  public remainingInfo(): number {
     return this.infoMessages.length;
   }
 
@@ -58,11 +58,11 @@ export class NotificationService {
   }
 
   // Drops/removes the oldest error reported by "dropInfo()"
-  public dropInfo() {
+  public dropInfo(): void {
     this.infoMessages.shift();
   }
 
-  public addInfo(message: string) {
+  public addInfo(message: string): void {
     this.infoMessages.push(message);
   }
 
@@ -74,7 +74,7 @@ export class NotificationService {
     return this.warningMessages.length !== 0;
   }
 
-  public remainingWarning() {
+  public remainingWarning(): number {
     return this.warningMessages.length;
   }
 
@@ -84,11 +84,11 @@ export class NotificationService {
   }
 
   // Drops/removes the oldest error reported by "getWarning()"
-  public dropWarning() {
+  public dropWarning(): void {
     this.warningMessages.shift();
   }
 
-  public addWarning(message: string) {
+  public addWarning(message: string): void {
     this.warningMessages.push(message);
   }
 }
