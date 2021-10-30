@@ -118,8 +118,10 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
     this.mapLayerService.removeLayer(this.previewVectorLayer);
   }
 
-  onMoveEnd(mapCenter: Coordinate) {
-    this.storeLastLocation(mapCenter);
+  onMoveEnd(mapCenter: Coordinate | undefined) {
+    if (mapCenter) {
+      this.storeLastLocation(mapCenter);
+    }
   }
 
   private getLastLocation(): Coordinate | undefined {

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
 import { TaskService } from '../task.service';
 import { CurrentUserService } from '../../user/current-user.service';
 import { Task } from '../task.material';
@@ -12,7 +12,6 @@ import { FeatureLike } from 'ol/Feature';
 import { Geometry } from 'ol/geom';
 import { MapLayerService } from '../../common/services/map-layer.service';
 import RenderFeature from 'ol/render/Feature';
-import { Coordinate } from 'ol/coordinate';
 
 @Component({
   selector: 'app-task-map',
@@ -87,12 +86,17 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit, OnD
     if (!!this.selectedTask) {
       // Center view when the task isn't visible on the map
       const feature = this.getTaskFeature();
-      if (!feature || !feature.getGeometry()) {
-        console.error(feature);
-        throw new Error('Task feature or feature geometry undefined');
+      if (!feature) {
+        throw new Error('Task feature undefined');
       }
 
-      this.layerService.moveToOutsideGeometry(feature.getGeometry().getExtent());
+      const geometry = feature.getGeometry();
+      if (!geometry) {
+        console.error(feature);
+        throw new Error('Task feature geometry undefined');
+      }
+
+      this.layerService.moveToOutsideGeometry(geometry.getExtent());
     }
   }
 

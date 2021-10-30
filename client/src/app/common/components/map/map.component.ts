@@ -11,7 +11,6 @@ import RenderFeature from 'ol/render/Feature';
 import { Coordinate } from 'ol/coordinate';
 import { Interaction } from 'ol/interaction';
 import { Geometry } from 'ol/geom';
-import { Size } from 'ol/size';
 
 @Component({
   selector: 'app-map',
@@ -22,7 +21,7 @@ export class MapComponent extends Unsubscriber implements OnInit {
   @Output()
   public mapClicked: EventEmitter<(Feature<any> | RenderFeature)[]> = new EventEmitter();
   @Output()
-  public moveEnd: EventEmitter<Coordinate> = new EventEmitter();
+  public moveEnd: EventEmitter<Coordinate | undefined> = new EventEmitter();
 
   private map: Map;
 
@@ -120,12 +119,13 @@ export class MapComponent extends Unsubscriber implements OnInit {
   }
 
   private fitToFeatures(features: Feature<Geometry>[]) {
+    const geometries = features.filter(f => !!f.getGeometry()).map(f => f.getGeometry() as Geometry);
+
     // Subtract the padding from the map size. This padding will be added back to the map size below.
-    let overallExtent = features[0].getGeometry().getExtent();
+    let overallExtent = geometries[0].getExtent();
 
     // Try to extend the extent over all new features: If one feature is outside the current extent, then the map view should be adjusted
-    // @ts-ignore
-    features.forEach(f => overallExtent = extend(overallExtent, f.getGeometry().getExtent()));
+    geometries.forEach(g => overallExtent = extend(overallExtent, g.getExtent()));
 
     this.fitMapView(overallExtent);
   }

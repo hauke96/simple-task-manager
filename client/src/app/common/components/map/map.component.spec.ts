@@ -149,7 +149,7 @@ describe('MapComponent', () => {
 
     beforeEach(() => {
       // @ts-ignore
-      spy = spyOn(component.map.getView(), 'fit'); // @ts-ignore
+      spy = spyOn(component.map.getView(), 'fit');
 
       mapLayerService.fitToFeatures([new Feature<Geometry>(new Point([10, 10]))]);
     });
@@ -165,7 +165,7 @@ describe('MapComponent', () => {
 
     beforeEach(() => {
       // @ts-ignore
-      spy = spyOn(component.map.getView(), 'setCenter'); // @ts-ignore
+      spy = spyOn(component.map.getView(), 'setCenter');
 
       mapLayerService.centerView(newCenter);
     });
