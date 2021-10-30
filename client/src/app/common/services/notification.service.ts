@@ -19,7 +19,7 @@ export class NotificationService {
   //
 
   public hasError(): boolean {
-    return this.errorMessages.length !== 0;
+    return this.errorMessages.length > 0;
   }
 
   public remainingErrors(): number {
@@ -45,7 +45,7 @@ export class NotificationService {
   //
 
   public hasInfo(): boolean {
-    return this.infoMessages.length !== 0;
+    return this.infoMessages.length > 0;
   }
 
   public remainingInfo(): number {
@@ -57,7 +57,7 @@ export class NotificationService {
     return this.infoMessages[0];
   }
 
-  // Drops/removes the oldest error reported by "dropInfo()"
+  // Drops/removes the oldest error reported by "getInfo()"
   public dropInfo(): void {
     this.infoMessages.shift();
   }
@@ -71,7 +71,7 @@ export class NotificationService {
   //
 
   public hasWarning(): boolean {
-    return this.warningMessages.length !== 0;
+    return this.warningMessages.length > 0;
   }
 
   public remainingWarning(): number {
