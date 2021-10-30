@@ -144,18 +144,42 @@ describe('MapComponent', () => {
     });
   });
 
-  describe('with fit to features call', () => {
+  describe('with fit spy', () => {
     let spy: jasmine.Spy;
 
     beforeEach(() => {
       // @ts-ignore
       spy = spyOn(component.map.getView(), 'fit');
-
-      mapLayerService.fitToFeatures([new Feature<Geometry>(new Point([10, 10]))]);
     });
 
-    it('should adjust view fit', () => {
-      expect(spy).toHaveBeenCalledTimes(1);
+    describe('with geometries', () => {
+      beforeEach(() => {
+        mapLayerService.fitToFeatures([new Feature<Geometry>(new Point([10, 10])), new Feature<Geometry>(new Point([100, 100]))]);
+      });
+
+      it('should adjust view fit', () => {
+        expect(spy).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('with features without geometries', () => {
+      beforeEach(() => {
+        mapLayerService.fitToFeatures([new Feature<Geometry>(), new Feature<Geometry>()]);
+      });
+
+      it('should not adjust view fit', () => {
+        expect(spy).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('without geometries', () => {
+      beforeEach(() => {
+        mapLayerService.fitToFeatures([]);
+      });
+
+      it('should not adjust view fit', () => {
+        expect(spy).not.toHaveBeenCalled();
+      });
     });
   });
 

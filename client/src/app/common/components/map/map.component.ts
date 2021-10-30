@@ -121,6 +121,10 @@ export class MapComponent extends Unsubscriber implements OnInit {
   private fitToFeatures(features: Feature<Geometry>[]) {
     const geometries = features.filter(f => !!f.getGeometry()).map(f => f.getGeometry() as Geometry);
 
+    if (geometries.length === 0) {
+      return;
+    }
+
     // Subtract the padding from the map size. This padding will be added back to the map size below.
     let overallExtent = geometries[0].getExtent();
 
