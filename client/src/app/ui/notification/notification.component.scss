@@ -21,9 +21,8 @@
 .warning-container,
 .loading-container {
 	display: flex;
-	width: 500px;
-	max-width: 100%;
-	//min-height: 50px;
+	width: 600px;
+	max-width: 600px;
 }
 
 .border:first-child {
@@ -60,31 +59,32 @@
 
 .notification-text-container {
 	display: flex;
-	justify-content: center;
-	align-items: baseline;
 	flex-grow: 1;
 	padding: $space-small;
 	margin-top: auto;
 	margin-bottom: auto;
+	margin-left: $space-small;
+}
+
+.notification-text-wrapper {
+	display: flex;
+	flex-grow: 1;
+	align-self: start;
+	margin-top: auto;
+	margin-bottom: auto;
+}
+
+.notification-text {
+	flex-grow: 1;
+	word-wrap: anywhere;
 }
 
 .error-text {
 	color: $color-error-dark;
-	align-self: baseline;
 }
 
 .warn-text {
 	color: $color-warn-dark;
-	align-self: baseline;
-}
-
-.close-button-wrapper {
-	margin: $space-base;
-}
-
-.close-button-container {
-	display: flex;
-	align-items: center;
 }
 
 .remaining-notifications-label {
