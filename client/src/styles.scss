@@ -14,7 +14,7 @@ $space-huge: $space-base * 3.5;
 // Fonts
 // =====
 
-$font-small: 9pt;
+$font-small: 1rem;
 
 * {
 	font-family: Dejavu Sans, sans-serif;
@@ -75,8 +75,8 @@ button {
 	padding-left: $space-base;
 	padding-right: $space-base;
 	background-color: $color-very-light;
-	border: none;
 	border: 1px solid $color-light;
+	font-size: $font-small;
 }
 
 button:hover {
@@ -114,6 +114,7 @@ select {
 	background-size: $space-base * 1.5;
 	background-position: calc(100% - 8px) $space-base;
 	background-repeat: no-repeat;
+	font-size: $font-small;
 }
 
 
@@ -171,9 +172,10 @@ textarea {
 	box-sizing: border-box;
 	border: 1px solid $color-light;
 	padding: $space-small;
-	margin: 0px;
+	margin: 0;
 	flex-grow: 1;
-	min-width: 0px;
+	min-width: 0;
+	font-size: $font-small;
 }
 
 input {
