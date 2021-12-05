@@ -30,7 +30,8 @@ import { MapLayerService } from '../../common/services/map-layer.service';
 @Component({
   selector: 'app-project-creation',
   templateUrl: './project-creation.component.html',
-  styleUrls: ['./project-creation.component.scss']
+  styleUrls: ['./project-creation.component.scss'],
+  providers: [ TaskDraftService ]
 })
 export class ProjectCreationComponent extends Unsubscriber implements OnInit, OnDestroy, AfterViewInit {
   public projectProperties: ProjectProperties = new ProjectProperties('', 100, '');
