@@ -51,6 +51,12 @@ export class ProjectImportService {
    */
   public importProject(project: ProjectExport): void {
     this.projectService.importProject(project)
-      .subscribe(() => this.notificationService.addInfo('Project imported'));
+      .subscribe({
+        next: () => this.notificationService.addInfo('Project imported'),
+        error: (e) => {
+          console.error(e);
+          this.notificationService.addError('Project import failed: ' + e.error);
+        }
+      });
   }
 }
