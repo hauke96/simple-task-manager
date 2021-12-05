@@ -319,7 +319,7 @@ describe('TaskDetailsComponent', () => {
         shortcutJosmSubject.next();
 
         // @ts-ignore
-        expect(spy).toHaveBeenCalledWith(component.task, component.projectId);
+        expect(spy).toHaveBeenCalledWith(component.task);
       });
     });
 
