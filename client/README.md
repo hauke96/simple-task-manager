@@ -53,7 +53,8 @@ See the [development README](../doc/development/README.md) for details.
 
 # Configuration
 
-Currently the client has a very simple dev- and prod-configuration in `client/src/environments`.
+The client has a dev-, local- and prod-configuration in `client/src/environments`.
+The dev-environment is the default one, the local-environment uses a locally hosted authentication server and the prod-environment is used for deployment on a server. 
 
 Encryption (HTTPS) and HTTP-Server configs depend on the used HTTP-Server (Apache-HTTP, nginx, ...), so take a look at their documentation or at the `./client/nginx.conf` for my nginx config used in the `stm-client` docker container.
 

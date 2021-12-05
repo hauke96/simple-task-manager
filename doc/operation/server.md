@@ -109,6 +109,9 @@ Basically you're done with the preparations. The next step is the configuration.
 Alternatively you can build STM from scratch manually. You might want to take a look at the docker files in the `server`
 and `client` folders to maybe customize your build process.
 
+Server and client can be built independent of the later server IP/domain.
+The client for example uses `document.location.protocol` to make requests to the same domain it's hosted on.
+
 The `docker-compose.yml` can easily be modified such that the servers and clients docker files are used instead of
 docker hub.
 

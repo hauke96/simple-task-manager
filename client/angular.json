@@ -126,33 +126,6 @@
                   "maximumError": "15kb"
                 }
               ]
-            },
-            "test": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.test.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": false,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "12mb",
-                  "maximumError": "15mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "9kb",
-                  "maximumError": "15kb"
-                }
-              ]
             }
           },
           "defaultConfiguration": "dev"
@@ -165,9 +138,6 @@
           "configurations": {
             "local": {
               "browserTarget": "simple-task-manager:build:local"
-            },
-            "test": {
-              "browserTarget": "simple-task-manager:build:test"
             },
             "production": {
               "browserTarget": "simple-task-manager:build:production"
