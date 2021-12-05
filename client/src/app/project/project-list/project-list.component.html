@@ -16,11 +16,4 @@
 	<p class="light-label" i18n>You currently don't have any projects.</p>
 </div>
 
-<div class="bottom-line">
-	<div>
-		<button [routerLink]="['/new-project']" i18n>Create project</button>
-		<input id="projectInput" type="file" content="Upload" accept=".json" (change)="onImportProjectClicked($event)" style="display:none;">
-		<button class="import-button" onclick="document.getElementById('projectInput').click();" i18n>Import project</button>
-	</div>
-	<span class="light-label" *ngIf="projects?.length !== 0" i18n>* you own this project</span>
-</div>
+<span *ngIf="projects?.length !== 0" class="light-label ownership-notice" i18n>* you own this project</span>

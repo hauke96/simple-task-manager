@@ -20,8 +20,7 @@ export class ProjectListComponent extends Unsubscriber implements OnInit {
     private route: ActivatedRoute,
     private currentUserService: CurrentUserService,
     private projectService: ProjectService,
-    private notificationService: NotificationService,
-    private projectImportService: ProjectImportService
+    private notificationService: NotificationService
   ) {
     super();
   }
@@ -76,30 +75,7 @@ export class ProjectListComponent extends Unsubscriber implements OnInit {
     return this.currentUserService.getUserId();
   }
 
-  public onProjectListItemClicked(id: string) {
+  public onProjectListItemClicked(id: string): void {
     this.router.navigate(['/project', id]);
-  }
-
-  onImportProjectClicked(event: Event) {
-    this.uploadFile(event, (e) => this.addProjectExport(e));
-  }
-
-  public addProjectExport(evt: Event) {
-    // @ts-ignore
-    const project = JSON.parse(evt.target?.result) as ProjectExport;
-    this.projectImportService.importProject(project);
-  }
-
-  private uploadFile(event: any, loadHandler: (evt: Event) => void) {
-    const reader = new FileReader();
-    const file = event.target.files[0];
-
-    reader.readAsText(file, 'UTF-8');
-
-    reader.onload = loadHandler;
-    reader.onerror = (evt) => {
-      console.error(evt);
-      this.notificationService.addError($localize`:@@ERROR_COULD_NOT_UPLOAD:Could not upload file '${(evt.target as any).files[0]}:INTERPOLATION:'`);
-    };
   }
 }

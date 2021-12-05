@@ -12,6 +12,11 @@
 	</app-toolbar>
 	<div class="root-container">
 		<app-project-list></app-project-list>
+		<div>
+			<button [routerLink]="['/new-project']" i18n>Create project</button>
+			<input id="projectInput" type="file" content="Upload" accept=".json" (change)="onImportProjectClicked($event)" style="display:none;">
+			<button class="import-button" onclick="document.getElementById('projectInput').click();" i18n>Import project</button>
+		</div>
 	</div>
 </div>
 

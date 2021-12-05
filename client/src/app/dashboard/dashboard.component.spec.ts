@@ -4,6 +4,8 @@ import { DashboardComponent } from './dashboard.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CurrentUserService } from '../user/current-user.service';
 import { AuthService } from '../auth/auth.service';
+import { NotificationService } from '../common/services/notification.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe(DashboardComponent.name, () => {
   let component: DashboardComponent;
@@ -15,6 +17,7 @@ describe(DashboardComponent.name, () => {
     TestBed.configureTestingModule({
       declarations: [DashboardComponent],
       imports: [
+        HttpClientTestingModule,
         RouterTestingModule.withRoutes([])
       ]
     })
