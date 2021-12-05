@@ -46,7 +46,7 @@ const changesets = `
     <tag k="imagery_used" v="Esri World Imagery"/>
     <tag k="locale" v="de"/>
     <tag k="host" v="https://www.openstreetmap.org/edit"/>
-    <tag k="created_by" v="simple-task manager of course ;)"/>
+    <tag k="created_by" v="simple-task-manager of course ;)"/>
     <tag k="comment" v="some comment"/>
   </changeset>
 </osm>

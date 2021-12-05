@@ -32,8 +32,8 @@ export class AuthGuard implements CanActivate {
     const requestLoginComponent = route.routeConfig?.path === '';
 
     if (requestLoginComponent && this.authService.isAuthenticated()) {
-      // Token exists and login component should be loaded -> redirect to manager
-      this.router.navigateByUrl('/manager');
+      // Token exists and login component should be loaded -> redirect to dashboard
+      this.router.navigateByUrl('/dashboard');
       return false;
     } else if (!requestLoginComponent && !this.authService.isAuthenticated()) {
       // No token -> not logged in -> redirect to login page

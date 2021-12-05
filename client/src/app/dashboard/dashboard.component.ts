@@ -2,23 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { CurrentUserService } from '../user/current-user.service';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
-import { NotificationService } from '../common/services/notification.service';
-import { LoadingService } from '../common/services/loading.service';
 
 @Component({
-  selector: 'app-manager',
-  templateUrl: './manager.component.html',
-  styleUrls: ['./manager.component.scss']
+  selector: 'app-dashboard',
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.scss']
 })
-export class ManagerComponent implements OnInit {
+export class DashboardComponent {
   constructor(
     private router: Router,
     private authService: AuthService,
     private currentUserService: CurrentUserService
   ) {
-  }
-
-  ngOnInit(): void {
   }
 
   public get userName(): string | undefined {

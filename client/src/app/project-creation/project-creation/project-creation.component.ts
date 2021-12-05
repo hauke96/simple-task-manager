@@ -303,7 +303,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
 
     this.projectService.createNewProject(name, maxProcessPoints, projectDescription, features, [owner], owner)
       .subscribe(project => {
-        this.router.navigate(['/manager']);
+        this.router.navigate(['/dashboard']);
       }, e => {
         console.error(e);
         this.notificationService.addError(($localize`:@@ERROR_NOT_CREATE_PROJ:Could not create project`) + ': ' + e.error);

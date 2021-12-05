@@ -85,7 +85,7 @@ describe('ProjectComponent', () => {
       component.project.id
     ));
 
-    expect(spyRouter).toHaveBeenCalledWith(['/manager']);
+    expect(spyRouter).toHaveBeenCalledWith(['/dashboard']);
   });
 
   it('should do nothing on foreign deleted project', () => {

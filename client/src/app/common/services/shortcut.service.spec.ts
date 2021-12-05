@@ -22,7 +22,7 @@ describe('ShortcutService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should call event manager', () => {
+  it('should call event dashboard', () => {
     const eventManagerSpy = spyOn(eventManager, 'addEventListener').and.returnValue(new Function());
 
     service.add('shift.d').subscribe();

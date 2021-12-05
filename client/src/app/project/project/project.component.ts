@@ -47,7 +47,7 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
           this.notificationService.addInfo($localize`:@@WARN_PROJECT_REMOVED:The project '${this.project.name}:INTERPOLATION:' has been removed`);
         }
 
-        this.router.navigate(['/manager']);
+        this.router.navigate(['/dashboard']);
       }),
       this.projectService.projectUserRemoved.subscribe(projectId => {
         if (this.project.id !== projectId) {
@@ -55,7 +55,7 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
         }
 
         this.notificationService.addInfo($localize`:@@WARN_REMOVED_USER_PROJECT:You have been removed from project '${this.project.name}:INTERPOLATION:'`);
-        this.router.navigate(['/manager']);
+        this.router.navigate(['/dashboard']);
       })
     );
   }

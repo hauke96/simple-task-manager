@@ -237,7 +237,7 @@ export class TaskService {
     const taskPolygon = taskFeature.getGeometry() as Polygon;
     const coordinates: Coordinate[] = taskPolygon.getCoordinates()[0];
 
-    let osm = '<osm version="0.6" generator="simple-task-manager">';
+    let osm = '<osm version="0.6" generator="simple-task-dashboard">';
 
     for (let i = 0; i < coordinates.length; i++) {
       const lat = coordinates[i][1];

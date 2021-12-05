@@ -19,7 +19,7 @@ module.exports = function(config) {
     exclude: [ ],
     preprocessors: { },
     coverageReporter: {
-      dir: require('path').join(__dirname, './coverage/simple-task-manager'),
+      dir: require('path').join(__dirname, './coverage/simple-task-dashboard'),
       reporters: [
         { type: 'html', subdir: 'report-html' },
         { type: 'lcov', subdir: 'report-lcov' },

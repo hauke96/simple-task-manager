@@ -55,7 +55,7 @@ describe('AuthComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should redirect user to manager after login', () => {
+  it('should redirect user to dashboard after login', () => {
     spyOn(authService, 'requestLogin').and.callFake((f: () => void) => {
       f();
     });
@@ -63,6 +63,6 @@ describe('AuthComponent', () => {
 
     component.onLoginButtonClick();
 
-    expect(routerMock.navigate).toHaveBeenCalledWith(['/manager']);
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/dashboard']);
   });
 });

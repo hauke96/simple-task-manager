@@ -42,8 +42,8 @@ export class SelectedLanguageService {
   }
 
   public urlToLanguage(url: string): Language | undefined {
-    url = url.replace(/^\/*/g, ''); // remove leading slashes. Turn '//de/manager' into 'de/manager'
-    const urlSegments = url.split('/'); // now split e.g. 'de/manager' into ['de', 'manager']
+    url = url.replace(/^\/*/g, ''); // remove leading slashes. Turn '//de/dashboard' into 'de/dashboard'
+    const urlSegments = url.split('/'); // now split e.g. 'de/dashboard' into ['de', 'dashboard']
     const languageCode = urlSegments[0];
     return this.getLanguageByCode(languageCode);
   }

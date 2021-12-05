@@ -98,7 +98,7 @@ To tell the Angular-compiler about the new language, add the following three par
 
 ```json
   "projects": {
-    "simple-task-manager": {
+    "simple-task-dashboard": {
       "i18n": {
         "sourceLocale": "en-US",
         "locales": {
@@ -129,15 +129,15 @@ To tell the Angular-compiler about the new language, add the following three par
         "serve": {
           "configurations": {
             "production": {
-              "browserTarget": "simple-task-manager:build:production"
+              "browserTarget": "simple-task-dashboard:build:production"
             },
             "ja": {
-              "browserTarget": "simple-task-manager:build:ja"
+              "browserTarget": "simple-task-dashboard:build:ja"
             },
             "de": {
-              "browserTarget": "simple-task-manager:build:de"
+              "browserTarget": "simple-task-dashboard:build:de"
             },
             "<langID>": {
-              "browserTarget": "simple-task-manager:build:<langID>"
+              "browserTarget": "simple-task-dashboard:build:<langID>"
             }
 ```

@@ -59,10 +59,10 @@ describe('SelectedLanguageService', () => {
   });
 
   it('should determine code from URL correctly', () => {
-    expect(service.urlToLanguage('//de/manager')?.code).toEqual('de');
-    expect(service.urlToLanguage('zh-CN/manager')?.code).toEqual('zh-CN');
+    expect(service.urlToLanguage('//de/dashboard')?.code).toEqual('de');
+    expect(service.urlToLanguage('zh-CN/dashboard')?.code).toEqual('zh-CN');
     // @ts-ignore
-    expect(service.urlToLanguage('/manager')).toEqual(undefined);
+    expect(service.urlToLanguage('/dashboard')).toEqual(undefined);
   });
 
   it('should get all known languages', () => {

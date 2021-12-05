@@ -5,7 +5,7 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ManagerComponent } from './manager/manager.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './auth/login/login.component';
 import { AuthGuard } from './auth/auth.guard';
 import { LoggedInInterceptor } from './auth/logged-in.interceptor';
@@ -47,7 +47,7 @@ import { MapComponent } from './common/components/map/map.component';
 @NgModule({
   declarations: [
     AppComponent,
-    ManagerComponent,
+    DashboardComponent,
     LoginComponent,
     OauthLandingComponent,
     ProjectListComponent,

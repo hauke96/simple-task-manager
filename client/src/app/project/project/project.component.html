@@ -1,7 +1,7 @@
 <app-toolbar>
 	<div class="toolbar-item">
 		<div class="back-button-container">
-			<button [routerLink]="['/manager']"><span class="lnr lnr-chevron-left back-button-icon"></span><span i18n="Back button">Back</span></button>
+			<button [routerLink]="['/dashboard']"><span class="lnr lnr-chevron-left back-button-icon"></span><span i18n="Back button">Back</span></button>
 			<p class="project-label" i18n>Project: {{project.name}}</p>
 		</div>
 		<app-progress-bar [progressPoints]="project.doneProcessPoints" [totalPoints]="project.totalProcessPoints"></app-progress-bar>

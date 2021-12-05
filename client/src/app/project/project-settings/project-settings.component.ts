@@ -70,7 +70,7 @@ export class ProjectSettingsComponent implements OnInit {
       .subscribe(() => {
         this.requestConfirmation = false;
         this.notificationService.addInfo($localize`:@@INFO_REMOVED_PROJ:Project removed successfully`);
-        this.router.navigate(['/manager']);
+        this.router.navigate(['/dashboard']);
       }, err => {
         console.error(err);
         this.notificationService.addError($localize`:@@ERROR_ONT_DELETE_PROJ:Could not delete project`);
@@ -82,7 +82,7 @@ export class ProjectSettingsComponent implements OnInit {
     this.projectService.leaveProject(this.projectId)
       .subscribe(() => {
         this.requestConfirmation = false;
-        this.router.navigate(['/manager']);
+        this.router.navigate(['/dashboard']);
       }, err => {
         console.error(err);
         this.notificationService.addError($localize`:@@ERROR_LEAVE_PROJ:Could not leave project`);

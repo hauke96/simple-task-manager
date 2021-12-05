@@ -27,7 +27,7 @@ describe('ProjectCreationComponent', () => {
   let currentUserService: CurrentUserService;
   let mapLayerService: MapLayerService;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [ProjectCreationComponent],
       imports: [
@@ -35,7 +35,6 @@ describe('ProjectCreationComponent', () => {
         FormsModule
       ],
       providers: [
-        TaskDraftService,
         {
           provide: Router,
           useClass: MockRouter
@@ -44,12 +43,14 @@ describe('ProjectCreationComponent', () => {
     })
       .compileComponents();
 
+    TestBed.overrideProvider(TaskDraftService, {useValue: new TaskDraftService()});
+
     projectService = TestBed.inject(ProjectService);
     taskDraftService = TestBed.inject(TaskDraftService);
     currentUserService = TestBed.inject(CurrentUserService);
     routerMock = TestBed.inject(Router);
     mapLayerService = TestBed.inject(MapLayerService);
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ProjectCreationComponent);
@@ -97,7 +98,7 @@ describe('ProjectCreationComponent', () => {
     component.createProject(name, 100, 'lorem ipsum', feature);
 
     expect(spyService).toHaveBeenCalled();
-    expect(spyRouter).toHaveBeenCalledWith(['/manager']);
+    expect(spyRouter).toHaveBeenCalledWith(['/dashboard']);
   });
 
   it('should not navigate on fail', () => {

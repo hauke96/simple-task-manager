@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import { ManagerComponent } from './manager.component';
+import { DashboardComponent } from './dashboard.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CurrentUserService } from '../user/current-user.service';
 import { AuthService } from '../auth/auth.service';
 
-describe('ManagerComponent', () => {
-  let component: ManagerComponent;
-  let fixture: ComponentFixture<ManagerComponent>;
+describe(DashboardComponent.name, () => {
+  let component: DashboardComponent;
+  let fixture: ComponentFixture<DashboardComponent>;
   let currentUserService: CurrentUserService;
   let authService: AuthService;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ManagerComponent],
+      declarations: [DashboardComponent],
       imports: [
         RouterTestingModule.withRoutes([])
       ]
@@ -25,7 +25,7 @@ describe('ManagerComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ManagerComponent);
+    fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

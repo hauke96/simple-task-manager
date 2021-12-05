@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
     // executes the passed function within the context which then works perfectly.
     this.authService.requestLogin(() => this.ngZone.run(() => {
       this.websocketClientService.connect();
-      this.router.navigate(['/manager']);
+      this.router.navigate(['/dashboard']);
     }));
   }
 }

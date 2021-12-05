@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './auth/login/login.component';
 import { AuthGuard } from './auth/auth.guard';
 import { OauthLandingComponent } from './auth/oauth-landing/oauth-landing.component';
-import { ManagerComponent } from './manager/manager.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProjectComponent } from './project/project/project.component';
 import { ProjectCreationComponent } from './project-creation/project-creation/project-creation.component';
 import { AllProjectsResolver } from './project/all-projects.resolver';
@@ -19,8 +19,8 @@ const routes: Routes = [
     resolve: {config: ConfigResolver}
   },
   {
-    path: 'manager',
-    component: ManagerComponent,
+    path: 'dashboard',
+    component: DashboardComponent,
     canActivate: [AuthGuard, SelectedLanguageGuard],
     resolve: {projects: AllProjectsResolver, config: ConfigResolver}
   },

@@ -44,7 +44,7 @@ describe('AuthGuard', () => {
     expect(canActivate).toBeFalse();
   });
 
-  it('should route from login to manager for logged-in user', () => {
+  it('should route from login to dashboard for logged-in user', () => {
     const routerSpy = spyOn(mockRouter, 'navigateByUrl');
     spyOn(authService, 'isAuthenticated').and.returnValue(true);
 
@@ -56,7 +56,7 @@ describe('AuthGuard', () => {
       }
     } as ActivatedRouteSnapshot, {} as RouterStateSnapshot);
 
-    expect(routerSpy).toHaveBeenCalledWith('/manager');
+    expect(routerSpy).toHaveBeenCalledWith('/dashboard');
   });
 
   it('should not activate any component for not logged-in user', () => {
@@ -64,7 +64,7 @@ describe('AuthGuard', () => {
 
     const canActivate = guard.canActivate({
       routeConfig: {
-        path: 'manager'
+        path: 'dashboard'
       }
     } as ActivatedRouteSnapshot, {} as RouterStateSnapshot);
 
@@ -78,7 +78,7 @@ describe('AuthGuard', () => {
 
     guard.canActivate({
       routeConfig: {
-        path: 'manager'
+        path: 'dashboard'
       }
     } as ActivatedRouteSnapshot, {} as RouterStateSnapshot);
 
@@ -93,7 +93,7 @@ describe('AuthGuard', () => {
 
     const canActivate = guard.canActivate({
       routeConfig: {
-        path: 'manager'
+        path: 'dashboard'
       }
     } as ActivatedRouteSnapshot, {} as RouterStateSnapshot);
 
