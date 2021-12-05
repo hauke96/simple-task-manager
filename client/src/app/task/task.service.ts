@@ -2,7 +2,7 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { Task, TaskDto } from './task.material';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
-import { concat, forkJoin, from, mergeAll, observable, Observable, of, throwError } from 'rxjs';
+import { from, Observable, of, throwError } from 'rxjs';
 import { concatMap, map, mergeMap, tap } from 'rxjs/operators';
 import { Geometry, Polygon } from 'ol/geom';
 import { Extent } from 'ol/extent';
@@ -129,10 +129,11 @@ export class TaskService {
     }
 
     const overpassUrl = 'https://overpass-api.de/api/interpreter?data=[out:json];nwr(poly:"' + coordinateString + '");out meta;(<; - rel._;);(._;>;); out meta;';
+    const taskGeometryString = encodeURIComponent(this.getGeometryAsOsm(task));
 
     return from([
       // The task-polygon
-      'http://localhost:8111/load_data?new_layer=true&layer_name=task-shape&data=' + encodeURIComponent(this.getGeometryAsOsm(task)),
+      'http://localhost:8111/load_data?new_layer=true&layer_name=task ' + task.name + '&upload_policy=never&data=' + taskGeometryString,
       // Load data for the extent of the task
       // 'http://localhost:8111/load_and_zoom?new_layer=true&left=' + e[0] + '&right=' + e[2] + '&top=' + e[3] + '&bottom=' + e[1] + '&changeset_comment=' + encodeURIComponent('#stm #stm-project-' + projectId + ' ')
       'http://localhost:8111/import?new_layer=true&url=' + overpassUrl
