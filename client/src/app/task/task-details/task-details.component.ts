@@ -158,12 +158,12 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
         });
   }
 
-  public onOpenJosmButtonClicked() {
+  public onOpenJosmButtonClicked(): void {
     if (!this.task) {
       return;
     }
 
-    this.taskService.openInJosm(this.task, this.projectId)
+    this.taskService.openInJosm(this.task)
       .subscribe(() => {
         },
         err => {
@@ -171,7 +171,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
         });
   }
 
-  public onOpenOsmOrgButtonClicked() {
+  public onOpenOsmOrgButtonClicked(): void {
     if (!this.task) {
       return;
     }

@@ -2,7 +2,7 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { Task, TaskDto } from './task.material';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
-import { from, Observable, of, throwError } from 'rxjs';
+import { concat, forkJoin, from, mergeAll, observable, Observable, of, throwError } from 'rxjs';
 import { concatMap, map, mergeMap, tap } from 'rxjs/operators';
 import { Geometry, Polygon } from 'ol/geom';
 import { Extent } from 'ol/extent';
@@ -101,7 +101,7 @@ export class TaskService {
       );
   }
 
-  public openInJosm(task: Task, projectId: string): Observable<string> {
+  public openInJosm(task: Task): Observable<any> {
     if (!task) {
       return throwError(() => new Error('Task is undefined'));
     }
@@ -110,8 +110,6 @@ export class TaskService {
     if (!geometry) {
       return throwError(() => new Error('Geometry of task is undefined'));
     }
-
-    // const e = this.getExtent(task);
 
     // Make sequential requests to these URLs
     let coordinateString;
@@ -130,9 +128,7 @@ export class TaskService {
       return throwError(() => new Error('Empty coordinates'));
     }
 
-    const overpassUrl = 'https://overpass-api.de/api/interpreter?data=[out:json];nwr(poly:"' + coordinateString + '");out body;>;out skel qt;';
-
-    console.log(overpassUrl);
+    const overpassUrl = 'https://overpass-api.de/api/interpreter?data=[out:json];nwr(poly:"' + coordinateString + '");out meta;(<; - rel._;);(._;>;); out meta;';
 
     return from([
       // The task-polygon
