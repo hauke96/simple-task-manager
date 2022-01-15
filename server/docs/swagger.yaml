@@ -176,6 +176,7 @@ paths:
     get:
       produces:
       - text/html
+      responses: {}
       summary: A Swagger UI with all kinds of API related information.
       tags:
       - info
@@ -207,6 +208,7 @@ paths:
         name: redirect
         required: true
         type: string
+      responses: {}
       tags:
       - authentication
   /oauth_login:
@@ -219,6 +221,7 @@ paths:
         name: redirect
         required: true
         type: string
+      responses: {}
       tags:
       - authentication
   /v2.7/config:
@@ -296,6 +299,7 @@ paths:
         name: id
         required: true
         type: string
+      responses: {}
       summary: Delete a project.
       tags:
       - projects
@@ -381,6 +385,7 @@ paths:
         name: id
         required: true
         type: string
+      responses: {}
       summary: Removes the requesting user from project.
       tags:
       - projects
@@ -446,6 +451,7 @@ paths:
           $ref: '#/definitions/export.ProjectExport'
       produces:
       - application/json
+      responses: {}
       summary: Imports a previously exported project.
       tags:
       - projects
