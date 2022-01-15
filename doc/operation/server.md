@@ -81,19 +81,29 @@ I'm not a firewall and networking expert at all but this gives us some kind of b
 There's also the possibility to specify what kind of local traffic (between stm-server, stm-db and localhost) is
 allowed, etc. etc. However, this should block the most basic things: SSH on 22.
 
-# 6 Automatic backups
+# 6 Recommended file structure
 
-This step is optional but recommended and described in the [automatic-backups.md](automatic-backups.md) file.
+I recommend the following structure and I assume your users home folder is `/home/stm`:
+
+* Create `/home/stm/simple-task-manager/` with following sub-folders:
+  * `backups` for (automated) backups (s. section below)
+  * `configs` contains nginx and stm-server configs
+  * `postgres-data` contains the database files
+  * `repo` contains the actual code repo. This is needed so get the latest `docker-compose.yml`
+  * Optional: `systemd` contains timer and service files for the automated backups (not needed if you don't use this backup mechanism)
 
 # 7 Get STM
 
 ## Via docker hub (recommended)
 
-Usually the deployments (at least since 1.4.2) works via the [docker hub](https://hub.docker.com/u/simpletaskmanager) and the pre-build docker images from there.
+The deployments (since 1.4.2) work via [docker hub](https://hub.docker.com/u/simpletaskmanager) and the pre-built docker images from there.
 
-* Log into your server and go into the folder where all your stuff should be later on
-* Download the `docker-compose.yml` file from
-  the [STM github repo](https://github.com/hauke96/simple-task-manager/blob/master/docker-compose.yml)
+* Log into your server and go into the folder where all your stuff should be (e.g. `/home/stm/simple-task-manager/` as described above)
+* Get the required compose file using **one** of the following ways:
+  * Clone the git repo into the `repo` folder and create the symlink `docker-compose.yml` -> `repo/docker-compose.yml`
+  * Or: Download the `docker-compose.yml` file from the [STM github repo](https://github.com/hauke96/simple-task-manager/blob/master/docker-compose.yml)
+  
+I recommend to clone the git repo in order to easily get new versions of the compose file.
 
 Basically you're done with the preparations. The next step is the configuration.
 
@@ -120,11 +130,14 @@ The configuration is done via different config files:
 * `*.json`: A json file for the server configuration (configured in the `.env` file)
 * `*.conf`: A conf file for the nginx server (configured in the `.env` file)
 
+As describes above, I recommend to create a config folder on your server (e.g. `/home/stm/simple-task-manager/configs/`) and put all your configs into that folder.
+Even better would be a separate git repo to manage your configs, but that's up to you.
+
 ## Server configuration
 
 The server knows two places for configuration:
 A config file (see the files in the `./config/` folder of the repo) and environment variables. When using docker,
-environment variables can also be set via the `.env` file.
+environment variables should be set via the `.env` file (just for convenience).
 
 There's no overlap between the config file and environment variables, so they both configure totally different things.
 
@@ -137,7 +150,7 @@ Different things to slightly modify the servers behavior. See the below for a fu
 *Why are there two sources of configurations?*<br>
 To separate sensitive data (credentials) from non-sensitive data that can also be uploaded to a git repo.
 
-### Config file
+### Config file for stm-server
 
 Default file is the `./config/default.json` but can be specified using the `--config`/`-c` parameter when starting the
 server. When using docker for deployment, the config file will be overwritten via volumes instead of this CLI parameter,
@@ -179,6 +192,11 @@ When using docker, you can use the `.env` file to store the variables there inst
 
 **Important:** Use this opportunity to set a secure password for your database!
 
+## The nginx configuration
+
+The `docker-compose.yml` uses the `$STM_NGINX_CONFIG` environment variable which references a `.conf` file with all nginx related stuff in it.
+See the client folder of this repo for two examples.
+
 ## The `.env` file
 
 The default deployment process uses docker-compose so that you can set environment variables of a container via a `.env`
@@ -200,16 +218,23 @@ must be set in order to make authentication work.
 The `STM_SERVER_CONFIG` and `STM_NGINX_CONFIG` have to be set, neither the server nor the client will start without
 them.
 
-# 9 Deployment
+# 9 Automatic backups
 
-*This section only describes the docker based deployment!*
+This step is optional but recommended and described in the [automatic-backups.md](automatic-backups.md) file.
 
-The default deployment process downloads pre-build docker images from [docker hub](https://hub.docker.com/u/simpletaskmanager) and starts them with the configurations
-as describes above. You should have your `docker-compose.yml` ready as describes above in section 7 and your configuration set up as described in section 8.
+# 10 Deployment
+
+*This section only describes the docker hub based deployment!*
+
+The default deployment process downloads pre-built docker images from [docker hub](https://hub.docker.com/u/simpletaskmanager) and starts them with the configurations
+as describes above.
+You should have your `docker-compose.yml` ready as describes above in section 7 and your configuration set up as described in section 8.
 
 Now let us deploy everything:
 
-* docker-compose up -d
+* Go to `/home/stm/simple-task-manager/` (the folder described in section 6)
+* Make sure a symlink to your `docker-compose.yml` exists
+* `docker-compose up -d`
 
 That's it. Now everything should run properly.
 
