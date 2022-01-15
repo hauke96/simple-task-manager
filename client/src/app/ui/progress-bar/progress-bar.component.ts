@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ProcessPointColorService } from '../../common/process-point-color.service';
+import { ProcessPointColorService } from '../../common/services/process-point-color.service';
 
 @Component({
   selector: 'app-progress-bar',

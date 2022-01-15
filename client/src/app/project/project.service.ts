@@ -8,11 +8,12 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
 import { User } from '../user/user.material';
 import { UserService } from '../user/user.service';
-import { WebsocketClientService } from '../common/websocket-client.service';
-import { WebsocketMessage, WebsocketMessageType } from '../common/websocket-message';
-import { NotificationService } from '../common/notification.service';
+import { WebsocketClientService } from '../common/services/websocket-client.service';
+import { WebsocketMessage, WebsocketMessageType } from '../common/entities/websocket-message';
+import { NotificationService } from '../common/services/notification.service';
 import { Feature } from 'ol';
 import GeoJSON from 'ol/format/GeoJSON';
+import { Geometry } from 'ol/geom';
 
 @Injectable({
   providedIn: 'root'
@@ -90,7 +91,7 @@ export class ProjectService {
     name: string,
     maxProcessPoints: number,
     projectDescription: string,
-    features: Feature[],
+    features: Feature<Geometry>[],
     users: string[],
     owner: string
   ): Observable<Project> {

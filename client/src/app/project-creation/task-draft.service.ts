@@ -1,6 +1,7 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { TaskDraft } from '../task/task.material';
 import { Feature } from 'ol';
+import { Geometry } from 'ol/geom';
 
 @Injectable({
   providedIn: 'root'
@@ -69,7 +70,7 @@ export class TaskDraftService {
   /**
    * Creates an empty (=no process points) tasks from a feature.
    */
-  public toTaskDraft(feature: Feature): TaskDraft {
+  public toTaskDraft(feature: Feature<Geometry>): TaskDraft {
     return new TaskDraft(
       feature.get('id'),
       feature.get('name'),

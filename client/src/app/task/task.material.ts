@@ -43,7 +43,7 @@ export class Task {
     public name: string,
     public processPoints: number,
     public maxProcessPoints: number,
-    public geometry: Feature,
+    public geometry: Feature<Geometry>,
     public assignedUser?: User
   ) {
   }

@@ -172,7 +172,7 @@ describe('TaskService', () => {
   });
 
   it('should generate a correct OSM format string', () => {
-    const expectedResult = '<osm version="0.6" generator="simple-task-manager">' +
+    const expectedResult = '<osm version="0.6" generator="simple-task-dashboard">' +
       '<node id=\'-1\' action=\'modify\' visible=\'true\' lat=\'0\' lon=\'0\' />' +
       '<node id=\'-2\' action=\'modify\' visible=\'true\' lat=\'1\' lon=\'1\' />' +
       '<node id=\'-3\' action=\'modify\' visible=\'true\' lat=\'2\' lon=\'1\' />' +

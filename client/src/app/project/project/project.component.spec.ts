@@ -8,11 +8,11 @@ import { Task, TestTaskFeature, TestTaskGeometry } from '../../task/task.materia
 import { User } from '../../user/user.material';
 import { Project, ProjectDto } from '../project.material';
 import { of, throwError } from 'rxjs';
-import { WebsocketMessage, WebsocketMessageType } from '../../common/websocket-message';
+import { WebsocketMessage, WebsocketMessageType } from '../../common/entities/websocket-message';
 import { ProjectService } from '../project.service';
-import { WebsocketClientService } from '../../common/websocket-client.service';
+import { WebsocketClientService } from '../../common/services/websocket-client.service';
 import { MockRouter } from '../../common/mock-router';
-import { NotificationService } from '../../common/notification.service';
+import { NotificationService } from '../../common/services/notification.service';
 
 describe('ProjectComponent', () => {
   let component: ProjectComponent;
@@ -85,7 +85,7 @@ describe('ProjectComponent', () => {
       component.project.id
     ));
 
-    expect(spyRouter).toHaveBeenCalledWith(['/manager']);
+    expect(spyRouter).toHaveBeenCalledWith(['/dashboard']);
   });
 
   it('should do nothing on foreign deleted project', () => {

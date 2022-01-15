@@ -20,6 +20,41 @@ definitions:
       sourceRepoUrl:
         description: URL to the source code repository.
         type: string
+      testEnvironment:
+        description: True when the server runs in an test environment
+        type: boolean
+    type: object
+  export.ProjectExport:
+    properties:
+      creationDate:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+      owner:
+        type: string
+      tasks:
+        items:
+          $ref: '#/definitions/export.TaskExport'
+        type: array
+      users:
+        items:
+          type: string
+        type: array
+    type: object
+  export.TaskExport:
+    properties:
+      assignedUser:
+        type: string
+      geometry:
+        type: string
+      maxProcessPoints:
+        type: integer
+      name:
+        type: string
+      processPoints:
+        type: integer
     type: object
   project.Project:
     properties:
@@ -120,6 +155,10 @@ definitions:
         description: The maximum amount of process points of this task. Must be larger
           than zero.
         type: integer
+      processPoints:
+        description: The amount of process points that have been set by the user.
+          It applies that "0 <= processPoints <= maxProcessPoints".
+        type: integer
     type: object
 info:
   contact:
@@ -137,6 +176,7 @@ paths:
     get:
       produces:
       - text/html
+      responses: {}
       summary: A Swagger UI with all kinds of API related information.
       tags:
       - info
@@ -168,6 +208,7 @@ paths:
         name: redirect
         required: true
         type: string
+      responses: {}
       tags:
       - authentication
   /oauth_login:
@@ -180,6 +221,7 @@ paths:
         name: redirect
         required: true
         type: string
+      responses: {}
       tags:
       - authentication
   /v2.7/config:
@@ -257,6 +299,7 @@ paths:
         name: id
         required: true
         type: string
+      responses: {}
       summary: Delete a project.
       tags:
       - projects
@@ -342,6 +385,7 @@ paths:
         name: id
         required: true
         type: string
+      responses: {}
       summary: Removes the requesting user from project.
       tags:
       - projects
@@ -392,6 +436,23 @@ paths:
           schema:
             $ref: '#/definitions/project.Project'
       summary: Remove a user from a project.
+      tags:
+      - projects
+  /v2.7/projects/import:
+    post:
+      description: This aims to import a project from e.g. a backup or to migrate
+        to another STM instance.
+      parameters:
+      - description: The project to import
+        in: body
+        name: projectExport
+        required: true
+        schema:
+          $ref: '#/definitions/export.ProjectExport'
+      produces:
+      - application/json
+      responses: {}
+      summary: Imports a previously exported project.
       tags:
       - projects
   /v2.7/tasks/{id}/assignedUser:

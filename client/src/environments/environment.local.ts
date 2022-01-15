@@ -3,7 +3,6 @@ const usedApi = 'v2.7';
 
 export const environment = {
   production: false,
-  test_mode: false,
   oauth_landing: document.location.origin + '/oauth-landing',
   osm_api_url: 'http://localhost:9000/api/0.6',
 

@@ -1,6 +1,1 @@
-<app-zoom-control
-		class="zoom-control"
-		(buttonZoomIn)="onZoomIn()"
-		(buttonZoomOut)="onZoomOut()"
-></app-zoom-control>
-<div id="map"></div>
+<app-map class="map" (mapClicked)="onMapClicked($event)"></app-map>

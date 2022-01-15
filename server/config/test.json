@@ -6,5 +6,6 @@
 	"ssl-cert-file": "/etc/letsencrypt/live/stm-test.hauke-stieler.de/fullchain.pem",
 	"ssl-key-file": "/etc/letsencrypt/live/stm-test.hauke-stieler.de/privkey.pem",
 	"token-validity": "168h",
-	"source-repo-url": "https://github.com/hauke96/simple-task-manager"
+	"source-repo-url": "https://github.com/hauke96/simple-task-manager",
+	"test-env": true
 }

@@ -41,7 +41,7 @@ func GetTransaction(logger *util.Logger) (*sql.Tx, error) {
 // open tries to open to the database and performs a simple health-check by using the "Ping" function on the database.
 // Only if the check was successful, the "db" variable is set.
 func open() error {
-	dbConn, err := sql.Open("postgres", fmt.Sprintf("user=%s password=%s dbname=stm sslmode=disable", config.Conf.DbUsername, config.Conf.DbPassword))
+	dbConn, err := sql.Open("postgres", fmt.Sprintf("host=%s user=%s password=%s dbname=stm sslmode=disable", config.Conf.DbHost, config.Conf.DbUsername, config.Conf.DbPassword))
 	if err != nil {
 		return errors.Wrap(err, "unable to open database connection")
 	}

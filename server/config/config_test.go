@@ -49,11 +49,17 @@ func TestInitConfig(t *testing.T) {
 		if Conf.DbPassword != DefaultDbPassword {
 			return errors.New(fmt.Sprintf("Default value of 'DbPassword' wrong: Wanted %s but was %s", DefaultDbPassword, Conf.DbPassword))
 		}
+		if Conf.DbHost != DefaultDbHost {
+			return errors.New(fmt.Sprintf("Default value of 'DbHost' wrong: Wanted %s but was %s", DefaultDbHost, Conf.DbHost))
+		}
 		if Conf.MaxTasksPerProject != DefaultMaxTaskPerProject {
 			return errors.New(fmt.Sprintf("Default value of 'MaxTasksPerProject' wrong: Wanted %d but was %d", DefaultMaxTaskPerProject, Conf.MaxTasksPerProject))
 		}
 		if Conf.MaxDescriptionLength != DefaultMaxDescriptionLength {
 			return errors.New(fmt.Sprintf("Default value of 'MaxDescriptionLength' wrong: Wanted %d but was %d", DefaultMaxDescriptionLength, Conf.MaxDescriptionLength))
+		}
+		if Conf.TestEnvironment != DefaultTestEnvironment {
+			return errors.New(fmt.Sprintf("Default value of 'TestEnvironment' wrong: Wanted %t but was %t", DefaultTestEnvironment, Conf.TestEnvironment))
 		}
 
 		return nil

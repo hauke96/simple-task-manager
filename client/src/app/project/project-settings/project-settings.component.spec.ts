@@ -145,7 +145,7 @@ describe('ProjectSettingsComponent', () => {
 
     component.onYesButtonClicked();
 
-    expect(routerMock.navigate).toHaveBeenCalledWith(['/manager']);
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/dashboard']);
     expect(component.requestConfirmation).toEqual(false);
   });
 

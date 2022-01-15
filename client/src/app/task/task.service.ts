@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
 import { from, Observable, of, throwError } from 'rxjs';
 import { concatMap, map, mergeMap, tap } from 'rxjs/operators';
-import { Polygon } from 'ol/geom';
+import { Geometry, Polygon } from 'ol/geom';
 import { Extent } from 'ol/extent';
 import { User } from '../user/user.material';
 import { UserService } from '../user/user.service';
@@ -12,6 +12,7 @@ import GeoJSON from 'ol/format/GeoJSON';
 import { Coordinate } from 'ol/coordinate';
 import FeatureFormat from 'ol/format/Feature';
 import { Feature } from 'ol';
+import GeometryType from 'ol/geom/GeometryType';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +31,7 @@ export class TaskService {
   }
 
   // Publishes the tasks via the tasksUpdated event. This is usually called from the project service when a project has been updated.
-  public updateTasks(tasks: Task[]) {
+  public updateTasks(tasks: Task[]): void {
     this.tasksUpdated.emit(tasks);
 
     if (this.selectedTask) {
@@ -41,7 +42,7 @@ export class TaskService {
     }
   }
 
-  public selectTask(task: Task) {
+  public selectTask(task: Task): void {
     this.selectedTask = task;
     this.selectedTaskChanged.emit(task);
   }
@@ -100,19 +101,42 @@ export class TaskService {
       );
   }
 
-  public openInJosm(task: Task, projectId: string): Observable<string> {
-    if (!task || !task.geometry.getGeometry()) {
-      throwError('Task or geometry of task undefined');
+  public openInJosm(task: Task): Observable<any> {
+    if (!task) {
+      return throwError(() => new Error('Task is undefined'));
     }
 
-    const e = this.getExtent(task);
+    const geometry = task.geometry.getGeometry();
+    if (!geometry) {
+      return throwError(() => new Error('Geometry of task is undefined'));
+    }
 
     // Make sequential requests to these URLs
+    let coordinateString;
+    switch (geometry.getType()) {
+      case GeometryType.POLYGON:
+        const polygon = geometry as Polygon;
+        coordinateString = polygon.getCoordinates()[0].map(c => c[1] + ' ' + c[0]).join(' ');
+        break;
+      case GeometryType.MULTI_POLYGON:
+        break;
+      default:
+        return throwError(() => new Error(`Unsupported task geometry type '${geometry.getType()}'`));
+    }
+
+    if (!coordinateString) {
+      return throwError(() => new Error('Empty coordinates'));
+    }
+
+    const overpassUrl = 'https://overpass-api.de/api/interpreter?data=[out:json];nwr(poly:"' + coordinateString + '");out meta;(<; - rel._;);(._;>;); out meta;';
+    const taskGeometryString = encodeURIComponent(this.getGeometryAsOsm(task));
+
     return from([
       // The task-polygon
-      'http://localhost:8111/load_data?new_layer=true&layer_name=task-shape&data=' + encodeURIComponent(this.getGeometryAsOsm(task)),
+      'http://localhost:8111/load_data?new_layer=true&layer_name=task ' + task.name + '&upload_policy=never&data=' + taskGeometryString,
       // Load data for the extent of the task
-      'http://localhost:8111/load_and_zoom?new_layer=true&left=' + e[0] + '&right=' + e[2] + '&top=' + e[3] + '&bottom=' + e[1] + '&changeset_comment=' + encodeURIComponent('#stm #stm-project-' + projectId + ' ')
+      // 'http://localhost:8111/load_and_zoom?new_layer=true&left=' + e[0] + '&right=' + e[2] + '&top=' + e[3] + '&bottom=' + e[1] + '&changeset_comment=' + encodeURIComponent('#stm #stm-project-' + projectId + ' ')
+      'http://localhost:8111/import?new_layer=true&url=' + overpassUrl
     ])
       .pipe(
         concatMap(url => {
@@ -123,7 +147,7 @@ export class TaskService {
 
   public openInOsmOrg(task: Task, projectId: string): void {
     if (!task || !task.geometry.getGeometry()) {
-      throwError('Task or geometry of task undefined');
+      throw new Error('Task or geometry of task undefined');
     }
 
     const e = this.getExtent(task);
@@ -201,7 +225,7 @@ export class TaskService {
    */
   public getExtent(task: Task): Extent {
     if (!task || !task.geometry.getGeometry()) {
-      throwError('Task or geometry of task undefined');
+      throw new Error('Task or geometry of task undefined');
     }
 
     // @ts-ignore
@@ -213,7 +237,7 @@ export class TaskService {
     const taskPolygon = taskFeature.getGeometry() as Polygon;
     const coordinates: Coordinate[] = taskPolygon.getCoordinates()[0];
 
-    let osm = '<osm version="0.6" generator="simple-task-manager">';
+    let osm = '<osm version="0.6" generator="simple-task-dashboard">';
 
     for (let i = 0; i < coordinates.length; i++) {
       const lat = coordinates[i][1];
@@ -263,7 +287,7 @@ export class TaskService {
   }
 
   public toTask(dto: TaskDto): Task {
-    const feature = (this.format.readFeature(dto.geometry) as Feature);
+    const feature = (this.format.readFeature(dto.geometry) as Feature<Geometry>);
 
     const assignedUser = dto.assignedUser && dto.assignedUserName ? new User(dto.assignedUserName, dto.assignedUser) : undefined;
 
@@ -278,7 +302,7 @@ export class TaskService {
   }
 
   public toTaskWithUsers(dto: TaskDto, users: User[]): Task {
-    const feature = (this.format.readFeature(dto.geometry) as Feature);
+    const feature = (this.format.readFeature(dto.geometry) as Feature<Geometry>);
     let assignedUser: User | undefined;
 
     if (dto.assignedUser) {

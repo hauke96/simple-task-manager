@@ -2,8 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LanguageSelectionComponent } from './language-selection.component';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SelectedLanguageService } from '../../common/selected-language.service';
-import { Language } from '../../common/language';
+import { SelectedLanguageService } from '../../common/services/selected-language.service';
+import { Language } from '../../common/entities/language';
 
 describe('LanguageSelectionComponent', () => {
   let component: LanguageSelectionComponent;

@@ -5,7 +5,10 @@ This file describes the REST-like API provided by the Server.
 The server hosts its own API doc.
 For `localhost` it's [`http://localhost:8080/doc/`](http://localhost:8080/doc/).
 
-## v2.6
+## Changelog
+
+**Changes in v2.7**
+* Add export/import endpoints to projects
 
 **Changes in v2.6**
 * The `ProjectDto` now contains the tasks
@@ -51,10 +54,10 @@ Every update is packed into a message of the following format:
 
 The swagger documentation UI (available under `...:8080/doc/`) can be (re)generated using [swagger](https://github.com/swaggo/swag) (see installation documentation there).
 After installation, go into the `server` folder and execute the command `swag init`.
-If the `swag` command is not available, use `go run` for that: `go run <something>/github.com/swaggo/swag/cmd/swag/main.go init`
+The `swag` command is probably not available and the binary (after executing the `go install` command from their installation guide) is in the `bin` folder of your go root folder.
 
 Now the `server/docs` folder contains new generated files.
-Start the server normally and you'll have an updated swagger UI.
+Start the server normally, and you'll have an updated swagger UI.
 
 ## Requirements to the API
 

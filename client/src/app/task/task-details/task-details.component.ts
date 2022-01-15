@@ -2,11 +2,11 @@ import { Component, Input, OnInit } from '@angular/core';
 import { TaskService } from '../task.service';
 import { Task } from '../task.material';
 import { CurrentUserService } from '../../user/current-user.service';
-import { NotificationService } from '../../common/notification.service';
+import { NotificationService } from '../../common/services/notification.service';
 import { User } from '../../user/user.material';
 import { UserService } from '../../user/user.service';
 import { Unsubscriber } from '../../common/unsubscriber';
-import { ShortcutService } from '../../common/shortcut.service';
+import { ShortcutService } from '../../common/services/shortcut.service';
 
 @Component({
   selector: 'app-task-details',
@@ -158,12 +158,12 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
         });
   }
 
-  public onOpenJosmButtonClicked() {
+  public onOpenJosmButtonClicked(): void {
     if (!this.task) {
       return;
     }
 
-    this.taskService.openInJosm(this.task, this.projectId)
+    this.taskService.openInJosm(this.task)
       .subscribe(() => {
         },
         err => {
@@ -171,7 +171,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
         });
   }
 
-  public onOpenOsmOrgButtonClicked() {
+  public onOpenOsmOrgButtonClicked(): void {
     if (!this.task) {
       return;
     }

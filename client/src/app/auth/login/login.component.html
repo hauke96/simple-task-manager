@@ -20,18 +20,24 @@
 			<div class="notice-container">
 				<div class="notice-bar"></div>
 				<div class="notice-text" i18n="@@LOGIN_CHANGELOG">
-					<p><b>Changes in 1.4.0:</b></p>
-					New features:
+					<p><b>Changes in 1.4.2:</b></p>
+					Features:
 					<ul>
-						<li>Export and import of projects</li>
-						<li>Add some basic shortcuts</li>
-						<li>Copy existing project to create new one</li>
-						<li>Projects now have a maximum size</li>
-						<li>Store and show creation date of project</li>
+						<li>Features in JOSM are loaded based on task geometry and not based on a bounding-box</li>
+						<li>Layer names in JOSM are more descriptive</li>
+						<li>Less annoying notifications</li>
+					</ul>
+					Bug fixes:
+					<ul>
+						<li>Task list when creating a second project was not empty</li>
 					</ul>
 					Internals:
 					<ul>
-						<li>Typescript-strict mode enabled</li>
+						<li>Load flag if in test-mode from server</li>
+						<li>Default deployment via pre-built images from Docker Hub</li>
+						<li>New environment variable <code>STM_DB_HOST</code></li>
+						<li>Renamed OAuth environment variables to have <code>STM_</code>-prefix</li>
+						<li>Reference <code>.env</code> file in <code>stm-backup.service</code></li>
 					</ul>
 				</div>
 			</div>

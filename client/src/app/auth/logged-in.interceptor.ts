@@ -3,19 +3,24 @@ import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthService } from './auth.service';
-import { NotificationService } from '../common/notification.service';
+import { NotificationService } from '../common/services/notification.service';
 import { environment } from '../../environments/environment';
 
 @Injectable()
 export class LoggedInInterceptor implements HttpInterceptor {
+  private readonly unauthenticatedEndpoints = [
+    environment.url_config
+  ];
+
   constructor(
     private authService: AuthService,
     private notificationService: NotificationService) {
   }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    // JOSM-Remote-Control or OSM-API
-    if (!request.url.startsWith(environment.base_url)) {
+    // Do not intercept unauthenticated URLs, for example: JOSM-Remote-Control or OSM-API
+    const url = request.url;
+    if (!url.startsWith(environment.base_url) || this.unauthenticatedEndpoints.some(endpoint => url.startsWith(endpoint))) {
       return next.handle(request);
     }
 

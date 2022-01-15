@@ -1,7 +1,7 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
-import { WebsocketClientService } from '../../common/websocket-client.service';
+import { WebsocketClientService } from '../../common/services/websocket-client.service';
 
 @Component({
   selector: 'app-login',
@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
     // executes the passed function within the context which then works perfectly.
     this.authService.requestLogin(() => this.ngZone.run(() => {
       this.websocketClientService.connect();
-      this.router.navigate(['/manager']);
+      this.router.navigate(['/dashboard']);
     }));
   }
 }

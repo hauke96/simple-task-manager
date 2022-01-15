@@ -3,7 +3,14 @@ This file describes the usage and setup of SSL certs for HTTPS.
 # Initial setup
 
 The easiest way is to use **letsencrypt**, so follow the tutorial for your platform.
-In the end you should have some certificates in `/etc/letsencrypt/live/<domain>/...`.
+For ubuntu you probably need to install the following stuff:
+
+* `apt install software-properties-common`
+* `add-apt-repository universe`
+* `apt update`
+* `apt install certbot`
+
+After following the instructions by letsencrypt, you should have some certificates in `/etc/letsencrypt/live/<domain>/...`.
 
 ## Usage in docker containers
 
@@ -58,13 +65,15 @@ Therefore, just starting the container will use this config file and changing th
 # Automatic renewal
 
 I use the systemd timer functionality to trigger a renewal of the certificate.
-This tutorial is pretty simple and straight forward, however, I changes some things: https://stevenwestmoreland.com/2017/11/renewing-certbot-certificates-using-a-systemd-timer.html
+This tutorial is pretty simple and straight forward, however, I changed some things: https://stevenwestmoreland.com/2017/11/renewing-certbot-certificates-using-a-systemd-timer.html
 
 ## Systemd timer
 
 Specifies how often the certbot should try to renew the certificate.
 
-The file `/lib/systemd/system/certbot.timer`:
+The file `certbot.timer` contains the following content.
+I recommend to create a symlink to `/lib/systemd/system/certbot.timer` instead of copying the original file to that location.
+In the [server.md](./server.md) I describe a folder structure with a `systemd` folder where this file fits into.
 
 ```
 [Unit]
@@ -84,7 +93,7 @@ Here the pre- and post-hooks also restarts all the docker container.
 You need an `.env` file within the projects root folder, otherwise the docker containers won't get the necessary configs (e.g. database credentials) to start up.
 See the server deployment documentation for more information.
 
-The file `/lib/systemd/system/certbot.service`:
+The file `certbot.service` should also be in a `systemd` folder (as described above) and linked using a symlink.
 
 ```
 [Unit]

@@ -9,11 +9,11 @@ import { MockRouter } from '../../common/mock-router';
 import { Task, TestTaskFeature } from '../../task/task.material';
 import { User } from '../../user/user.material';
 import { Project } from '../project.material';
-import { WebsocketClientService } from '../../common/websocket-client.service';
-import { WebsocketMessage, WebsocketMessageType } from '../../common/websocket-message';
+import { WebsocketClientService } from '../../common/services/websocket-client.service';
+import { WebsocketMessage, WebsocketMessageType } from '../../common/entities/websocket-message';
 import { ProjectService } from '../project.service';
 import { of } from 'rxjs';
-import { NotificationService } from '../../common/notification.service';
+import { NotificationService } from '../../common/services/notification.service';
 
 describe('ProjectListComponent', () => {
   let component: ProjectListComponent;

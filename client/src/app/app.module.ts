@@ -5,7 +5,7 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ManagerComponent } from './manager/manager.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './auth/login/login.component';
 import { AuthGuard } from './auth/auth.guard';
 import { LoggedInInterceptor } from './auth/logged-in.interceptor';
@@ -42,11 +42,12 @@ import { TaskTitlePipe } from './task/task-title.pipe';
 import { GlobalErrorHandler } from './error-handler';
 import { ProjectImportComponent } from './project-creation/project-import/project-import.component';
 import { CopyProjectComponent } from './project-creation/copy-project/copy-project.component';
+import { MapComponent } from './common/components/map/map.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ManagerComponent,
+    DashboardComponent,
     LoginComponent,
     OauthLandingComponent,
     ProjectListComponent,
@@ -77,7 +78,8 @@ import { CopyProjectComponent } from './project-creation/copy-project/copy-proje
     ProgressBarComponent,
     TaskTitlePipe,
     ProjectImportComponent,
-    CopyProjectComponent
+    CopyProjectComponent,
+    MapComponent
   ],
   imports: [
     BrowserModule,

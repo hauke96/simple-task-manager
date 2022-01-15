@@ -22,7 +22,6 @@ var (
 	oauthRedirectUrl  string
 	oauthConsumerKey  string
 	oauthSecret       string
-	oauthBaseUrl      string
 	osmUserDetailsUrl string
 
 	service *oauth1a.Service
@@ -40,7 +39,6 @@ func Init() {
 	oauthRedirectUrl = fmt.Sprintf("%s:%d/oauth_callback", config.Conf.ServerUrl, config.Conf.Port)
 	oauthConsumerKey = config.Conf.OauthConsumerKey
 	oauthSecret = config.Conf.OauthSecret
-	oauthBaseUrl = config.Conf.OsmBaseUrl
 	osmUserDetailsUrl = config.Conf.OsmBaseUrl + "/api/0.6/user/details"
 
 	service = &oauth1a.Service{
@@ -219,7 +217,7 @@ func requestUserInformation(userConfig *oauth1a.UserConfig) (string, string, err
 		return "", "", errors.Wrap(err, "Could not get response body")
 	}
 
-	var osm util.Osm
+	var osm Osm
 	xml.Unmarshal(responseBody, &osm)
 
 	return osm.User.DisplayName, osm.User.UserId, nil

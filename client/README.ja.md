@@ -91,7 +91,7 @@ UIが更新され、source messages.xlfが変更されたら、ステップ3 - 6
 
 ```json
   "projects": {
-    "simple-task-manager": {
+    "simple-task-dashboard": {
       "i18n": {
         "sourceLocale": "en-US",
         "locales": {
@@ -122,15 +122,15 @@ UIが更新され、source messages.xlfが変更されたら、ステップ3 - 6
         "serve": {
           "configurations": {
             "production": {
-              "browserTarget": "simple-task-manager:build:production"
+              "browserTarget": "simple-task-dashboard:build:production"
             },
             "ja": {
-              "browserTarget": "simple-task-manager:build:ja"
+              "browserTarget": "simple-task-dashboard:build:ja"
             },
             "de": {
-              "browserTarget": "simple-task-manager:build:de"
+              "browserTarget": "simple-task-dashboard:build:de"
             },
             "<langID>": {
-              "browserTarget": "simple-task-manager:build:<langID>"
+              "browserTarget": "simple-task-dashboard:build:<langID>"
             }
 ```

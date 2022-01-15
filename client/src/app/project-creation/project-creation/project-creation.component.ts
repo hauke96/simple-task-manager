@@ -1,16 +1,13 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProjectService } from '../../project/project.service';
-import { Feature, Map, MapEvent, View } from 'ol';
-import TileLayer from 'ol/layer/Tile';
-import { OSM } from 'ol/source';
+import { Feature } from 'ol';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
-import { Attribution, ScaleLine } from 'ol/control';
-import { Polygon } from 'ol/geom';
+import { Geometry, Polygon } from 'ol/geom';
 import { Fill, Stroke, Style } from 'ol/style';
 import { Draw } from 'ol/interaction';
-import { NotificationService } from '../../common/notification.service';
+import { NotificationService } from '../../common/services/notification.service';
 import GeometryType from 'ol/geom/GeometryType';
 import { CurrentUserService } from '../../user/current-user.service';
 import Snap from 'ol/interaction/Snap';
@@ -24,36 +21,32 @@ import { TaskDraftService } from '../task-draft.service';
 import { TaskDraft } from '../../task/task.material';
 import { FeatureLike } from 'ol/Feature';
 import { ConfigProvider } from '../../config/config.provider';
-import { extend } from 'ol/extent';
-import { Size } from 'ol/size';
 import { ProjectImportService } from '../project-import.service';
 import { Project } from '../../project/project.material';
 import { Unsubscriber } from '../../common/unsubscriber';
+import { Coordinate } from 'ol/coordinate';
+import { MapLayerService } from '../../common/services/map-layer.service';
 
 @Component({
   selector: 'app-project-creation',
   templateUrl: './project-creation.component.html',
-  styleUrls: ['./project-creation.component.scss']
+  styleUrls: ['./project-creation.component.scss'],
+  providers: [ TaskDraftService ]
 })
-export class ProjectCreationComponent extends Unsubscriber implements OnInit, AfterViewInit {
+export class ProjectCreationComponent extends Unsubscriber implements OnInit, OnDestroy, AfterViewInit {
   public projectProperties: ProjectProperties = new ProjectProperties('', 100, '');
   public existingProjects: Observable<Project[]>;
-
-  // public for tests
-  public modifyInteraction: Modify;
-  public drawInteraction: Draw;
-  public removeInteraction: Select;
-  public selectInteraction: Select;
-
-  public vectorSource: VectorSource;
-  private vectorLayer: VectorLayer;
-  public previewVectorSource: VectorSource;
-  private previewVectorLayer: VectorLayer;
-
-  // For the toolbar
   public resetToolbarSelectionSubject: Subject<void> = new Subject<void>();
 
-  private map: Map;
+  private modifyInteraction: Modify;
+  private drawInteraction: Draw;
+  private removeInteraction: Select;
+  private selectInteraction: Select;
+
+  private vectorSource: VectorSource<Geometry>;
+  private vectorLayer: VectorLayer<VectorSource<Geometry>>;
+  private previewVectorSource: VectorSource<Geometry>;
+  private previewVectorLayer: VectorLayer<VectorSource<Geometry>>;
 
   constructor(
     private projectService: ProjectService,
@@ -61,6 +54,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
     private notificationService: NotificationService,
     private currentUserService: CurrentUserService,
     private projectImportService: ProjectImportService,
+    private mapLayerService: MapLayerService,
     private router: Router,
     public config: ConfigProvider
   ) {
@@ -106,40 +100,44 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
       style: this.getPreviewStyle()
     });
 
-    this.map = new Map({
-      target: 'map',
-      controls: [
-        new ScaleLine(),
-        new Attribution()
-      ],
-      layers: [
-        new TileLayer({
-          source: new OSM()
-        }),
-        this.vectorLayer,
-        this.previewVectorLayer
-      ],
-      view: new View({
-        center: [1111000, 7086000],
-        projection: 'EPSG:3857',
-        zoom: 14,
-        minZoom: 0,
-        maxZoom: 19
-      })
-    });
+    this.mapLayerService.addLayer(this.vectorLayer);
+    this.mapLayerService.addLayer(this.previewVectorLayer);
 
     // Restore map center
-    const center = localStorage.getItem('project_creation_map_center');
+    const center = this.getLastLocation();
     if (!!center) {
-      this.map.getView().setCenter(JSON.parse(center));
+      this.mapLayerService.centerView(center);
     }
 
-    // Update map center after map has been moved
-    this.map.on('moveend', (e: MapEvent) => {
-      localStorage.setItem('project_creation_map_center', JSON.stringify(e.map.getView().getCenter()));
-    });
-
     this.addMapInteractions();
+  }
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+
+    this.mapLayerService.removeLayer(this.vectorLayer);
+    this.mapLayerService.removeLayer(this.previewVectorLayer);
+  }
+
+  onMoveEnd(mapCenter: Coordinate | undefined) {
+    if (mapCenter) {
+      this.storeLastLocation(mapCenter);
+    }
+  }
+
+  private getLastLocation(): Coordinate | undefined {
+    let lastLocation;
+    const jsonValue = localStorage.getItem('project_creation_map_center');
+
+    if (jsonValue) {
+      lastLocation = JSON.parse(jsonValue);
+    }
+
+    return lastLocation;
+  }
+
+  private storeLastLocation(coordinate: Coordinate) {
+    localStorage.setItem('project_creation_map_center', JSON.stringify(coordinate));
   }
 
   private getStyle(feature: FeatureLike): Style {
@@ -200,31 +198,10 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
    * Called after a task has been added to the task draft service.
    */
   private addTasks(tasks: TaskDraft[]) {
-    const mapPaddingPx = 25;
     const newFeatures = tasks.map(t => this.toFeature(t));
     this.vectorSource.addFeatures(newFeatures);
 
-    // Subtract the padding from the map size. This padding will be added back to the map size below.
-    const mapSize = this.map.getSize();
-    if (!mapSize) {
-      this.notificationService.addError('Unable to get map size');
-      return;
-    }
-
-    const paddedMapSize = [
-      mapSize[0] - 2 * mapPaddingPx,
-      mapSize[1] - 2 * mapPaddingPx
-    ] as Size;
-    let overallExtent = this.map.getView().calculateExtent(paddedMapSize);
-
-    // Try to extend the extent over all new features: If one feature is outside the current extent, then the map view should be adjusted
-    // @ts-ignore
-    newFeatures.forEach(f => overallExtent = extend(overallExtent, f.getGeometry().getExtent()));
-
-    this.map.getView().fit(overallExtent, {
-      size: mapSize,
-      padding: [mapPaddingPx, mapPaddingPx, mapPaddingPx, mapPaddingPx] // in pixels
-    });
+    this.mapLayerService.fitToFeatures(newFeatures);
 
     if (!this.canAddTasks) {
       this.setInteraction(this.drawInteraction, false);
@@ -250,19 +227,19 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
       // Add shaped but do not transform them (first *false*) and do not move map view (second *false)
       this.taskDraftService.addTasks([this.taskDraftService.toTaskDraft(e.feature)], false);
     });
-    this.map.addInteraction(this.drawInteraction);
+    this.mapLayerService.addInteraction(this.drawInteraction);
 
     // MODIFY
     const snap = new Snap({
       source: this.vectorSource
     });
-    this.map.addInteraction(snap);
+    this.mapLayerService.addInteraction(snap);
 
     this.modifyInteraction = new Modify({
       source: this.vectorSource
     });
     this.modifyInteraction.setActive(false);
-    this.map.addInteraction(this.modifyInteraction);
+    this.mapLayerService.addInteraction(this.modifyInteraction);
 
     // DELETE
     this.removeInteraction = new Select();
@@ -273,7 +250,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
       }
     });
     this.removeInteraction.setActive(false);
-    this.map.addInteraction(this.removeInteraction);
+    this.mapLayerService.addInteraction(this.removeInteraction);
 
     // SELECT
     this.selectInteraction = new Select({
@@ -287,7 +264,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
         this.taskDraftService.deselectTask();
       }
     });
-    this.map.addInteraction(this.selectInteraction);
+    this.mapLayerService.addInteraction(this.selectInteraction);
   }
 
   // See if the vector layer has some features.
@@ -297,7 +274,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
 
   // TODO pass TaskDrafts here to "createProject"
   public onSaveButtonClicked() {
-    const features: Feature[] = this.vectorSource.getFeatures().map(f => {
+    const features: Feature<Geometry>[] = this.vectorSource.getFeatures().map(f => {
       f = f.clone(); // otherwise we would change the polygons on the map
       let polygon = (f.getGeometry() as Polygon);
 
@@ -317,7 +294,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
     );
   }
 
-  public createProject(name: string, maxProcessPoints: number, projectDescription: string, features: Feature[]) {
+  public createProject(name: string, maxProcessPoints: number, projectDescription: string, features: Feature<Geometry>[]) {
     const owner = this.currentUserService.getUserId();
     if (!owner) {
       // TODO Show error notification
@@ -326,7 +303,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
 
     this.projectService.createNewProject(name, maxProcessPoints, projectDescription, features, [owner], owner)
       .subscribe(project => {
-        this.router.navigate(['/manager']);
+        this.router.navigate(['/dashboard']);
       }, e => {
         console.error(e);
         this.notificationService.addError(($localize`:@@ERROR_NOT_CREATE_PROJ:Could not create project`) + ': ' + e.error);
@@ -343,24 +320,6 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
     this.previewVectorSource.clear();
 
     this.resetToolbarSelectionSubject.next();
-  }
-
-  onZoomIn() {
-    const zoom = this.map.getView().getZoom();
-    if (!zoom) {
-      return;
-    }
-
-    this.map.getView().setZoom(zoom + 1);
-  }
-
-  onZoomOut() {
-    const zoom = this.map.getView().getZoom();
-    if (!zoom) {
-      return;
-    }
-
-    this.map.getView().setZoom(zoom - 1);
   }
 
   onToggleDraw() {
@@ -398,7 +357,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, Af
     this.previewVectorSource.addFeatures(taskDrafts.map(t => this.toFeature(t)));
   }
 
-  public toFeature(task: TaskDraft): Feature {
+  public toFeature(task: TaskDraft): Feature<Geometry> {
     const f = new Feature(task.geometry);
     f.set('id', task.id);
     f.set('name', task.name);

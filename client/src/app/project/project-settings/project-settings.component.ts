@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ProjectService } from '../project.service';
 import { Router } from '@angular/router';
 import { CurrentUserService } from '../../user/current-user.service';
-import { NotificationService } from '../../common/notification.service';
+import { NotificationService } from '../../common/services/notification.service';
 import { User } from '../../user/user.material';
 import { forkJoin, Observable } from 'rxjs';
 import { Project } from '../project.material';
@@ -70,7 +70,7 @@ export class ProjectSettingsComponent implements OnInit {
       .subscribe(() => {
         this.requestConfirmation = false;
         this.notificationService.addInfo($localize`:@@INFO_REMOVED_PROJ:Project removed successfully`);
-        this.router.navigate(['/manager']);
+        this.router.navigate(['/dashboard']);
       }, err => {
         console.error(err);
         this.notificationService.addError($localize`:@@ERROR_ONT_DELETE_PROJ:Could not delete project`);
@@ -82,7 +82,7 @@ export class ProjectSettingsComponent implements OnInit {
     this.projectService.leaveProject(this.projectId)
       .subscribe(() => {
         this.requestConfirmation = false;
-        this.router.navigate(['/manager']);
+        this.router.navigate(['/dashboard']);
       }, err => {
         console.error(err);
         this.notificationService.addError($localize`:@@ERROR_LEAVE_PROJ:Could not leave project`);

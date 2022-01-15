@@ -5,7 +5,7 @@ import { ProjectService } from './project.service';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
-import { NotificationService } from '../common/notification.service';
+import { NotificationService } from '../common/services/notification.service';
 
 @Injectable({providedIn: 'root'})
 export class ProjectResolver implements Resolve<Project> {

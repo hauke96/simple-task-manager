@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ProjectCreationComponent } from './project-creation.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
-import { Polygon } from 'ol/geom';
+import { Geometry, Polygon } from 'ol/geom';
 import { of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { ProjectService } from '../../project/project.service';
@@ -16,6 +16,7 @@ import { SelectEvent } from 'ol/interaction/Select';
 import { DrawEvent } from 'ol/interaction/Draw';
 import { TaskDraftService } from '../task-draft.service';
 import { CurrentUserService } from '../../user/current-user.service';
+import { MapLayerService } from '../../common/services/map-layer.service';
 
 describe('ProjectCreationComponent', () => {
   let component: ProjectCreationComponent;
@@ -24,8 +25,9 @@ describe('ProjectCreationComponent', () => {
   let taskDraftService: TaskDraftService;
   let routerMock: MockRouter;
   let currentUserService: CurrentUserService;
+  let mapLayerService: MapLayerService;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [ProjectCreationComponent],
       imports: [
@@ -33,7 +35,6 @@ describe('ProjectCreationComponent', () => {
         FormsModule
       ],
       providers: [
-        TaskDraftService,
         {
           provide: Router,
           useClass: MockRouter
@@ -42,11 +43,14 @@ describe('ProjectCreationComponent', () => {
     })
       .compileComponents();
 
+    TestBed.overrideProvider(TaskDraftService, {useValue: new TaskDraftService()});
+
     projectService = TestBed.inject(ProjectService);
     taskDraftService = TestBed.inject(TaskDraftService);
     currentUserService = TestBed.inject(CurrentUserService);
     routerMock = TestBed.inject(Router);
-  }));
+    mapLayerService = TestBed.inject(MapLayerService);
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ProjectCreationComponent);
@@ -60,16 +64,18 @@ describe('ProjectCreationComponent', () => {
 
   it('should add new tasks to map', () => {
     // @ts-ignore
-    const spyMapView = spyOn(component.map.getView(), 'fit');
+    const spy = spyOn(mapLayerService, 'fitToFeatures');
 
     const tasks = getDummyTasks();
+    // @ts-ignore
     expect(component.vectorSource.getFeatures().length).toEqual(0);
 
     // @ts-ignore
     component.addTasks(tasks);
 
+    // @ts-ignore
     expect(component.vectorSource.getFeatures().length).toEqual(tasks.length);
-    expect(spyMapView).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalled();
   });
 
   it('should return tasks correctly', () => {
@@ -92,7 +98,7 @@ describe('ProjectCreationComponent', () => {
     component.createProject(name, 100, 'lorem ipsum', feature);
 
     expect(spyService).toHaveBeenCalled();
-    expect(spyRouter).toHaveBeenCalledWith(['/manager']);
+    expect(spyRouter).toHaveBeenCalledWith(['/dashboard']);
   });
 
   it('should not navigate on fail', () => {
@@ -126,19 +132,21 @@ describe('ProjectCreationComponent', () => {
   });
 
   it('should add uploaded shape correctly', () => {
+    // @ts-ignore
     const vectorSourceClearSpy = spyOn(component.vectorSource, 'clear');
+    // @ts-ignore
     const vectorSourceAddSpy = spyOn(component.vectorSource, 'addFeatures');
     // @ts-ignore
-    const spyView = spyOn(component.map.getView(), 'fit');
+    const spy = spyOn(mapLayerService, 'fitToFeatures');
 
     const tasks = getDummyTasks();
     // @ts-ignore
     component.addTasks(tasks);
 
     expect(vectorSourceClearSpy).not.toHaveBeenCalled();
-    expect((vectorSourceAddSpy.calls.first().args[0] as Feature[])[0].getGeometry()).toEqual(tasks[0].geometry);
-    expect((vectorSourceAddSpy.calls.first().args[0] as Feature[])[1].getGeometry()).toEqual(tasks[1].geometry);
-    expect(spyView).toHaveBeenCalled();
+    expect((vectorSourceAddSpy.calls.first().args[0] as Feature<Geometry>[])[0].getGeometry()).toEqual(tasks[0].geometry);
+    expect((vectorSourceAddSpy.calls.first().args[0] as Feature<Geometry>[])[1].getGeometry()).toEqual(tasks[1].geometry);
+    expect(spy).toHaveBeenCalled();
   });
 
   it('should create project with all properties', () => {
@@ -154,6 +162,7 @@ describe('ProjectCreationComponent', () => {
     component.projectProperties.projectDescription = description;
     component.projectProperties.maxProcessPoints = maxProcessPoints;
     component.projectProperties.projectName = name;
+    // @ts-ignore
     component.vectorSource.addFeature(feature);
 
     component.onSaveButtonClicked();
@@ -164,8 +173,11 @@ describe('ProjectCreationComponent', () => {
   it('should deactivate interactions on tab selection', () => {
     component.onTabSelected();
 
+    // @ts-ignore
     expect(component.drawInteraction.getActive()).toEqual(false);
+    // @ts-ignore
     expect(component.modifyInteraction.getActive()).toEqual(false);
+    // @ts-ignore
     expect(component.removeInteraction.getActive()).toEqual(false);
   });
 
@@ -177,32 +189,16 @@ describe('ProjectCreationComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('should zoom in', () => {
-    // @ts-ignore
-    const z = component.map.getView().getZoom();
-
-    component.onZoomIn();
-
-    // @ts-ignore
-    expect(component.map.getView().getZoom()).toEqual(z + 1);
-  });
-
-  it('should zoom out', () => {
-    // @ts-ignore
-    const z = component.map.getView().getZoom();
-
-    component.onZoomOut();
-
-    // @ts-ignore
-    expect(component.map.getView().getZoom()).toEqual(z - 1);
-  });
-
   it('should toggle draw and modify interactions correctly', () => {
     component.onToggleDraw();
 
+    // @ts-ignore
     expect(component.drawInteraction.getActive()).toEqual(true);
+    // @ts-ignore
     expect(component.modifyInteraction.getActive()).toEqual(false);
+    // @ts-ignore
     expect(component.removeInteraction.getActive()).toEqual(false);
+    // @ts-ignore
     expect(component.selectInteraction.getActive()).toEqual(false);
 
     component.onToggleDraw();
@@ -213,9 +209,13 @@ describe('ProjectCreationComponent', () => {
   it('should toggle delete interactions correctly', () => {
     component.onToggleDelete();
 
+    // @ts-ignore
     expect(component.drawInteraction.getActive()).toEqual(false);
+    // @ts-ignore
     expect(component.modifyInteraction.getActive()).toEqual(false);
+    // @ts-ignore
     expect(component.removeInteraction.getActive()).toEqual(true);
+    // @ts-ignore
     expect(component.selectInteraction.getActive()).toEqual(false);
 
     component.onToggleDelete();
@@ -226,9 +226,13 @@ describe('ProjectCreationComponent', () => {
   it('should toggle edit interactions correctly', () => {
     component.onToggleEdit();
 
+    // @ts-ignore
     expect(component.drawInteraction.getActive()).toEqual(false);
+    // @ts-ignore
     expect(component.modifyInteraction.getActive()).toEqual(true);
+    // @ts-ignore
     expect(component.removeInteraction.getActive()).toEqual(false);
+    // @ts-ignore
     expect(component.selectInteraction.getActive()).toEqual(false);
 
     component.onToggleEdit();
@@ -237,6 +241,7 @@ describe('ProjectCreationComponent', () => {
   });
 
   it('should add feature on draw interaction', () => {
+    // @ts-ignore
     component.drawInteraction.dispatchEvent({
       type: 'drawend',
       feature: new Feature(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]])),
@@ -245,8 +250,11 @@ describe('ProjectCreationComponent', () => {
       stopPropagation: undefined
     } as unknown as DrawEvent);
 
+    // @ts-ignore
     expect(component.vectorSource.getFeatures().length).toEqual(1);
+    // @ts-ignore
     expect(component.vectorSource.getFeatures()[0].get('id')).toEqual('0');
+    // @ts-ignore
     expect(component.vectorSource.getFeatures()[0].get('name')).toEqual('0');
   });
 
@@ -256,6 +264,7 @@ describe('ProjectCreationComponent', () => {
     const feature = new Feature(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]]));
     feature.set('id', '123');
 
+    // @ts-ignore
     component.removeInteraction.dispatchEvent({
       type: 'select',
       selected: [feature],
@@ -275,6 +284,7 @@ describe('ProjectCreationComponent', () => {
     const feature = new Feature(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]]));
     feature.set('id', '123');
 
+    // @ts-ignore
     component.selectInteraction.dispatchEvent({
       type: 'select',
       selected: [feature],
@@ -288,12 +298,27 @@ describe('ProjectCreationComponent', () => {
     expect(spySelect).toHaveBeenCalledWith('123');
   });
 
+  it('should remove layers on destroy', () => {
+    const spy = spyOn(mapLayerService, 'removeLayer');
+
+    component.ngOnDestroy();
+
+    // @ts-ignore
+    expect(spy).toHaveBeenCalledWith(component.vectorLayer);
+    // @ts-ignore
+    expect(spy).toHaveBeenCalledWith(component.previewVectorLayer);
+  });
+
   function expectInteractionsToBeInDefaultState() {
+    // @ts-ignore
     expect(component.drawInteraction.getActive()).toEqual(false);
+    // @ts-ignore
     expect(component.modifyInteraction.getActive()).toEqual(false);
+    // @ts-ignore
     expect(component.removeInteraction.getActive()).toEqual(false);
 
     // Selection is enabled when all other interactions aren't
+    // @ts-ignore
     expect(component.selectInteraction.getActive()).toEqual(true);
   }
 
@@ -306,7 +331,7 @@ describe('ProjectCreationComponent', () => {
   }
 
   function getDummyFeatures() {
-    const feature: Feature[] = [];
+    const feature: Feature<Geometry>[] = [];
     feature.push(new Feature(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]])));
     feature.push(new Feature(new Polygon([[[4000, 4000], [5000, 6000], [6000, 4000], [4000, 4000]]])));
     return feature;

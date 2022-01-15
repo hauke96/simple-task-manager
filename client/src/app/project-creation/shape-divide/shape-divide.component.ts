@@ -3,8 +3,9 @@ import { polygon as turfPolygon, Units } from '@turf/helpers';
 import squareGrid from '@turf/square-grid';
 import hexGrid from '@turf/hex-grid';
 import triangleGrid from '@turf/triangle-grid';
+import BBox from '@turf/helpers';
 import { Polygon } from 'ol/geom';
-import { NotificationService } from '../../common/notification.service';
+import { NotificationService } from '../../common/services/notification.service';
 import { TaskDraft } from '../../task/task.material';
 import { TaskDraftService } from '../task-draft.service';
 import { ConfigProvider } from '../../config/config.provider';
@@ -79,7 +80,7 @@ export class ShapeDivideComponent implements OnInit {
    */
   private createTaskDrafts(): TaskDraft[] | undefined {
     const polygon = this.selectedTask.geometry.clone() as Polygon;
-    const extent = polygon.transform('EPSG:3857', 'EPSG:4326').getExtent();
+    const extent = polygon.transform('EPSG:3857', 'EPSG:4326').getExtent() as BBox.BBox;
 
     // Use meters and only show grid cells within the original polygon (-> mask)
     const options = {

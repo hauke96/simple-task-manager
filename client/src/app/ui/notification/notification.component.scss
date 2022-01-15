@@ -1,13 +1,19 @@
 @import "../../../styles";
 
-// We can't use flex layout and put it below the toolbar, because 1.) it lays above everything and 2.) this component is
-// directly embedded into the app-component and a toolbar does not exist there
-.notification-container {
+:host {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
 	z-index: 10;
 	width: 100%;
 	position: absolute;
+	bottom: 0;
+}
+
+.notification-container {
 	display: flex;
 	flex-direction: column;
+	margin-bottom: $space-large;
 }
 
 .info-container,
@@ -15,9 +21,17 @@
 .warning-container,
 .loading-container {
 	display: flex;
-	width: 100%;
+	width: 600px;
+	max-width: 600px;
+}
+
+.border:first-child {
+	border-top: $color-light 1px solid;
+}
+.border {
 	border-bottom: $color-light 1px solid;
-	min-height: 50px;
+	border-right: $color-light 1px solid;
+	border-left: $color-light 1px solid;
 }
 
 .text-box {
@@ -25,7 +39,7 @@
 }
 
 .loading-container {
-	background-color: #ffffffa0;
+	background-color: #ffffff;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -45,33 +59,32 @@
 
 .notification-text-container {
 	display: flex;
-	justify-content: center;
-	align-items: baseline;
 	flex-grow: 1;
-	padding: $space-base;
+	padding: $space-small;
+	margin-top: auto;
+	margin-bottom: auto;
+	margin-left: $space-small;
+}
+
+.notification-text-wrapper {
+	display: flex;
+	flex-grow: 1;
+	align-self: start;
 	margin-top: auto;
 	margin-bottom: auto;
 }
 
+.notification-text {
+	flex-grow: 1;
+	word-wrap: anywhere;
+}
+
 .error-text {
 	color: $color-error-dark;
-	align-self: baseline;
 }
 
 .warn-text {
 	color: $color-warn-dark;
-	align-self: baseline;
-}
-
-.close-button-wrapper {
-	margin: $space-base;
-	display: flex;
-	align-items: flex-start;
-}
-
-.close-button-container {
-	display: flex;
-	align-items: center;
 }
 
 .remaining-notifications-label {
@@ -89,12 +102,13 @@
 	}
 }
 
-.loader.simple-circle {
+.loader {
 	transform-origin: center center;
 	border: 1px solid transparent;
 	border-right-color: $color-dark;
-	width: 24px;
-	height: 24px;
-	border-radius: 12px;
-	animation: circle-loader 0.85s infinite;
+	width: 16px;
+	height: 16px;
+	border-radius: 8px;
+	margin: $space-base;
+	animation: circle-loader 1s infinite;
 }

@@ -1,5 +1,10 @@
 @import "../../../styles";
 
+:host {
+	display: flex;
+	flex-direction: column;
+}
+
 .list-item {
 	display: flex;
 	justify-content: space-between;
@@ -28,12 +33,7 @@
 	min-width: 10px;
 }
 
-.bottom-line {
-	margin-top: $space-large;
-	display: flex;
-	justify-content: space-between;
-}
-
-.import-button {
-	margin-left: $space-base;
+.ownership-notice {
+	margin-top: $space-base;
+	align-self: end;
 }

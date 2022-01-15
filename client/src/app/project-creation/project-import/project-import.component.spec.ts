@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProjectImportComponent } from './project-import.component';
 import { ProjectImportService } from '../project-import.service';
-import { NotificationService } from '../../common/notification.service';
+import { NotificationService } from '../../common/services/notification.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('ProjectImportComponent', () => {

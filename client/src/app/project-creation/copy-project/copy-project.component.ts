@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Project } from '../../project/project.material';
 import { ProjectService } from '../../project/project.service';
-import { NotificationService } from '../../common/notification.service';
+import { NotificationService } from '../../common/services/notification.service';
 import { ProjectImportService } from '../project-import.service';
 
 @Component({
@@ -24,7 +24,7 @@ export class CopyProjectComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onProjectClicked(project: Project) {
+  onProjectClicked(project: Project): void {
     this.selectedProject = project !== this.selectedProject ? project : undefined;
   }
 
@@ -35,16 +35,17 @@ export class CopyProjectComponent implements OnInit {
 
     this.projectService
       .getProjectExport(this.selectedProject.id)
-      .subscribe(
-        projectExport => {
+      .subscribe({
+        next: projectExport => {
           this.projectImportService.importProjectAsNewProject(projectExport);
           this.selectedProject = undefined;
         },
-        e => {
+        error: e => {
           console.error(e);
           // @ts-ignore See above check
           this.notificationService.addError($localize`:@@ERROR_COULD_NOT_IMPORT:Could not import project '${this.selectedProject.name}:INTERPOLATION:'`);
           this.selectedProject = undefined;
-        });
+        }
+      });
   }
 }

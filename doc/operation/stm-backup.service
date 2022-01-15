@@ -5,7 +5,7 @@ Description=STM database backup creation
 WorkingDirectory=/home/stm/simple-task-manager
 Type=oneshot
 PrivateTmp=true
-Environment=STM_DB_USERNAME=stm
+EnvironmentFile=/home/stm/simple-task-manager/.env
 ExecStart=/home/stm/simple-task-manager/create-backup.sh
 
 [Install]

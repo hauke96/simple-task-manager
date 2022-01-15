@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { LoadingService } from '../../common/loading.service';
-import { NotificationService } from '../../common/notification.service';
+import { LoadingService } from '../../common/services/loading.service';
+import { NotificationService } from '../../common/services/notification.service';
 
 @Component({
   selector: 'app-notification',
@@ -37,7 +37,7 @@ export class NotificationComponent implements OnInit {
     return this.notificationService.getError();
   }
 
-  public onCloseErrorButtonClicked() {
+  public onCloseErrorButtonClicked(): void {
     this.notificationService.dropError();
   }
 
@@ -57,7 +57,7 @@ export class NotificationComponent implements OnInit {
     return this.notificationService.getWarning();
   }
 
-  public onCloseWarningButtonClicked() {
+  public onCloseWarningButtonClicked(): void {
     this.notificationService.dropWarning();
   }
 
@@ -77,7 +77,7 @@ export class NotificationComponent implements OnInit {
     return this.notificationService.getInfo();
   }
 
-  public onCloseInfoButtonClicked() {
+  public onCloseInfoButtonClicked(): void {
     this.notificationService.dropInfo();
   }
 }
