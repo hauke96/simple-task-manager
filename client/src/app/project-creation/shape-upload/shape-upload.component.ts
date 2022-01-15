@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NotificationService } from '../../common/services/notification.service';
 import { GeometryService } from '../../common/services/geometry.service';
 import { TaskDraftService } from '../task-draft.service';
@@ -8,7 +8,7 @@ import { TaskDraftService } from '../task-draft.service';
   templateUrl: './shape-upload.component.html',
   styleUrls: ['./shape-upload.component.scss']
 })
-export class ShapeUploadComponent implements OnInit {
+export class ShapeUploadComponent {
   constructor(
     private notificationService: NotificationService,
     private geometryService: GeometryService,
@@ -16,14 +16,11 @@ export class ShapeUploadComponent implements OnInit {
   ) {
   }
 
-  ngOnInit(): void {
-  }
-
-  public onFileSelected(event: any) {
+  public onFileSelected(event: any): void {
     this.uploadFile(event, (e) => this.addTasks(e));
   }
 
-  public addTasks(evt: Event) {
+  public addTasks(evt: Event): void {
     if (!evt || !evt.target) {
       return;
     }
@@ -38,11 +35,11 @@ export class ShapeUploadComponent implements OnInit {
         this.notificationService.addError($localize`:@@ERROR_OVERPASS_NO_POLYGONS:No polygons exist or data has unknown format. Supported formats are: GeoJson, OSM-XML, GPX, KML, EsriJson and WKT.`);
       }
     } catch (e) {
-      this.notificationService.addError(e);
+      this.notificationService.addError('Error: ' + e);
     }
   }
 
-  private uploadFile(event: any, loadHandler: (evt: Event) => void) {
+  private uploadFile(event: any, loadHandler: (evt: Event) => void): void {
     const reader = new FileReader();
     const file = event.target.files[0];
 
