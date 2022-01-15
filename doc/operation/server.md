@@ -90,7 +90,7 @@ I recommend the following structure and I assume your users home folder is `/hom
   * `configs` contains nginx and stm-server configs
   * `postgres-data` contains the database files
   * `repo` contains the actual code repo. This is needed so get the latest `docker-compose.yml`
-  * Optional: `systemd` contains timer and service files for the automated backups (not needed if you don't use this backup mechanism)
+  * `systemd` contains timer and service files for cerbot (and optionally the automated backups)
 
 # 7 Get STM
 
