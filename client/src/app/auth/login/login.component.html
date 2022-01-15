@@ -21,10 +21,20 @@
 				<div class="notice-bar"></div>
 				<div class="notice-text" i18n="@@LOGIN_CHANGELOG">
 					<p><b>Changes in 1.4.2:</b></p>
+					Features:
+					<ul>
+						<li>Features are loaded based on task geometry and not based on a bounding-box</li>
+						<li>Layer names in JOSM are more descriptive</li>
+						<li>Less annoying notifications</li>
+					</ul>
+					Bug fixes:
+					<ul>
+						<li>Task list when creating a second project was not empty</li>
+					</ul>
 					Internals:
 					<ul>
 						<li>Load flag if in test-mode from server</li>
-						<li>Default deployment via docker hub</li>
+						<li>Default deployment via pre-built images from docker hub</li>
 						<li>New environment variable <code>STM_DB_HOST</code></li>
 						<li>Renamed OAuth environment variables to have <code>STM_</code>-prefix</li>
 						<li>Reference <code>.env</code> file in <code>stm-backup.service</code></li>
