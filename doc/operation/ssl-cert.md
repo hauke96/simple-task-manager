@@ -3,7 +3,14 @@ This file describes the usage and setup of SSL certs for HTTPS.
 # Initial setup
 
 The easiest way is to use **letsencrypt**, so follow the tutorial for your platform.
-In the end you should have some certificates in `/etc/letsencrypt/live/<domain>/...`.
+For ubuntu you probably need to install the following stuff:
+
+* `apt install software-properties-common`
+* `add-apt-repository universe`
+* `apt update`
+* `apt install certbot`
+
+After following the instructions by letsencrypt, you should have some certificates in `/etc/letsencrypt/live/<domain>/...`.
 
 ## Usage in docker containers
 

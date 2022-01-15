@@ -55,14 +55,7 @@ is completed.
 
 # 4 LetsEncrypt
 
-Basically follow the tutorial but the steps are very simple:
-
-* `apt install software-properties-common`
-* `add-apt-repository universe`
-* `apt update`
-* `apt install certbot`
-* `certbot certonly --standalone`
-* Adjust the timer and service files for systemd according to [ssl-cert.md](./ssl-cert.md)
+Follow the steps in [ssl-cert.md](./ssl-cert.md) so set up letsencrypt.
 
 # 5 Firewall
 
