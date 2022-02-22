@@ -1,53 +1,37 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-
 import { LoginComponent } from './login.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AuthService } from '../auth.service';
-import { CurrentUserService } from '../../user/current-user.service';
 import { Router } from '@angular/router';
-import { NgZone } from '@angular/core';
-import { MockRouter } from '../../common/mock-router';
+import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
 
-describe('AuthComponent', () => {
+describe(LoginComponent.name, () => {
   let component: LoginComponent;
-  let fixture: ComponentFixture<LoginComponent>;
+  let fixture: MockedComponentFixture<LoginComponent>;
   let authService: AuthService;
-  let routerMock: MockRouter;
-
-  beforeEach(waitForAsync(() => {
-    const mockNgZone = jasmine.createSpyObj('mockNgZone', ['run', 'runOutsideAngular']);
-    mockNgZone.run.and.callFake((fn: any) => fn());
-
-    TestBed.configureTestingModule({
-      declarations: [LoginComponent],
-      imports: [
-        HttpClientTestingModule
-      ],
-      providers: [
-        CurrentUserService,
-        AuthService,
-        {
-          provide: Router,
-          useClass: MockRouter
-        },
-        {
-          provide: NgZone,
-          useValue: new NgZone({})
-        }
-      ]
-    })
-      .compileComponents();
-
-    authService = TestBed.inject(AuthService);
-    routerMock = TestBed.inject(Router);
-
-    const ngZone = TestBed.inject(NgZone);
-    spyOn(ngZone, 'run').and.callFake((fn: () => any) => fn());
-  }));
+  let routerMock: Router;
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LoginComponent);
-    component = fixture.componentInstance;
+    routerMock = {} as Router;
+    routerMock.navigate = jest.fn();
+
+    authService = {} as AuthService;
+
+    return MockBuilder(LoginComponent, AppModule)
+      .provide({
+        provide: Router,
+        useFactory: () => routerMock
+      })
+      .provide({
+        provide: AuthService,
+        useFactory: () => authService
+      });
+  });
+
+  beforeEach(() => {
+    fixture = MockRender(LoginComponent);
+    component = fixture.point.componentInstance;
+    // @ts-ignore
+    fixture.ngZone.run = (fn) => fn();
     fixture.detectChanges();
   });
 
@@ -56,10 +40,8 @@ describe('AuthComponent', () => {
   });
 
   it('should redirect user to dashboard after login', () => {
-    spyOn(authService, 'requestLogin').and.callFake((f: () => void) => {
-      f();
-    });
-    spyOn(routerMock, 'navigate').and.callThrough();
+    authService.requestLogin = (fn) => fn();
+    routerMock.navigate = jest.fn();
 
     component.onLoginButtonClick();
 
