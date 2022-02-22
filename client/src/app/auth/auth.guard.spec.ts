@@ -1,103 +1,102 @@
-import { TestBed } from '@angular/core/testing';
 import { AuthGuard } from './auth.guard';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
-import { MockRouter } from '../common/mock-router';
 import { AuthService } from './auth.service';
+import { CurrentUserService } from '../user/current-user.service';
 
-describe('AuthGuard', () => {
+describe(AuthGuard.name, () => {
   let guard: AuthGuard;
   let authService: AuthService;
-
-  const mockRouter = new MockRouter();
+  let currentUserService: CurrentUserService;
+  let router: Router;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [
-        AuthService,
-        AuthGuard,
-        {
-          provide: Router,
-          useValue: mockRouter
-        }
-      ],
-    });
+    authService = {} as AuthService;
+    currentUserService = {} as CurrentUserService;
+    router = {} as Router;
 
-    guard = TestBed.inject(AuthGuard);
-    authService = TestBed.inject(AuthService);
+    router.navigateByUrl = jest.fn();
+
+    guard = new AuthGuard(router, authService, currentUserService);
   });
 
   it('should be created', () => {
     expect(guard).toBeTruthy();
   });
 
-  it('should not activate LoginComponent for logged-in user', () => {
-    spyOn(authService, 'isAuthenticated').and.returnValue(true);
+  describe('with authentication', () => {
+    beforeEach(() => {
+      authService.isAuthenticated = jest.fn().mockReturnValue(true);
+      authService.setUserNameFromToken = jest.fn();
+    });
 
-    localStorage.setItem('auth_token', 'foo'); // -> logged-in user
+    it('should not activate LoginComponent for logged-in user', () => {
+      localStorage.setItem('auth_token', 'foo'); // -> logged-in user
 
-    const canActivate = guard.canActivate({
-      routeConfig: {
-        path: ''
-      }
-    } as ActivatedRouteSnapshot, {} as RouterStateSnapshot);
+      const canActivate = guard.canActivate({
+        routeConfig: {
+          path: ''
+        }
+      } as ActivatedRouteSnapshot, {} as RouterStateSnapshot);
 
-    expect(canActivate).toBeFalse();
+      expect(canActivate).toEqual(false);
+    });
+
+    it('should route from login to dashboard for logged-in user', () => {
+      localStorage.setItem('auth_token', 'foo'); // -> logged-in user
+
+      guard.canActivate({
+        routeConfig: {
+          path: ''
+        }
+      } as ActivatedRouteSnapshot, {} as RouterStateSnapshot);
+
+      expect(router.navigateByUrl).toHaveBeenCalledWith('/dashboard');
+    });
+
+    it('should activate any component for logged-in user', () => {
+      localStorage.setItem('auth_token', 'foo'); // -> logged-in user
+
+      const canActivate = guard.canActivate({
+        routeConfig: {
+          path: 'dashboard'
+        }
+      } as ActivatedRouteSnapshot, {} as RouterStateSnapshot);
+
+      expect(canActivate).toEqual(true);
+      expect(router.navigateByUrl).not.toHaveBeenCalled();
+    });
   });
 
-  it('should route from login to dashboard for logged-in user', () => {
-    const routerSpy = spyOn(mockRouter, 'navigateByUrl');
-    spyOn(authService, 'isAuthenticated').and.returnValue(true);
+  describe('not authenticated', () => {
+    beforeEach(() => {
+      authService.isAuthenticated = jest.fn().mockReturnValue(false);
+      currentUserService.resetUser = jest.fn();
+    });
 
-    localStorage.setItem('auth_token', 'foo'); // -> logged-in user
+    it('should not activate any component for not logged-in user', () => {
+      localStorage.removeItem('auth_token'); // -> not logged-in user
 
-    guard.canActivate({
-      routeConfig: {
-        path: ''
-      }
-    } as ActivatedRouteSnapshot, {} as RouterStateSnapshot);
+      const canActivate = guard.canActivate({
+        routeConfig: {
+          path: 'dashboard'
+        }
+      } as ActivatedRouteSnapshot, {} as RouterStateSnapshot);
 
-    expect(routerSpy).toHaveBeenCalledWith('/dashboard');
-  });
+      expect(canActivate).toEqual(false);
+      expect(currentUserService.resetUser).toHaveBeenCalled();
+    });
 
-  it('should not activate any component for not logged-in user', () => {
-    localStorage.removeItem('auth_token'); // -> not logged-in user
+    it('should route from any component to login for not logged-in user', () => {
+      localStorage.removeItem('auth_token'); // -> not logged-in user
 
-    const canActivate = guard.canActivate({
-      routeConfig: {
-        path: 'dashboard'
-      }
-    } as ActivatedRouteSnapshot, {} as RouterStateSnapshot);
+      guard.canActivate({
+        routeConfig: {
+          path: 'dashboard'
+        }
+      } as ActivatedRouteSnapshot, {} as RouterStateSnapshot);
 
-    expect(canActivate).toBeFalse();
-  });
-
-  it('should route from any component to login for not logged-in user', () => {
-    const routerSpy = spyOn(mockRouter, 'navigateByUrl');
-
-    localStorage.removeItem('auth_token'); // -> not logged-in user
-
-    guard.canActivate({
-      routeConfig: {
-        path: 'dashboard'
-      }
-    } as ActivatedRouteSnapshot, {} as RouterStateSnapshot);
-
-    expect(routerSpy).toHaveBeenCalledWith('/');
-  });
-
-  it('should activate any component for logged-in user', () => {
-    const routerSpy = spyOn(mockRouter, 'navigateByUrl');
-    spyOn(authService, 'isAuthenticated').and.returnValue(true);
-
-    localStorage.setItem('auth_token', 'foo'); // -> logged-in user
-
-    const canActivate = guard.canActivate({
-      routeConfig: {
-        path: 'dashboard'
-      }
-    } as ActivatedRouteSnapshot, {} as RouterStateSnapshot);
-
-    expect(canActivate).toBeTrue();
-    expect(routerSpy).not.toHaveBeenCalled();
+      expect(router.navigateByUrl).toHaveBeenCalledWith('/');
+      expect(currentUserService.resetUser).toHaveBeenCalled();
+    });
   });
 });

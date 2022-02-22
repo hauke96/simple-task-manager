@@ -8,18 +8,18 @@ describe(LoginComponent.name, () => {
   let component: LoginComponent;
   let fixture: MockedComponentFixture<LoginComponent>;
   let authService: AuthService;
-  let routerMock: Router;
+  let router: Router;
 
   beforeEach(() => {
-    routerMock = {} as Router;
-    routerMock.navigate = jest.fn();
+    router = {} as Router;
+    router.navigate = jest.fn();
 
     authService = {} as AuthService;
 
     return MockBuilder(LoginComponent, AppModule)
       .provide({
         provide: Router,
-        useFactory: () => routerMock
+        useFactory: () => router
       })
       .provide({
         provide: AuthService,
@@ -41,10 +41,10 @@ describe(LoginComponent.name, () => {
 
   it('should redirect user to dashboard after login', () => {
     authService.requestLogin = (fn) => fn();
-    routerMock.navigate = jest.fn();
+    router.navigate = jest.fn();
 
     component.onLoginButtonClick();
 
-    expect(routerMock.navigate).toHaveBeenCalledWith(['/dashboard']);
+    expect(router.navigate).toHaveBeenCalledWith(['/dashboard']);
   });
 });

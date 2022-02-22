@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { WebsocketClientService } from '../../common/services/websocket-client.service';
@@ -8,16 +8,13 @@ import { WebsocketClientService } from '../../common/services/websocket-client.s
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
   constructor(
     private router: Router,
     private ngZone: NgZone,
     private authService: AuthService,
     private websocketClientService: WebsocketClientService
   ) {
-  }
-
-  ngOnInit(): void {
   }
 
   public onLoginButtonClick(): void {

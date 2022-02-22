@@ -1,20 +1,48 @@
-import { TestBed } from '@angular/core/testing';
-
 import { LoggedInInterceptor } from './logged-in.interceptor';
-import { RouterTestingModule } from '@angular/router/testing';
+import { AuthService } from './auth.service';
+import { NotificationService } from '../common/services/notification.service';
+import { HttpRequest } from '@angular/common/http';
+import { environment } from '../../environments/environment';
+import { of } from 'rxjs';
 
-describe('LoggedInInterceptor', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    providers: [
-      LoggedInInterceptor
-    ],
-    imports: [
-      RouterTestingModule.withRoutes([])
-    ]
-  }));
+describe(LoggedInInterceptor.name, () => {
+  let interceptor: LoggedInInterceptor;
+  let authService: AuthService;
+  let notificationService: NotificationService;
 
-  it('should be created', () => {
-    const interceptor: LoggedInInterceptor = TestBed.inject(LoggedInInterceptor);
-    expect(interceptor).toBeTruthy();
+  beforeEach(() => {
+    authService = {} as AuthService;
+    notificationService = {} as NotificationService;
+
+    interceptor = new LoggedInInterceptor(authService, notificationService);
+  });
+
+  it('should call next handler on unauthenticated URLs', () => {
+    const nextHandler = {
+      handle: jest.fn()
+    };
+
+    const request = {url: 'https://foo.com/bar'} as HttpRequest<any>;
+
+    interceptor.intercept(request, nextHandler);
+
+    expect(nextHandler.handle).toHaveBeenCalledWith(request);
+  });
+
+  it('should add authentication token to request', () => {
+    const authToken = 'FOO_BAR';
+    localStorage.setItem('auth_token', authToken);
+
+    const nextHandler = {
+      handle: jest.fn().mockReturnValue(of())
+    };
+
+    const request = {url: environment.base_url + '/foo/bar'} as HttpRequest<any>;
+    request.clone = jest.fn().mockReturnValue(request);
+
+    interceptor.intercept(request, nextHandler);
+
+    expect(request.clone).toHaveBeenCalled();
+    expect(nextHandler.handle).toHaveBeenCalled();
   });
 });
