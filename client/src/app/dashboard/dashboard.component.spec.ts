@@ -1,35 +1,28 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-
 import { DashboardComponent } from './dashboard.component';
-import { RouterTestingModule } from '@angular/router/testing';
 import { CurrentUserService } from '../user/current-user.service';
 import { AuthService } from '../auth/auth.service';
-import { NotificationService } from '../common/services/notification.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
+import { AppModule } from '../app.module';
 
 describe(DashboardComponent.name, () => {
   let component: DashboardComponent;
-  let fixture: ComponentFixture<DashboardComponent>;
+  let fixture: MockedComponentFixture<DashboardComponent>;
   let currentUserService: CurrentUserService;
   let authService: AuthService;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [DashboardComponent],
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule.withRoutes([])
-      ]
-    })
-      .compileComponents();
+  beforeEach(() => {
+    currentUserService = {} as CurrentUserService;
+    currentUserService.getUserName = jest.fn();
+    authService = {} as AuthService;
 
-    currentUserService = TestBed.inject(CurrentUserService);
-    authService = TestBed.inject(AuthService);
-  }));
+    return MockBuilder(DashboardComponent, AppModule)
+      .provide({provide: CurrentUserService, useFactory: () => currentUserService})
+      .provide({provide: AuthService, useFactory: () => authService});
+  });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DashboardComponent);
-    component = fixture.componentInstance;
+    fixture = MockRender(DashboardComponent);
+    component = fixture.point.componentInstance;
     fixture.detectChanges();
   });
 
@@ -41,16 +34,16 @@ describe(DashboardComponent.name, () => {
     localStorage.removeItem('auth_token');
     expect(component.userName).toBeFalsy();
 
-    spyOn(currentUserService, 'getUserName').and.returnValue('test-user');
+    currentUserService.getUserName = jest.fn().mockReturnValue('test-user');
 
     expect(component.userName).toEqual('test-user');
   });
 
   it('should logout correctly', () => {
-    const spy = spyOn(authService, 'logout');
+    authService.logout = jest.fn();
 
     component.onLogoutClicked();
 
-    expect(spy).toHaveBeenCalled();
+    expect(authService.logout).toHaveBeenCalled();
   });
 });
