@@ -8,6 +8,9 @@ server/test.log
 # Migration files
 server/database/.tmp.*
 
+# Client caches and stuff
+client/.angular/
+
 # IDE stuff
 **.idea
 

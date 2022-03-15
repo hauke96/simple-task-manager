@@ -19,7 +19,8 @@
           "ja": "src/locale/messages.ja.xlf",
           "de": "src/locale/messages.de.xlf",
           "zh-CN": "src/locale/messages.zh-CN.xlf",
-          "fr": "src/locale/messages.fr.xlf"
+          "fr": "src/locale/messages.fr.xlf",
+          "es": "src/locale/messages.es.xlf"
         }
       },
       "architect": {
@@ -93,6 +94,11 @@
                 "fr"
               ]
             },
+            "es": {
+              "localize": [
+                "es"
+              ]
+            },
             "production": {
               "fileReplacements": [
                 {
@@ -153,6 +159,9 @@
             },
             "fr-FR": {
               "browserTarget": "simple-task-manager:build:fr-FR"
+            },
+            "es-ES": {
+              "browserTarget": "simple-task-manager:build:es-ES"
             },
             "dev": {
               "browserTarget": "simple-task-manager:build:dev"

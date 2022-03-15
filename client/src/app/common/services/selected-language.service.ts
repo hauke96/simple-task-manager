@@ -34,6 +34,7 @@ export class SelectedLanguageService {
       new Language('ja', '日本語'),
       new Language('zh-CN', '中文'),
       new Language('fr', 'Français'),
+      new Language('es', 'Español'),
     ];
   }
 
