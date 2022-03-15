@@ -1,13 +1,11 @@
-import { TestBed } from '@angular/core/testing';
 import { ConfigProvider } from './config.provider';
 import { Config } from './config';
 
-describe('ConfigProvider', () => {
+describe(ConfigProvider.name, () => {
   let provider: ConfigProvider;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    provider = TestBed.inject(ConfigProvider);
+    provider = new ConfigProvider();
   });
 
   it('should be created', () => {
