@@ -13,6 +13,7 @@ client/.angular/
 
 # IDE stuff
 **.idea
+client/.run
 
 # Docker stuff
 postgres-data
