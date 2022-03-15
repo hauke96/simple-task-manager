@@ -1,7 +1,7 @@
 import { MaxValidatorDirective } from './max-validator.directive';
 import { FormControl } from '@angular/forms';
 
-describe('MaxValidatorDirective', () => {
+describe(MaxValidatorDirective.name, () => {
   it('should create an instance', () => {
     const directive = new MaxValidatorDirective();
     expect(directive).toBeTruthy();

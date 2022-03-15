@@ -1,7 +1,4 @@
-import { TestBed } from '@angular/core/testing';
-
 import { UserService } from './user.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { User } from './user.material';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
@@ -103,19 +100,14 @@ const invalidComments = `
 </osm>
 `;
 
-describe('UserService', () => {
+describe(UserService.name, () => {
   let service: UserService;
   let userMap: Map<string, User>;
   let httpClient: HttpClient;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule
-      ]
-    });
-    httpClient = TestBed.inject(HttpClient);
-    service = TestBed.inject(UserService);
+    httpClient = {} as HttpClient;
+    service = new UserService(httpClient);
   });
 
   it('should be created', () => {
@@ -138,23 +130,24 @@ describe('UserService', () => {
   it('should get uncached user by name', () => {
     fillCacheWithDummyData();
 
-    service.getUserByName('test5').subscribe(
-      user => {
-        // @ts-ignore
-        expect(user).toEqual(undefined);
-      },
-      () => fail());
-
     service.getUserByName('test2').subscribe(
       user => {
         // @ts-ignore
         expect(user).toEqual(userMap.get('2'));
       },
       () => fail());
+
+    httpClient.get = jest.fn().mockReturnValue(of(changesets));
+    service.getUserByName('test5').subscribe(
+      user => {
+        // @ts-ignore
+        expect(user).toEqual(undefined);
+      },
+      () => fail());
   });
 
   it('should parse user list to get users by ID correctly', () => {
-    spyOn(httpClient, 'get').and.returnValue(of(userList));
+    httpClient.get = jest.fn().mockReturnValue(of(userList));
 
     service.getUsersByIds(['1', '2']).subscribe(
       u => {
@@ -175,7 +168,7 @@ describe('UserService', () => {
   });
 
   it('should use cache on hit', () => {
-    const httpSpy = spyOn(httpClient, 'get').and.callThrough();
+    httpClient.get = jest.fn();
 
     fillCacheWithDummyData();
 
@@ -189,7 +182,7 @@ describe('UserService', () => {
         expect(service.cache.has(u[1].uid));
         expect(service.cache.get('1')).toEqual(u[0]);
         expect(service.cache.get('2')).toEqual(u[1]);
-        expect(httpSpy).not.toHaveBeenCalled();
+        expect(httpClient.get).not.toHaveBeenCalled();
       },
       e => {
         console.error(e);
@@ -198,7 +191,7 @@ describe('UserService', () => {
   });
 
   it('should find UID via changesets by given name correctly', () => {
-    spyOn(httpClient, 'get').and.returnValue(of(changesets));
+    httpClient.get = jest.fn().mockReturnValue(of(changesets));
 
     service.getUserByName('foo').subscribe(user => {
         expect(user).toBeTruthy();
@@ -215,7 +208,7 @@ describe('UserService', () => {
 
   it('should find UID via comments by given name correctly', () => {
     // @ts-ignore
-    spyOn(httpClient, 'get').and.callFake((url: string, options: {}) => {
+    httpClient.get = jest.fn().mockImplementation((url: string, options: {}) => {
       if (url.includes('notes')) {
         return of(comments);
       }
@@ -236,7 +229,7 @@ describe('UserService', () => {
   });
 
   it('should return error when user not found', () => {
-    spyOn(httpClient, 'get').and.returnValue(of('Not found'));
+    httpClient.get = jest.fn().mockReturnValue(of('Not found'));
 
     service.getUserByName('foo').subscribe(
       () => fail(),
@@ -248,7 +241,7 @@ describe('UserService', () => {
 
   it('should return error on invalid comment XML', () => {
     // @ts-ignore
-    spyOn(httpClient, 'get').and.callFake((url: string, options: {}) => {
+    httpClient.get = jest.fn().mockImplementation((url: string, options: {}) => {
       if (url.includes('notes')) {
         return of(invalidComments);
       }
@@ -263,7 +256,7 @@ describe('UserService', () => {
     );
   });
 
-  function fillCacheWithDummyData() {
+  function fillCacheWithDummyData(): void {
     userMap = new Map<string, User>();
     userMap.set('1', new User('test1', '1'));
     userMap.set('2', new User('test2', '2'));

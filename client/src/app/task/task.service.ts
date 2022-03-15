@@ -21,7 +21,7 @@ export class TaskService {
   public selectedTaskChanged: EventEmitter<Task> = new EventEmitter();
   public tasksUpdated: EventEmitter<Task[]> = new EventEmitter();
 
-  private selectedTask: Task;
+  private selectedTask: Task | undefined;
   private format: FeatureFormat = new GeoJSON();
 
   constructor(
@@ -35,7 +35,7 @@ export class TaskService {
     this.tasksUpdated.emit(tasks);
 
     if (this.selectedTask) {
-      const updatedSelectedTask = tasks.filter(t => t.id === this.selectedTask.id);
+      const updatedSelectedTask = tasks.filter(t => t.id === this.selectedTask?.id);
       if (updatedSelectedTask.length !== 0) {
         this.selectedTaskChanged.emit(updatedSelectedTask[0]);
       }
@@ -47,7 +47,7 @@ export class TaskService {
     this.selectedTaskChanged.emit(task);
   }
 
-  public getSelectedTask(): Task {
+  public getSelectedTask(): Task | undefined {
     return this.selectedTask;
   }
 
@@ -64,7 +64,7 @@ export class TaskService {
   }
 
   public setProcessPoints(taskId: string, newProcessPoints: number): Observable<Task> {
-    if (taskId !== this.selectedTask.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
+    if (taskId !== this.selectedTask?.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
       return throwError('Task with id \'' + taskId + '\' not selected');
     }
 
@@ -77,7 +77,7 @@ export class TaskService {
   }
 
   public assign(taskId: string): Observable<Task> {
-    if (taskId !== this.selectedTask.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
+    if (taskId !== this.selectedTask?.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
       return throwError('Task with id \'' + taskId + '\' not selected');
     }
 
@@ -90,7 +90,7 @@ export class TaskService {
   }
 
   public unassign(taskId: string): Observable<Task> {
-    if (taskId !== this.selectedTask.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
+    if (taskId !== this.selectedTask?.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
       return throwError('Task with id \'' + taskId + '\' not selected');
     }
 

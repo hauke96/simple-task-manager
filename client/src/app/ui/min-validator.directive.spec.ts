@@ -1,7 +1,7 @@
 import { MinValidatorDirective } from './min-validator.directive';
 import { FormControl } from '@angular/forms';
 
-describe('MinValidatorDirective', () => {
+describe(MinValidatorDirective.name, () => {
   it('should create an instance', () => {
     const directive = new MinValidatorDirective();
     expect(directive).toBeTruthy();
@@ -15,7 +15,6 @@ describe('MinValidatorDirective', () => {
     expect(directive.validate({value: 101} as FormControl)).toEqual(null);
     expect(directive.validate({value: '100'} as FormControl)).toEqual(null);
     expect(directive.validate({value: ' 100 '} as FormControl)).toEqual(null);
-
   });
 
   it('should work on invalid values', () => {

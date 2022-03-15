@@ -12,11 +12,11 @@ export class CurrentUserService {
   constructor() {
   }
 
-  public setUser(userName: string, uid: string) {
+  public setUser(userName: string, uid: string): void {
     this.currentUser = new User(userName, uid);
   }
 
-  public resetUser() {
+  public resetUser(): void {
     this.currentUser = undefined;
   }
 

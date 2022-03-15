@@ -22,7 +22,7 @@ export class LanguageSelectionComponent implements OnInit {
     return this.selectedLanguageService.getSelectedLanguage();
   }
 
-  onLanguageChange(event: any) {
+  onLanguageChange(event: any): void {
     this.selectedLanguageService.selectLanguageByCode(event.target.value);
   }
 }

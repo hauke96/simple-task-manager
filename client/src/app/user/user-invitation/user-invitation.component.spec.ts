@@ -7,30 +7,27 @@ import { NotificationService } from '../../common/services/notification.service'
 import { of, throwError } from 'rxjs';
 import { UserService } from '../user.service';
 import { User } from '../user.material';
+import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
 
-describe('UserInvitationComponent', () => {
+describe(UserInvitationComponent.name, () => {
   let component: UserInvitationComponent;
-  let fixture: ComponentFixture<UserInvitationComponent>;
+  let fixture: MockedComponentFixture<UserInvitationComponent>;
   let notificationService: NotificationService;
   let userService: UserService;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [UserInvitationComponent],
-      imports: [
-        HttpClientTestingModule,
-        FormsModule
-      ]
-    })
-      .compileComponents();
+  beforeEach(() => {
+    notificationService = {} as NotificationService;
+    userService = {} as UserService;
 
-    notificationService = TestBed.inject(NotificationService);
-    userService = TestBed.inject(UserService);
-  }));
+    return MockBuilder(UserInvitationComponent, AppModule)
+      .provide({provide: UserService, useFactory: () => userService})
+      .provide({provide: NotificationService, useFactory: () => notificationService});
+  });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(UserInvitationComponent);
-    component = fixture.componentInstance;
+    fixture = MockRender(UserInvitationComponent);
+    component = fixture.point.componentInstance;
     component.users = [];
     fixture.detectChanges();
   });
@@ -40,44 +37,59 @@ describe('UserInvitationComponent', () => {
   });
 
   it('should fire event correctly', () => {
+    // Arrange
     const user = new User('test-user', '123');
 
-    const inviteUserSpy = spyOn(component.userInvited, 'emit').and.callThrough();
-    spyOn(userService, 'getUserByName').and.returnValue(of(user));
+    const inviteUserSpy = jest.fn();
+    component.userInvited.subscribe(inviteUserSpy);
+    userService.getUserByName = jest.fn().mockReturnValue(of(user));
 
     component.enteredUserName = 'test-user';
 
+    // Act
     component.onInvitationButtonClicked();
 
+    // Assert
     expect(inviteUserSpy).toHaveBeenCalledWith(user);
   });
 
   it('should show error message on user service error', () => {
-    const inviteUserSpy = spyOn(component.userInvited, 'emit').and.callThrough();
-    const errorSpy = spyOn(notificationService, 'addError').and.callThrough();
-    spyOn(userService, 'getUserByName').and.returnValue(throwError('BOOM!'));
+    // Arrange
+    const inviteUserSpy = jest.fn();
+    component.userInvited.subscribe(inviteUserSpy);
+    notificationService.addError = jest.fn();
+    userService.getUserByName = jest.fn().mockReturnValue(throwError(() => new Error('BOOM!')));
 
     component.enteredUserName = 'test-user';
 
+    // Act
     component.onInvitationButtonClicked();
 
+    // Assert
     expect(inviteUserSpy).not.toHaveBeenCalled();
-    expect(errorSpy).toHaveBeenCalled();
+    expect(notificationService.addError).toHaveBeenCalled();
   });
 
   it('should so nothing when adding user twice', () => {
-    const inviteUserSpy = spyOn(component.userInvited, 'emit').and.callThrough();
-    const userServiceSpy = spyOn(userService, 'getUserByName').and.callFake((userName: string) => {
+    // Arrange
+    const inviteUserSpy = jest.fn();
+    component.userInvited.subscribe(inviteUserSpy);
+    userService.getUserByName = jest.fn().mockImplementation((userName: string) => {
       const user = new User(userName, userName);
       component.users.push(user);
       return of(user);
     });
+    notificationService.addWarning = jest.fn();
 
     component.enteredUserName = 'test-user';
+
+    // Act
     component.onInvitationButtonClicked();
     component.onInvitationButtonClicked();
 
-    expect(userServiceSpy).toHaveBeenCalledTimes(1);
+    // Assert
     expect(inviteUserSpy).toHaveBeenCalledTimes(1);
+    expect(userService.getUserByName).toHaveBeenCalledTimes(1);
+    expect(notificationService.addWarning).toHaveBeenCalledTimes(1);
   });
 });

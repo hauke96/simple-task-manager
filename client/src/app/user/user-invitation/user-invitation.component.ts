@@ -23,7 +23,7 @@ export class UserInvitationComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  public onInvitationButtonClicked() {
+  public onInvitationButtonClicked(): void {
     if (this.users.map(u => u.name).includes(this.enteredUserName)) {
       this.notificationService.addWarning($localize`:@@WARN_ALREADY_MEMBER:User '${this.enteredUserName}:INTERPOLATION:' is already a member of this project`);
       return;

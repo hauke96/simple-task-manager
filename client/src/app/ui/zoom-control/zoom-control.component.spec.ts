@@ -1,21 +1,18 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ZoomControlComponent } from './zoom-control.component';
+import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
 
-describe('ZoomControlComponent', () => {
+describe(ZoomControlComponent.name, () => {
   let component: ZoomControlComponent;
-  let fixture: ComponentFixture<ZoomControlComponent>;
+  let fixture: MockedComponentFixture<ZoomControlComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ ZoomControlComponent ]
-    })
-    .compileComponents();
+  beforeEach(() => {
+    return MockBuilder(ZoomControlComponent, AppModule);
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ZoomControlComponent);
-    component = fixture.componentInstance;
+    fixture = MockRender(ZoomControlComponent);
+    component = fixture.point.componentInstance;
     fixture.detectChanges();
   });
 
@@ -24,18 +21,20 @@ describe('ZoomControlComponent', () => {
   });
 
   it('should fire zoom in event', () => {
-    const spy = spyOn(component.buttonZoomIn, 'emit');
+    const zoomSpy = jest.fn();
+    component.buttonZoomIn.subscribe(zoomSpy);
 
     component.onButtonZoomIn();
 
-    expect(spy).toHaveBeenCalled();
+    expect(zoomSpy).toHaveBeenCalled();
   });
 
   it('should fire zoom out event', () => {
-    const spy = spyOn(component.buttonZoomOut, 'emit');
+    const zoomSpy = jest.fn();
+    component.buttonZoomOut.subscribe(zoomSpy);
 
     component.onButtonZoomOut();
 
-    expect(spy).toHaveBeenCalled();
+    expect(zoomSpy).toHaveBeenCalled();
   });
 });

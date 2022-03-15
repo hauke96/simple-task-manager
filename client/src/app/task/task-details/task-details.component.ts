@@ -69,9 +69,9 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
     );
   }
 
-  private selectTask(task: Task) {
+  private selectTask(task: Task | undefined): void {
     this.task = task;
-    if (!!this.task) {
+    if (!!task) {
       this.newProcessPoints = task.processPoints;
     }
     this.updateUser();
@@ -81,7 +81,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
     return this.currentUserService.getUserId();
   }
 
-  private updateUser() {
+  private updateUser(): void {
     if (!this.task || !this.task.assignedUser || !this.task.assignedUser.uid) {
       this.assignedUserName = undefined;
       return;
@@ -98,7 +98,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
     );
   }
 
-  public onAssignButtonClicked() {
+  public onAssignButtonClicked(): void {
     if (!this.task) {
       return;
     }
@@ -113,7 +113,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
         });
   }
 
-  public onUnassignButtonClicked() {
+  public onUnassignButtonClicked(): void {
     if (!this.task) {
       return;
     }
@@ -128,7 +128,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
         });
   }
 
-  public onSaveButtonClick() {
+  public onSaveButtonClick(): void {
     if (!this.task) {
       return;
     }
@@ -143,7 +143,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
         });
   }
 
-  public onDoneButtonClick() {
+  public onDoneButtonClick(): void {
     if (!this.task) {
       return;
     }

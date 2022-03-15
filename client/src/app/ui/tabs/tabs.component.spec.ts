@@ -1,24 +1,20 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-
 import { TabsComponent } from './tabs.component';
+import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
 
-describe('TabsComponent', () => {
+describe(TabsComponent.name, () => {
   let component: TabsComponent;
-  let fixture: ComponentFixture<TabsComponent>;
-
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [TabsComponent]
-    })
-      .compileComponents();
-  }));
+  let fixture: MockedComponentFixture<TabsComponent, any>;
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TabsComponent);
-    component = fixture.componentInstance;
+    return MockBuilder(TabsComponent, AppModule);
+  });
 
-    component.tabs = ['Tasks', 'Users'];
-
+  beforeEach(() => {
+    fixture = MockRender(TabsComponent, {
+      tabs: ['tab 1', 'tab 2']
+    });
+    component = fixture.point.componentInstance;
     fixture.detectChanges();
   });
 
@@ -27,13 +23,13 @@ describe('TabsComponent', () => {
   });
 
   it('should select tab correctly', () => {
-    const eventSpy = spyOn(component.tabSelected, 'emit').and.callThrough();
-    component.tabs = ['tab1', 'tab2'];
+    const eventSpy = jest.fn();
+    component.tabSelected.subscribe(eventSpy);
 
-    component.onTabClicked('tab1');
+    component.onTabClicked('tab 1');
     expect(eventSpy).toHaveBeenCalledWith(0);
 
-    component.onTabClicked('tab2');
+    component.onTabClicked('tab 2');
     expect(eventSpy).toHaveBeenCalledWith(1);
   });
 });

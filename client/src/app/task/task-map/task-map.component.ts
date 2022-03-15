@@ -21,7 +21,7 @@ import RenderFeature from 'ol/render/Feature';
 export class TaskMapComponent extends Unsubscriber implements AfterViewInit, OnDestroy {
   @Input() tasks: Task[];
 
-  selectedTask: Task;
+  selectedTask: Task | undefined;
 
   private vectorSource: VectorSource<Geometry>;
   private vectorLayer: VectorLayer<VectorSource<Geometry>>;
@@ -45,8 +45,9 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit, OnD
 
     this.tasks.forEach(t => {
       this.showTaskPolygon(t);
-      this.layerService.fitView(this.vectorSource.getExtent());
     });
+
+    this.layerService.fitView(this.vectorSource.getExtent());
 
     this.unsubscribeLater(
       // react to changed selection and update the map style
@@ -59,7 +60,7 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit, OnD
     this.layerService.addLayer(this.vectorLayer);
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     super.ngOnDestroy();
 
     this.layerService.removeLayer(this.vectorLayer);
@@ -79,7 +80,7 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit, OnD
     }
   }
 
-  private selectTask(task: Task): void {
+  private selectTask(task: Task | undefined): void {
     this.selectedTask = task;
     this.vectorSource.changed();
 
@@ -101,7 +102,7 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit, OnD
   }
 
   private getTaskFeature(): Feature<Geometry> | undefined {
-    return this.vectorSource.getFeatures().find(f => f.get('task_id') === this.selectedTask.id);
+    return this.vectorSource.getFeatures().find(f => f.get('task_id') === this.selectedTask?.id);
   }
 
   public getStyle(feature: FeatureLike): Style {
@@ -163,7 +164,7 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit, OnD
     });
   }
 
-  private showTaskPolygon(task: Task) {
+  private showTaskPolygon(task: Task): void {
     // Without clone(), the tasks geometry would be changes inline.
     const feature = task.geometry.clone();
     feature.getGeometry()?.transform('EPSG:4326', 'EPSG:3857');

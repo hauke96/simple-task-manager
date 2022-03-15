@@ -14,7 +14,7 @@ export class WebsocketClientService {
     this.connect();
   }
 
-  connect() {
+  public connect(): void {
     const authToken = localStorage.getItem('auth_token');
     if (authToken == null || authToken.trim().length === 0) {
       return;
