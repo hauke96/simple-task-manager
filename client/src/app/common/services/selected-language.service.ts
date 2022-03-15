@@ -76,8 +76,8 @@ export class SelectedLanguageService {
     return true;
   }
 
-  private loadUrl(newUrl: string) {
-    location.href = newUrl;
+  private loadUrl(newUrl: string): void {
+    window.location.href = newUrl;
   }
 
   /**

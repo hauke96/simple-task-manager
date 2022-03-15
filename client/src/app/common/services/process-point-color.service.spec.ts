@@ -1,13 +1,10 @@
-import { TestBed } from '@angular/core/testing';
-
 import { ProcessPointColorService } from './process-point-color.service';
 
-describe('ProcessPointColorService', () => {
+describe(ProcessPointColorService.name, () => {
   let service: ProcessPointColorService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(ProcessPointColorService);
+    service = new ProcessPointColorService();
   });
 
   it('should be created', () => {

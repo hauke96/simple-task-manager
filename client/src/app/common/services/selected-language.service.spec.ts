@@ -1,18 +1,11 @@
-import { TestBed } from '@angular/core/testing';
-
 import { SelectedLanguageService } from './selected-language.service';
 import { Language } from '../entities/language';
 
-describe('SelectedLanguageService', () => {
+describe(SelectedLanguageService.name, () => {
   let service: SelectedLanguageService;
-  let spyLoadUrl: jasmine.Spy;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(SelectedLanguageService);
-
-    spyLoadUrl = spyOn<any>(service, 'loadUrl').and.callFake((url: string) => {
-    });
+    service = new SelectedLanguageService();
   });
 
   it('should be created', () => {
@@ -37,12 +30,19 @@ describe('SelectedLanguageService', () => {
 
   it('should triggers a reload on new language', () => {
     // @ts-ignore
+    delete global.window.location;
+    // @ts-ignore
+    global.window.location = {
+      pathname: 'http://localhost/',
+      href: '',
+    };
+    // @ts-ignore
     service.selectedLanguage = new Language('en-US', 'English'); // to see a difference below
 
     service.selectLanguageByCode('de');
 
     expect(service.getSelectedLanguage()?.code).toEqual('de');
-    expect(spyLoadUrl).toHaveBeenCalledWith(location.origin + '/de/');
+    expect(window.location.href).toEqual(location.origin + '/de/');
   });
 
   it('should set default language on unknown code', () => {

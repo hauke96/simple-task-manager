@@ -1,21 +1,16 @@
-import { TestBed } from '@angular/core/testing';
-
 import { ShortcutService } from './shortcut.service';
 import { EventManager } from '@angular/platform-browser';
-import anything = jasmine.anything;
-import { DOCUMENT } from '@angular/common';
 
-describe('ShortcutService', () => {
+describe(ShortcutService.name, () => {
   let service: ShortcutService;
   let eventManager: EventManager;
   let document: any;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(ShortcutService);
+    eventManager = {} as EventManager;
+    document = {} as Document;
 
-    eventManager = TestBed.inject(EventManager);
-    document = TestBed.inject(DOCUMENT);
+    service = new ShortcutService(eventManager, document);
   });
 
   it('should be created', () => {
@@ -23,10 +18,11 @@ describe('ShortcutService', () => {
   });
 
   it('should call event dashboard', () => {
-    const eventManagerSpy = spyOn(eventManager, 'addEventListener').and.returnValue(new Function());
+    eventManager.addEventListener = jest.fn();
 
     service.add('shift.d').subscribe();
 
-    expect(eventManagerSpy).toHaveBeenCalledWith(document.documentElement, 'keydown.shift.d', anything());
+    // @ts-ignore
+    expect(eventManager.addEventListener).toHaveBeenCalledWith(window.document.documentElement, 'keydown.shift.d', expect.any(Function));
   });
 });

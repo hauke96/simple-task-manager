@@ -1,28 +1,19 @@
-import { TestBed } from '@angular/core/testing';
-
 import { LoadingService } from './loading.service';
 import { ReplaySubject } from 'rxjs';
 import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterEvent } from '@angular/router';
-import { MockRouter } from '../mock-router';
 
-describe('LoadingService', () => {
-  let service: LoadingService;
-
+describe(LoadingService.name, () => {
   const routerEventSubject = new ReplaySubject<RouterEvent>();
 
-  const mockRouter = new MockRouter();
-  mockRouter.events = routerEventSubject.asObservable();
+  let service: LoadingService;
+  let router: Router;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [
-        {
-          provide: Router,
-          useValue: mockRouter
-        }
-      ]
-    });
-    service = TestBed.inject(LoadingService);
+    router = {
+      events: routerEventSubject.asObservable()
+    } as Router;
+
+    service = new LoadingService(router);
   });
 
   it('should be created', () => {
@@ -31,15 +22,15 @@ describe('LoadingService', () => {
 
   it('should set loading state correctly', () => {
     service.start();
-    expect(service.isLoading()).toBeTrue();
+    expect(service.isLoading()).toEqual(true);
 
     service.end();
-    expect(service.isLoading()).toBeFalse();
+    expect(service.isLoading()).toEqual(false);
   });
 
   it('should start loading on routing start event', () => {
     routerEventSubject.next(new NavigationStart(1, '/foo/bar'));
-    expect(service.isLoading()).toBeTrue();
+    expect(service.isLoading()).toEqual(true);
   });
 
   describe('navigation end events', () => {
@@ -49,17 +40,17 @@ describe('LoadingService', () => {
 
     it('should end loading on navigation error', () => {
       routerEventSubject.next(new NavigationError(1, '/foo/bar', 'some error'));
-      expect(service.isLoading()).toBeFalse();
+      expect(service.isLoading()).toEqual(false);
     });
 
     it('should end loading on navigation cancellation', () => {
       routerEventSubject.next(new NavigationCancel(1, '/foo/bar', 'some error'));
-      expect(service.isLoading()).toBeFalse();
+      expect(service.isLoading()).toEqual(false);
     });
 
     it('should end loading on navigation end', () => {
       routerEventSubject.next(new NavigationEnd(1, '/foo/bar', '/some/other/url'));
-      expect(service.isLoading()).toBeFalse();
+      expect(service.isLoading()).toEqual(false);
     });
   });
 });

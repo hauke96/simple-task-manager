@@ -1,5 +1,3 @@
-import { TestBed } from '@angular/core/testing';
-
 import { GeometryService } from './geometry.service';
 import { GeometryCollection, LineString, Polygon } from 'ol/geom';
 import { Feature } from 'ol';
@@ -8,12 +6,11 @@ import { Feature } from 'ol';
  * This service is also tested via the tests of the shape-creation components (mainly the "shape-upload" component), so we son't have any
  * huge test data here.
  */
-describe('GeometryService', () => {
+describe(GeometryService.name, () => {
   let service: GeometryService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(GeometryService);
+    service = new GeometryService();
   });
 
   it('should be created', () => {
