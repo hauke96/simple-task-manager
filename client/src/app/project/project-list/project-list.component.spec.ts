@@ -1,60 +1,48 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-
 import { ProjectListComponent } from './project-list.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { CurrentUserService } from '../../user/current-user.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MockRouter } from '../../common/mock-router';
 import { Task, TestTaskFeature } from '../../task/task.material';
 import { User } from '../../user/user.material';
 import { Project } from '../project.material';
-import { WebsocketClientService } from '../../common/services/websocket-client.service';
-import { WebsocketMessage, WebsocketMessageType } from '../../common/entities/websocket-message';
 import { ProjectService } from '../project.service';
 import { of } from 'rxjs';
 import { NotificationService } from '../../common/services/notification.service';
+import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
+import { EventEmitter } from '@angular/core';
+import { AppModule } from '../../app.module';
 
-describe('ProjectListComponent', () => {
+describe(ProjectListComponent.name, () => {
   let component: ProjectListComponent;
-  let fixture: ComponentFixture<ProjectListComponent>;
-  let routerMock: MockRouter;
+  let fixture: MockedComponentFixture<ProjectListComponent>;
+  let router: Router;
   let currentUserService: CurrentUserService;
   let projectService: ProjectService;
   let notificationService: NotificationService;
-  let websocketService: WebsocketClientService;
-
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ProjectListComponent],
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule.withRoutes([])
-      ],
-      providers: [
-        CurrentUserService,
-        {
-          provide: Router,
-          useClass: MockRouter
-        },
-        {
-          provide: ActivatedRoute,
-          useValue: {snapshot: {data: {projects: []}}}
-        }
-      ]
-    })
-      .compileComponents();
-
-    routerMock = TestBed.inject(Router);
-    currentUserService = TestBed.inject(CurrentUserService);
-    projectService = TestBed.inject(ProjectService);
-    notificationService = TestBed.inject(NotificationService);
-    websocketService = TestBed.inject(WebsocketClientService);
-  }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ProjectListComponent);
-    component = fixture.componentInstance;
+    currentUserService = {} as CurrentUserService;
+    projectService = {
+      projectAdded: new EventEmitter<Project>(),
+      projectChanged: new EventEmitter<Project>(),
+      projectDeleted: new EventEmitter<string>(),
+      projectUserRemoved: new EventEmitter<string>(),
+    } as ProjectService;
+    router = {} as Router;
+    notificationService = {} as NotificationService;
+
+    const activatedRoute = {snapshot: {data: {projects: []}}} as unknown as ActivatedRoute;
+
+    return MockBuilder(ProjectListComponent, AppModule)
+      .provide({provide: ProjectService, useFactory: () => projectService})
+      .provide({provide: Router, useFactory: () => router})
+      .provide({provide: ActivatedRoute, useFactory: () => activatedRoute})
+      .provide({provide: CurrentUserService, useFactory: () => currentUserService})
+      .provide({provide: NotificationService, useFactory: () => notificationService});
+  });
+
+  beforeEach(() => {
+    fixture = MockRender(ProjectListComponent);
+    component = fixture.point.componentInstance;
     fixture.detectChanges();
   });
 
@@ -63,15 +51,15 @@ describe('ProjectListComponent', () => {
   });
 
   it('should navigate on click', () => {
-    const spy = spyOn(routerMock, 'navigate');
+    router.navigate = jest.fn();
 
     component.onProjectListItemClicked('123');
 
-    expect(spy).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalled();
   });
 
   it('should get current user correctly', () => {
-    spyOn(currentUserService, 'getUserId').and.returnValue('12345');
+    currentUserService.getUserId = jest.fn().mockReturnValue('12345');
 
     expect(component.currentUserId).toEqual('12345');
   });
@@ -82,13 +70,10 @@ describe('ProjectListComponent', () => {
     const p = createProject();
     p.id = '123456';
     p.name = 'flubby';
-    spyOn(projectService, 'getProject').and.returnValue(of(p));
+    projectService.getProject = jest.fn().mockReturnValue(of(p));
 
     // Trigger all needed events
-    websocketService.messageReceived.emit(new WebsocketMessage(
-      WebsocketMessageType.MessageType_ProjectAdded,
-      p.id
-    ));
+    projectService.projectAdded.next(p);
 
     expect(component.projects).toContain(p);
   });
@@ -103,13 +88,10 @@ describe('ProjectListComponent', () => {
     p.name = component.projects[0].name;
     p.users = component.projects[0].users;
     p.users.push(new User('Foo', '1234'));
-    spyOn(projectService, 'getProject').and.returnValue(of(p));
+    projectService.getProject = jest.fn().mockReturnValue(of(p));
 
     // Trigger all needed events
-    websocketService.messageReceived.emit(new WebsocketMessage(
-      WebsocketMessageType.MessageType_ProjectUpdated,
-      p.id
-    ));
+    projectService.projectChanged.next(p);
 
     expect(component.projects.length).toEqual(1);
     expect(component.projects[0].users).toEqual(p.users);
@@ -119,13 +101,10 @@ describe('ProjectListComponent', () => {
     component.projects = [];
 
     const p = createProject();
-    spyOn(projectService, 'getProject').and.returnValue(of(p));
+    projectService.getProject = jest.fn().mockReturnValue(of(p));
 
     // Trigger all needed events
-    websocketService.messageReceived.emit(new WebsocketMessage(
-      WebsocketMessageType.MessageType_ProjectUpdated,
-      p.id
-    ));
+    projectService.projectChanged.next(p);
 
     expect(component.projects).toContain(p);
   });
@@ -135,51 +114,42 @@ describe('ProjectListComponent', () => {
 
     const p = createProject();
     p.name = 'flubby';
-    spyOn(projectService, 'getProject').and.returnValue(of(p));
+    projectService.getProject = jest.fn().mockReturnValue(of(p));
 
     // Trigger all needed events
-    websocketService.messageReceived.emit(new WebsocketMessage(
-      WebsocketMessageType.MessageType_ProjectUpdated,
-      p.id
-    ));
+    projectService.projectChanged.next(p);
 
     expect(component.projects[0]).toEqual(p);
   });
 
   it('should remove project from list', () => {
-    const spyNotification = spyOn(notificationService, 'addInfo');
+    notificationService.addInfo = jest.fn();
 
     const p = createProject();
     component.projects = [p];
 
     // Trigger all needed events
-    websocketService.messageReceived.emit(new WebsocketMessage(
-      WebsocketMessageType.MessageType_ProjectDeleted,
-      p.id
-    ));
+    projectService.projectDeleted.next(p.id);
 
     expect(component.projects.length).toEqual(0);
-    expect(spyNotification).toHaveBeenCalled();
+    expect(notificationService.addInfo).toHaveBeenCalled();
   });
 
   it('should do nothing on remove event of unknown project', () => {
-    const spyNotification = spyOn(notificationService, 'addInfo');
+    notificationService.addInfo = jest.fn();
 
     const p = createProject();
     component.projects = [p];
 
     // Trigger all needed events
-    websocketService.messageReceived.emit(new WebsocketMessage(
-      WebsocketMessageType.MessageType_ProjectDeleted,
-      '283745237654'
-    ));
+    projectService.projectDeleted.next('283745237654');
 
     expect(component.projects).toEqual([p]);
-    expect(spyNotification).not.toHaveBeenCalled();
+    expect(notificationService.addInfo).not.toHaveBeenCalled();
   });
 
   it('should update projects on user-remove event', () => {
-    const spyNotification = spyOn(notificationService, 'addInfo');
+    notificationService.addInfo = jest.fn();
 
     const p = createProject();
     const p2 = createProject();
@@ -187,29 +157,23 @@ describe('ProjectListComponent', () => {
     component.projects = [p, p2];
 
     // Trigger all needed events
-    websocketService.messageReceived.emit(new WebsocketMessage(
-      WebsocketMessageType.MessageType_ProjectUserRemoved,
-      p2.id
-    ));
+    projectService.projectUserRemoved.next(p2.id);
 
     expect(component.projects).toEqual([p]);
-    expect(spyNotification).toHaveBeenCalled();
+    expect(notificationService.addInfo).toHaveBeenCalled();
   });
 
   it('should do nothing on user-remove event of unknown project', () => {
-    const spyNotification = spyOn(notificationService, 'addInfo');
+    notificationService.addInfo = jest.fn();
 
     const p = createProject();
     component.projects = [p];
 
     // Trigger all needed events
-    websocketService.messageReceived.emit(new WebsocketMessage(
-      WebsocketMessageType.MessageType_ProjectUserRemoved,
-      '283745237654'
-    ));
+    projectService.projectUserRemoved.next('283745237654');
 
     expect(component.projects).toEqual([p]);
-    expect(spyNotification).not.toHaveBeenCalled();
+    expect(notificationService.addInfo).not.toHaveBeenCalled();
   });
 
   function createProject(): Project {

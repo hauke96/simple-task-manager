@@ -4,46 +4,46 @@ import { ProjectSettingsComponent } from './project-settings.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ProjectService } from '../project.service';
 import { of, throwError } from 'rxjs';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MockRouter } from '../../common/mock-router';
 import { CurrentUserService } from '../../user/current-user.service';
 import { User } from '../../user/user.material';
 import { FormsModule } from '@angular/forms';
+import { EventEmitter } from '@angular/core';
+import { Project } from '../project.material';
+import { MockBuilder } from 'ng-mocks';
+import { ProjectListComponent } from '../project-list/project-list.component';
+import { AppModule } from '../../app.module';
+import { NotificationService } from '../../common/services/notification.service';
 
 describe('ProjectSettingsComponent', () => {
   let component: ProjectSettingsComponent;
   let fixture: ComponentFixture<ProjectSettingsComponent>;
   let projectService: ProjectService;
-  let routerMock: MockRouter;
+  let router: Router;
   let currentUserService: CurrentUserService;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ProjectSettingsComponent],
-      imports: [
-        HttpClientTestingModule,
-        FormsModule
-      ],
-      providers: [
-        ProjectService,
-        {
-          provide: Router,
-          useClass: MockRouter
-        }
-      ]
-    })
-      .compileComponents();
+  beforeEach(() => {
+    currentUserService = {} as CurrentUserService;
+    projectService = {
+      projectAdded: new EventEmitter<Project>(),
+      projectChanged: new EventEmitter<Project>(),
+      projectDeleted: new EventEmitter<string>(),
+      projectUserRemoved: new EventEmitter<string>(),
+    } as ProjectService;
+    router = {} as Router;
 
-    projectService = TestBed.inject(ProjectService);
-    routerMock = TestBed.inject(Router);
-    currentUserService = TestBed.inject(CurrentUserService);
-  }));
+    return MockBuilder(ProjectListComponent, AppModule)
+      .provide({provide: ProjectService, useFactory: () => projectService})
+      .provide({provide: Router, useFactory: () => router})
+      .provide({provide: CurrentUserService, useFactory: () => currentUserService});
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ProjectSettingsComponent);
     component = fixture.componentInstance;
     component.projectOwner = new User('test user', '123');
-    spyOn(currentUserService, 'getUserId').and.returnValue('123');
+    currentUserService.getUserId = jest.fn().mockReturnValue('123');
     fixture.detectChanges();
   });
 
@@ -69,28 +69,28 @@ describe('ProjectSettingsComponent', () => {
   //
 
   it('should request confirmation on delete', () => {
-    const spy = spyOn(routerMock, 'navigate');
+    router.navigate = jest.fn();
     component.onDeleteButtonClicked();
 
-    expect(spy).not.toHaveBeenCalled();
+    expect(router.navigate).not.toHaveBeenCalled();
     expect(component.requestConfirmation).toEqual(true);
   });
 
   it('should request confirmation on leave', () => {
-    const spy = spyOn(routerMock, 'navigate');
+    router.navigate = jest.fn();
     component.onLeaveProjectClicked();
 
-    expect(spy).not.toHaveBeenCalled();
+    expect(router.navigate).not.toHaveBeenCalled();
     expect(component.requestConfirmation).toEqual(true);
   });
 
   it('should reset request confirmation on no button', () => {
-    const spy = spyOn(routerMock, 'navigate');
+    router.navigate = jest.fn();
     component.requestConfirmation = true;
 
     component.onNoButtonClicked();
 
-    expect(spy).not.toHaveBeenCalled();
+    expect(router.navigate).not.toHaveBeenCalled();
     expect(component.requestConfirmation).toEqual(false);
   });
 
@@ -99,7 +99,7 @@ describe('ProjectSettingsComponent', () => {
   //
 
   it('should remove project on yes button', () => {
-    spyOn(projectService, 'deleteProject').and.callFake((id: string) => {
+    projectService.deleteProject = jest.fn().mockImplementation((id: string) => {
       expect(id).toEqual('1');
       return of({});
     });
@@ -114,7 +114,7 @@ describe('ProjectSettingsComponent', () => {
   });
 
   it('should not navigate on error when removing project', () => {
-    spyOn(projectService, 'deleteProject').and.callFake((id: string) => {
+    projectService.deleteProject = jest.fn().mockImplementation((id: string) => {
       expect(id).toEqual('1');
       return throwError('Test-error');
     });
@@ -133,11 +133,11 @@ describe('ProjectSettingsComponent', () => {
   //
 
   it('should leave project on yes button', () => {
-    spyOn(projectService, 'leaveProject').and.callFake((id: string) => {
+    projectService.leaveProject = jest.fn().mockImplementation((id: string) => {
       expect(id).toEqual('1');
       return of({});
     });
-    spyOn(routerMock, 'navigate').and.callThrough();
+    router.navigate = jest.fn();
     component.projectId = '1';
     // @ts-ignore
     component.action = 'leave';
@@ -145,16 +145,16 @@ describe('ProjectSettingsComponent', () => {
 
     component.onYesButtonClicked();
 
-    expect(routerMock.navigate).toHaveBeenCalledWith(['/dashboard']);
+    expect(router.navigate).toHaveBeenCalledWith(['/dashboard']);
     expect(component.requestConfirmation).toEqual(false);
   });
 
   it('should not navigate on error when leaving project', () => {
-    spyOn(projectService, 'leaveProject').and.callFake((id: string) => {
+    projectService.leaveProject = jest.fn().mockImplementation((id: string) => {
       expect(id).toEqual('1');
       return throwError('Test-error');
     });
-    spyOn(routerMock, 'navigate').and.callThrough();
+    router.navigate = jest.fn();
     component.projectId = '1';
     // @ts-ignore
     component.action = 'leave';
@@ -162,7 +162,7 @@ describe('ProjectSettingsComponent', () => {
 
     component.onYesButtonClicked();
 
-    expect(routerMock.navigate).not.toHaveBeenCalled();
+    expect(router.navigate).not.toHaveBeenCalled();
     expect(component.requestConfirmation).toEqual(false);
   });
 
@@ -171,8 +171,8 @@ describe('ProjectSettingsComponent', () => {
   //
 
   it('should call service on update', () => {
-    const nameSpy = spyOn(projectService, 'updateName').and.returnValue(of());
-    const descriptionSpy = spyOn(projectService, 'updateDescription').and.returnValue(of());
+    projectService.updateName = jest.fn().mockReturnValue(of());
+    projectService.updateDescription = jest.fn().mockReturnValue(of());
 
     component.projectId = '1';
     component.projectName = 'old name';
@@ -182,7 +182,7 @@ describe('ProjectSettingsComponent', () => {
 
     component.onSaveButtonClicked();
 
-    expect(nameSpy).toHaveBeenCalledWith('1', 'foo');
-    expect(descriptionSpy).toHaveBeenCalledWith('1', 'bar');
+    expect(projectService.updateName).toHaveBeenCalledWith('1', 'foo');
+    expect(projectService.updateDescription).toHaveBeenCalledWith('1', 'bar');
   });
 });
