@@ -112,14 +112,14 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
     this.addMapInteractions();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     super.ngOnDestroy();
 
     this.mapLayerService.removeLayer(this.vectorLayer);
     this.mapLayerService.removeLayer(this.previewVectorLayer);
   }
 
-  onMoveEnd(mapCenter: Coordinate | undefined) {
+  onMoveEnd(mapCenter: Coordinate | undefined): void {
     if (mapCenter) {
       this.storeLastLocation(mapCenter);
     }
@@ -136,7 +136,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
     return lastLocation;
   }
 
-  private storeLastLocation(coordinate: Coordinate) {
+  private storeLastLocation(coordinate: Coordinate): void {
     localStorage.setItem('project_creation_map_center', JSON.stringify(coordinate));
   }
 

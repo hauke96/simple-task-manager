@@ -1,15 +1,10 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-
 import { ProjectCreationComponent } from './project-creation.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { FormsModule } from '@angular/forms';
-import { Geometry, Polygon } from 'ol/geom';
+import { Geometry, Point, Polygon } from 'ol/geom';
 import { of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { ProjectService } from '../../project/project.service';
 import { Project } from '../../project/project.material';
 import { Feature } from 'ol';
-import { MockRouter } from '../../common/mock-router';
 import { Task, TaskDraft, TestTaskFeature } from '../../task/task.material';
 import { User } from '../../user/user.material';
 import { SelectEvent } from 'ol/interaction/Select';
@@ -17,44 +12,63 @@ import { DrawEvent } from 'ol/interaction/Draw';
 import { TaskDraftService } from '../task-draft.service';
 import { CurrentUserService } from '../../user/current-user.service';
 import { MapLayerService } from '../../common/services/map-layer.service';
+import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
+import { NotificationService } from '../../common/services/notification.service';
+import { ProjectImportService } from '../project-import.service';
+import { ConfigProvider } from '../../config/config.provider';
+import { EventEmitter } from '@angular/core';
 
-describe('ProjectCreationComponent', () => {
+describe(ProjectCreationComponent.name, () => {
   let component: ProjectCreationComponent;
-  let fixture: ComponentFixture<ProjectCreationComponent>;
+  let fixture: MockedComponentFixture<ProjectCreationComponent, any>;
   let projectService: ProjectService;
   let taskDraftService: TaskDraftService;
-  let routerMock: MockRouter;
+  let router: Router;
   let currentUserService: CurrentUserService;
   let mapLayerService: MapLayerService;
+  let notificationService: NotificationService;
+  let projectImportService: ProjectImportService;
+  let configProvider: ConfigProvider;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [ProjectCreationComponent],
-      imports: [
-        HttpClientTestingModule,
-        FormsModule
-      ],
-      providers: [
-        {
-          provide: Router,
-          useClass: MockRouter
-        }
-      ]
-    })
-      .compileComponents();
+    projectService = {} as ProjectService;
+    projectService.getProjects = jest.fn().mockReturnValue([]);
+    taskDraftService = {} as TaskDraftService;
+    taskDraftService.tasksAdded = new EventEmitter<TaskDraft[]>();
+    taskDraftService.taskChanged = new EventEmitter<TaskDraft>();
+    taskDraftService.taskRemoved = new EventEmitter<string>();
+    taskDraftService.taskSelected = new EventEmitter();
+    taskDraftService.getTasks = jest.fn().mockReturnValue([]);
+    taskDraftService.addTasks = jest.fn();
+    taskDraftService.removeTask = jest.fn();
+    taskDraftService.selectTask = jest.fn();
+    taskDraftService.toTaskDraft = jest.fn();
+    currentUserService = {} as CurrentUserService;
+    router = {} as Router;
+    mapLayerService = {} as MapLayerService;
+    mapLayerService.addLayer = jest.fn();
+    mapLayerService.removeLayer = jest.fn();
+    mapLayerService.addInteraction = jest.fn();
+    notificationService = {} as NotificationService;
+    projectImportService = {} as ProjectImportService;
+    projectImportService.projectPropertiesImported = new EventEmitter();
+    configProvider = {} as ConfigProvider;
 
-    TestBed.overrideProvider(TaskDraftService, {useValue: new TaskDraftService()});
-
-    projectService = TestBed.inject(ProjectService);
-    taskDraftService = TestBed.inject(TaskDraftService);
-    currentUserService = TestBed.inject(CurrentUserService);
-    routerMock = TestBed.inject(Router);
-    mapLayerService = TestBed.inject(MapLayerService);
+    return MockBuilder(ProjectCreationComponent, AppModule)
+      .provide({provide: ProjectService, useFactory: () => projectService})
+      .mock(TaskDraftService, taskDraftService)
+      .provide({provide: CurrentUserService, useFactory: () => currentUserService})
+      .provide({provide: Router, useFactory: () => router})
+      .provide({provide: MapLayerService, useFactory: () => mapLayerService})
+      .provide({provide: NotificationService, useFactory: () => notificationService})
+      .provide({provide: ProjectImportService, useFactory: () => projectImportService})
+      .provide({provide: ConfigProvider, useFactory: () => configProvider});
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ProjectCreationComponent);
-    component = fixture.componentInstance;
+    fixture = MockRender(ProjectCreationComponent);
+    component = fixture.point.componentInstance;
     fixture.detectChanges();
   });
 
@@ -63,8 +77,7 @@ describe('ProjectCreationComponent', () => {
   });
 
   it('should add new tasks to map', () => {
-    // @ts-ignore
-    const spy = spyOn(mapLayerService, 'fitToFeatures');
+    mapLayerService.fitToFeatures = jest.fn();
 
     const tasks = getDummyTasks();
     // @ts-ignore
@@ -75,89 +88,94 @@ describe('ProjectCreationComponent', () => {
 
     // @ts-ignore
     expect(component.vectorSource.getFeatures().length).toEqual(tasks.length);
-    expect(spy).toHaveBeenCalled();
+    expect(mapLayerService.fitToFeatures).toHaveBeenCalled();
   });
 
   it('should return tasks correctly', () => {
-    const spy = spyOn(taskDraftService, 'getTasks');
+    const expectedTaskDrafts = [
+      new TaskDraft('1', 'one', new Point([1, 2]), 0),
+      new TaskDraft('2', 'two', new Point([3, 4]), 10)
+    ];
+    (taskDraftService.getTasks as jest.Mock).mockReturnValue(expectedTaskDrafts);
 
-    const x = component.taskDrafts;
-
-    expect(spy).toHaveBeenCalled();
+    expect(component.taskDrafts).toEqual(expectedTaskDrafts);
   });
 
   it('should correctly create project', () => {
     const name = 'test name';
-
-    spyOn(currentUserService, 'getUserId').and.returnValue('123');
-    const spyService = spyOn(projectService, 'createNewProject').and.returnValue(of(createProject()));
-    const spyRouter = spyOn(routerMock, 'navigate').and.callThrough();
-
     const feature = getDummyFeatures();
+
+    currentUserService.getUserId = jest.fn().mockReturnValue('123');
+    projectService.createNewProject = jest.fn().mockReturnValue(of(createProject()));
+    router.navigate = jest.fn();
 
     component.createProject(name, 100, 'lorem ipsum', feature);
 
-    expect(spyService).toHaveBeenCalled();
-    expect(spyRouter).toHaveBeenCalledWith(['/dashboard']);
+    expect(projectService.createNewProject).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith(['/dashboard']);
   });
 
   it('should not navigate on fail', () => {
     const name = 'test name';
 
-    spyOn(currentUserService, 'getUserId').and.returnValue('123');
-    const spyService = spyOn(projectService, 'createNewProject').and.returnValue(throwError('BOOM'));
-    const spyRouter = spyOn(routerMock, 'navigate').and.callThrough();
+    currentUserService.getUserId = jest.fn().mockReturnValue('123');
+    projectService.createNewProject = jest.fn().mockReturnValue(throwError(() => new Error('BOOM')));
+    router.navigate = jest.fn();
 
     const feature = getDummyFeatures();
 
     component.createProject(name, 100, 'lorem ipsum', feature);
 
-    expect(spyService).toHaveBeenCalled();
-    expect(spyRouter).not.toHaveBeenCalled();
+    expect(projectService.createNewProject).toHaveBeenCalled();
+    expect(router.navigate).not.toHaveBeenCalled();
   });
 
   it('should not create project with missing user ID', () => {
     const name = 'test name';
 
-    spyOn(currentUserService, 'getUserId').and.returnValue(undefined);
-    const spyService = spyOn(projectService, 'createNewProject');
-    const spyRouter = spyOn(routerMock, 'navigate');
+    currentUserService.getUserId = jest.fn().mockReturnValue(undefined);
+    projectService.createNewProject = jest.fn();
+    router.navigate = jest.fn();
 
     const feature = getDummyFeatures();
 
     component.createProject(name, 100, 'lorem ipsum', feature);
 
-    expect(spyService).not.toHaveBeenCalled();
-    expect(spyRouter).not.toHaveBeenCalled();
+    expect(projectService.createNewProject).not.toHaveBeenCalled();
+    expect(router.navigate).not.toHaveBeenCalled();
   });
 
   it('should add uploaded shape correctly', () => {
     // @ts-ignore
-    const vectorSourceClearSpy = spyOn(component.vectorSource, 'clear');
+    component.vectorSource.clear = jest.fn();
     // @ts-ignore
-    const vectorSourceAddSpy = spyOn(component.vectorSource, 'addFeatures');
+    component.vectorSource.addFeatures = jest.fn();
     // @ts-ignore
-    const spy = spyOn(mapLayerService, 'fitToFeatures');
+    mapLayerService.fitToFeatures = jest.fn();
 
     const tasks = getDummyTasks();
     // @ts-ignore
     component.addTasks(tasks);
 
-    expect(vectorSourceClearSpy).not.toHaveBeenCalled();
-    expect((vectorSourceAddSpy.calls.first().args[0] as Feature<Geometry>[])[0].getGeometry()).toEqual(tasks[0].geometry);
-    expect((vectorSourceAddSpy.calls.first().args[0] as Feature<Geometry>[])[1].getGeometry()).toEqual(tasks[1].geometry);
-    expect(spy).toHaveBeenCalled();
+    // @ts-ignore
+    expect(component.vectorSource.clear).not.toHaveBeenCalled();
+    // @ts-ignore
+    const featuresArg = (component.vectorSource.addFeatures as jest.Mock).mock.calls[0][0] as Feature<Geometry>[];
+    expect(featuresArg[0].getGeometry()).toEqual(tasks[0].geometry);
+    expect(featuresArg[1].getGeometry()).toEqual(tasks[1].geometry);
+    expect(mapLayerService.fitToFeatures).toHaveBeenCalled();
   });
 
   it('should create project with all properties', () => {
-    const saveSpy = spyOn(component, 'createProject').and.callFake(() => {
-    });
-
+    const userId = '123';
     const description = 'lorem ipsum';
     const maxProcessPoints = 100;
     const name = 'test project';
     const p = new Polygon([[[0, 0]]]);
     const feature = new Feature(p);
+
+    projectService.createNewProject = jest.fn().mockReturnValue(of({} as Project));
+    currentUserService.getUserId = jest.fn().mockReturnValue(userId);
 
     component.projectProperties.projectDescription = description;
     component.projectProperties.maxProcessPoints = maxProcessPoints;
@@ -167,7 +185,8 @@ describe('ProjectCreationComponent', () => {
 
     component.onSaveButtonClicked();
 
-    expect(saveSpy).toHaveBeenCalledWith(name, maxProcessPoints, description, jasmine.anything());
+    // @ts-ignore
+    expect(projectService.createNewProject).toHaveBeenCalledWith(name, maxProcessPoints, description, expect.anything(), [userId], userId);
   });
 
   it('should deactivate interactions on tab selection', () => {
@@ -182,11 +201,12 @@ describe('ProjectCreationComponent', () => {
   });
 
   it('should fire reset subject on tab select', () => {
-    const spy = spyOn(component.resetToolbarSelectionSubject, 'next');
+    const selectionSpy = jest.fn();
+    component.resetToolbarSelectionSubject.subscribe(selectionSpy);
 
     component.onTabSelected();
 
-    expect(spy).toHaveBeenCalled();
+    expect(selectionSpy).toHaveBeenCalled();
   });
 
   it('should toggle draw and modify interactions correctly', () => {
@@ -241,26 +261,26 @@ describe('ProjectCreationComponent', () => {
   });
 
   it('should add feature on draw interaction', () => {
+    // Arrange
+    const newFeature = new Feature(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]]));
+    const newTaskDraft = new TaskDraft('1', 'one', newFeature.getGeometry() as Geometry, 123);
+    (taskDraftService.toTaskDraft as jest.Mock).mockReturnValue(newTaskDraft);
+
+    // Act
     // @ts-ignore
     component.drawInteraction.dispatchEvent({
       type: 'drawend',
-      feature: new Feature(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]])),
+      feature: newFeature,
       target: undefined,
       preventDefault: undefined,
       stopPropagation: undefined
     } as unknown as DrawEvent);
 
-    // @ts-ignore
-    expect(component.vectorSource.getFeatures().length).toEqual(1);
-    // @ts-ignore
-    expect(component.vectorSource.getFeatures()[0].get('id')).toEqual('0');
-    // @ts-ignore
-    expect(component.vectorSource.getFeatures()[0].get('name')).toEqual('0');
+    // Assert
+    expect(taskDraftService.addTasks).toHaveBeenCalledWith([newTaskDraft], false);
   });
 
   it('should remove feature on remove interaction', () => {
-    const spy = spyOn(taskDraftService, 'removeTask');
-
     const feature = new Feature(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]]));
     feature.set('id', '123');
 
@@ -275,12 +295,10 @@ describe('ProjectCreationComponent', () => {
       mapBrowserEvent: undefined
     } as unknown as SelectEvent);
 
-    expect(spy).toHaveBeenCalledWith('123');
+    expect(taskDraftService.removeTask).toHaveBeenCalledWith('123');
   });
 
   it('should select feature on select interaction', () => {
-    const spySelect = spyOn(taskDraftService, 'selectTask');
-
     const feature = new Feature(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]]));
     feature.set('id', '123');
 
@@ -295,21 +313,21 @@ describe('ProjectCreationComponent', () => {
       mapBrowserEvent: undefined
     } as unknown as SelectEvent);
 
-    expect(spySelect).toHaveBeenCalledWith('123');
+    expect(taskDraftService.selectTask).toHaveBeenCalledWith('123');
   });
 
   it('should remove layers on destroy', () => {
-    const spy = spyOn(mapLayerService, 'removeLayer');
+    mapLayerService.removeLayer = jest.fn();
 
     component.ngOnDestroy();
 
     // @ts-ignore
-    expect(spy).toHaveBeenCalledWith(component.vectorLayer);
+    expect(mapLayerService.removeLayer).toHaveBeenCalledWith(component.vectorLayer);
     // @ts-ignore
-    expect(spy).toHaveBeenCalledWith(component.previewVectorLayer);
+    expect(mapLayerService.removeLayer).toHaveBeenCalledWith(component.previewVectorLayer);
   });
 
-  function expectInteractionsToBeInDefaultState() {
+  function expectInteractionsToBeInDefaultState(): void {
     // @ts-ignore
     expect(component.drawInteraction.getActive()).toEqual(false);
     // @ts-ignore
@@ -322,7 +340,7 @@ describe('ProjectCreationComponent', () => {
     expect(component.selectInteraction.getActive()).toEqual(true);
   }
 
-  function createProject() {
+  function createProject(): Project {
     const t = new Task('567', '', 10, 100, TestTaskFeature);
     const u1 = new User('test-user', '123');
     const u2 = new User('test-user2', '234');
@@ -330,7 +348,7 @@ describe('ProjectCreationComponent', () => {
     return new Project('1', 'test project', 'lorem ipsum', [t], [u1, u2, u3], u1, true, new Date(), 0, 0);
   }
 
-  function getDummyFeatures() {
+  function getDummyFeatures(): Feature<Geometry>[] {
     const feature: Feature<Geometry>[] = [];
     feature.push(new Feature(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]])));
     feature.push(new Feature(new Polygon([[[4000, 4000], [5000, 6000], [6000, 4000], [4000, 4000]]])));
