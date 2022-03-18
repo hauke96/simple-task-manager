@@ -1,8 +1,110 @@
 {
   "title": "SimpleTaskManager",
+  "users": "Users:",
+  "settings": "Settings:",
+  "description": "Description:",
+  "properties": "Properties:",
+  "tasks": "Tasks:",
+  "name": "Name:",
+  "save-button": "Save",
+  "done-button": "Done",
+  "cancel-button": "Cancel",
+  "ok-button": "OK",
+  "meters": "meters",
+  "yes": "Yes",
+  "no": "No",
+  "test-instance-notice": "This is a <b>test instance</b> of the SimpleTaskManager.",
+  "footer": "Version: <a href=\"https://github.com/hauke96/simple-task-manager/releases/tag/v{{version}}\" target=\"_blank\">{{version}}</a><span class=\"sep\"></span>Code: <a href=\"https://github.com/hauke96/simple-task-manager\" target=\"_blank\">GitHub</a><span class=\"sep\"></span>License: <a href=\"https://github.com/hauke96/simple-task-manager/blob/master/LICENSE\" target=\"_blank\">GPLv3</a><span class=\"sep\"></span>Icons: <a href=\"https://linearicons.com\" target=\"_blank\">Linearicons</a>",
   "login": {
     "language-selection": "Language selection:",
     "welcome": "Welcome to SimpleTaskManager for <a href=\"https://openstreetmap.org\">OpenStreetMap</a>",
     "login-button": "Login"
+  },
+  "dashboard": {
+    "welcome": "Welcome {{userName}} :)",
+    "logout-button": "Logout",
+    "create-project": "Create project",
+    "import-project": "Import project"
+  },
+  "project": {
+    "back-button": "Back",
+    "title": "Project:",
+    "creation-date": "Created on:",
+    "description": "Description:"
+  },
+  "project-list": {
+    "projects": "Projects:",
+    "no-project-notice": "You currently don't have any projects.",
+    "you-own-this-project-notice": "* you own this project"
+  },
+  "project-settings": {
+    "delete-button": "Delete project",
+    "really-delete-notice": "Really delete the project?",
+    "leave-button": "Leave project",
+    "really-leave-notice": "Really leave the project?",
+    "export-button": "Export"
+  },
+  "project-creation": {
+    "copy": "Copy:",
+    "copy-notice": "Copy and import an existing project you are a member of.",
+    "no-project-notice": "No projects available!",
+    "available-projects": "Available projects:",
+    "import-button": "Import",
+    "import-heading": "Import:",
+    "import-notice": "Import an existing project from your computer. Existing properties will be overwritten.",
+    "new-polygon": "Draw new polygon",
+    "edit-polygon": "Edit polygon",
+    "remove-polygon": "Remove polygon",
+    "subdivide": "Subdivide:",
+    "upload-project-button": "Upload project",
+    "max-points-notice": "Max. points per task:",
+    "subdivide-notice": "This divides the selected task into smaller tasks of the selected shape and size.",
+    "subdivide-result-too-large-notice": "Result with {{amountTasksAfterDividing}} tasks is too large, only {{maxTasksPerProject}} allowed.",
+    "shape-size": "Shape size:",
+    "shape": "Shape:",
+    "square": "square",
+    "hexagon": "hexagon",
+    "triangle": "triangle",
+    "preview-button": "Preview",
+    "divide-button": "Divide",
+    "url-file-format-notice": "URL to GeoJSON, OSM-XML, GPX, EsriJson, KML or WKT data:",
+    "load-button": "Load",
+    "loading-title": "Loading data from Overpass:",
+    "load-li-1": "Create your query",
+    "load-li-2": "Click on \"Export\"",
+    "load-li-3": "Copy the link after \"raw data directly from\" (right click and \"copy link\")",
+    "load-li-4": "Paste this URL in here",
+    "upload": "Upload:",
+    "upload-notice": "Upload a GeoJSON, OSM-XML, GPX, EsriJson, KML or WKT file, which contains polygons. Each polygon will result in a single task.",
+    "upload-file-button": "Upload file",
+    "no-task-yet-notice": "There are no tasks here yet. Use the pencil-tool to draw tasks or import tasks via the \"Upload\" or \"Remote\" tab."
+  },
+  "task-details": {
+    "title": "Task",
+    "assign-to-me": "Assign to me",
+    "assign-to": "Assign to:",
+    "unassign": "Unassign",
+    "points": "Points:",
+    "open-in-josm-button": "Open in JOSM",
+    "open-in-id-button": "Open in iD"
+  },
+  "task-list": {
+    "you": "(you)"
+  },
+  "notification": {
+    "loading": "Loading ...",
+    "error": "ERROR:",
+    "errors-left": "errors left",
+    "warning": "WARNING:",
+    "warnings-left": "warnings left",
+    "notifications-left": "notifications left"
+  },
+  "zoom-controls": {
+    "zoom-in": "Zoom in",
+    "zoom-out": "Zoom out"
+  },
+  "user": {
+    "invite-button": "Invite",
+    "remove-button": "Remove"
   }
 }

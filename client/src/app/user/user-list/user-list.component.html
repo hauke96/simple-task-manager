@@ -1,6 +1,6 @@
 <div *ngFor="let u of users" class="list-item">
 	<div class="item-content">
 		{{u.name}}
-		<button class="remove-button" *ngIf="canRemove(u.uid)" (click)="onRemoveUserClicked(u.uid)"> Remove</button>
+		<button class="remove-button" *ngIf="canRemove(u.uid)" (click)="onRemoveUserClicked(u.uid)">{{'user.remove-button' | translate}}</button>
 	</div>
 </div>

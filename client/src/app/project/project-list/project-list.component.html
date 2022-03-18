@@ -1,4 +1,4 @@
-<h1 i18n>Projects</h1>
+<h1>{{'project-list.projects' | translate}}</h1>
 <div *ngIf="projects?.length !== 0">
 	<div *ngFor="let p of projects" class="list-item" (click)="onProjectListItemClicked(p.id)">
 		<span class="wrap-label">{{p.name}}</span>
@@ -13,7 +13,7 @@
 </div>
 
 <div *ngIf="projects?.length === 0">
-	<p class="light-label" i18n>You currently don't have any projects.</p>
+	<p class="light-label">{{'projects.no-project-notice' | translate}}</p>
 </div>
 
-<span *ngIf="projects?.length !== 0" class="light-label ownership-notice" i18n>* you own this project</span>
+<span *ngIf="projects?.length !== 0" class="light-label ownership-notice">{{'project-list.you-own-this-project-notice' | translate}}</span>

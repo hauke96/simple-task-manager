@@ -1,3 +1,1 @@
-<div class="center version-label" i18n>
-  Version: <a href="https://github.com/hauke96/simple-task-manager/releases/tag/v{{version}}" target="_blank">{{version}}</a><span class="sep"></span>Code: <a href="https://github.com/hauke96/simple-task-manager" target="_blank">GitHub</a><span class="sep"></span>License: <a href="https://github.com/hauke96/simple-task-manager/blob/master/LICENSE" target="_blank">GPLv3</a><span class="sep"></span>Icons: <a href="https://linearicons.com" target="_blank">Linearicons</a>
-</div>
+<div class="center version-label" [innerHTML]="'footer' | translate: {version: version}"></div>

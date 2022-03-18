@@ -1,9 +1,9 @@
 <div class="form-entry flex-line">
-	<span class="input-field-label" i18n>Name:</span>
+	<span class="input-field-label">{{'name' | translate}}</span>
 	<input [(ngModel)]="projectProperties.projectName" required name="nameField">
 </div>
 <div class="form-entry flex-line">
-	<span class="input-field-label" i18n>Max. points per task:</span>
+	<span class="input-field-label">{{'project-creation.max-points-notice' | translate}}</span>
 	<input type="number"
 		   [(ngModel)]="projectProperties.maxProcessPoints"
 		   required
@@ -12,7 +12,7 @@
 </div>
 <div class="form-entry">
 	<div class="description-text-area-head">
-		<p i18n>Description:</p>
+		<p>{{'description' | translate}}</p>
 		<span class="font-small">{{descriptionInput.textLength}} / {{config.maxDescriptionLength}}</span>
 	</div>
 	<textarea name="description-text-area" class="description-text-area"

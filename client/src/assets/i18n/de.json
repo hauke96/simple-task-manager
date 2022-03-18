@@ -1,8 +1,27 @@
 {
   "title": "SimpleTaskManager",
+  "users": "Benutzer:",
+  "settings": "Einstellungen:",
   "login": {
     "language-selection": "Sprachauswahl:",
     "welcome": "Willkommen beim SimpleTaskManager für <a href=\"https://openstreetmap.org\">OpenStreetMap</a>",
     "login-button": "Anmelden"
+  },
+  "dashboard": {
+    "welcome": "Welcome {{userName}} :)",
+    "logout-button": "Abmelden",
+    "create-project": "Projekt erstellen",
+    "import-project": "Projekt importieren"
+  },
+  "project": {
+    "back-button": "Zurück",
+    "title": "Projekt:",
+    "creation-date": "Erstellt am:",
+    "description": "Beschreibung:"
+  },
+  "project-list": {
+    "projects": "Projekte:",
+    "no-project-notice": "Du hast derzeit keine Projekte",
+    "you-own-this-project-notice": "* dies ist dein Projekt"
   }
 }

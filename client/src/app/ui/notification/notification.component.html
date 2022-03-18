@@ -1,6 +1,6 @@
 <div class="notification-container">
 	<div *ngIf="isLoading" class="loading-container border">
-		<span class="text-box" i18n>Loading ...</span>
+		<span class="text-box">{{'notification.loading' | translate}}</span>
 		<div class="loader"></div>
 	</div>
 
@@ -8,11 +8,12 @@
 	<div *ngIf="hasError" class="error-container border">
 		<div class="notification-text-container">
 			<div class="notification-text-wrapper">
-				<div class="error-text" i18n>ERROR:</div>&nbsp;
+				<div class="error-text">{{'notification.error' | translate}}</div>&nbsp;
 				<span class="notification-text">{{currentErrorText}}</span>
-				<span *ngIf="remainingErrors> 1" class="remaining-notifications-label" i18n>{{ remainingErrors }} errors left</span>
+				<span *ngIf="remainingErrors> 1"
+					  class="remaining-notifications-label">{{ remainingErrors }} {{'notification.errors-left' | translate}}</span>
 			</div>
-			<button (click)="onCloseErrorButtonClicked()" i18n>OK</button>
+			<button (click)="onCloseErrorButtonClicked()">{{'ok-button' | translate}}</button>
 		</div>
 	</div>
 
@@ -20,11 +21,12 @@
 	<div *ngIf="hasWarning" class="warning-container border">
 		<div class="notification-text-container">
 			<div class="notification-text-wrapper">
-				<div class="warn-text" i18n>WARNING:</div>&nbsp;
+				<div class="warn-text">{{'notification.warning' | translate}}</div>&nbsp;
 				<span class="notification-text">{{currentWarningText}}</span>
-				<span *ngIf="remainingWarning > 1" class="remaining-notifications-label" i18n>{{ remainingWarning }} warnings left</span>
+				<span *ngIf="remainingWarning > 1"
+					  class="remaining-notifications-label">{{ remainingWarning }} {{'notification.warnings-left' | translate}}</span>
 			</div>
-			<button (click)="onCloseWarningButtonClicked()" i18n>OK</button>
+			<button (click)="onCloseWarningButtonClicked()">{{'ok-button' | translate}}</button>
 		</div>
 	</div>
 
@@ -33,9 +35,10 @@
 		<div class="notification-text-container">
 			<div class="notification-text-wrapper">
 				<span class="notification-text">{{currentInfoText}}</span>
-				<span *ngIf="remainingInfo> 1" class="remaining-notifications-label" i18n>{{ remainingInfo }} notifications left</span>
+				<span *ngIf="remainingInfo> 1"
+					  class="remaining-notifications-label">{{ remainingInfo }} {{'notification.notifications-left' | translate}}</span>
 			</div>
-			<button (click)="onCloseInfoButtonClicked()" i18n>OK</button>
+			<button (click)="onCloseInfoButtonClicked()">{{'ok-button' | translate}}</button>
 		</div>
 	</div>
 </div>

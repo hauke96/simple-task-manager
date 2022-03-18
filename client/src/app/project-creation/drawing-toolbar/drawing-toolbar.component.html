@@ -1,3 +1,3 @@
-<button class="lnr lnr-pencil" (click)="onButtonDraw()" [ngClass]="{selected: selectedButton == SELECTION_DRAW}" i18n-title title="Draw new polygon" [disabled]="!canAddTasks"></button>
-<button class="lnr lnr-highlight" (click)="onButtonEdit()" [ngClass]="{selected: selectedButton == SELECTION_EDIT}" i18n-title title="Edit polygon"></button>
-<button class="lnr lnr-trash" (click)="onButtonDelete()" [ngClass]="{selected: selectedButton == SELECTION_DELETE}" i18n-title title="Remove polygon"></button>
+<button class="lnr lnr-pencil" (click)="onButtonDraw()" [ngClass]="{selected: selectedButton == SELECTION_DRAW}" title="{{'project-creation.new-polygon' | translate}}" [disabled]="!canAddTasks"></button>
+<button class="lnr lnr-highlight" (click)="onButtonEdit()" [ngClass]="{selected: selectedButton == SELECTION_EDIT}" title="{{'project-creation.edit-polygon' | translate}}"></button>
+<button class="lnr lnr-trash" (click)="onButtonDelete()" [ngClass]="{selected: selectedButton == SELECTION_DELETE}" title="{{'project-creation.remove-polygon' | translate}}"></button>

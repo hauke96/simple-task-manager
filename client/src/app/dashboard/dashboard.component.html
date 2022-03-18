@@ -1,21 +1,21 @@
 <div>
 	<app-toolbar>
-		<p i18n>Welcome {{userName}} :)</p>
+		<p>{{'dashboard.welcome' | translate: {userName: userName} }}</p>
 		<div class="toolbar-left">
 			<div class="language-selection">
-				<span class="language-selection-label" i18n>Language selection:</span>
+				<span class="language-selection-label">{{'language-selection' | translate}}</span>
 				<app-language-selection></app-language-selection>
 			</div>
 			<div class="separator"></div>
-			<button (click)="onLogoutClicked()" i18n="logout button">Logout</button>
+			<button (click)="onLogoutClicked()">{{'dashboard.logout-button' | translate}}</button>
 		</div>
 	</app-toolbar>
 	<div class="root-container">
 		<app-project-list></app-project-list>
 		<div>
-			<button [routerLink]="['/new-project']" i18n>Create project</button>
+			<button [routerLink]="['/new-project']">{{'dashboard.create-project' | translate}}</button>
 			<input id="projectInput" type="file" content="Upload" accept=".json" (change)="onImportProjectClicked($event)" style="display:none;">
-			<button class="import-button" onclick="document.getElementById('projectInput').click();" i18n>Import project</button>
+			<button class="import-button" onclick="document.getElementById('projectInput').click();">{{'dashboard.import-project' | translate}}</button>
 		</div>
 	</div>
 </div>

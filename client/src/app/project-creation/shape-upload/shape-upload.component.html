@@ -1,6 +1,8 @@
-<h2 i18n>Upload:</h2>
+<h2>{{'project-creation.upload' | translate}}</h2>
 
-<div i18n>Upload a GeoJSON, OSM-XML, GPX, EsriJson, KML or WKT file, which contains polygons. Each polygon will result in a single task.</div>
+<div>{{'project-creation.upload-notice' | translate}}</div>
 
-<input id="fileInput" type="file" content="Upload" accept=".geojson, .osm, .xml, .gpx, .json, .esrijson, .kml, .wkt" (change)="onFileSelected($event)" style="display:none;">
-<button class="upload-button" onclick="document.getElementById('fileInput').click();" i18n>Upload file</button>
+<input id="fileInput" type="file" content="Upload" accept=".geojson, .osm, .xml, .gpx, .json, .esrijson, .kml, .wkt"
+	   (change)="onFileSelected($event)" style="display:none;">
+<button class="upload-button"
+		onclick="document.getElementById('fileInput').click();">{{'project-creation.upload-file-button' | translate}}</button>

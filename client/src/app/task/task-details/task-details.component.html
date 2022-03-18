@@ -1,16 +1,16 @@
 <div class="assign-container">
-	<h2>Task {{task | taskTitle}}</h2>
+	<h2>{{'task-details.title' | translate}} {{task | taskTitle}}</h2>
 	<div class="assign-button-container" *ngIf="needUserAssignment">
-		<button *ngIf="!task?.assignedUser?.uid" (click)="onAssignButtonClicked()" i18n>Assign to me</button>
-		<span *ngIf="!!task?.assignedUser?.uid && task?.assignedUser?.uid !== currentUserId" i18n>Assigned to: {{assignedUserName}}</span>
-		<button *ngIf="task?.assignedUser?.uid === currentUserId" (click)="onUnassignButtonClicked()" i18n>Unassign</button>
+		<button *ngIf="!task?.assignedUser?.uid" (click)="onAssignButtonClicked()">{{'task-details.assign-to-me' | translate}}</button>
+		<span *ngIf="!!task?.assignedUser?.uid && task?.assignedUser?.uid !== currentUserId">{{'task-details.assign-to' | translate}} {{assignedUserName}}</span>
+		<button *ngIf="task?.assignedUser?.uid === currentUserId" (click)="onUnassignButtonClicked()">{{'task-details.unassign' | translate}}</button>
 	</div>
 </div>
 
 <!-- Process points row -->
 <div class="process-point-container">
 	<form class="flex-line" *ngIf="task?.assignedUser?.uid === currentUserId || !needUserAssignment; else currentUserElse" #processPointsForm="ngForm">
-		<span class="points-label" i18n>Points:</span>
+		<span class="points-label">{{'task-details.points' | translate}}</span>
 		<input name="processPointInput"
 			   class="process-point-input"
 			   [(ngModel)]="newProcessPoints"
@@ -20,12 +20,12 @@
 			   appMaxValidator="{{task?.maxProcessPoints}}">
 		<span class="of-process-point-label">/ {{task?.maxProcessPoints}}</span>
 		<div class="save-button-row">
-			<button class="save-button" (click)="onSaveButtonClick()" [disabled]="!processPointsForm.form?.valid" i18n>Save</button>
-			<button class="done-button" (click)="onDoneButtonClick()" [disabled]="!processPointsForm.form?.valid" i18n>Done</button>
+			<button class="save-button" (click)="onSaveButtonClick()" [disabled]="!processPointsForm.form?.valid">{{'save-button' | translate}}</button>
+			<button class="done-button" (click)="onDoneButtonClick()" [disabled]="!processPointsForm.form?.valid">{{'done-button' | translate}}</button>
 		</div>
 	</form>
 	<ng-template #currentUserElse>
-		<span class="points-label" i18n>Points:</span>
+		<span class="points-label">{{'task-details.points' | translate}}</span>
 		{{task?.processPoints}}
 		/
 		{{task?.maxProcessPoints}}
@@ -34,6 +34,6 @@
 
 <!-- Open in JOSM row -->
 <div class="open-button-row">
-	<button (click)="onOpenJosmButtonClicked()" i18n>Open in JOSM</button>
-	<button (click)="onOpenOsmOrgButtonClicked()" class="open-osm-button" i18n>Open in iD</button>
+	<button (click)="onOpenJosmButtonClicked()">{{'task-details.open-in-josm-button' | translate}}</button>
+	<button (click)="onOpenOsmOrgButtonClicked()" class="open-osm-button">{{'task-details.open-in-id-button' | translate}}</button>
 </div>

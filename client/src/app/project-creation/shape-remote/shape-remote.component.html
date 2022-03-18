@@ -1,13 +1,13 @@
-<div class="url-input-heading" i18n>URL to GeoJSON, OSM-XML, GPX, EsriJson, KML or WKT data:</div>
+<div class="url-input-heading">{{'project-creation.url-file-format-notice' | translate}}</div>
 <input class="url-input" [(ngModel)]="queryUrl">
-<button (click)="onLoadButtonClicked()" i18n>Load</button>
+<button (click)="onLoadButtonClicked()">{{'project-creation.load-button' | translate}}</button>
 
 <div class="hline"></div>
 
-<p i18n>Loading data from Overpass:</p>
+<p>{{'project-creation.loading-title' | translate}}</p>
 <ol>
-	<li i18n="loading data from overpass">Create your query</li>
-	<li i18n="loading data from overpass">Click on "Export"</li>
-	<li i18n="loading data from overpass">Copy the link after "raw data directly from" (right click and "copy link")</li>
-	<li i18n="loading data from overpass">Paste this URL in here</li>
+	<li i18n="loading data from overpass">{{'project-creation.load-li-1' | translate}}</li>
+	<li i18n="loading data from overpass">{{'project-creation.load-li-2' | translate}}</li>
+	<li i18n="loading data from overpass">{{'project-creation.load-li-3' | translate}}</li>
+	<li i18n="loading data from overpass">{{'project-creation.load-li-4' | translate}}</li>
 </ol>

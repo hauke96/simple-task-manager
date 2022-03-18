@@ -1,4 +1,4 @@
-<h2 i18n>Tasks:</h2>
+<h2>{{'tasks' | translate}}</h2>
 
 <div class="list-container">
 	<div *ngFor="let t of tasks" class="list-item" (click)="onListItemClicked(t.id)"
@@ -6,10 +6,10 @@
 		<div>
 			{{t | taskTitle}}
 			<span class="color-gray">({{t.processPoints}} / {{t.maxProcessPoints}})</span>
-			<span *ngIf="t.isDone" class="done-label" i18n>Done</span>
+			<span *ngIf="t.isDone" class="done-label">{{'done-button' | translate}}</span>
 		</div>
 		<span *ngIf="!!t.assignedUser && !isAssignedToCurrentUser(t)"
 			  class="color-gray">{{t.assignedUser.name}}</span>
-		<span *ngIf="isAssignedToCurrentUser(t)" class="color-gray" i18n>(you)</span>
+		<span *ngIf="isAssignedToCurrentUser(t)" class="color-gray">{{'task-list.you' | translate}}</span>
 	</div>
 </div>
