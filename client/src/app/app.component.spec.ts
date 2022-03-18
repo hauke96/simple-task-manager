@@ -2,8 +2,6 @@ import { AppComponent } from './app.component';
 import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
 import { AppModule } from './app.module';
 import { ConfigProvider } from './config/config.provider';
-import { UserListComponent } from './user/user-list/user-list.component';
-import { config } from 'rxjs';
 
 describe(AppComponent.name, () => {
   let component: AppComponent;

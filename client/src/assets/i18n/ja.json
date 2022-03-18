@@ -1,0 +1,8 @@
+{
+  "title": "SimpleTaskManager",
+  "login": {
+    "language-selection": "言語選択:",
+    "welcome": "<a href=\"https://openstreetmap.org\">OpenStreetMap</a> 用シンプル タスク管理(STM) へようこそ",
+    "login-button": "ログイン"
+  }
+}

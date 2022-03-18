@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { ConfigProvider } from './config/config.provider';
-import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
-import { Title } from '@angular/platform-browser';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
@@ -9,18 +8,9 @@ import { Title } from '@angular/platform-browser';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  constructor(private config: ConfigProvider, private translate: TranslateService, title: Title) {
-    translate.addLangs(['de', 'en-US']);
+  constructor(private config: ConfigProvider, private translate: TranslateService) {
+    translate.addLangs(['de', 'en-US', 'es', 'fr', 'ja', 'zh-CN']);
     translate.setDefaultLang('de');
-
-    const browserLang = translate.getBrowserLang();
-    translate.use(browserLang?.match(/de/) ? browserLang : 'de');
-
-    translate.onLangChange.subscribe((event: LangChangeEvent) => {
-      translate.get('title').subscribe((res: string) => {
-        title.setTitle(res);
-      });
-    });
   }
 
   get isInTestMode(): boolean {
