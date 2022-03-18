@@ -66,7 +66,7 @@ describe(SelectedLanguageService.name, () => {
   });
 
   it('should get all known languages', () => {
-    expect(service.getKnownLanguages().length).toEqual(5);
+    expect(service.getKnownLanguages().length).toEqual(6);
   });
 
   it('should get correct default language', () => {

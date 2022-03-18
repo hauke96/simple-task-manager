@@ -1,11 +1,8 @@
-import { TestBed } from '@angular/core/testing';
-
 import { ProjectService } from './project.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TaskService } from '../task/task.service';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
-import { Task, TaskDto, TestTaskFeature, TestTaskGeometry } from '../task/task.material';
+import { Task, TaskDto, TestTaskGeometry } from '../task/task.material';
 import { UserService } from '../user/user.service';
 import { User } from '../user/user.material';
 import { Project, ProjectDto } from './project.material';

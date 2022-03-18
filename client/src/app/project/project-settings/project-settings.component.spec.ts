@@ -1,30 +1,25 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-
 import { ProjectSettingsComponent } from './project-settings.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ProjectService } from '../project.service';
 import { of, throwError } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MockRouter } from '../../common/mock-router';
 import { CurrentUserService } from '../../user/current-user.service';
 import { User } from '../../user/user.material';
-import { FormsModule } from '@angular/forms';
 import { EventEmitter } from '@angular/core';
 import { Project } from '../project.material';
-import { MockBuilder } from 'ng-mocks';
+import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
 import { ProjectListComponent } from '../project-list/project-list.component';
 import { AppModule } from '../../app.module';
-import { NotificationService } from '../../common/services/notification.service';
 
-describe('ProjectSettingsComponent', () => {
+describe(ProjectSettingsComponent.name, () => {
   let component: ProjectSettingsComponent;
-  let fixture: ComponentFixture<ProjectSettingsComponent>;
+  let fixture: MockedComponentFixture<ProjectSettingsComponent, any>;
   let projectService: ProjectService;
   let router: Router;
   let currentUserService: CurrentUserService;
 
   beforeEach(() => {
     currentUserService = {} as CurrentUserService;
+    currentUserService.getUserId = jest.fn().mockReturnValue('123');
     projectService = {
       projectAdded: new EventEmitter<Project>(),
       projectChanged: new EventEmitter<Project>(),
@@ -33,17 +28,24 @@ describe('ProjectSettingsComponent', () => {
     } as ProjectService;
     router = {} as Router;
 
-    return MockBuilder(ProjectListComponent, AppModule)
-      .provide({provide: ProjectService, useFactory: () => projectService})
+    const activeRoute = {
+      queryParams: of([{
+        auth_token: 'abc123'
+      }])
+    };
+
+    return MockBuilder(ProjectSettingsComponent, AppModule)
       .provide({provide: Router, useFactory: () => router})
+      .provide({provide: ActivatedRoute, useFactory: () => activeRoute})
+      .provide({provide: ProjectService, useFactory: () => projectService})
       .provide({provide: CurrentUserService, useFactory: () => currentUserService});
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ProjectSettingsComponent);
-    component = fixture.componentInstance;
-    component.projectOwner = new User('test user', '123');
-    currentUserService.getUserId = jest.fn().mockReturnValue('123');
+    fixture = MockRender(ProjectSettingsComponent, {
+      projectOwner: new User('test user', '123')
+    });
+    component = fixture.point.componentInstance;
     fixture.detectChanges();
   });
 
@@ -52,7 +54,6 @@ describe('ProjectSettingsComponent', () => {
   });
 
   it('should set action for owner correctly', () => {
-    component.ngOnInit();
     // @ts-ignore
     expect(component.action).toEqual('delete');
   });

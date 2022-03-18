@@ -1,5 +1,3 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ProjectPropertiesComponent } from './project-properties.component';
 import { ProjectProperties } from '../project-properties';
 import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
