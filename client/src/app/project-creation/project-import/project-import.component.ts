@@ -8,21 +8,18 @@ import { NotificationService } from '../../common/services/notification.service'
   templateUrl: './project-import.component.html',
   styleUrls: ['./project-import.component.scss']
 })
-export class ProjectImportComponent implements OnInit {
+export class ProjectImportComponent {
 
   constructor(
     private notificationService: NotificationService,
     private projectImportService: ProjectImportService) {
   }
 
-  ngOnInit(): void {
-  }
-
-  public onProjectSelected(event: any) {
+  public onProjectSelected(event: any): void {
     this.uploadFile(event, (e) => this.addProjectExport(e));
   }
 
-  public addProjectExport(evt: Event) {
+  public addProjectExport(evt: Event): void {
     if (!evt || !evt.target) {
       return;
     }
@@ -32,7 +29,7 @@ export class ProjectImportComponent implements OnInit {
     this.projectImportService.importProjectAsNewProject(project);
   }
 
-  private uploadFile(event: any, loadHandler: (evt: Event) => void) {
+  private uploadFile(event: any, loadHandler: (evt: Event) => void): void {
     const reader = new FileReader();
     const file = event.target.files[0];
 

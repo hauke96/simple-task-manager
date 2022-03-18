@@ -41,21 +41,21 @@ export class ShapeDivideComponent implements OnInit {
     return this.amountTasksAfterDividing <= this.maxTasksPerProject;
   }
 
-  public get maxTasksPerProject() {
+  public get maxTasksPerProject(): number {
     return this.config.maxTasksPerProject;
   }
 
-  public get amountTasksAfterDividing() {
+  public get amountTasksAfterDividing(): number {
     // The existing tasks - the one task that should be divided + the amount of new tasks
     return this.taskDraftService.getTasks().length - 1 + this.previewTasks.length;
   }
 
-  onPreviewButtonClicked() {
+  onPreviewButtonClicked(): void {
     this.previewTasks.forEach(t => t.geometry.transform('EPSG:4326', 'EPSG:3857'));
     this.previewClicked.emit(this.previewTasks);
   }
 
-  public onDivideButtonClicked() {
+  public onDivideButtonClicked(): void {
     if (!this.canDivideTasks) {
       throw new Error('Dividing tasks should not be able');
     }
@@ -122,7 +122,7 @@ export class ShapeDivideComponent implements OnInit {
     });
   }
 
-  public taskDividePropertyChanged() {
+  public taskDividePropertyChanged(): void {
     this.previewTasks = this.createTaskDrafts() ?? [];
   }
 }

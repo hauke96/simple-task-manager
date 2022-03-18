@@ -1,47 +1,43 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-
 import { ShapeDivideComponent } from './shape-divide.component';
-import { FormsModule } from '@angular/forms';
-import { Polygon } from 'ol/geom';
+import { Point, Polygon } from 'ol/geom';
 import { TaskDraft } from '../../task/task.material';
 import { TaskDraftService } from '../task-draft.service';
 import { ConfigProvider } from '../../config/config.provider';
-import Spy = jasmine.Spy;
+import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
+import { NotificationService } from '../../common/services/notification.service';
 
-describe('ShapeDivideComponent', () => {
+describe(ShapeDivideComponent.name, () => {
   let component: ShapeDivideComponent;
+  let fixture: MockedComponentFixture<ShapeDivideComponent, any>;
+  let notificationService: NotificationService;
   let taskDraftService: TaskDraftService;
-  let fixture: ComponentFixture<ShapeDivideComponent>;
   let configProvider: ConfigProvider;
-  let spyRemove: Spy;
-  let spyAdd: Spy;
-
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        FormsModule
-      ],
-      declarations: [ShapeDivideComponent],
-      providers: [TaskDraftService]
-    })
-      .compileComponents();
-
-    taskDraftService = TestBed.inject(TaskDraftService);
-    configProvider = TestBed.inject(ConfigProvider);
-    configProvider.maxTasksPerProject = 1000;
-
-    spyRemove = spyOn(taskDraftService, 'removeTask');
-    spyAdd = spyOn(taskDraftService, 'addTasks');
-    // @ts-ignore
-    taskDraftService.selectedTask = new TaskDraft('123', undefined, undefined);
-  }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ShapeDivideComponent);
-    component = fixture.componentInstance;
+    notificationService = {} as NotificationService;
+    configProvider = {} as ConfigProvider;
+    configProvider.maxTasksPerProject = 1000;
 
-    component.selectedTask = new TaskDraft('0', 'foo', new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]]), 0);
-    component.gridCellSize = 100;
+    taskDraftService = {} as TaskDraftService;
+    taskDraftService.removeTask = jest.fn();
+    taskDraftService.addTasks = jest.fn();
+    taskDraftService.getTasks = jest.fn().mockReturnValue([]);
+    const taskDraft = new TaskDraft('123', '', new Point([1, 2]), 100);
+    // @ts-ignore
+    taskDraftService.getSelectedTask = jest.fn().mockReturnValue(taskDraft);
+
+    return MockBuilder(ShapeDivideComponent, AppModule)
+      .provide({provide: NotificationService, useFactory: () => notificationService})
+      .provide({provide: TaskDraftService, useFactory: () => taskDraftService})
+      .provide({provide: ConfigProvider, useFactory: () => configProvider});
+  });
+
+  beforeEach(() => {
+    const taskDraft = new TaskDraft('0', 'foo', new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]]), 0);
+    fixture = MockRender(ShapeDivideComponent, {selectedTask: taskDraft});
+    component = fixture.point.componentInstance;
+    fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -55,31 +51,41 @@ describe('ShapeDivideComponent', () => {
       component.onDivideButtonClicked();
     });
 
-    expect(spyRemove).toHaveBeenCalledWith('123');
-    expect(spyAdd).toHaveBeenCalled();
+    expect(taskDraftService.removeTask).toHaveBeenCalledWith('123');
+    expect(taskDraftService.addTasks).toHaveBeenCalled();
   });
 
   // Execute the same test for these NOT supported shapes
-  ['', 'fooGrid', 'null', 'undefined', null, 0, undefined].forEach(g => {
+  ['', 'fooGrid', 'null', 'undefined', null, undefined].forEach(g => {
     it(`should not divide anything on shape type '${g}'`, () => {
-      // @ts-ignore
-      component.gridCellShape = g;
+      // Arrange
+      notificationService.addError = jest.fn();
+      component.gridCellShape = g as string;
+
+      // Act
       component.onDivideButtonClicked();
 
-      expect(spyRemove).not.toHaveBeenCalled();
-      expect(spyAdd).not.toHaveBeenCalled();
+      // Assert
+      expect(taskDraftService.removeTask).not.toHaveBeenCalled();
+      expect(taskDraftService.addTasks).not.toHaveBeenCalled();
+      expect(notificationService.addError).toHaveBeenCalled();
     });
   });
 
   // Execute the same test for these NOT supported sizes
-  ['', '10', null, undefined, -1, -100].forEach(g => {
+  [null, undefined, -1, -100].forEach(g => {
     it(`should not divide anything on invalid shape size '${g}'`, () => {
-      // @ts-ignore
-      component.gridCellSize = g;
+      // Arrange
+      notificationService.addError = jest.fn();
+      component.gridCellSize = g as number;
+
+      // Act
       component.onDivideButtonClicked();
 
-      expect(spyRemove).not.toHaveBeenCalled();
-      expect(spyAdd).not.toHaveBeenCalled();
+      // Assert
+      expect(taskDraftService.removeTask).not.toHaveBeenCalled();
+      expect(taskDraftService.addTasks).not.toHaveBeenCalled();
+      expect(notificationService.addError).toHaveBeenCalled();
     });
   });
 });

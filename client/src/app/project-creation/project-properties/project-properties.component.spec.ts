@@ -2,23 +2,19 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProjectPropertiesComponent } from './project-properties.component';
 import { ProjectProperties } from '../project-properties';
+import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
 
-describe('ProjectPropertiesComponent', () => {
+describe(ProjectPropertiesComponent.name, () => {
   let component: ProjectPropertiesComponent;
-  let fixture: ComponentFixture<ProjectPropertiesComponent>;
+  let fixture: MockedComponentFixture<ProjectPropertiesComponent, any>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ProjectPropertiesComponent]
-    })
-      .compileComponents();
+  beforeEach(() => {
+    return MockBuilder(ProjectPropertiesComponent);
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ProjectPropertiesComponent);
-    component = fixture.componentInstance;
-    component.projectProperties = new ProjectProperties('', 100, '');
-
+    fixture = MockRender(ProjectPropertiesComponent, {projectProperties: new ProjectProperties('', 100, '')});
+    component = fixture.point.componentInstance;
     fixture.detectChanges();
   });
 

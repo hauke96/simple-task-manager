@@ -25,7 +25,7 @@ export class ShapeRemoteComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onLoadButtonClicked() {
+  onLoadButtonClicked(): void {
     this.loadingService.start();
 
     this.http.get(this.queryUrl, {responseType: 'text'}).subscribe(

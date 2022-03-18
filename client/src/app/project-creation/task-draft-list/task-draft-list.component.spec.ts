@@ -1,26 +1,23 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { TaskDraftListComponent } from './task-draft-list.component';
 import { TaskDraftService } from '../task-draft.service';
+import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
+import { AppComponent } from '../../app.component';
 
-describe('TaskDraftListComponent', () => {
+describe(TaskDraftListComponent.name, () => {
   let component: TaskDraftListComponent;
-  let fixture: ComponentFixture<TaskDraftListComponent>;
+  let fixture: MockedComponentFixture<TaskDraftListComponent>;
   let taskDraftService: TaskDraftService;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [TaskDraftListComponent],
-      providers: [TaskDraftService]
-    })
-      .compileComponents();
+  beforeEach(() => {
+    taskDraftService = {} as TaskDraftService;
 
-    taskDraftService = TestBed.inject(TaskDraftService);
+    return MockBuilder(TaskDraftListComponent, AppComponent)
+      .provide({provide: TaskDraftService, useFactory: () => taskDraftService});
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TaskDraftListComponent);
-    component = fixture.componentInstance;
+    fixture = MockRender(TaskDraftListComponent);
+    component = fixture.point.componentInstance;
     fixture.detectChanges();
   });
 
@@ -29,10 +26,10 @@ describe('TaskDraftListComponent', () => {
   });
 
   it('should select task on service', () => {
-    const spy = spyOn(taskDraftService, 'selectTask');
+    taskDraftService.selectTask = jest.fn();
 
     component.onTaskClicked('123');
 
-    expect(spy).toHaveBeenCalledWith('123');
+    expect(taskDraftService.selectTask).toHaveBeenCalledWith('123');
   });
 });
