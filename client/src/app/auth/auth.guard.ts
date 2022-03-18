@@ -20,12 +20,12 @@ export class AuthGuard implements CanActivate {
         this.authService.setUserNameFromToken();
       } catch {
         this.currentUserService.resetUser();
-        localStorage.clear();
+        localStorage.removeItem('auth_token');
       }
     } else {
       // not logged in
       this.currentUserService.resetUser();
-      localStorage.clear();
+      localStorage.removeItem('auth_token');
     }
 
     // The login component has the route '/' and therefore the path is ''

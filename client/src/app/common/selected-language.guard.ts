@@ -8,8 +8,8 @@ export class SelectedLanguageGuard implements CanActivate {
   constructor(private selectedLanguageService: SelectedLanguageService) {
   }
 
-  canActivate() {
+  public canActivate(): boolean {
     // Don't care about language redirect when working locally (when "production === false")
-    return !environment.production || this.selectedLanguageService.loadLanguageFromLocalStorage();
+    return this.selectedLanguageService.loadLanguageFromLocalStorage();
   }
 }

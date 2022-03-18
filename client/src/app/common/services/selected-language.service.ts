@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Language } from '../entities/language';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SelectedLanguageService {
-  private selectedLanguage: Language | undefined;
-
-  constructor() {
+  constructor(private translationService: TranslateService) {
   }
 
   /**
@@ -21,8 +20,7 @@ export class SelectedLanguageService {
     if (!!selectedLanguageCode) {
       return this.selectLanguageByCode(selectedLanguageCode);
     } else {
-      const languageFromUrl = this.urlToLanguage(location.pathname);
-      return this.selectLanguageByCode(languageFromUrl?.code);
+      return this.selectLanguageByCode(this.getDefaultLanguage().code);
     }
   }
 
@@ -39,7 +37,7 @@ export class SelectedLanguageService {
   }
 
   public getSelectedLanguage(): Language | undefined {
-    return this.selectedLanguage;
+    return this.getLanguageByCode(this.translationService.currentLang);
   }
 
   public urlToLanguage(url: string): Language | undefined {
@@ -56,28 +54,12 @@ export class SelectedLanguageService {
    * @return true when no redirect took place and false when the language changes so that location.href has been set.
    */
   public selectLanguageByCode(languageCode: string | undefined): boolean {
-    const language = this.getLanguageByCode(languageCode);
+    const language = this.getLanguageByCode(languageCode) ?? this.getDefaultLanguage();
 
-    if (!!language) {
-      this.selectedLanguage = language;
-    } else {
-      this.selectedLanguage = this.getDefaultLanguage(); // en-US as default
-    }
-    localStorage.setItem('selected_language', this.selectedLanguage.code);
-
-    // Trigger reload if new language has been selected
-    const urlLanguage = this.urlToLanguage(location.pathname);
-    if (!urlLanguage || urlLanguage.code !== this.selectedLanguage.code) {
-      // The trailing '/' is important, otherwise the angular router will say "I don't know this route" and causes an error.
-      this.loadUrl(location.origin + '/' + this.selectedLanguage.code + '/');
-      return false;
-    }
+    this.translationService.use(language.code);
+    localStorage.setItem('selected_language', language.code);
 
     return true;
-  }
-
-  private loadUrl(newUrl: string): void {
-    window.location.href = newUrl;
   }
 
   /**

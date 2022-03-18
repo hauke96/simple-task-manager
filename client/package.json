@@ -33,6 +33,8 @@
     "@turf/square-grid": "^6.5.0",
     "@turf/triangle-grid": "^6.5.0",
     "ng-mocks": "^13.1.1",
+    "@ngx-translate/core": "^14.0.0",
+    "@ngx-translate/http-loader": "^7.0.0",
     "ol": "^6.13.0",
     "rxjs": "^7.5.5",
     "tslib": "^2.3.1",

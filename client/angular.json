@@ -13,16 +13,6 @@
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
-      "i18n": {
-        "sourceLocale": "en-US",
-        "locales": {
-          "ja": "src/locale/messages.ja.xlf",
-          "de": "src/locale/messages.de.xlf",
-          "zh-CN": "src/locale/messages.zh-CN.xlf",
-          "fr": "src/locale/messages.fr.xlf",
-          "es": "src/locale/messages.es.xlf"
-        }
-      },
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -74,31 +64,6 @@
               "sourceMap": true,
               "namedChunks": true
             },
-            "ja": {
-              "localize": [
-                "ja"
-              ]
-            },
-            "de": {
-              "localize": [
-                "de"
-              ]
-            },
-            "zh-CN": {
-              "localize": [
-                "zh-CN"
-              ]
-            },
-            "fr": {
-              "localize": [
-                "fr"
-              ]
-            },
-            "es": {
-              "localize": [
-                "es"
-              ]
-            },
             "production": {
               "fileReplacements": [
                 {
@@ -147,21 +112,6 @@
             },
             "production": {
               "browserTarget": "simple-task-manager:build:production"
-            },
-            "ja": {
-              "browserTarget": "simple-task-manager:build:ja"
-            },
-            "de": {
-              "browserTarget": "simple-task-manager:build:de"
-            },
-            "zh-CN": {
-              "browserTarget": "simple-task-manager:build:zh-CN"
-            },
-            "fr-FR": {
-              "browserTarget": "simple-task-manager:build:fr-FR"
-            },
-            "es-ES": {
-              "browserTarget": "simple-task-manager:build:es-ES"
             },
             "dev": {
               "browserTarget": "simple-task-manager:build:dev"

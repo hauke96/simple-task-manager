@@ -1,11 +1,15 @@
 import { SelectedLanguageService } from './selected-language.service';
 import { Language } from '../entities/language';
+import { TranslateService } from '@ngx-translate/core';
 
 describe(SelectedLanguageService.name, () => {
   let service: SelectedLanguageService;
+  let translationService: TranslateService;
 
   beforeEach(() => {
-    service = new SelectedLanguageService();
+    translationService = {} as TranslateService;
+
+    service = new SelectedLanguageService(translationService);
   });
 
   it('should be created', () => {
@@ -14,48 +18,45 @@ describe(SelectedLanguageService.name, () => {
 
   it('should load language without local storage entry', () => {
     localStorage.removeItem('selected_language');
+    translationService.use = jest.fn();
+
     service.loadLanguageFromLocalStorage();
 
-    expect(service.getSelectedLanguage()?.code).toEqual('en-US');
+    expect(translationService.use).toHaveBeenCalledWith('en-US');
   });
 
   it('should load language based on local storage', () => {
     localStorage.setItem('selected_language', 'zh-CN');
+    translationService.use = jest.fn();
 
     service.loadLanguageFromLocalStorage();
 
-    expect(service.getSelectedLanguage()?.code).toEqual('zh-CN');
+    expect(translationService.use).toHaveBeenCalledWith('zh-CN');
     localStorage.removeItem('selected_language');
   });
 
   it('should triggers a reload on new language', () => {
-    // @ts-ignore
-    delete global.window.location;
-    // @ts-ignore
-    global.window.location = {
-      pathname: 'http://localhost/',
-      href: '',
-    };
-    // @ts-ignore
-    service.selectedLanguage = new Language('en-US', 'English'); // to see a difference below
+    translationService.use = jest.fn();
 
     service.selectLanguageByCode('de');
 
-    expect(service.getSelectedLanguage()?.code).toEqual('de');
-    expect(window.location.href).toEqual(location.origin + '/de/');
+    expect(translationService.use).toHaveBeenCalledWith('de');
   });
 
   it('should set default language on unknown code', () => {
+    translationService.use = jest.fn();
+
     service.selectLanguageByCode('foo');
 
-    expect(service.getSelectedLanguage()?.code).toEqual(service.getDefaultLanguage().code);
+    expect(translationService.use).toHaveBeenCalledWith(service.getDefaultLanguage().code);
   });
 
   it('should set default language on undefined', () => {
-    // @ts-ignore
+    translationService.use = jest.fn();
+
     service.selectLanguageByCode(undefined);
 
-    expect(service.getSelectedLanguage()?.code).toEqual(service.getDefaultLanguage().code);
+    expect(translationService.use).toHaveBeenCalledWith(service.getDefaultLanguage().code);
   });
 
   it('should determine code from URL correctly', () => {
