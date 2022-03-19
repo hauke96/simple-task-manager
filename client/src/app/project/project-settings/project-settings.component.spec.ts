@@ -7,8 +7,8 @@ import { User } from '../../user/user.material';
 import { EventEmitter } from '@angular/core';
 import { Project } from '../project.material';
 import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
-import { ProjectListComponent } from '../project-list/project-list.component';
 import { AppModule } from '../../app.module';
+import { TranslateService } from '@ngx-translate/core';
 
 describe(ProjectSettingsComponent.name, () => {
   let component: ProjectSettingsComponent;
@@ -16,6 +16,7 @@ describe(ProjectSettingsComponent.name, () => {
   let projectService: ProjectService;
   let router: Router;
   let currentUserService: CurrentUserService;
+  let translationService: TranslateService;
 
   beforeEach(() => {
     currentUserService = {} as CurrentUserService;
@@ -27,6 +28,7 @@ describe(ProjectSettingsComponent.name, () => {
       projectUserRemoved: new EventEmitter<string>(),
     } as ProjectService;
     router = {} as Router;
+    translationService = {} as TranslateService;
 
     const activeRoute = {
       queryParams: of([{
@@ -38,7 +40,8 @@ describe(ProjectSettingsComponent.name, () => {
       .provide({provide: Router, useFactory: () => router})
       .provide({provide: ActivatedRoute, useFactory: () => activeRoute})
       .provide({provide: ProjectService, useFactory: () => projectService})
-      .provide({provide: CurrentUserService, useFactory: () => currentUserService});
+      .provide({provide: CurrentUserService, useFactory: () => currentUserService})
+      .provide({provide: TranslateService, useFactory: () => translationService});
   });
 
   beforeEach(() => {
@@ -119,6 +122,7 @@ describe(ProjectSettingsComponent.name, () => {
       expect(id).toEqual('1');
       return throwError('Test-error');
     });
+    translationService.instant = jest.fn();
     component.projectId = '1';
     // @ts-ignore
     component.action = 'delete';
@@ -155,6 +159,7 @@ describe(ProjectSettingsComponent.name, () => {
       expect(id).toEqual('1');
       return throwError('Test-error');
     });
+    translationService.instant = jest.fn();
     router.navigate = jest.fn();
     component.projectId = '1';
     // @ts-ignore

@@ -6,6 +6,7 @@ import { NotificationService } from '../../common/services/notification.service'
 import { User } from '../../user/user.material';
 import { forkJoin, Observable } from 'rxjs';
 import { Project } from '../project.material';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-project-settings',
@@ -29,7 +30,8 @@ export class ProjectSettingsComponent implements OnInit {
     private projectService: ProjectService,
     private currentUserService: CurrentUserService,
     private notificationService: NotificationService,
-    private router: Router
+    private router: Router,
+    private translationService: TranslateService
   ) {
   }
 
@@ -45,19 +47,19 @@ export class ProjectSettingsComponent implements OnInit {
     return this.currentUserService.getUserId() === this.projectOwner.uid;
   }
 
-  public onDeleteButtonClicked() {
+  public onDeleteButtonClicked(): void {
     this.requestConfirmation = true;
   }
 
-  public onLeaveProjectClicked() {
+  public onLeaveProjectClicked(): void {
     this.requestConfirmation = true;
   }
 
-  public onNoButtonClicked() {
+  public onNoButtonClicked(): void {
     this.requestConfirmation = false;
   }
 
-  public onYesButtonClicked() {
+  public onYesButtonClicked(): void {
     if (this.action === 'delete') {
       this.deleteProject();
     } else if (this.action === 'leave') {
@@ -65,32 +67,32 @@ export class ProjectSettingsComponent implements OnInit {
     }
   }
 
-  private deleteProject() {
+  private deleteProject(): void {
     this.projectService.deleteProject(this.projectId)
       .subscribe(() => {
         this.requestConfirmation = false;
-        this.notificationService.addInfo($localize`:@@INFO_REMOVED_PROJ:Project removed successfully`);
+        this.notificationService.addInfo(this.translationService.instant('project-settings.successfully-removed'));
         this.router.navigate(['/dashboard']);
       }, err => {
         console.error(err);
-        this.notificationService.addError($localize`:@@ERROR_ONT_DELETE_PROJ:Could not delete project`);
+        this.notificationService.addError(this.translationService.instant('project-settings.could-not-remove-project'));
         this.requestConfirmation = false;
       });
   }
 
-  private leaveProject() {
+  private leaveProject(): void {
     this.projectService.leaveProject(this.projectId)
       .subscribe(() => {
         this.requestConfirmation = false;
         this.router.navigate(['/dashboard']);
       }, err => {
         console.error(err);
-        this.notificationService.addError($localize`:@@ERROR_LEAVE_PROJ:Could not leave project`);
+        this.notificationService.addError(this.translationService.instant('project-settings.could-not-leave-project'));
         this.requestConfirmation = false;
       });
   }
 
-  onSaveButtonClicked() {
+  onSaveButtonClicked(): void {
     const calls: Observable<Project>[] = [];
 
     if (this.projectName !== this.newProjectName) {
@@ -102,16 +104,16 @@ export class ProjectSettingsComponent implements OnInit {
 
     forkJoin(calls).subscribe(
       () => {
-        this.notificationService.addInfo($localize`:@@INFO_SUCCESS_UPDATE_PROJ:Successfully updated project`);
+        this.notificationService.addInfo(this.translationService.instant('project-settings.successfully-updated'));
       },
       e => {
         console.error(e);
-        this.notificationService.addError($localize`:@@ERROR_UPDATE_PROJ_TITLE:Unable to update project title and/or description`);
+        this.notificationService.addError(this.translationService.instant('project-settings.could-not-update-project'));
       }
     );
   }
 
-  onExportButtonClicked() {
+  onExportButtonClicked(): void {
     this.projectService.getProjectExport(this.projectId).subscribe(projectExport => {
         const element = document.createElement('a');
         element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(projectExport)));
@@ -126,7 +128,7 @@ export class ProjectSettingsComponent implements OnInit {
       },
       e => {
         console.error(e);
-        this.notificationService.addError($localize`:@@ERROR_EXPORT_PROJ:Creating project export failed`);
+        this.notificationService.addError(this.translationService.instant('project-settings.could-not-export-project'));
       }
     );
   }

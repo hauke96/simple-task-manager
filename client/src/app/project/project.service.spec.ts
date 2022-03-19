@@ -13,6 +13,7 @@ import { EventEmitter } from '@angular/core';
 import { WebsocketMessage } from '../common/entities/websocket-message';
 import { Feature } from 'ol';
 import { Geometry } from 'ol/geom';
+import { TranslateService } from '@ngx-translate/core';
 
 describe(ProjectService.name, () => {
   let service: ProjectService;
@@ -21,6 +22,7 @@ describe(ProjectService.name, () => {
   let httpClient: HttpClient;
   let websocketClient: WebsocketClientService;
   let notificationService: NotificationService;
+  let translationService: TranslateService;
 
   beforeEach(() => {
     taskService = {} as TaskService;
@@ -30,8 +32,9 @@ describe(ProjectService.name, () => {
       messageReceived: new EventEmitter<WebsocketMessage>(),
     } as WebsocketClientService;
     notificationService = {} as NotificationService;
+    translationService = {} as TranslateService;
 
-    service = new ProjectService(taskService, userService, httpClient, websocketClient, notificationService);
+    service = new ProjectService(taskService, userService, httpClient, websocketClient, notificationService, translationService);
   });
 
   it('should be created', () => {

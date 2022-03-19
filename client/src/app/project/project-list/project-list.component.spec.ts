@@ -10,6 +10,7 @@ import { NotificationService } from '../../common/services/notification.service'
 import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
 import { EventEmitter } from '@angular/core';
 import { AppModule } from '../../app.module';
+import { TranslateService } from '@ngx-translate/core';
 
 describe(ProjectListComponent.name, () => {
   let component: ProjectListComponent;
@@ -18,6 +19,7 @@ describe(ProjectListComponent.name, () => {
   let currentUserService: CurrentUserService;
   let projectService: ProjectService;
   let notificationService: NotificationService;
+  let translationService: TranslateService;
 
   beforeEach(() => {
     currentUserService = {} as CurrentUserService;
@@ -29,6 +31,7 @@ describe(ProjectListComponent.name, () => {
     } as ProjectService;
     router = {} as Router;
     notificationService = {} as NotificationService;
+    translationService = {} as TranslateService;
 
     const activatedRoute = {snapshot: {data: {projects: []}}} as unknown as ActivatedRoute;
 
@@ -37,7 +40,8 @@ describe(ProjectListComponent.name, () => {
       .provide({provide: Router, useFactory: () => router})
       .provide({provide: ActivatedRoute, useFactory: () => activatedRoute})
       .provide({provide: CurrentUserService, useFactory: () => currentUserService})
-      .provide({provide: NotificationService, useFactory: () => notificationService});
+      .provide({provide: NotificationService, useFactory: () => notificationService})
+      .provide({provide: TranslateService, useFactory: () => translationService});
   });
 
   beforeEach(() => {
@@ -124,6 +128,7 @@ describe(ProjectListComponent.name, () => {
 
   it('should remove project from list', () => {
     notificationService.addInfo = jest.fn();
+    translationService.instant = jest.fn();
 
     const p = createProject();
     component.projects = [p];
@@ -150,6 +155,7 @@ describe(ProjectListComponent.name, () => {
 
   it('should update projects on user-remove event', () => {
     notificationService.addInfo = jest.fn();
+    translationService.instant = jest.fn();
 
     const p = createProject();
     const p2 = createProject();

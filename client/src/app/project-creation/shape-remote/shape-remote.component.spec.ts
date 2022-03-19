@@ -9,6 +9,8 @@ import { TaskDraftService } from '../task-draft.service';
 import { TaskDraft } from '../../task/task.material';
 import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
 import { AppComponent } from '../../app.component';
+import { TranslateService } from '@ngx-translate/core';
+import { AppModule } from '../../app.module';
 
 const remoteGeometry = `<?xml version="1.0" encoding="UTF-8"?>
 <osm version="0.6" generator="Overpass API 0.7.56.3 eb200aeb">
@@ -33,6 +35,7 @@ describe(ShapeRemoteComponent.name, () => {
   let geometryService: GeometryService;
   let loadingService: LoadingService;
   let taskDraftService: TaskDraftService;
+  let translateService: TranslateService;
 
   beforeEach(() => {
     httpClient = {} as HttpClient;
@@ -42,13 +45,15 @@ describe(ShapeRemoteComponent.name, () => {
     loadingService.start = jest.fn();
     loadingService.end = jest.fn();
     taskDraftService = {} as TaskDraftService;
+    translateService = {} as TranslateService;
 
-    return MockBuilder(ShapeRemoteComponent, AppComponent)
+    return MockBuilder(ShapeRemoteComponent, AppModule)
       .provide({provide: HttpClient, useFactory: () => httpClient})
       .provide({provide: NotificationService, useFactory: () => notificationService})
       .provide({provide: GeometryService, useFactory: () => geometryService})
       .provide({provide: LoadingService, useFactory: () => loadingService})
-      .provide({provide: TaskDraftService, useFactory: () => taskDraftService});
+      .provide({provide: TaskDraftService, useFactory: () => taskDraftService})
+      .provide({provide: TranslateService, useFactory: () => translateService});
   });
 
   beforeEach(() => {
@@ -88,6 +93,7 @@ describe(ShapeRemoteComponent.name, () => {
   it('should notify but not emit on parsing error', () => {
     httpClient.get = jest.fn().mockReturnValue(of(remoteGeometry));
     geometryService.parseData = jest.fn().mockReturnValue([]);
+    translateService.instant = jest.fn();
 
     notificationService.addError = jest.fn();
     taskDraftService.addTasks = jest.fn();
@@ -102,6 +108,7 @@ describe(ShapeRemoteComponent.name, () => {
 
   it('should notify but not emit on http error', () => {
     httpClient.get = jest.fn().mockReturnValue(throwError(() => new Error('Intended test error')));
+    translateService.instant = jest.fn();
 
     notificationService.addError = jest.fn();
     taskDraftService.addTasks = jest.fn();

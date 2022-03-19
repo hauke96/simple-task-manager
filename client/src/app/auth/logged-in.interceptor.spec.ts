@@ -4,17 +4,20 @@ import { NotificationService } from '../common/services/notification.service';
 import { HttpRequest } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { of } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 describe(LoggedInInterceptor.name, () => {
   let interceptor: LoggedInInterceptor;
   let authService: AuthService;
   let notificationService: NotificationService;
+  let translationService: TranslateService;
 
   beforeEach(() => {
     authService = {} as AuthService;
     notificationService = {} as NotificationService;
+    translationService = {} as TranslateService;
 
-    interceptor = new LoggedInInterceptor(authService, notificationService);
+    interceptor = new LoggedInInterceptor(authService, notificationService, translationService);
   });
 
   it('should call next handler on unauthenticated URLs', () => {

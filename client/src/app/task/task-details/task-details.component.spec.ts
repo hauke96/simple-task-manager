@@ -12,6 +12,7 @@ import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
 import { AppModule } from '../../app.module';
 import { NotificationService } from '../../common/services/notification.service';
 import { EventEmitter } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 describe(TaskDetailsComponent.name, () => {
   let component: TaskDetailsComponent;
@@ -23,6 +24,7 @@ describe(TaskDetailsComponent.name, () => {
   let shortcutService: ShortcutService;
   let httpClient: HttpClient;
   let notificationService: NotificationService;
+  let translationService: TranslateService;
 
   let shortcutAssignSubject: Subject<void>;
   let shortcutUnassignSubject: Subject<void>;
@@ -69,12 +71,15 @@ describe(TaskDetailsComponent.name, () => {
       }
     });
 
+    translationService = {} as TranslateService;
+
     return MockBuilder(TaskDetailsComponent, AppModule)
       .provide({provide: TaskService, useFactory: () => taskService})
       .provide({provide: CurrentUserService, useFactory: () => currentUserService})
       .provide({provide: UserService, useFactory: () => userService})
       .provide({provide: NotificationService, useFactory: () => notificationService})
-      .provide({provide: ShortcutService, useFactory: () => shortcutService});
+      .provide({provide: ShortcutService, useFactory: () => shortcutService})
+      .provide({provide: TranslateService, useFactory: () => translationService});
   });
 
   beforeEach(() => {

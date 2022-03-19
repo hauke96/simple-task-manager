@@ -10,6 +10,7 @@ import { AppModule } from '../../app.module';
 import { EventEmitter } from '@angular/core';
 import { MapLayerService } from '../../common/services/map-layer.service';
 import { ProcessPointColorService } from '../../common/services/process-point-color.service';
+import { TranslateService } from '@ngx-translate/core';
 
 describe(TaskMapComponent.name, () => {
   let component: TaskMapComponent;
@@ -18,11 +19,13 @@ describe(TaskMapComponent.name, () => {
   let currentUserService: CurrentUserService;
   let processPointColorService: ProcessPointColorService;
   let layerService: MapLayerService;
+  let translationService: TranslateService;
 
   beforeEach(() => {
     taskService = {} as TaskService;
     taskService.selectedTaskChanged = new EventEmitter();
     taskService.getSelectedTask = jest.fn().mockReturnValue(undefined);
+    translationService = {} as TranslateService;
 
     currentUserService = {} as CurrentUserService;
     processPointColorService = {} as ProcessPointColorService;
@@ -35,7 +38,8 @@ describe(TaskMapComponent.name, () => {
       .provide({provide: TaskService, useFactory: () => taskService})
       .provide({provide: CurrentUserService, useFactory: () => currentUserService})
       .provide({provide: ProcessPointColorService, useFactory: () => processPointColorService})
-      .provide({provide: MapLayerService, useFactory: () => layerService});
+      .provide({provide: MapLayerService, useFactory: () => layerService})
+      .provide({provide: TranslateService, useFactory: () => translationService});
   });
 
   beforeEach(() => {
@@ -80,6 +84,7 @@ describe(TaskMapComponent.name, () => {
     beforeEach(() => {
       processPointsColorFn = jest.fn();
       processPointColorService.getProcessPointsColor = processPointsColorFn;
+      translationService.instant = jest.fn();
     });
 
     it('should create fillColor correctly', () => {

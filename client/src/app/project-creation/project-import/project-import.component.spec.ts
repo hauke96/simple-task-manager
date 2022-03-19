@@ -3,20 +3,24 @@ import { ProjectImportService } from '../project-import.service';
 import { NotificationService } from '../../common/services/notification.service';
 import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
 import { AppModule } from '../../app.module';
+import { TranslateService } from '@ngx-translate/core';
 
 describe(ProjectImportComponent.name, () => {
   let component: ProjectImportComponent;
   let fixture: MockedComponentFixture<ProjectImportComponent>;
   let notificationService: NotificationService;
   let projectImportService: ProjectImportService;
+  let translationService: TranslateService;
 
   beforeEach(() => {
     notificationService = {} as NotificationService;
     projectImportService = {} as ProjectImportService;
+    translationService = {} as TranslateService;
 
     return MockBuilder(ProjectImportComponent, AppModule)
       .provide({provide: NotificationService, useFactory: () => notificationService})
-      .provide({provide: ProjectImportService, useFactory: () => projectImportService});
+      .provide({provide: ProjectImportService, useFactory: () => projectImportService})
+      .provide({provide: TranslateService, useFactory: () => translationService});
   });
 
   beforeEach(() => {

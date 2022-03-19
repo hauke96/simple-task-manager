@@ -1,13 +1,14 @@
 import { ProjectPropertiesComponent } from './project-properties.component';
 import { ProjectProperties } from '../project-properties';
 import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
 
 describe(ProjectPropertiesComponent.name, () => {
   let component: ProjectPropertiesComponent;
   let fixture: MockedComponentFixture<ProjectPropertiesComponent, any>;
 
   beforeEach(() => {
-    return MockBuilder(ProjectPropertiesComponent);
+    return MockBuilder(ProjectPropertiesComponent, AppModule);
   });
 
   beforeEach(() => {

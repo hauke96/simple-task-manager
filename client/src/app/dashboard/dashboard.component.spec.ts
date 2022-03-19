@@ -3,20 +3,24 @@ import { CurrentUserService } from '../user/current-user.service';
 import { AuthService } from '../auth/auth.service';
 import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
 import { AppModule } from '../app.module';
+import { TranslateService } from '@ngx-translate/core';
 
 describe(DashboardComponent.name, () => {
   let component: DashboardComponent;
   let fixture: MockedComponentFixture<DashboardComponent>;
   let currentUserService: CurrentUserService;
   let authService: AuthService;
+  let translationService: TranslateService;
 
   beforeEach(() => {
     currentUserService = {} as CurrentUserService;
     currentUserService.getUserName = jest.fn();
     authService = {} as AuthService;
+    translationService = {} as TranslateService;
 
     return MockBuilder(DashboardComponent, AppModule)
       .provide({provide: CurrentUserService, useFactory: () => currentUserService})
+      .provide({provide: TranslateService, useFactory: () => translationService})
       .provide({provide: AuthService, useFactory: () => authService});
   });
 

@@ -12,6 +12,7 @@ import { FeatureLike } from 'ol/Feature';
 import { Geometry } from 'ol/geom';
 import { MapLayerService } from '../../common/services/map-layer.service';
 import RenderFeature from 'ol/render/Feature';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-task-map',
@@ -30,7 +31,8 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit, OnD
     private taskService: TaskService,
     private currentUserService: CurrentUserService,
     private processPointColorService: ProcessPointColorService,
-    private layerService: MapLayerService
+    private layerService: MapLayerService,
+    private translationService: TranslateService
   ) {
     super();
   }
@@ -136,14 +138,14 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit, OnD
     const labelWeight = currentUserTask ? 'bold' : 'normal';
     let labelText: string;
     if (task.isDone) {
-      labelText = $localize`:@@TASK_MAP_DONE:DONE`;
+      labelText = this.translationService.instant('task-map.task-done');
     } else {
       labelText = Math.floor(100 * task.processPoints / task.maxProcessPoints) + '%';
     }
 
     // Add user name
     if (currentUserTask) {
-      labelText += '\n(' + $localize`:@@TASK_YOU:you` + ')';
+      labelText += '\n(' + this.translationService.instant('task-map.you') + ')';
     } else if (hasAssignedUser) {
       // @ts-ignore "hasAssignedUser" ensures that we have an assignedUser
       labelText += '\n(' + task.assignedUser.name + ')';

@@ -26,12 +26,13 @@ import { Project } from '../../project/project.material';
 import { Unsubscriber } from '../../common/unsubscriber';
 import { Coordinate } from 'ol/coordinate';
 import { MapLayerService } from '../../common/services/map-layer.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-project-creation',
   templateUrl: './project-creation.component.html',
   styleUrls: ['./project-creation.component.scss'],
-  providers: [ TaskDraftService ]
+  providers: [TaskDraftService]
 })
 export class ProjectCreationComponent extends Unsubscriber implements OnInit, OnDestroy, AfterViewInit {
   public projectProperties: ProjectProperties = new ProjectProperties('', 100, '');
@@ -56,7 +57,8 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
     private projectImportService: ProjectImportService,
     private mapLayerService: MapLayerService,
     private router: Router,
-    public config: ConfigProvider
+    public config: ConfigProvider,
+    private translationService: TranslateService
   ) {
     super();
   }
@@ -175,10 +177,10 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
 
   public get rootTabTitles(): string[] {
     return [
-      $localize`:@@TABS_PROPERTIES:Properties`,
-      $localize`:@@TABS_TASKS:Tasks`,
-      $localize`:@@TABS_IMPORT:Import`,
-      $localize`:@@TABS_REMOTE:Remote`
+      this.translationService.instant('project-creation.tab-titles.properties'),
+      this.translationService.instant('project-creation.tab-titles.tasks'),
+      this.translationService.instant('project-creation.tab-titles.import'),
+      this.translationService.instant('project-creation.tab-titles.remote')
     ];
   }
 
@@ -197,7 +199,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
   /**
    * Called after a task has been added to the task draft service.
    */
-  private addTasks(tasks: TaskDraft[]) {
+  private addTasks(tasks: TaskDraft[]): void {
     const newFeatures = tasks.map(t => this.toFeature(t));
     this.vectorSource.addFeatures(newFeatures);
 
@@ -208,7 +210,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
     }
   }
 
-  private removeTask(id: string | undefined) {
+  private removeTask(id: string | undefined): void {
     const featureToRemove = this.vectorSource.getFeatures().find(f => f.get('id') === id);
     if (!id || !featureToRemove) {
       return;
@@ -217,7 +219,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
     this.vectorSource.removeFeature(featureToRemove);
   }
 
-  private addMapInteractions() {
+  private addMapInteractions(): void {
     // DRAW
     this.drawInteraction = new Draw({
       type: GeometryType.POLYGON
@@ -273,7 +275,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
   }
 
   // TODO pass TaskDrafts here to "createProject"
-  public onSaveButtonClicked() {
+  public onSaveButtonClicked(): void {
     const features: Feature<Geometry>[] = this.vectorSource.getFeatures().map(f => {
       f = f.clone(); // otherwise we would change the polygons on the map
       let polygon = (f.getGeometry() as Polygon);
@@ -294,7 +296,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
     );
   }
 
-  public createProject(name: string, maxProcessPoints: number, projectDescription: string, features: Feature<Geometry>[]) {
+  public createProject(name: string, maxProcessPoints: number, projectDescription: string, features: Feature<Geometry>[]): void {
     const owner = this.currentUserService.getUserId();
     if (!owner) {
       // TODO Show error notification
@@ -306,11 +308,11 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
         this.router.navigate(['/dashboard']);
       }, e => {
         console.error(e);
-        this.notificationService.addError(($localize`:@@ERROR_NOT_CREATE_PROJ:Could not create project`) + ': ' + e.error);
+        this.notificationService.addError(this.translationService.instant('project-creation.could-not-create-project') + ': ' + e.error);
       });
   }
 
-  onTabSelected() {
+  onTabSelected(): void {
     // Disable all interactions and also notify the toolbar that all interactions are disabled (-> toolbar will remove any selection)
     this.drawInteraction.setActive(false);
     this.modifyInteraction.setActive(false);
@@ -322,19 +324,19 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
     this.resetToolbarSelectionSubject.next();
   }
 
-  onToggleDraw() {
+  onToggleDraw(): void {
     this.setInteraction(this.drawInteraction, !this.drawInteraction.getActive());
   }
 
-  onToggleEdit() {
+  onToggleEdit(): void {
     this.setInteraction(this.modifyInteraction, !this.modifyInteraction.getActive());
   }
 
-  onToggleDelete() {
+  onToggleDelete(): void {
     this.setInteraction(this.removeInteraction, !this.removeInteraction.getActive());
   }
 
-  setInteraction(interaction: Interaction, active: boolean) {
+  setInteraction(interaction: Interaction, active: boolean): void {
     this.drawInteraction.setActive(false);
     this.modifyInteraction.setActive(false);
     this.removeInteraction.setActive(false);
@@ -352,7 +354,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
     this.taskDraftService.deselectTask();
   }
 
-  onDividePreviewClicked(taskDrafts: TaskDraft[]) {
+  onDividePreviewClicked(taskDrafts: TaskDraft[]): void {
     this.previewVectorSource.clear();
     this.previewVectorSource.addFeatures(taskDrafts.map(t => this.toFeature(t)));
   }

@@ -14,6 +14,7 @@ import { NotificationService } from '../common/services/notification.service';
 import { Feature } from 'ol';
 import GeoJSON from 'ol/format/GeoJSON';
 import { Geometry } from 'ol/geom';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -29,17 +30,18 @@ export class ProjectService {
     private userService: UserService,
     private http: HttpClient,
     private websocketClient: WebsocketClientService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private translationService: TranslateService
   ) {
     websocketClient.messageReceived.subscribe((m: WebsocketMessage) => {
       this.handleReceivedMessage(m);
     }, e => {
       console.error(e);
-      this.notificationService.addError($localize`:@@ERROR_LIVE_UPDATE:Could not initialize live-updates`);
+      this.notificationService.addError(this.translationService.instant('project.live-updates-init-error'));
     });
   }
 
-  private handleReceivedMessage(m: WebsocketMessage) {
+  private handleReceivedMessage(m: WebsocketMessage): void {
     switch (m.type) {
       case WebsocketMessageType.MessageType_ProjectAdded:
         this.getProject(m.id).subscribe(
@@ -128,7 +130,7 @@ export class ProjectService {
       );
   }
 
-  public updateName(projectId: string, newName: string) {
+  public updateName(projectId: string, newName: string): Observable<Project> {
     return this.http.put<ProjectDto>(environment.url_projects_name.replace('{id}', projectId), newName)
       .pipe(
         mergeMap(dto => this.toProject(dto)),
@@ -136,7 +138,7 @@ export class ProjectService {
       );
   }
 
-  public updateDescription(projectId: string, newDescription: string) {
+  public updateDescription(projectId: string, newDescription: string): Observable<Project> {
     return this.http.put<ProjectDto>(environment.url_projects_description.replace('{id}', projectId), newDescription)
       .pipe(
         mergeMap(dto => this.toProject(dto)),

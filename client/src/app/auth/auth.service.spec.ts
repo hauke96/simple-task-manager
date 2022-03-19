@@ -3,7 +3,7 @@ import { CurrentUserService } from '../user/current-user.service';
 import { NotificationService } from '../common/services/notification.service';
 import { Router } from '@angular/router';
 
-describe('AuthService', () => {
+describe(AuthService.name, () => {
   let service: AuthService;
   let currentUserService: CurrentUserService;
   let router: Router;

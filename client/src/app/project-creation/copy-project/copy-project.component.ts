@@ -1,15 +1,16 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Project } from '../../project/project.material';
 import { ProjectService } from '../../project/project.service';
 import { NotificationService } from '../../common/services/notification.service';
 import { ProjectImportService } from '../project-import.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-copy-project',
   templateUrl: './copy-project.component.html',
   styleUrls: ['./copy-project.component.scss']
 })
-export class CopyProjectComponent implements OnInit {
+export class CopyProjectComponent {
   @Input() projects: Project[];
 
   public selectedProject: Project | undefined;
@@ -17,11 +18,9 @@ export class CopyProjectComponent implements OnInit {
   constructor(
     private projectService: ProjectService,
     private notificationService: NotificationService,
-    private projectImportService: ProjectImportService
+    private projectImportService: ProjectImportService,
+    private translateService: TranslateService
   ) {
-  }
-
-  ngOnInit(): void {
   }
 
   onProjectClicked(project: Project): void {
@@ -43,7 +42,7 @@ export class CopyProjectComponent implements OnInit {
         error: e => {
           console.error(e);
           // @ts-ignore See above check
-          this.notificationService.addError($localize`:@@ERROR_COULD_NOT_IMPORT:Could not import project '${this.selectedProject.name}:INTERPOLATION:'`);
+          this.notificationService.addError(this.translateService.instant('project-creation.could-not-import-project', {projectName: this.selectedProject?.name}));
           this.selectedProject = undefined;
         }
       });

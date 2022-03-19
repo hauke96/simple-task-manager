@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ProjectExport } from '../../project/project.material';
 import { ProjectImportService } from '../project-import.service';
 import { NotificationService } from '../../common/services/notification.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-project-import',
@@ -12,7 +13,9 @@ export class ProjectImportComponent {
 
   constructor(
     private notificationService: NotificationService,
-    private projectImportService: ProjectImportService) {
+    private projectImportService: ProjectImportService,
+    private translationService: TranslateService
+  ) {
   }
 
   public onProjectSelected(event: any): void {
@@ -38,7 +41,8 @@ export class ProjectImportComponent {
     reader.onload = loadHandler;
     reader.onerror = (evt) => {
       console.error(evt);
-      this.notificationService.addError($localize`:@@ERROR_COULD_NOT_UPLOAD:Could not upload file '${(evt.target as any).files[0]}:INTERPOLATION:'`);
+      const message = this.translationService.instant('file-upload-error', {fileName: (evt.target as any).files[0]});
+      this.notificationService.addError(message);
     };
   }
 }

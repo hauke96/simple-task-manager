@@ -29,7 +29,6 @@ import { MaxValidatorDirective } from './ui/max-validator.directive';
 import { MinValidatorDirective } from './ui/min-validator.directive';
 import { ShapeRemoteComponent } from './project-creation/shape-remote/shape-remote.component';
 
-import { TranslationExtractionComponent } from './translation-extraction.component';
 import { LanguageSelectionComponent } from './ui/language-selection/language-selection.component';
 import { SelectedLanguageGuard } from './common/selected-language.guard';
 import { DrawingToolbarComponent } from './project-creation/drawing-toolbar/drawing-toolbar.component';
@@ -70,7 +69,6 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
     MaxValidatorDirective,
     MinValidatorDirective,
     ShapeRemoteComponent,
-    TranslationExtractionComponent,
     LanguageSelectionComponent,
     DrawingToolbarComponent,
     TaskDraftListComponent,

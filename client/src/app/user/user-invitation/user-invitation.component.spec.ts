@@ -5,20 +5,24 @@ import { UserService } from '../user.service';
 import { User } from '../user.material';
 import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
 import { AppModule } from '../../app.module';
+import { TranslateService } from '@ngx-translate/core';
 
 describe(UserInvitationComponent.name, () => {
   let component: UserInvitationComponent;
   let fixture: MockedComponentFixture<UserInvitationComponent>;
   let notificationService: NotificationService;
   let userService: UserService;
+  let translationService: TranslateService;
 
   beforeEach(() => {
     notificationService = {} as NotificationService;
     userService = {} as UserService;
+    translationService = {} as TranslateService;
 
     return MockBuilder(UserInvitationComponent, AppModule)
       .provide({provide: UserService, useFactory: () => userService})
-      .provide({provide: NotificationService, useFactory: () => notificationService});
+      .provide({provide: NotificationService, useFactory: () => notificationService})
+      .provide({provide: TranslateService, useFactory: () => translationService});
   });
 
   beforeEach(() => {
@@ -55,6 +59,7 @@ describe(UserInvitationComponent.name, () => {
     component.userInvited.subscribe(inviteUserSpy);
     notificationService.addError = jest.fn();
     userService.getUserByName = jest.fn().mockReturnValue(throwError(() => new Error('BOOM!')));
+    translationService.instant = jest.fn().mockReturnValue('foo');
 
     component.enteredUserName = 'test-user';
 
@@ -63,7 +68,8 @@ describe(UserInvitationComponent.name, () => {
 
     // Assert
     expect(inviteUserSpy).not.toHaveBeenCalled();
-    expect(notificationService.addError).toHaveBeenCalled();
+    expect(translationService.instant).toHaveBeenCalledWith('user.unable-load-user', {user: component.enteredUserName});
+    expect(notificationService.addError).toHaveBeenCalledWith('foo');
   });
 
   it('should so nothing when adding user twice', () => {
@@ -76,6 +82,7 @@ describe(UserInvitationComponent.name, () => {
       return of(user);
     });
     notificationService.addWarning = jest.fn();
+    translationService.instant = jest.fn().mockReturnValue('foo');
 
     component.enteredUserName = 'test-user';
 
@@ -86,6 +93,8 @@ describe(UserInvitationComponent.name, () => {
     // Assert
     expect(inviteUserSpy).toHaveBeenCalledTimes(1);
     expect(userService.getUserByName).toHaveBeenCalledTimes(1);
+    expect(translationService.instant).toHaveBeenCalledWith('user.already-member', {user: component.enteredUserName});
     expect(notificationService.addWarning).toHaveBeenCalledTimes(1);
+    expect(notificationService.addWarning).toHaveBeenCalledWith('foo');
   });
 });

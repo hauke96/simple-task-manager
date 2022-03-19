@@ -3,10 +3,11 @@ import { NotificationService } from '../../common/services/notification.service'
 import { TaskDraftService } from '../task-draft.service';
 import { GeometryService } from '../../common/services/geometry.service';
 import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
-import { AppComponent } from '../../app.component';
-import { of, throwError } from 'rxjs';
+import { throwError } from 'rxjs';
 import { Polygon } from 'ol/geom';
 import { TaskDraft } from '../../task/task.material';
+import { AppModule } from '../../app.module';
+import { TranslateService } from '@ngx-translate/core';
 
 describe(ShapeUploadComponent.name, () => {
   let component: ShapeUploadComponent;
@@ -14,16 +15,19 @@ describe(ShapeUploadComponent.name, () => {
   let notificationService: NotificationService;
   let taskDraftService: TaskDraftService;
   let geometryService: GeometryService;
+  let translationService: TranslateService;
 
   beforeEach(() => {
     notificationService = {} as NotificationService;
     taskDraftService = {} as TaskDraftService;
     geometryService = {} as GeometryService;
+    translationService = {} as TranslateService;
 
-    return MockBuilder(ShapeUploadComponent, AppComponent)
+    return MockBuilder(ShapeUploadComponent, AppModule)
       .provide({provide: NotificationService, useFactory: () => notificationService})
       .provide({provide: TaskDraftService, useFactory: () => taskDraftService})
-      .provide({provide: GeometryService, useFactory: () => geometryService});
+      .provide({provide: GeometryService, useFactory: () => geometryService})
+      .provide({provide: TranslateService, useFactory: () => translationService});
   });
 
   beforeEach(() => {

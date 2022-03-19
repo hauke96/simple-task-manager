@@ -1,7 +1,7 @@
 import { TaskDraftListComponent } from './task-draft-list.component';
 import { TaskDraftService } from '../task-draft.service';
 import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
-import { AppComponent } from '../../app.component';
+import { AppModule } from '../../app.module';
 
 describe(TaskDraftListComponent.name, () => {
   let component: TaskDraftListComponent;
@@ -11,7 +11,7 @@ describe(TaskDraftListComponent.name, () => {
   beforeEach(() => {
     taskDraftService = {} as TaskDraftService;
 
-    return MockBuilder(TaskDraftListComponent, AppComponent)
+    return MockBuilder(TaskDraftListComponent, AppModule)
       .provide({provide: TaskDraftService, useFactory: () => taskDraftService});
   });
 

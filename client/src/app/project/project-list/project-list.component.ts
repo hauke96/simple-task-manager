@@ -6,6 +6,7 @@ import { ProjectService } from '../project.service';
 import { Unsubscriber } from '../../common/unsubscriber';
 import { NotificationService } from '../../common/services/notification.service';
 import { ProjectImportService } from '../../project-creation/project-import.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-project-list',
@@ -20,7 +21,8 @@ export class ProjectListComponent extends Unsubscriber implements OnInit {
     private route: ActivatedRoute,
     private currentUserService: CurrentUserService,
     private projectService: ProjectService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private translationService: TranslateService
   ) {
     super();
   }
@@ -54,7 +56,8 @@ export class ProjectListComponent extends Unsubscriber implements OnInit {
           return;
         }
 
-        this.notificationService.addInfo($localize`:@@WARN_PROJECT_REMOVED:The project '${project.name}:INTERPOLATION:' has been removed`);
+        const message = this.translationService.instant('project-has-been-removed', {projectName: project.name});
+        this.notificationService.addInfo(message);
 
         this.projects = this.projects.filter(p => p.id !== removedProjectId);
       }),
@@ -64,7 +67,8 @@ export class ProjectListComponent extends Unsubscriber implements OnInit {
           return;
         }
 
-        this.notificationService.addInfo($localize`:@@WARN_REMOVED_USER_PROJECT:You have been removed from project '${project.name}:INTERPOLATION:'`);
+        const message = this.translationService.instant('you-have-been-removed', {projectName: project.name});
+        this.notificationService.addInfo(message);
 
         this.projects = this.projects.filter(p => p.id !== projectId);
       }),

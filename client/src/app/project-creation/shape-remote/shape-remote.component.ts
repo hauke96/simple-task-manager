@@ -1,16 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { NotificationService } from '../../common/services/notification.service';
 import { GeometryService } from '../../common/services/geometry.service';
 import { LoadingService } from '../../common/services/loading.service';
 import { TaskDraftService } from '../task-draft.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-shape-remote',
   templateUrl: './shape-remote.component.html',
   styleUrls: ['./shape-remote.component.scss']
 })
-export class ShapeRemoteComponent implements OnInit {
+export class ShapeRemoteComponent {
   public queryUrl: string;
 
   constructor(
@@ -18,11 +19,9 @@ export class ShapeRemoteComponent implements OnInit {
     private notificationService: NotificationService,
     private geometryService: GeometryService,
     private loadingService: LoadingService,
-    private taskDraftService: TaskDraftService
+    private taskDraftService: TaskDraftService,
+    private translationService: TranslateService
   ) {
-  }
-
-  ngOnInit(): void {
   }
 
   onLoadButtonClicked(): void {
@@ -37,13 +36,13 @@ export class ShapeRemoteComponent implements OnInit {
         if (!!features && features.length !== 0) {
           this.taskDraftService.addTasks(features.map(f => this.taskDraftService.toTaskDraft(f)));
         } else {
-          this.notificationService.addError($localize`:@@ERROR_OVERPASS_NO_POLYGONS:No polygons exist or data has unknown format. Supported formats are: GeoJson, OSM-XML, GPX, KML, EsriJson and WKT.`);
+          this.notificationService.addError(this.translationService.instant('feature-upload-error'));
         }
       }, e => {
         this.loadingService.end();
         console.error('Error loading data from remote URL');
         console.error(e);
-        this.notificationService.addError($localize`:@@ERROR_UNABLE_LOAD_URL:Unable to load data from remote URL`);
+        this.notificationService.addError(this.translationService.instant('project-creation.remote-url-error'));
       });
   }
 }

@@ -6,6 +6,7 @@ import { ProjectImportService } from '../project-import.service';
 import { NotificationService } from '../../common/services/notification.service';
 import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
 import { AppModule } from '../../app.module';
+import { TranslateService } from '@ngx-translate/core';
 
 describe(CopyProjectComponent.name, () => {
   let component: CopyProjectComponent;
@@ -13,16 +14,19 @@ describe(CopyProjectComponent.name, () => {
   let projectService: ProjectService;
   let projectImportService: ProjectImportService;
   let notificationService: NotificationService;
+  let translateService: TranslateService;
 
   beforeEach(() => {
     projectService = {} as ProjectService;
     projectImportService = {} as ProjectImportService;
     notificationService = {} as NotificationService;
+    translateService = {} as TranslateService;
 
     return MockBuilder(CopyProjectComponent, AppModule)
       .provide({provide: ProjectService, useFactory: () => projectService})
       .provide({provide: ProjectImportService, useFactory: () => projectImportService})
-      .provide({provide: NotificationService, useFactory: () => notificationService});
+      .provide({provide: NotificationService, useFactory: () => notificationService})
+      .provide({provide: TranslateService, useFactory: () => translateService});
   });
 
   beforeEach(() => {
@@ -83,6 +87,7 @@ describe(CopyProjectComponent.name, () => {
     component.selectedProject = {id: '123'} as Project;
     projectService.getProjectExport = jest.fn().mockReturnValue(throwError(() => new Error('some error')));
     notificationService.addError = jest.fn();
+    translateService.instant = jest.fn();
 
     component.onImportClicked();
 
