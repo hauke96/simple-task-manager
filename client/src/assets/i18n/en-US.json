@@ -20,8 +20,8 @@
   "feature-upload-error": "No polygons exist or data has unknown format. Supported formats are: GeoJson, OSM-XML, GPX, KML, EsriJson and WKT.",
   "file-upload-error": "Could not upload file '{{fileName}}'",
   "login-failed": "Logout because authorization was not successful",
+  "language-selection": "Language selection:",
   "login": {
-    "language-selection": "Language selection:",
     "welcome": "Welcome to SimpleTaskManager for <a href=\"https://openstreetmap.org\">OpenStreetMap</a>",
     "login-button": "Login"
   },
