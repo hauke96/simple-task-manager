@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Language } from '../../common/entities/language';
-import { SelectedLanguageService } from '../../common/services/selected-language.service';
+import { LanguageService } from '../../common/services/language.service';
 
 @Component({
   selector: 'app-language-selection',
@@ -11,18 +11,18 @@ import { SelectedLanguageService } from '../../common/services/selected-language
 export class LanguageSelectionComponent implements OnInit {
   languages: Language[] = [];
 
-  constructor(private route: ActivatedRoute, private selectedLanguageService: SelectedLanguageService) {
+  constructor(private route: ActivatedRoute, private languageService: LanguageService) {
   }
 
   ngOnInit(): void {
-    this.languages = this.selectedLanguageService.getKnownLanguages();
+    this.languages = this.languageService.getKnownLanguages();
   }
 
   get selectedLanguage(): Language | undefined {
-    return this.selectedLanguageService.getSelectedLanguage();
+    return this.languageService.getSelectedLanguage();
   }
 
   onLanguageChange(event: any): void {
-    this.selectedLanguageService.selectLanguageByCode(event.target.value);
+    this.languageService.selectLanguageByCode(event.target.value);
   }
 }

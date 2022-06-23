@@ -1,5 +1,5 @@
 import { LanguageSelectionComponent } from './language-selection.component';
-import { SelectedLanguageService } from '../../common/services/selected-language.service';
+import { LanguageService } from '../../common/services/language.service';
 import { Language } from '../../common/entities/language';
 import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
 import { AppModule } from '../../app.module';
@@ -8,17 +8,17 @@ import { ActivatedRoute } from '@angular/router';
 describe(LanguageSelectionComponent.name, () => {
   let component: LanguageSelectionComponent;
   let fixture: MockedComponentFixture<LanguageSelectionComponent>;
-  let selectedLanguageService: SelectedLanguageService;
+  let languageService: LanguageService;
 
   beforeEach(async () => {
-    selectedLanguageService = {} as SelectedLanguageService;
-    selectedLanguageService.getKnownLanguages = jest.fn();
-    selectedLanguageService.getSelectedLanguage = jest.fn();
+    languageService = {} as LanguageService;
+    languageService.getKnownLanguages = jest.fn();
+    languageService.getSelectedLanguage = jest.fn();
     const activatedRoute = {} as unknown as ActivatedRoute;
 
     return MockBuilder(LanguageSelectionComponent, AppModule)
       .provide({provide: ActivatedRoute, useFactory: () => activatedRoute})
-      .provide({provide: SelectedLanguageService, useFactory: () => selectedLanguageService});
+      .provide({provide: LanguageService, useFactory: () => languageService});
   });
 
   beforeEach(() => {
@@ -38,7 +38,7 @@ describe(LanguageSelectionComponent.name, () => {
       new Language('test', 'Testish'),
     ];
     component.languages = [];
-    selectedLanguageService.getKnownLanguages = jest.fn().mockReturnValue(languages);
+    languageService.getKnownLanguages = jest.fn().mockReturnValue(languages);
 
     component.ngOnInit();
 
@@ -47,12 +47,12 @@ describe(LanguageSelectionComponent.name, () => {
   });
 
   it('should call service to set language', () => {
-    selectedLanguageService.selectLanguageByCode = jest.fn();
+    languageService.selectLanguageByCode = jest.fn();
     // @ts-ignore
-    selectedLanguageService.selectedLanguage = new Language('en-US', 'English');
+    languageService.selectedLanguage = new Language('en-US', 'English');
 
     component.onLanguageChange({target: {value: 'de'}});
 
-    expect(selectedLanguageService.selectLanguageByCode).toHaveBeenCalledWith('de');
+    expect(languageService.selectLanguageByCode).toHaveBeenCalledWith('de');
   });
 });
