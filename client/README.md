@@ -38,14 +38,8 @@ You can also use Chrome with `ng test --browsers=ChromeHeadless`.
 **tl;dr:**
 * npm run build
 
-This creates a bunch of `.js` and `.css` files as well as the `index.html`.
-All together can be copied to a normal HTTP server.
-
-Similar to running the app, but with `npm run build`.
-The output will be in `client/dist/simple-taskmanager/<lang>`, where `en-US` for English,
-`ja` for Japanese and `de` for Deutsch.
-
-**Beware:** This may take some time (up to several minutes), depending on your machine.
+This creates a bunch of files in `client/dist/simple-taskmanager`.
+They can simply be copied to a normal HTTP server.
 
 # Code conventions
 
