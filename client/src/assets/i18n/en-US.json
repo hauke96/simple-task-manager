@@ -112,7 +112,7 @@
   "task-details": {
     "title": "Task",
     "assign-to-me": "Assign to me",
-    "assign-to": "Assign to:",
+    "assigned-to": "Assigned to:",
     "unassign": "Unassign",
     "points": "Points:",
     "open-in-josm-button": "Open in JOSM",

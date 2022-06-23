@@ -2,13 +2,31 @@
   "title": "SimpleTaskManager",
   "users": "Benutzer:",
   "settings": "Einstellungen:",
+  "description": "Beschreibung:",
+  "properties": "Eigenschaften:",
+  "tasks": "Ausgaben:",
+  "name": "Name:",
+  "save-button": "Speichern",
+  "done-button": "Fertig",
+  "cancel-button": "Abbrechen",
+  "ok-button": "OK",
+  "meters": "meter",
+  "yes": "Ja",
+  "no": "Nein",
+  "test-instance-notice": "Dies ist eine <b>Test-Instanz</b> vom SimpleTaskManager.",
+  "footer": "Version: <a href=\"https://github.com/hauke96/simple-task-manager/releases/tag/v{{version}}\" target=\"_blank\">{{version}}</a><span class=\"sep\"></span>Code: <a href=\"https://github.com/hauke96/simple-task-manager\" target=\"_blank\">GitHub</a><span class=\"sep\"></span>Lizenz: <a href=\"https://github.com/hauke96/simple-task-manager/blob/master/LICENSE\" target=\"_blank\">GPLv3</a><span class=\"sep\"></span>Symbole: <a href=\"https://linearicons.com\" target=\"_blank\">Linearicons</a>",
+  "project-has-been-removed": "Das Projekt '{{projectName}}' wurde entfernt",
+  "you-have-been-removed": "Du wurdest aus dem Projekt '{{projectName}}' entfernt",
+  "feature-upload-error": "Es existiert kein Polygon oder die Daten haben ein unbekanntes Format. Unterstütze Formate sind: GeoJson, OSM-XML, GPX, KML, EsriJson und WKT.",
+  "file-upload-error": "Konnte Datei '{{fileName}}' nicht hochladen",
+  "login-failed": "Du wurdest ausgeloggt, weil die Authentifizierung nicht erfolgreich war.",
+  "language-selection": "Sprachauswahl:",
   "login": {
-    "language-selection": "Sprachauswahl:",
     "welcome": "Willkommen beim SimpleTaskManager für <a href=\"https://openstreetmap.org\">OpenStreetMap</a>",
     "login-button": "Anmelden"
   },
   "dashboard": {
-    "welcome": "Welcome {{userName}} :)",
+    "welcome": "Willkommen {{userName}} :)",
     "logout-button": "Abmelden",
     "create-project": "Projekt erstellen",
     "import-project": "Projekt importieren"
@@ -17,11 +35,117 @@
     "back-button": "Zurück",
     "title": "Projekt:",
     "creation-date": "Erstellt am:",
-    "description": "Beschreibung:"
+    "description": "Beschreibung:",
+    "could-not-remove-user": "Nutzer konnte nicht entfernt werden",
+    "could-not-invite-user": "Nutzer {{userName}} konnte nicht eingeladen werden",
+    "tab-titles": {
+      "tasks": "Aufgaben",
+      "users": "Benutzer",
+      "settings": "Einstellungen"
+    },
+    "live-updates-init-error": "Echtzeit-Aktualisierungen konnten nicht initialisieren werden",
+    "could-not-load-project": "Projekt '{{projectId}}' konnte nicht geladen werden",
+    "could-not-load-projects": "Projekte konnten nicht geladen werden"
   },
   "project-list": {
     "projects": "Projekte:",
-    "no-project-notice": "Du hast derzeit keine Projekte",
+    "no-project-notice": "Du hast derzeit noch keine Projekte.",
     "you-own-this-project-notice": "* dies ist dein Projekt"
+  },
+  "project-settings": {
+    "delete-button": "Projekt löschen",
+    "really-delete-notice": "Möchtest du dieses Projekt wirklich löschen?",
+    "leave-button": "Projekt verlassen",
+    "really-leave-notice": "Möchtest du dieses Projekt wirklich verlassen?",
+    "export-button": "Export",
+    "successfully-removed": "Projekt wurde erfolgreich gelöscht",
+    "successfully-updated": "Projekt wurde erfolgreich aktualisiert",
+    "could-not-remove-project": "Projekt konnte nicht gelöscht werden",
+    "could-not-leave-project": "Projekt konnte nicht verlassen werden",
+    "could-not-update-project": "Titel/Beschreibung konnte nicht aksualisiert werden",
+    "could-not-export-project": "Projekt konnte nicht exportiert werden"
+  },
+  "project-creation": {
+    "copy": "Kopie:",
+    "copy-notice": "Kopiere und importiere ein Projekt, bei dem du Mitglied bist.",
+    "no-project-notice": "Keine Projekte verfügbar!",
+    "available-projects": "Verfügbare Projekte:",
+    "import-button": "Importieren",
+    "import-heading": "Import:",
+    "import-notice": "Importiere ein Projekt von deinem Computer. Existierende Eigenschaften werden überschrieben.",
+    "new-polygon": "Zeichne ein neues Polygon",
+    "edit-polygon": "Editiere ein Polygon",
+    "remove-polygon": "Lösche ein Polygon",
+    "subdivide": "Unterteilen:",
+    "upload-project-button": "Projekt hochladen",
+    "max-points-notice": "Max. Punkte pro Aufgabe:",
+    "subdivide-notice": "Dies zerteilt die ausgewählte Aufgabe in eine kleinere mit gewählter Größe und Form.",
+    "subdivide-result-too-large-notice": "Ergebnis mit {{amountTasksAfterDividing}} Aufgaben ist zu groß, nur {{maxTasksPerProject}} Aufgaben erlaubt.",
+    "shape-size": "Formgröße:",
+    "shape": "Form:",
+    "square": "Quadrat",
+    "hexagon": "Hexagon",
+    "triangle": "Dreieck",
+    "preview-button": "Vorschau",
+    "divide-button": "Zerteilen",
+    "url-file-format-notice": "URL zu Daten im GeoJSON, OSM-XML, GPX, EsriJson, KML oder WKT Format:",
+    "load-button": "Laden",
+    "loading-title": "Lade Daten von Overpass:",
+    "load-li-1": "Erstelle deine Abfrage",
+    "load-li-2": "Klicke auf \"Export\"",
+    "load-li-3": "Kopiere die URL nach \"raw data directly from\" (Rechtsklick und \"Link kopieren\")",
+    "load-li-4": "Füge die URL hier ein",
+    "upload": "Hochladen:",
+    "upload-notice": "Lade eine Datei im GeoJSON, OSM-XML, GPX, EsriJson, KML oder WKT Format hoch, die Polygone enthält. Jedes Polygon wird zu einer Aufgabe.",
+    "remote-url-error": "Daten konnte nicht von angegebener URL geladen werden",
+    "upload-file-button": "Hochladen",
+    "no-task-yet-notice": "Es gibt noch keine Aufgaben. Benutze das Stift-Werkzeug um Aufgaben zu zeichnen oder importiere welche über den \"Import\" or \"Link\" tab.",
+    "could-not-import-project": "Could not import project '{{projectName}}'",
+    "tab-titles": {
+      "properties": "Eigenschaften",
+      "tasks": "Aufgaben",
+      "import": "Import",
+      "remote": "Link"
+    },
+    "could-not-create-project": "Projekt konnte nicht angelegt werden"
+  },
+  "task-details": {
+    "title": "Aufgabe",
+    "assign-to-me": "Mir zuweisen",
+    "assigned-to": "Zugewiesen an:",
+    "unassign": "Zuweisung zurücksetzen",
+    "points": "Punkte:",
+    "open-in-josm-button": "In JOSM öffnen",
+    "open-in-id-button": "In iD öffnen",
+    "unable-load-assigned-user": "Zugewiesene Nutzer konnten nicht geladen werden",
+    "unable-assign-user": "Nutzer konnte nicht zugewiesen werden",
+    "unable-unassign-user": "Nutzer Zuweisung konnte nicht zurückgesetzt werden",
+    "unable-set-process-points": "Fortschrittspunkte konnten nicht gesetzt werden",
+    "unable-load-josm": "JOSM konnte nicht geöffnet werden. Ist JOSM gestartet?"
+  },
+  "task-list": {
+    "you": "(du)"
+  },
+  "notification": {
+    "loading": "Lade ...",
+    "error": "FEHLER:",
+    "errors-left": "Fehler verbleiben",
+    "warning": "WARNUNG:",
+    "warnings-left": "Warnungen verbleiben",
+    "notifications-left": "Meldungen verbleiben"
+  },
+  "zoom-controls": {
+    "zoom-in": "Reinzoomen",
+    "zoom-out": "Rauszoomen"
+  },
+  "user": {
+    "invite-button": "Einladen",
+    "remove-button": "Entfernen",
+    "already-member": "Nutzer {{user}} ist bereits Mitglied dieses Projektes.",
+    "unable-load-user": "Benutzer-ID für Nutzer {{user}} konnte nicht geladen werden. Der Nutzer muss mindestens einen Changeset oder Hinweis erstellt haben."
+  },
+  "task-map": {
+    "task-done": "FERTIG",
+    "you": "du"
   }
 }
