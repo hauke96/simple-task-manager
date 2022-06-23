@@ -1,8 +1,0 @@
-{
-  "title": "SimpleTaskManager",
-  "login": {
-    "language-selection": "Langue:",
-    "welcome": "Bienvenue sur SimpleTaskManager pour <a href=\"https://openstreetmap.org\">OpenStreetMap</a>",
-    "login-button": "Connexion"
-  }
-}

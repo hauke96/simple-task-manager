@@ -9,8 +9,8 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class AppComponent {
   constructor(private config: ConfigProvider, private translate: TranslateService) {
-    translate.addLangs(['de', 'en-US', 'es', 'fr', 'ja', 'zh-CN']);
-    translate.setDefaultLang('de');
+    translate.addLangs(['de', 'en-US', 'es']);
+    translate.setDefaultLang('en-US');
   }
 
   get isInTestMode(): boolean {

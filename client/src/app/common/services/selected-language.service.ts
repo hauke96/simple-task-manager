@@ -6,6 +6,8 @@ import { TranslateService } from '@ngx-translate/core';
   providedIn: 'root'
 })
 export class SelectedLanguageService {
+  static readonly SELECTED_LANGUAGE_KEY = 'selected_language';
+
   constructor(private translationService: TranslateService) {
   }
 
@@ -16,7 +18,7 @@ export class SelectedLanguageService {
    * @return true when no redirect took place and false when the language changes so that location.href has been set.
    */
   public loadLanguageFromLocalStorage(): boolean {
-    const selectedLanguageCode = localStorage.getItem('selected_language');
+    const selectedLanguageCode = localStorage.getItem(SelectedLanguageService.SELECTED_LANGUAGE_KEY);
     if (!!selectedLanguageCode) {
       return this.selectLanguageByCode(selectedLanguageCode);
     } else {
@@ -29,22 +31,12 @@ export class SelectedLanguageService {
     return [
       new Language('en-US', 'English'),
       new Language('de', 'Deutsch'),
-      new Language('ja', '日本語'),
-      new Language('zh-CN', '中文'),
-      new Language('fr', 'Français'),
       new Language('es', 'Español'),
     ];
   }
 
   public getSelectedLanguage(): Language | undefined {
     return this.getLanguageByCode(this.translationService.currentLang);
-  }
-
-  public urlToLanguage(url: string): Language | undefined {
-    url = url.replace(/^\/*/g, ''); // remove leading slashes. Turn '//de/dashboard' into 'de/dashboard'
-    const urlSegments = url.split('/'); // now split e.g. 'de/dashboard' into ['de', 'dashboard']
-    const languageCode = urlSegments[0];
-    return this.getLanguageByCode(languageCode);
   }
 
   /**
@@ -57,7 +49,7 @@ export class SelectedLanguageService {
     const language = this.getLanguageByCode(languageCode) ?? this.getDefaultLanguage();
 
     this.translationService.use(language.code);
-    localStorage.setItem('selected_language', language.code);
+    localStorage.setItem(SelectedLanguageService.SELECTED_LANGUAGE_KEY, language.code);
 
     return true;
   }
