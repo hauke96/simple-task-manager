@@ -2,7 +2,7 @@
 	<h2>{{'task-details.title' | translate}} {{task | taskTitle}}</h2>
 	<div class="assign-button-container" *ngIf="needUserAssignment">
 		<button *ngIf="!task?.assignedUser?.uid" (click)="onAssignButtonClicked()">{{'task-details.assign-to-me' | translate}}</button>
-		<span *ngIf="!!task?.assignedUser?.uid && task?.assignedUser?.uid !== currentUserId">{{'task-details.assign-to' | translate}} {{assignedUserName}}</span>
+		<span *ngIf="!!task?.assignedUser?.uid && task?.assignedUser?.uid !== currentUserId">{{'task-details.assigned-to' | translate}} {{assignedUserName}}</span>
 		<button *ngIf="task?.assignedUser?.uid === currentUserId" (click)="onUnassignButtonClicked()">{{'task-details.unassign' | translate}}</button>
 	</div>
 </div>
