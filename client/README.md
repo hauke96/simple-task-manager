@@ -60,84 +60,22 @@ Encryption (HTTPS) and HTTP-Server configs depend on the used HTTP-Server (Apach
 
 # Internationalization
 
-## Update message catalog
+This project uses ` ngx-translate` as library for i18n (internationalization).
+This means that `src/assets/i18n` contains a JSON file for each supported language and an HTML file for the changelog on the front page.
+Next to them two TypeScript files are important too.
 
-**tl;dr:**
-* `cd client`
-* `ng xi18n --output-path src/locale`
-* Copy new/changes entries to specific translation files (e.g. from the `messages.xlf` to `messages.ja.xlf`)
+## Add new language
 
-## Translation
+Let's assume you want to translate STM into french, which has the language code `fr`.
 
-In order to translate STM, it's recommended to use a proper XLF/XLIFF editor like *Omega-T* or *Poedit*.
+1. Copy the `en-US.json` file (this contains "the truth") in the `src/assets/i18n` folder to `fr.json`.
+2. Go into `src/app/app.component.ts` and add your new language to the list `translate.addLangs([....., 'fr']);`.
+3. Go into `src/app/common/services/selected-language.service.ts` and also add your language to the list returned in the `getKnownLanguages()` method.
+4. Translate your `fr.json`, so that e.g. the line `"properties": "Properties:",` turns into `"properties": "Paramètres:",`.
 
-### Poedit
+## Update language file
 
-1. Open the `.xlf` file you want to translate
-2. Translate the entries
-3. Click save or hit CTRL+S
+Basically just go through your JSON file and translate all entries.
 
-### Omega-T
-
-Alternatively you can use [Omega-T](https://omegat.org/) with the 
-[Okapi filters plugin](https://okapiframework.org/wiki/index.php?title=Okapi_Filters_Plugin_for_OmegaT) for translation.
-
-1. Start Omega-T and create new project at new project directory with your favorit target language such as zh_CN.
-2. Configure Omega-T enable Okapi Plugins XLIFF filter and disable internal XLIFF filter.
-3. Copy `client/src/locale/messages.xlf` to `<omegat_project>/source/messages.<langID>.xlf` such as `messages.zh_CN.xlf`
-4. Click `File`-`Reload` on Omega-T.
-5. Translate messages.
-6. Click `File`-`Generate target file` on Omega-T
-7. Copy `<omegat>/target/messages.<langID>.xlf` to `client/locale/messages.<langID>.xlf`
-
-When UI is updated and source messages.xlf changed, please repeat step 3 - 6.
-
-### Add localize configuration
-
-To tell the Angular-compiler about the new language, add the following three parts into the `client/angular.json` for `<langID>`:
-
-```json
-  "projects": {
-    "simple-task-dashboard": {
-      "i18n": {
-        "sourceLocale": "en-US",
-        "locales": {
-          "ja": "src/locale/messages.ja.xlf",
-          "de": "src/locale/messages.de.xlf",
-          "<langID>": "src/locale/messages.<langID>.xlf"
-        }
-      },
-      "architect": {
-```
-
-```json
-      "architect": {
-        "build": {
-          "configurations": {
-            "ja": {
-              "localize": ["ja"]
-            },
-            "de": {
-              "localize": ["de"]
-            },
-            "<langID>": {
-              "localize": ["<langID>"]
-            },
-```
-
-```json
-        "serve": {
-          "configurations": {
-            "production": {
-              "browserTarget": "simple-task-dashboard:build:production"
-            },
-            "ja": {
-              "browserTarget": "simple-task-dashboard:build:ja"
-            },
-            "de": {
-              "browserTarget": "simple-task-dashboard:build:de"
-            },
-            "<langID>": {
-              "browserTarget": "simple-task-dashboard:build:<langID>"
-            }
-```
+If some/a few entries are missing in the translation file, you probably want to add and translate them manually. 
+If a lot of entries are missing, you probably should delete the existing file and add the language from scratch (s. above).
