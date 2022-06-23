@@ -34,4 +34,7 @@
                 maxTasksPerProject: maxTasksPerProject
             }
 		}}</p>
+	<p *ngIf="canDivideTasks"><span class="lnr lnr-checkmark-circle color-okay"></span>
+		{{'project-creation.subdivide-result-notice' | translate:{ amountTasksAfterDividing: amountTasksAfterDividing } }}
+	</p>
 </form>

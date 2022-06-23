@@ -81,6 +81,7 @@
     "max-points-notice": "Puntos máx. por tarea:",
     "subdivide-notice": "Esto divide la tarea seleccionada en tareas más pequeñas de la forma y el tamaño seleccionados.",
     "subdivide-result-too-large-notice": "El resultado con {{amountTasksAfterDividing}} tareas es demasiado grande, solo {{maxTasksPerProject}} permitidas.",
+    "subdivide-result-notice": "El resultado tendrá {{amountTasksAfterDividing}} tareas.",
     "shape-size": "Tamaño de la forma:",
     "shape": "Forma:",
     "square": "cuadrado",
