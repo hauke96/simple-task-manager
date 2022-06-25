@@ -13,7 +13,7 @@ import { CurrentUserService } from '../../user/current-user.service';
 import Snap from 'ol/interaction/Snap';
 import Modify from 'ol/interaction/Modify';
 import Select, { SelectEvent } from 'ol/interaction/Select';
-import { finalize, Observable, Subject, tap } from 'rxjs';
+import { Observable, of, Subject, tap } from 'rxjs';
 import Interaction from 'ol/interaction/Interaction';
 import { ProjectProperties } from '../project-properties';
 import { DrawEvent } from 'ol/interaction/Draw';
@@ -27,6 +27,8 @@ import { Unsubscriber } from '../../common/unsubscriber';
 import { Coordinate } from 'ol/coordinate';
 import { MapLayerService } from '../../common/services/map-layer.service';
 import { TranslateService } from '@ngx-translate/core';
+import { catchError } from 'rxjs/operators';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-project-creation',
@@ -86,7 +88,14 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
     );
 
     this.loadingProjects = true;
-    this.existingProjects = this.projectService.getProjects().pipe(tap(() => this.loadingProjects = false));
+    this.existingProjects = this.projectService.getProjects().pipe(
+      tap(() => this.loadingProjects = false),
+      catchError((e: HttpErrorResponse, caught) => {
+        this.loadingProjects = false;
+        this.notificationService.addError(this.translationService.instant('project.could-not-load-projects'));
+        return of([]);
+      })
+    );
   }
 
   ngAfterViewInit(): void {
