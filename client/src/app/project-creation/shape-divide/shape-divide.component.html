@@ -27,14 +27,20 @@
 	<button (click)="onDivideButtonClicked()" [disabled]="!divisionForm.form?.valid || !canDivideTasks"
 			class="divide-button">{{'project-creation.divide-button' | translate}}</button>
 
-	<p class="color-error" *ngIf="!canDivideTasks"><span class="lnr lnr-warning color-error"></span>
+	<p class="color-error" *ngIf="!canDivideTasks && !estimatedResultTooLarge">
+		<span class="lnr lnr-warning color-error"></span>
 		{{'project-creation.subdivide-result-too-large-notice' | translate:
-            {
-                amountTasksAfterDividing: amountTasksAfterDividing,
-                maxTasksPerProject: maxTasksPerProject
-            }
-		}}</p>
-	<p *ngIf="canDivideTasks"><span class="lnr lnr-checkmark-circle color-okay"></span>
+			{
+				amountTasksAfterDividing: amountTasksAfterDividing,
+				maxTasksPerProject: maxTasksPerProject
+        	}
+		}}
+	</p>
+	<p class="color-error" *ngIf="estimatedResultTooLarge">
+		<span class="lnr lnr-warning color-error"></span>
+		{{'project-creation.subdivide-result-way-too-large-notice' | translate:{ maxTasksPerProject: maxTasksPerProject } }}
+	</p>
+	<p *ngIf="canDivideTasks && !estimatedResultTooLarge"><span class="lnr lnr-checkmark-circle color-okay"></span>
 		{{'project-creation.subdivide-result-notice' | translate:{ amountTasksAfterDividing: amountTasksAfterDividing } }}
 	</p>
 </form>

@@ -1,9 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { polygon as turfPolygon, Units } from '@turf/helpers';
+import BBox, { polygon as turfPolygon, Units } from '@turf/helpers';
 import squareGrid from '@turf/square-grid';
 import hexGrid from '@turf/hex-grid';
 import triangleGrid from '@turf/triangle-grid';
-import BBox from '@turf/helpers';
 import { Polygon } from 'ol/geom';
 import { NotificationService } from '../../common/services/notification.service';
 import { TaskDraft } from '../../task/task.material';
@@ -16,9 +15,12 @@ import { ConfigProvider } from '../../config/config.provider';
   styleUrls: ['./shape-divide.component.scss']
 })
 export class ShapeDivideComponent implements OnInit {
+  private readonly TASK_ESTIMATION_TOLERANCE = 10;
+
   public gridCellSize: number;
   public gridCellShape: string;
   public previewTasks: TaskDraft[] = [];
+  public estimatedResultTooLarge: boolean;
 
   @Input() public selectedTask: TaskDraft;
 
@@ -38,7 +40,7 @@ export class ShapeDivideComponent implements OnInit {
   }
 
   public get canDivideTasks(): boolean {
-    return this.amountTasksAfterDividing <= this.maxTasksPerProject;
+    return !this.estimatedResultTooLarge && this.amountTasksAfterDividing <= this.maxTasksPerProject;
   }
 
   public get maxTasksPerProject(): number {
@@ -74,7 +76,6 @@ export class ShapeDivideComponent implements OnInit {
     this.taskDraftService.addTasks(taskDrafts, true);
   }
 
-
   /**
    * This just creates the tasks but does not add them to the TaskDraftService.
    */
@@ -85,7 +86,7 @@ export class ShapeDivideComponent implements OnInit {
     // Use meters and only show grid cells within the original polygon (-> mask)
     const options = {
       units: 'meters' as Units,
-      mask: turfPolygon(polygon.getCoordinates())
+      mask: turfPolygon(polygon.getCoordinates()),
     };
 
     const cellSize = this.gridCellSize;
@@ -96,30 +97,55 @@ export class ShapeDivideComponent implements OnInit {
       return undefined;
     }
 
-    let grid;
-    switch (this.gridCellShape) {
-      case 'squareGrid':
-        grid = squareGrid(extent, cellSize, options);
-        break;
-      case 'hexGrid':
-        grid = hexGrid(extent, cellSize, options);
-        break;
-      case 'triangleGrid':
-        grid = triangleGrid(extent, cellSize, options);
-        break;
-      default:
-        const e = `Unknown shape type ${this.gridCellShape}`;
-        console.error(e);
-        this.notificationService.addError(e);
-        return undefined;
+    const grid = this.createGrid(extent, cellSize, options);
+    if (!grid) {
+      return undefined;
     }
 
-    return grid.features.map(g => {
+    if (this.estimateCellCount() > this.TASK_ESTIMATION_TOLERANCE * this.maxTasksPerProject) {
+      this.estimatedResultTooLarge = true;
+      return undefined;
+    }
+    this.estimatedResultTooLarge = false;
+
+    return grid.features.map((g: any) => {
       // Turn geo GeoJSON polygon from turf.js into an openlayers polygon
       const geometry = new Polygon(g.geometry.coordinates);
 
       return new TaskDraft('', '', geometry, 0);
     });
+  }
+
+  private estimateCellCount(): number {
+    let scale = 1;
+
+    switch (this.gridCellShape) {
+      case 'hexGrid':
+        // The cell size specified the "radius" of the hexagon
+        scale = 4;
+        break;
+      case 'triangleGrid':
+        scale = 0.5;
+        break;
+    }
+
+    return (this.selectedTask.geometry as Polygon).getArea() / (Math.pow(this.gridCellSize, 2) * scale);
+  }
+
+  private createGrid(extent: BBox.BBox, cellSize: number, options: any): any {
+    switch (this.gridCellShape) {
+      case 'squareGrid':
+        return squareGrid(extent, cellSize, options);
+      case 'hexGrid':
+        return hexGrid(extent, cellSize, options);
+      case 'triangleGrid':
+        return triangleGrid(extent, cellSize, options);
+    }
+
+    const e = `Unknown shape type ${this.gridCellShape}`;
+    console.error(e);
+    this.notificationService.addError(e);
+    return undefined;
   }
 
   public taskDividePropertyChanged(): void {
