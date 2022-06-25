@@ -13,7 +13,7 @@
 				<span *ngIf="remainingErrors> 1"
 					  class="remaining-notifications-label">{{ remainingErrors }} {{'notification.errors-left' | translate}}</span>
 			</div>
-			<button (click)="onCloseErrorButtonClicked()">{{'ok-button' | translate}}</button>
+			<button class="ok-button" (click)="onCloseErrorButtonClicked()">{{'ok-button' | translate}}</button>
 		</div>
 	</div>
 
@@ -26,7 +26,7 @@
 				<span *ngIf="remainingWarning > 1"
 					  class="remaining-notifications-label">{{ remainingWarning }} {{'notification.warnings-left' | translate}}</span>
 			</div>
-			<button (click)="onCloseWarningButtonClicked()">{{'ok-button' | translate}}</button>
+			<button class="ok-button" (click)="onCloseWarningButtonClicked()">{{'ok-button' | translate}}</button>
 		</div>
 	</div>
 
@@ -38,7 +38,7 @@
 				<span *ngIf="remainingInfo> 1"
 					  class="remaining-notifications-label">{{ remainingInfo }} {{'notification.notifications-left' | translate}}</span>
 			</div>
-			<button (click)="onCloseInfoButtonClicked()">{{'ok-button' | translate}}</button>
+			<button class="ok-button" (click)="onCloseInfoButtonClicked()">{{'ok-button' | translate}}</button>
 		</div>
 	</div>
 </div>
