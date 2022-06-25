@@ -34,6 +34,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   selector: 'app-project-creation',
   templateUrl: './project-creation.component.html',
   styleUrls: ['./project-creation.component.scss'],
+  providers: [TaskDraftService, ProjectImportService]
 })
 export class ProjectCreationComponent extends Unsubscriber implements OnInit, OnDestroy, AfterViewInit {
   public projectProperties: ProjectProperties = new ProjectProperties('', 100, '');
