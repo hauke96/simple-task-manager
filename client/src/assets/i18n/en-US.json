@@ -69,6 +69,7 @@
     "copy": "Copy:",
     "copy-notice": "Copy and import an existing project you are a member of.",
     "no-project-notice": "No projects available!",
+    "loading-projects": "Loading projects ...",
     "available-projects": "Available projects:",
     "import-button": "Import",
     "import-heading": "Import:",

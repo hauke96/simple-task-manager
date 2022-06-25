@@ -12,6 +12,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class CopyProjectComponent {
   @Input() projects: Project[];
+  @Input() loading: boolean;
 
   public selectedProject: Project | undefined;
 
@@ -41,8 +42,9 @@ export class CopyProjectComponent {
         },
         error: e => {
           console.error(e);
-          // @ts-ignore See above check
-          this.notificationService.addError(this.translateService.instant('project-creation.could-not-import-project', {projectName: this.selectedProject?.name}));
+          const translationParams = {projectName: this.selectedProject?.name};
+          const message = this.translateService.instant('project-creation.could-not-import-project', translationParams);
+          this.notificationService.addError(message);
           this.selectedProject = undefined;
         }
       });

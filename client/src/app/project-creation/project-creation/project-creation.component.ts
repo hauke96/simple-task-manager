@@ -13,7 +13,7 @@ import { CurrentUserService } from '../../user/current-user.service';
 import Snap from 'ol/interaction/Snap';
 import Modify from 'ol/interaction/Modify';
 import Select, { SelectEvent } from 'ol/interaction/Select';
-import { Observable, Subject } from 'rxjs';
+import { finalize, Observable, Subject, tap } from 'rxjs';
 import Interaction from 'ol/interaction/Interaction';
 import { ProjectProperties } from '../project-properties';
 import { DrawEvent } from 'ol/interaction/Draw';
@@ -37,6 +37,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class ProjectCreationComponent extends Unsubscriber implements OnInit, OnDestroy, AfterViewInit {
   public projectProperties: ProjectProperties = new ProjectProperties('', 100, '');
   public existingProjects: Observable<Project[]>;
+  public loadingProjects: boolean;
   public resetToolbarSelectionSubject: Subject<void> = new Subject<void>();
 
   private modifyInteraction: Modify;
@@ -84,7 +85,8 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
       })
     );
 
-    this.existingProjects = this.projectService.getProjects();
+    this.loadingProjects = true;
+    this.existingProjects = this.projectService.getProjects().pipe(tap(() => this.loadingProjects = false));
   }
 
   ngAfterViewInit(): void {

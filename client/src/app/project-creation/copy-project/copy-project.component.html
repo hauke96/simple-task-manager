@@ -1,17 +1,25 @@
 <h2>{{'project-creation.copy' | translate}}</h2>
 
 <div>{{'project-creation.copy-notice' | translate}}</div>
-<div *ngIf="!projects || projects.length === 0">
-	<p class="color-gray">{{'project-creation.no-project-notice' | translate}}</p>
-</div>
-<div *ngIf="projects && projects.length > 0">
-	<p>{{'project-creation.available-projects' | translate}}</p>
-	<div class="project-list">
-		<div *ngFor="let p of projects" class="list-item project-list-row"
-			 [ngClass]="{'list-item-selected': p.id === selectedProject?.id}"
-			 (click)="onProjectClicked(p)">
-			<span class="wrap-label">{{p.name}}</span>
-		</div>
+
+<ng-container *ngIf="loading">
+	<p class="color-gray">{{'project-creation.loading-projects' | translate}}</p>
+</ng-container>
+
+<ng-container *ngIf="!loading">
+	<div *ngIf="!projects || projects.length === 0">
+		<p class="color-gray">{{'project-creation.no-project-notice' | translate}}</p>
 	</div>
-	<button [disabled]="!selectedProject" class="import-button" (click)="onImportClicked()">{{'project-creation.import-button' | translate}}</button>
-</div>
+	<div *ngIf="projects && projects.length > 0">
+		<p>{{'project-creation.available-projects' | translate}}</p>
+		<div class="project-list">
+			<div *ngFor="let p of projects" class="list-item project-list-row"
+				 [ngClass]="{'list-item-selected': p.id === selectedProject?.id}"
+				 (click)="onProjectClicked(p)">
+				<span class="wrap-label">{{p.name}}</span>
+			</div>
+		</div>
+		<button [disabled]="!selectedProject" class="import-button"
+				(click)="onImportClicked()">{{'project-creation.import-button' | translate}}</button>
+	</div>
+</ng-container>

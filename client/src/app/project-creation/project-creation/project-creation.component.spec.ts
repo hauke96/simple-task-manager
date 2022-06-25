@@ -1,6 +1,6 @@
 import { ProjectCreationComponent } from './project-creation.component';
 import { Geometry, Point, Polygon } from 'ol/geom';
-import { of, throwError } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { ProjectService } from '../../project/project.service';
 import { Project } from '../../project/project.material';
@@ -30,10 +30,13 @@ describe(ProjectCreationComponent.name, () => {
   let notificationService: NotificationService;
   let projectImportService: ProjectImportService;
   let configProvider: ConfigProvider;
+  let projectsSubject: Subject<Project[]>;
 
   beforeEach(() => {
+    projectsSubject = new Subject<Project[]>();
+
     projectService = {} as ProjectService;
-    projectService.getProjects = jest.fn().mockReturnValue([]);
+    projectService.getProjects = jest.fn().mockReturnValue(projectsSubject.asObservable());
     taskDraftService = {} as TaskDraftService;
     taskDraftService.tasksAdded = new EventEmitter<TaskDraft[]>();
     taskDraftService.taskChanged = new EventEmitter<TaskDraft>();
@@ -76,19 +79,26 @@ describe(ProjectCreationComponent.name, () => {
     expect(component).toBeTruthy();
   });
 
-  it('should add new tasks to map', () => {
-    mapLayerService.fitToFeatures = jest.fn();
+  it('should remain loading until projects arrived', (done) => {
+    expect(component.loadingProjects).toEqual(true);
 
-    const tasks = getDummyTasks();
-    // @ts-ignore
-    expect(component.vectorSource.getFeatures().length).toEqual(0);
+    component.existingProjects.subscribe(() => {
+      expect(component.loadingProjects).toEqual(false);
+      done();
+    });
 
-    // @ts-ignore
-    component.addTasks(tasks);
+    projectsSubject.next([createProject()]);
+  });
 
-    // @ts-ignore
-    expect(component.vectorSource.getFeatures().length).toEqual(tasks.length);
-    expect(mapLayerService.fitToFeatures).toHaveBeenCalled();
+  it('should remain loading until projects arrived', (done) => {
+    expect(component.loadingProjects).toEqual(true);
+
+    component.existingProjects.subscribe(() => {
+      expect(component.loadingProjects).toEqual(false);
+      done();
+    });
+
+    projectsSubject.error('Wow, that went pretty wrong :(');
   });
 
   it('should return tasks correctly', () => {
@@ -327,6 +337,73 @@ describe(ProjectCreationComponent.name, () => {
     expect(mapLayerService.removeLayer).toHaveBeenCalledWith(component.previewVectorLayer);
   });
 
+  it('should add task on taskAdded event', () => {
+    // @ts-ignore
+    const vectorSource = component.vectorSource;
+    const drafts = getDummyTasks();
+    mapLayerService.fitToFeatures = jest.fn();
+
+    taskDraftService.tasksAdded.emit(drafts);
+
+    expect(vectorSource.getFeatures().length).toEqual(2);
+    expect(vectorSource.getFeatures()[0].get('id')).toEqual(drafts[0].id);
+    expect(vectorSource.getFeatures()[1].get('id')).toEqual(drafts[1].id);
+    expect(mapLayerService.fitToFeatures).toHaveBeenCalled();
+  });
+
+  it('should clear preview on taskSelected event', () => {
+    // @ts-ignore
+    const vectorSource = component.previewVectorSource;
+    vectorSource.clear = jest.fn();
+    // @ts-ignore
+    const vectorLayer = component.vectorLayer;
+    vectorLayer.changed = jest.fn();
+
+    taskDraftService.taskSelected.emit();
+
+    expect(vectorSource.clear).toHaveBeenCalledTimes(1);
+    expect(vectorLayer.changed).toHaveBeenCalledTimes(1);
+  });
+
+  it('should not remove task on taskRemove event when no features exist', () => {
+    // @ts-ignore
+    component.vectorSource.removeFeature = jest.fn();
+
+    taskDraftService.taskRemoved.emit('test');
+
+    // @ts-ignore
+    expect(component.vectorSource.removeFeature).not.toHaveBeenCalled();
+  });
+
+  it('should remove task on taskRemove event', () => {
+    const feature = new Feature(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]]));
+    feature.set('id', '123');
+    // @ts-ignore
+    component.vectorSource.addFeature(feature);
+
+    taskDraftService.taskRemoved.emit('' + feature.get('id'));
+
+    // @ts-ignore
+    expect(component.vectorSource.getFeatures().length).toEqual(0);
+  });
+
+  it('should remove and add task on taskChanged event', () => {
+    // @ts-ignore
+    const vectorSource = component.vectorSource;
+    const drafts = getDummyTasks();
+    const oldFeatures = getDummyFeatures();
+    vectorSource.addFeatures(oldFeatures);
+    mapLayerService.fitToFeatures = jest.fn();
+
+    taskDraftService.taskChanged.emit(drafts[1]);
+
+    expect(vectorSource.getFeatures()[0]).toEqual(oldFeatures[0]);
+    expect(vectorSource.getFeatures()[1]).not.toEqual(oldFeatures[1]);
+    expect(vectorSource.getFeatures()[1]).not.toBeUndefined();
+    expect(vectorSource.getFeatures()[1].get('id')).toEqual(oldFeatures[1].get('id'));
+    expect(mapLayerService.fitToFeatures).toHaveBeenCalled();
+  });
+
   function expectInteractionsToBeInDefaultState(): void {
     // @ts-ignore
     expect(component.drawInteraction.getActive()).toEqual(false);
@@ -349,16 +426,18 @@ describe(ProjectCreationComponent.name, () => {
   }
 
   function getDummyFeatures(): Feature<Geometry>[] {
-    const feature: Feature<Geometry>[] = [];
-    feature.push(new Feature(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]])));
-    feature.push(new Feature(new Polygon([[[4000, 4000], [5000, 6000], [6000, 4000], [4000, 4000]]])));
-    return feature;
+    const features: Feature<Geometry>[] = [];
+    features.push(new Feature(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]])));
+    features.push(new Feature(new Polygon([[[4000, 4000], [5000, 6000], [6000, 4000], [4000, 4000]]])));
+    features[0].set('id', '1');
+    features[1].set('id', '2');
+    return features;
   }
 
   function getDummyTasks(): TaskDraft[] {
     return [
       new TaskDraft('1', 'name 1', new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]]), 0),
-      new TaskDraft('1', 'name 1', new Polygon([[[4000, 4000], [5000, 6000], [6000, 4000], [4000, 4000]]]), 0)
+      new TaskDraft('2', 'name 1', new Polygon([[[4000, 4000], [5000, 6000], [6000, 4000], [4000, 4000]]]), 0)
     ];
   }
 });
