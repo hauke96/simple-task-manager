@@ -12,7 +12,6 @@ export class NotificationComponent {
     private loadingService: LoadingService,
     private notificationService: NotificationService
   ) {
-    notificationService.addInfo("OK");
   }
 
   public get isLoading(): boolean {
