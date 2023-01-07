@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Language } from '../entities/language';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SelectedLanguageService {
-  private selectedLanguage: Language | undefined;
+export class LanguageService {
+  static readonly SELECTED_LANGUAGE_KEY = 'selected_language';
 
-  constructor() {
+  constructor(private translationService: TranslateService) {
   }
 
   /**
@@ -17,12 +18,11 @@ export class SelectedLanguageService {
    * @return true when no redirect took place and false when the language changes so that location.href has been set.
    */
   public loadLanguageFromLocalStorage(): boolean {
-    const selectedLanguageCode = localStorage.getItem('selected_language');
+    const selectedLanguageCode = localStorage.getItem(LanguageService.SELECTED_LANGUAGE_KEY);
     if (!!selectedLanguageCode) {
       return this.selectLanguageByCode(selectedLanguageCode);
     } else {
-      const languageFromUrl = this.urlToLanguage(location.pathname);
-      return this.selectLanguageByCode(languageFromUrl?.code);
+      return this.selectLanguageByCode(this.getDefaultLanguage().code);
     }
   }
 
@@ -31,21 +31,12 @@ export class SelectedLanguageService {
     return [
       new Language('en-US', 'English'),
       new Language('de', 'Deutsch'),
-      new Language('ja', '日本語'),
-      new Language('zh-CN', '中文'),
-      new Language('fr', 'Français'),
+      new Language('es', 'Español'),
     ];
   }
 
   public getSelectedLanguage(): Language | undefined {
-    return this.selectedLanguage;
-  }
-
-  public urlToLanguage(url: string): Language | undefined {
-    url = url.replace(/^\/*/g, ''); // remove leading slashes. Turn '//de/dashboard' into 'de/dashboard'
-    const urlSegments = url.split('/'); // now split e.g. 'de/dashboard' into ['de', 'dashboard']
-    const languageCode = urlSegments[0];
-    return this.getLanguageByCode(languageCode);
+    return this.getLanguageByCode(this.translationService.currentLang);
   }
 
   /**
@@ -55,28 +46,12 @@ export class SelectedLanguageService {
    * @return true when no redirect took place and false when the language changes so that location.href has been set.
    */
   public selectLanguageByCode(languageCode: string | undefined): boolean {
-    const language = this.getLanguageByCode(languageCode);
+    const language = this.getLanguageByCode(languageCode) ?? this.getDefaultLanguage();
 
-    if (!!language) {
-      this.selectedLanguage = language;
-    } else {
-      this.selectedLanguage = this.getDefaultLanguage(); // en-US as default
-    }
-    localStorage.setItem('selected_language', this.selectedLanguage.code);
-
-    // Trigger reload if new language has been selected
-    const urlLanguage = this.urlToLanguage(location.pathname);
-    if (!urlLanguage || urlLanguage.code !== this.selectedLanguage.code) {
-      // The trailing '/' is important, otherwise the angular router will say "I don't know this route" and causes an error.
-      this.loadUrl(location.origin + '/' + this.selectedLanguage.code + '/');
-      return false;
-    }
+    this.translationService.use(language.code);
+    localStorage.setItem(LanguageService.SELECTED_LANGUAGE_KEY, language.code);
 
     return true;
-  }
-
-  private loadUrl(newUrl: string) {
-    location.href = newUrl;
   }
 
   /**

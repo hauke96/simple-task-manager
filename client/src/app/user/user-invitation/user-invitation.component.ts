@@ -2,13 +2,14 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NotificationService } from '../../common/services/notification.service';
 import { UserService } from '../user.service';
 import { User } from '../user.material';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-invitation',
   templateUrl: './user-invitation.component.html',
   styleUrls: ['./user-invitation.component.scss']
 })
-export class UserInvitationComponent implements OnInit {
+export class UserInvitationComponent {
   @Input() public users: User[];
   @Output() public userInvited: EventEmitter<User> = new EventEmitter<User>();
 
@@ -16,16 +17,14 @@ export class UserInvitationComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private translationService: TranslateService
   ) {
   }
 
-  ngOnInit(): void {
-  }
-
-  public onInvitationButtonClicked() {
+  public onInvitationButtonClicked(): void {
     if (this.users.map(u => u.name).includes(this.enteredUserName)) {
-      this.notificationService.addWarning($localize`:@@WARN_ALREADY_MEMBER:User '${this.enteredUserName}:INTERPOLATION:' is already a member of this project`);
+      this.notificationService.addWarning(this.translationService.instant('user.already-member', {user: this.enteredUserName}));
       return;
     }
 
@@ -34,7 +33,7 @@ export class UserInvitationComponent implements OnInit {
         this.userInvited.emit(user);
       }, err => {
         console.error(err);
-        this.notificationService.addError($localize`:@@ERROR_USER_ID:Could not load user ID for user '${this.enteredUserName}:INTERPOLATION:'. The user must have at least one changeset or note.`);
+        this.notificationService.addError(this.translationService.instant('user.unable-load-user', {user: this.enteredUserName}));
       });
   }
 }

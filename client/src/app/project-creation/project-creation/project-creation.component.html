@@ -1,10 +1,7 @@
 <app-toolbar>
 	<div>
-		<button [routerLink]="['/dashboard']"><span class="lnr lnr-chevron-left cancel-button-icon"></span><span i18n>Cancel</span></button>
-		<button class="save-button" (click)="onSaveButtonClicked()" [disabled]="!creationForm.form.valid || !hasTasks"
-				i18n>
-			Save
-		</button>
+		<button [routerLink]="['/dashboard']"><span class="lnr lnr-chevron-left cancel-button-icon"></span><span>{{'cancel-button' | translate}}</span></button>
+		<button class="save-button" (click)="onSaveButtonClicked()" [disabled]="!creationForm.form?.valid || !hasTasks">{{'save-button' | translate}}</button>
 	</div>
 </app-toolbar>
 <div class="root-container">
@@ -14,24 +11,24 @@
 					  (tabSelected)="onTabSelected()">
 				<!-- Properties -->
 				<div *ngIf="rootTabs.tabIndex === 0">
-					<h2 class="properties-label" i18n>Properties:</h2>
+					<h2 class="properties-label">{{'properties' | translate}}</h2>
 					<app-project-properties [projectProperties]="projectProperties"></app-project-properties>
 				</div>
 
 				<!-- Tasks -->
 				<div *ngIf="rootTabs.tabIndex === 1" class="tab-container">
 					<div class="task-head">
-						<h2 class="properties-label" i18n>Tasks:</h2>
+						<h2 class="properties-label">{{'tasks' | translate}}</h2>
 						<span class="font-small">{{taskDrafts.length}} / {{config.maxTasksPerProject}}</span>
 					</div>
 					<app-task-draft-list [tasks]="taskDrafts"
 										 [selectedTask]="selectedTask"></app-task-draft-list>
 
 					<div *ngIf="selectedTask">
-						<h2 i18n>Properties:</h2>
+						<h2>{{'properties' | translate}}</h2>
 						<app-task-edit [task]="selectedTask"></app-task-edit>
 
-						<h2 i18n>Subdivide:</h2>
+						<h2>{{'project-creation.subdivide' | translate}}</h2>
 						<app-shape-divide [selectedTask]="selectedTask"
 										  (previewClicked)="onDividePreviewClicked($event)"></app-shape-divide>
 					</div>
@@ -44,7 +41,7 @@
 						<div class="hline"></div>
 						<app-project-import></app-project-import>
 						<div class="hline"></div>
-						<app-copy-project [projects]="(existingProjects | async)!"></app-copy-project>
+						<app-copy-project [projects]="(existingProjects | async)!" [loading]="loadingProjects"></app-copy-project>
 					</div>
 				</div>
 

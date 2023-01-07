@@ -26,7 +26,7 @@ export class TabsComponent implements OnInit {
     this.tabTitle = this.tabs[this.tabIndex];
   }
 
-  public onTabClicked(tabTitle: string) {
+  public onTabClicked(tabTitle: string): void {
     this.tabIndex = this.tabs.indexOf(tabTitle);
     this.tabTitle = tabTitle;
 

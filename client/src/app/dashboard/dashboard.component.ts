@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { ProjectExport } from '../project/project.material';
 import { ProjectImportService } from '../project-creation/project-import.service';
 import { NotificationService } from '../common/services/notification.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,7 +18,8 @@ export class DashboardComponent {
     private authService: AuthService,
     private currentUserService: CurrentUserService,
     private projectImportService: ProjectImportService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private translationService: TranslateService
   ) {
   }
 
@@ -48,7 +50,8 @@ export class DashboardComponent {
     reader.onload = loadHandler;
     reader.onerror = (evt) => {
       console.error(evt);
-      this.notificationService.addError($localize`:@@ERROR_COULD_NOT_UPLOAD:Could not upload file '${(evt.target as any).files[0]}:INTERPOLATION:'`);
+      const message = this.translationService.instant('file-upload-error', {fileName: (evt.target as any).files[0]});
+      this.notificationService.addError(message);
     };
   }
 }

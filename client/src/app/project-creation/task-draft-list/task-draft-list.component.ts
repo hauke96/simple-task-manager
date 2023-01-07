@@ -16,7 +16,7 @@ export class TaskDraftListComponent {
   ) {
   }
 
-  onTaskClicked(id: string) {
+  public onTaskClicked(id: string): void {
     this.taskDraftService.selectTask(id);
   }
 }

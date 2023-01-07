@@ -1,12 +1,12 @@
 <app-toolbar>
 	<div class="toolbar-item">
 		<div class="back-button-container">
-			<button [routerLink]="['/dashboard']"><span class="lnr lnr-chevron-left back-button-icon"></span><span i18n="Back button">Back</span></button>
-			<p class="project-label" i18n>Project: {{project.name}}</p>
+			<button [routerLink]="['/dashboard']"><span class="lnr lnr-chevron-left back-button-icon"></span><span>{{'project.back-button' | translate}}</span></button>
+			<p class="project-label">{{'project.title' | translate}} {{project.name}}</p>
 		</div>
 		<app-progress-bar [progressPoints]="project.doneProcessPoints" [totalPoints]="project.totalProcessPoints"></app-progress-bar>
 		<div class="created-at-label">
-			<span i18n>Created on: {{project.creationDate | date:'longDate'}}</span>
+			<span>{{'project.creation-date' | translate}} {{project.creationDate | date:'longDate'}}</span>
 		</div>
 	</div>
 </app-toolbar>
@@ -14,7 +14,7 @@
 <div class="root-container">
 	<div class="task-list-details-container">
 		<div class="description-container" *ngIf="project.description.trim().length !== 0">
-			<h2 class="description-label" i18n="Description label">Description:</h2>
+			<h2 class="description-label">{{'project.description' | translate}}</h2>
 			<div class="description-text">{{project.description}}</div>
 		</div>
 		<app-tabs [tabs]="tabTitles" #tabs [borderless]="true">
@@ -27,7 +27,7 @@
 			</div>
 			<div *ngIf="tabs.tabIndex === 1" class="user-tab">
 				<div class="tab-container">
-					<h2 i18n>Users:</h2>
+					<h2>{{'users' | translate}}</h2>
 					<app-user-invitation *ngIf="isOwner()"
 										 class="tab-container-item"
 										 (userInvited)="onUserInvited($event)"
@@ -42,7 +42,7 @@
 			</div>
 			<div *ngIf="tabs.tabIndex === 2">
 				<div class="tab-container">
-					<h2 i18n>Settings:</h2>
+					<h2>{{'settings' | translate}}</h2>
 					<app-project-settings [projectId]="project.id"
 										  [projectOwner]="project.owner"
 										  [projectName]="project.name"

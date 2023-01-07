@@ -1,58 +1,90 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-
 import { TaskDetailsComponent } from './task-details.component';
 import { CurrentUserService } from '../../user/current-user.service';
 import { TaskService } from '../task.service';
 import { Task, TestTaskFeature } from '../task.material';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { FormsModule } from '@angular/forms';
 import { of, Subject } from 'rxjs';
 import { WebsocketClientService } from '../../common/services/websocket-client.service';
 import { UserService } from '../../user/user.service';
 import { User } from '../../user/user.material';
-import { TaskTitlePipe } from '../task-title.pipe';
 import { ShortcutService } from '../../common/services/shortcut.service';
-import Spy = jasmine.Spy;
+import { HttpClient } from '@angular/common/http';
+import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
+import { NotificationService } from '../../common/services/notification.service';
+import { EventEmitter } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
-describe('TaskDetailsComponent', () => {
+describe(TaskDetailsComponent.name, () => {
   let component: TaskDetailsComponent;
-  let fixture: ComponentFixture<TaskDetailsComponent>;
+  let fixture: MockedComponentFixture<TaskDetailsComponent>;
   let taskService: TaskService;
   let currentUserService: CurrentUserService;
   let websocketService: WebsocketClientService;
   let userService: UserService;
   let shortcutService: ShortcutService;
+  let httpClient: HttpClient;
+  let notificationService: NotificationService;
+  let translationService: TranslateService;
+
+  let shortcutAssignSubject: Subject<void>;
+  let shortcutUnassignSubject: Subject<void>;
+  let shortcutDoneSubject: Subject<void>;
+  let shortcutJosmSubject: Subject<void>;
+  let shortcutIdSubject: Subject<void>;
+
   const testUserId = '123';
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [TaskDetailsComponent, TaskTitlePipe],
-      imports: [
-        HttpClientTestingModule,
-        FormsModule
-      ],
-      providers: [
-        CurrentUserService,
-        TaskService
-      ]
-    })
-      .compileComponents();
+  beforeEach(() => {
+    currentUserService = {} as CurrentUserService;
+    currentUserService.getUserId = jest.fn().mockReturnValue(testUserId);
 
-    taskService = TestBed.inject(TaskService);
+    userService = {} as UserService;
+    userService.getUsersByIds = jest.fn().mockReturnValue(of([new User('Foo', testUserId)]));
 
-    currentUserService = TestBed.inject(CurrentUserService);
-    spyOn(currentUserService, 'getUserId').and.returnValue(testUserId);
+    websocketService = {} as WebsocketClientService;
+    httpClient = {} as HttpClient;
 
-    userService = TestBed.inject(UserService);
-    spyOn(userService, 'getUsersByIds').and.returnValue(of([new User('Foo', testUserId)]));
+    taskService = {} as TaskService;
+    taskService.getSelectedTask = jest.fn().mockReturnValue(undefined);
+    taskService.selectedTaskChanged = new EventEmitter();
+    notificationService = {} as NotificationService;
 
-    websocketService = TestBed.inject(WebsocketClientService);
-    shortcutService = TestBed.inject(ShortcutService);
-  }));
+    shortcutService = {} as ShortcutService;
+    shortcutAssignSubject = new Subject<void>();
+    shortcutUnassignSubject = new Subject<void>();
+    shortcutDoneSubject = new Subject<void>();
+    shortcutJosmSubject = new Subject<void>();
+    shortcutIdSubject = new Subject<void>();
+
+    shortcutService.add = jest.fn().mockImplementation(keys => {
+      switch (keys) {
+        case 'a':
+          return shortcutAssignSubject.asObservable();
+        case 'shift.a':
+          return shortcutUnassignSubject.asObservable();
+        case 'd':
+          return shortcutDoneSubject.asObservable();
+        case 'j':
+          return shortcutJosmSubject.asObservable();
+        case 'i':
+          return shortcutIdSubject.asObservable();
+      }
+    });
+
+    translationService = {} as TranslateService;
+
+    return MockBuilder(TaskDetailsComponent, AppModule)
+      .provide({provide: TaskService, useFactory: () => taskService})
+      .provide({provide: CurrentUserService, useFactory: () => currentUserService})
+      .provide({provide: UserService, useFactory: () => userService})
+      .provide({provide: NotificationService, useFactory: () => notificationService})
+      .provide({provide: ShortcutService, useFactory: () => shortcutService})
+      .provide({provide: TranslateService, useFactory: () => translationService});
+  });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TaskDetailsComponent);
-    component = fixture.componentInstance;
+    fixture = MockRender(TaskDetailsComponent);
+    component = fixture.point.componentInstance;
     fixture.detectChanges();
   });
 
@@ -62,19 +94,19 @@ describe('TaskDetailsComponent', () => {
 
   describe('with task service mocked functions', () => {
     beforeEach(() => {
-      spyOn(taskService, 'assign').and.callFake((id: string) => {
+      taskService.assign = jest.fn().mockImplementation((id: string) => {
         const task = createTask(10, id);
         task.assignedUser = new User('Foo', testUserId);
         taskService.selectedTaskChanged.emit(task);
         return of(task);
       });
-      spyOn(taskService, 'unassign').and.callFake((id: string) => {
+      taskService.unassign = jest.fn().mockImplementation((id: string) => {
         const task = createTask(10, id);
         task.assignedUser = undefined;
         taskService.selectedTaskChanged.emit(task);
         return of(task);
       });
-      spyOn(taskService, 'setProcessPoints').and.callFake((id: string, points: number) => {
+      taskService.setProcessPoints = jest.fn().mockImplementation((id: string, points: number) => {
         const task = createTask(points, id);
         task.processPoints = points;
         taskService.selectedTaskChanged.emit(task);
@@ -121,51 +153,28 @@ describe('TaskDetailsComponent', () => {
   });
 
   it('should update tasks on updated project', () => {
-    const t: Task = createTask(10);
-    const newProcessPoints = 50;
+    // Arrange
+    const oldTask: Task = createTask(10);
+    const newTask = createTask(50);
+    component.task = oldTask;
 
-    taskService.selectTask(t);
-    component.task = t;
-
+    // Act
     // Update task, this would normally happen via websocket events.
-    taskService.updateTasks([createTask(newProcessPoints)]);
+    taskService.selectedTaskChanged.next(newTask);
 
-    expect(component.task.processPoints).toEqual(newProcessPoints);
+    // Assert
+    expect(component.task).toEqual(newTask);
+    expect(component.newProcessPoints).toEqual(newTask.processPoints);
   });
 
   describe('with task and shortcuts', () => {
-    let shortcutAssignSubject: Subject<void>;
-    let shortcutUnassignSubject: Subject<void>;
-    let shortcutDoneSubject: Subject<void>;
-    let shortcutJosmSubject: Subject<void>;
-    let shortcutIdSubject: Subject<void>;
-
     beforeEach(() => {
-      shortcutAssignSubject = new Subject<void>();
-      shortcutUnassignSubject = new Subject<void>();
-      shortcutDoneSubject = new Subject<void>();
-      shortcutJosmSubject = new Subject<void>();
-      shortcutIdSubject = new Subject<void>();
-
-      spyOn(shortcutService, 'add')
-        .withArgs('a').and.returnValue(shortcutAssignSubject.asObservable())
-        .withArgs('shift.a').and.returnValue(shortcutUnassignSubject.asObservable())
-        .withArgs('d').and.returnValue(shortcutDoneSubject.asObservable())
-        .withArgs('j').and.returnValue(shortcutJosmSubject.asObservable())
-        .withArgs('i').and.returnValue(shortcutIdSubject.asObservable());
-
-      fixture = TestBed.createComponent(TaskDetailsComponent);
-      component = fixture.componentInstance;
-      fixture.detectChanges();
-
       component.task = createTask(10);
     });
 
     describe('assign shortcut', () => {
-      let spy: Spy;
-
       beforeEach(() => {
-        spy = spyOn(taskService, 'assign').and.callFake((id: string) => {
+        taskService.assign = jest.fn().mockImplementation((id: string) => {
           const task = createTask(10, id);
           task.assignedUser = new User('Foo', testUserId);
           taskService.selectedTaskChanged.emit(task); // emitting change event is important here
@@ -182,15 +191,15 @@ describe('TaskDetailsComponent', () => {
           it('should assign current user on shortcut', () => {
             shortcutAssignSubject.next();
 
-            expect(spy).toHaveBeenCalledWith(testUserId);
+            expect(taskService.assign).toHaveBeenCalledWith(testUserId);
           });
 
           it('should not assign current user on same shortcut twice', () => {
             shortcutAssignSubject.next();
             shortcutAssignSubject.next();
 
-            expect(spy).toHaveBeenCalledTimes(1);
-            expect(spy).toHaveBeenCalledWith(testUserId);
+            expect(taskService.assign).toHaveBeenCalledTimes(1);
+            expect(taskService.assign).toHaveBeenCalledWith(testUserId);
           });
         });
 
@@ -203,7 +212,7 @@ describe('TaskDetailsComponent', () => {
           it('should not assign current user on shortcut', () => {
             shortcutAssignSubject.next();
 
-            expect(spy).not.toHaveBeenCalled();
+            expect(taskService.assign).not.toHaveBeenCalled();
           });
         });
       });
@@ -212,7 +221,7 @@ describe('TaskDetailsComponent', () => {
         it('should not assign current user on shortcut', () => {
           shortcutAssignSubject.next();
 
-          expect(spy).not.toHaveBeenCalled();
+          expect(taskService.assign).not.toHaveBeenCalled();
         });
       });
     });
@@ -226,18 +235,17 @@ describe('TaskDetailsComponent', () => {
         });
 
         it('should not unassign current user on shortcut', () => {
-          const spy = spyOn(taskService, 'unassign');
+          taskService.unassign = jest.fn();
 
           shortcutUnassignSubject.next();
 
-          expect(spy).not.toHaveBeenCalled();
+          expect(taskService.unassign).not.toHaveBeenCalled();
         });
       });
-      describe('with user assignment needed', () => {
-        let spy: Spy;
 
+      describe('with user assignment needed', () => {
         beforeEach(() => {
-          spy = spyOn(taskService, 'unassign').and.callFake((id: string) => {
+          taskService.unassign = jest.fn().mockImplementation((id: string) => {
             const task = createTask(10, id);
             task.assignedUser = undefined;
             taskService.selectedTaskChanged.emit(task); // emitting change event is important here
@@ -257,16 +265,16 @@ describe('TaskDetailsComponent', () => {
             shortcutUnassignSubject.next();
 
             // @ts-ignore
-            expect(spy).toHaveBeenCalledWith(component.task.id);
+            expect(taskService.unassign).toHaveBeenCalledWith(component.task.id);
           });
 
           it('should not unassign current user on same shortcut twice', () => {
             shortcutUnassignSubject.next();
             shortcutUnassignSubject.next();
 
-            expect(spy).toHaveBeenCalledTimes(1);
+            expect(taskService.unassign).toHaveBeenCalledTimes(1);
             // @ts-ignore
-            expect(spy).toHaveBeenCalledWith(component.task.id);
+            expect(taskService.unassign).toHaveBeenCalledWith(component.task.id);
           });
         });
 
@@ -279,24 +287,22 @@ describe('TaskDetailsComponent', () => {
           it('should not assign current user on shortcut', () => {
             shortcutUnassignSubject.next();
 
-            expect(spy).not.toHaveBeenCalled();
+            expect(taskService.unassign).not.toHaveBeenCalled();
           });
         });
       });
     });
 
     describe('mark as done shortcut', () => {
-      let spy: Spy;
-
       beforeEach(() => {
-        spy = spyOn(taskService, 'setProcessPoints').and.returnValue(of());
+        taskService.setProcessPoints = jest.fn().mockReturnValue(of());
       });
 
       it('should mark task as done on shortcut', () => {
         shortcutDoneSubject.next();
 
         // @ts-ignore
-        expect(spy).toHaveBeenCalledWith(component.task.id, component.task.maxProcessPoints);
+        expect(taskService.setProcessPoints).toHaveBeenCalledWith(component.task.id, component.task.maxProcessPoints);
       });
 
       it('should not mark task as done on same shortcut twice', () => {
@@ -304,7 +310,7 @@ describe('TaskDetailsComponent', () => {
         shortcutDoneSubject.next();
 
         // @ts-ignore
-        expect(spy).toHaveBeenCalledWith(component.task.id, component.task.maxProcessPoints);
+        expect(taskService.setProcessPoints).toHaveBeenCalledWith(component.task.id, component.task.maxProcessPoints);
       });
     });
 
@@ -314,12 +320,12 @@ describe('TaskDetailsComponent', () => {
       });
 
       it('should open task in JOSM on shortcut', () => {
-        const spy = spyOn(taskService, 'openInJosm').and.returnValue(of());
+        taskService.openInJosm = jest.fn().mockReturnValue(of());
 
         shortcutJosmSubject.next();
 
         // @ts-ignore
-        expect(spy).toHaveBeenCalledWith(component.task);
+        expect(taskService.openInJosm).toHaveBeenCalledWith(component.task);
       });
     });
 
@@ -329,12 +335,12 @@ describe('TaskDetailsComponent', () => {
       });
 
       it('should open task in iD on shortcut', () => {
-        const spy = spyOn(taskService, 'openInOsmOrg');
+        taskService.openInOsmOrg = jest.fn().mockReturnValue(of());
 
         shortcutIdSubject.next();
 
         // @ts-ignore
-        expect(spy).toHaveBeenCalledWith(component.task, component.projectId);
+        expect(taskService.openInOsmOrg).toHaveBeenCalledWith(component.task, component.projectId);
       });
     });
   });

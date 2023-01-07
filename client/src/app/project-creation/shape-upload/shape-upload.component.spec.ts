@@ -1,31 +1,38 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-
 import { ShapeUploadComponent } from './shape-upload.component';
 import { NotificationService } from '../../common/services/notification.service';
 import { TaskDraftService } from '../task-draft.service';
 import { GeometryService } from '../../common/services/geometry.service';
+import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
+import { throwError } from 'rxjs';
+import { Polygon } from 'ol/geom';
+import { TaskDraft } from '../../task/task.material';
+import { AppModule } from '../../app.module';
+import { TranslateService } from '@ngx-translate/core';
 
-describe('ShapeUploadComponent', () => {
+describe(ShapeUploadComponent.name, () => {
   let component: ShapeUploadComponent;
-  let fixture: ComponentFixture<ShapeUploadComponent>;
+  let fixture: MockedComponentFixture<ShapeUploadComponent>;
   let notificationService: NotificationService;
   let taskDraftService: TaskDraftService;
   let geometryService: GeometryService;
-
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ShapeUploadComponent]
-    })
-      .compileComponents();
-
-    notificationService = TestBed.inject(NotificationService);
-    taskDraftService = TestBed.inject(TaskDraftService);
-    geometryService = TestBed.inject(GeometryService);
-  }));
+  let translationService: TranslateService;
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ShapeUploadComponent);
-    component = fixture.componentInstance;
+    notificationService = {} as NotificationService;
+    taskDraftService = {} as TaskDraftService;
+    geometryService = {} as GeometryService;
+    translationService = {} as TranslateService;
+
+    return MockBuilder(ShapeUploadComponent, AppModule)
+      .provide({provide: NotificationService, useFactory: () => notificationService})
+      .provide({provide: TaskDraftService, useFactory: () => taskDraftService})
+      .provide({provide: GeometryService, useFactory: () => geometryService})
+      .provide({provide: TranslateService, useFactory: () => translationService});
+  });
+
+  beforeEach(() => {
+    fixture = MockRender(ShapeUploadComponent);
+    component = fixture.point.componentInstance;
     fixture.detectChanges();
   });
 
@@ -34,31 +41,34 @@ describe('ShapeUploadComponent', () => {
   });
 
   it('should call service on added tasks', () => {
-    const spy = spyOn(taskDraftService, 'addTasks');
+    const geometry = new Polygon([[[0, 0], [2, 0], [1, 1], [0, 0]]]);
+    geometryService.parseData = jest.fn().mockReturnValue([geometry]);
+    taskDraftService.addTasks = jest.fn();
+    taskDraftService.toTaskDraft = jest.fn().mockReturnValue(new TaskDraft('1', 'one', geometry, 10));
 
     // @ts-ignore
     component.addTasks({target: {result: exampleGeoJson}});
 
-    expect(spy).toHaveBeenCalled();
+    expect(taskDraftService.addTasks).toHaveBeenCalled();
   });
 
   it('should show notification on invalid geometry', () => {
-    const spy = spyOn(notificationService, 'addError');
+    notificationService.addError = jest.fn();
 
     // @ts-ignore
     component.addTasks({target: {result: '[]'}});
 
-    expect(spy).toHaveBeenCalled();
+    expect(notificationService.addError).toHaveBeenCalled();
   });
 
   it('should show notification on error', () => {
-    const spy = spyOn(notificationService, 'addError');
-    spyOn(geometryService, 'parseData').and.throwError('test error');
+    notificationService.addError = jest.fn();
+    geometryService.parseData = jest.fn().mockReturnValue(throwError(() => 'test error'));
 
     // @ts-ignore
     component.addTasks({target: {result: '[]'}});
 
-    expect(spy).toHaveBeenCalled();
+    expect(geometryService.parseData).toHaveBeenCalled();
   });
 });
 

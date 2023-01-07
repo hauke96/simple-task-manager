@@ -5,8 +5,8 @@ Here we use **systemd timers** to periodically start a script to create a backup
 
 # Setup
 
-* Copy the service and timer files from this directory to `/lib/systemd/system/`
-* Copy the `create-backup.sh` script (from the server folder in this git repo) to the path to which `ExecStart` in your `.service` file points to
+* Create symlinks of the service and timer files (s. below) in `/lib/systemd/system/`
+* Create a symlink of the `create-backup.sh` script (from the server folder in this git repo) to the path to which `ExecStart` in your `.service` file points to
 * Make sure you have an `.env` file with all needed environment variables at the location the `EnvironmentFile` property of your `.service` file points to
   * You might not have an `.env` file yet. Take a look at the [server.md](./server.md), there's a whole section about that file
   * The important environment variables for the backup script are: `$STM_DB_HOST` and `$STM_DB_USERNAME`

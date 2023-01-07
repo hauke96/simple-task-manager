@@ -1,21 +1,18 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-
 import { ToolbarComponent } from './toolbar.component';
+import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
 
-describe('ToolbarComponent', () => {
+describe(ToolbarComponent.name, () => {
   let component: ToolbarComponent;
-  let fixture: ComponentFixture<ToolbarComponent>;
-
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ToolbarComponent ]
-    })
-    .compileComponents();
-  }));
+  let fixture: MockedComponentFixture<ToolbarComponent>;
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ToolbarComponent);
-    component = fixture.componentInstance;
+    return MockBuilder(ToolbarComponent, AppModule);
+  });
+
+  beforeEach(() => {
+    fixture = MockRender(ToolbarComponent);
+    component = fixture.point.componentInstance;
     fixture.detectChanges();
   });
 

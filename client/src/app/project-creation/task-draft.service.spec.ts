@@ -1,17 +1,12 @@
-import { TestBed } from '@angular/core/testing';
-
 import { TaskDraftService } from './task-draft.service';
 import { Polygon } from 'ol/geom';
 import { TaskDraft } from '../task/task.material';
 
-describe('TaskDraftService', () => {
+describe(TaskDraftService.name, () => {
   let service: TaskDraftService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [TaskDraftService]
-    });
-    service = TestBed.inject(TaskDraftService);
+    service = new TaskDraftService();
   });
 
   it('should be created', () => {
@@ -19,7 +14,8 @@ describe('TaskDraftService', () => {
   });
 
   it('should add task IDs correctly', () => {
-    const spy = spyOn(service.tasksAdded, 'emit');
+    const taskAddedSpy = jest.fn();
+    service.tasksAdded.subscribe(taskAddedSpy);
 
     const tasks: TaskDraft[] = [];
     tasks.push(createTaskDraftById({id: 10}));
@@ -39,7 +35,7 @@ describe('TaskDraftService', () => {
 
     service.addTasks(tasks);
 
-    const addedShapes = spy.calls.first().args[0] as TaskDraft[];
+    const addedShapes = (taskAddedSpy as jest.Mock).mock.calls[0][0] as TaskDraft[];
     expect(addedShapes.length).toEqual(tasks.length);
     expect(addedShapes.map(f => f.id)).toContain('10');
     expect(addedShapes.map(f => f.id)).toContain('5');
@@ -58,7 +54,8 @@ describe('TaskDraftService', () => {
   });
 
   it('should add task name correctly', () => {
-    const spy = spyOn(service.tasksAdded, 'emit');
+    const taskAddedSpy = jest.fn();
+    service.tasksAdded.subscribe(taskAddedSpy);
 
     const tasks: TaskDraft[] = [];
     tasks.push(createTaskDraftById({id: 0}));
@@ -69,7 +66,7 @@ describe('TaskDraftService', () => {
 
     service.addTasks(tasks);
 
-    const addedShapes = spy.calls.first().args[0] as TaskDraft[];
+    const addedShapes = (taskAddedSpy as jest.Mock).mock.calls[0][0] as TaskDraft[];
     expect(addedShapes.length).toEqual(tasks.length);
     expect(addedShapes[0].name).toContain('0');
     expect(addedShapes[1].name).toContain('1');
@@ -131,7 +128,8 @@ describe('TaskDraftService', () => {
   it('should select task correctly and fire event', () => {
     expect(service.getSelectedTask()).toEqual(undefined);
 
-    const spyEvent = spyOn(service.taskSelected, 'emit');
+    const spyEvent = jest.fn();
+    service.taskSelected.subscribe(spyEvent);
     const tasks = [
       new TaskDraft('1', 'some name', new Polygon([]), 0),
       new TaskDraft('123', 'some name', new Polygon([]), 0),
@@ -148,7 +146,8 @@ describe('TaskDraftService', () => {
   it('should not select anything on unknown task id', () => {
     expect(service.getSelectedTask()).toEqual(undefined);
 
-    const spyEvent = spyOn(service.taskSelected, 'emit');
+    const spyEvent = jest.fn();
+    service.tasksAdded.subscribe(spyEvent);
     const tasks = [
       new TaskDraft('1', 'some name', new Polygon([]), 0),
       new TaskDraft('123', 'some name', new Polygon([]), 0),
@@ -163,7 +162,8 @@ describe('TaskDraftService', () => {
   });
 
   it('should remove existing task', () => {
-    const spyEvent = spyOn(service.taskRemoved, 'emit');
+    const spyEvent = jest.fn();
+    service.taskRemoved.subscribe(spyEvent);
     const tasks = [
       new TaskDraft('1', 'some name', new Polygon([]), 0),
       new TaskDraft('123', 'some name', new Polygon([]), 0),
@@ -195,7 +195,8 @@ describe('TaskDraftService', () => {
   });
 
   it('should rename task correctly', () => {
-    const spyEvent = spyOn(service.taskChanged, 'emit');
+    const spyEvent = jest.fn();
+    service.taskChanged.subscribe(spyEvent);
     const tasks = [
       new TaskDraft('123', 'some name', new Polygon([]), 0),
     ];
@@ -209,7 +210,8 @@ describe('TaskDraftService', () => {
   });
 
   it('should also rename selected task correctly', () => {
-    const spyEvent = spyOn(service.taskChanged, 'emit');
+    const spyEvent = jest.fn();
+    service.taskChanged.subscribe(spyEvent);
     const tasks = [
       new TaskDraft('123', 'some name', new Polygon([]), 0),
     ];

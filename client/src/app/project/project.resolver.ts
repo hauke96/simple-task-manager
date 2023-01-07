@@ -6,12 +6,14 @@ import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NotificationService } from '../common/services/notification.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({providedIn: 'root'})
 export class ProjectResolver implements Resolve<Project> {
   constructor(
     private projectService: ProjectService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private translationService: TranslateService
   ) {
   }
 
@@ -23,7 +25,7 @@ export class ProjectResolver implements Resolve<Project> {
     // @ts-ignore
     return this.projectService.getProject(route.paramMap.get('id')).pipe(
       catchError((e: HttpErrorResponse) => {
-        this.notificationService.addError($localize`:@@ERROR_NOT_LOAD_PROJ:Could not load project '${route.paramMap.get('id')}:INTERPOLATION:'`);
+        this.notificationService.addError(this.translationService.instant('project.could-not-load-project', {projectId: route.paramMap.get('id')}));
         throw e;
       })
     );

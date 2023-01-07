@@ -7,6 +7,7 @@ import { User } from '../../user/user.material';
 import { UserService } from '../../user/user.service';
 import { Unsubscriber } from '../../common/unsubscriber';
 import { ShortcutService } from '../../common/services/shortcut.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-task-details',
@@ -26,7 +27,8 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
     private currentUserService: CurrentUserService,
     private userService: UserService,
     private notificationService: NotificationService,
-    private shortcutService: ShortcutService
+    private shortcutService: ShortcutService,
+    private translationService: TranslateService
   ) {
     super();
   }
@@ -69,9 +71,9 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
     );
   }
 
-  private selectTask(task: Task) {
+  private selectTask(task: Task | undefined): void {
     this.task = task;
-    if (!!this.task) {
+    if (!!task) {
       this.newProcessPoints = task.processPoints;
     }
     this.updateUser();
@@ -81,7 +83,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
     return this.currentUserService.getUserId();
   }
 
-  private updateUser() {
+  private updateUser(): void {
     if (!this.task || !this.task.assignedUser || !this.task.assignedUser.uid) {
       this.assignedUserName = undefined;
       return;
@@ -93,12 +95,12 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
       },
       e => {
         console.error(e);
-        this.notificationService.addError($localize`:@@ERROR_UNABLE_LOAD_USER:Unable to load assigned user`);
+        this.notificationService.addError(this.translationService.instant('unable-load-assigned-user'));
       }
     );
   }
 
-  public onAssignButtonClicked() {
+  public onAssignButtonClicked(): void {
     if (!this.task) {
       return;
     }
@@ -109,11 +111,11 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
         },
         e => {
           console.error(e);
-          this.notificationService.addError($localize`:@@ERROR_ASSIGN_USER:Could not assign user`);
+          this.notificationService.addError(this.translationService.instant('unable-assign-user'));
         });
   }
 
-  public onUnassignButtonClicked() {
+  public onUnassignButtonClicked(): void {
     if (!this.task) {
       return;
     }
@@ -124,11 +126,11 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
         },
         e => {
           console.error(e);
-          this.notificationService.addError($localize`:@@ERROR_UNASSIGN_USER:Could not unassign user`);
+          this.notificationService.addError(this.translationService.instant('unable-unassign-user'));
         });
   }
 
-  public onSaveButtonClick() {
+  public onSaveButtonClick(): void {
     if (!this.task) {
       return;
     }
@@ -139,11 +141,11 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
         },
         e => {
           console.error(e);
-          this.notificationService.addError($localize`:@@ERROR_PROCESS_POINTS:Could not set process points`);
+          this.notificationService.addError(this.translationService.instant('unable-set-process-points'));
         });
   }
 
-  public onDoneButtonClick() {
+  public onDoneButtonClick(): void {
     if (!this.task) {
       return;
     }
@@ -154,7 +156,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
         },
         e => {
           console.error(e);
-          this.notificationService.addError($localize`:@@ERROR_PROCESS_POINTS:Could not set process points`);
+          this.notificationService.addError(this.translationService.instant('unable-set-process-points'));
         });
   }
 
@@ -167,7 +169,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
       .subscribe(() => {
         },
         err => {
-          this.notificationService.addError($localize`:@@ERROR_OPEN_JOSM:Unable to open JOSM. Is it running?`);
+          this.notificationService.addError(this.translationService.instant('unable-load-josm'));
         });
   }
 

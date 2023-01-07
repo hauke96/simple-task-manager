@@ -12,12 +12,13 @@ export class ProgressBarComponent implements OnInit {
 
   constructor(
     private processPointColorService: ProcessPointColorService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
   }
 
-  getProcessPointColor() {
+  getProcessPointColor(): string {
     return this.processPointColorService.getProcessPointsColor(this.progressPoints, this.totalPoints);
   }
 

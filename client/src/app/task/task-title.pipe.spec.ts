@@ -2,7 +2,7 @@ import { TaskTitlePipe } from './task-title.pipe';
 import { Task } from './task.material';
 import { Feature } from 'ol';
 
-describe('TaskNamePipe', () => {
+describe(TaskTitlePipe.name, () => {
   let pipe: TaskTitlePipe;
 
   beforeEach(() => {

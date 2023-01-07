@@ -1,26 +1,20 @@
-import { TestBed } from '@angular/core/testing';
-
 import { AuthService } from './auth.service';
 import { CurrentUserService } from '../user/current-user.service';
-import { RouterTestingModule } from '@angular/router/testing';
-import Spy = jasmine.Spy;
+import { NotificationService } from '../common/services/notification.service';
+import { Router } from '@angular/router';
 
-describe('AuthService', () => {
-  let currentUserService: CurrentUserService;
+describe(AuthService.name, () => {
   let service: AuthService;
+  let currentUserService: CurrentUserService;
+  let router: Router;
+  let notificationService: NotificationService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [
-        CurrentUserService
-      ],
-      imports: [
-        RouterTestingModule.withRoutes([])
-      ]
-    });
-    currentUserService = TestBed.inject(CurrentUserService);
+    currentUserService = {} as CurrentUserService;
+    router = {} as Router;
+    notificationService = {} as NotificationService;
 
-    service = TestBed.inject(AuthService);
+    service = new AuthService(currentUserService, router, notificationService);
   });
 
   it('should be created', () => {
@@ -29,35 +23,36 @@ describe('AuthService', () => {
 
   it('should determine authenticated state correctly', () => {
     localStorage.removeItem('auth_token');
-    expect(service.isAuthenticated()).toBeFalse();
+    expect(service.isAuthenticated()).toEqual(false);
 
     localStorage.setItem('auth_token', 'dummy-token');
-    expect(service.isAuthenticated()).toBeTrue();
+    expect(service.isAuthenticated()).toEqual(true);
   });
 
   it('should interpret empty string as not authenticated', () => {
     localStorage.setItem('auth_token', '');
-    expect(service.isAuthenticated()).toBeFalse();
+    expect(service.isAuthenticated()).toEqual(false);
   });
 
   it('should interpret null as not authenticated', () => {
     // @ts-ignore
     localStorage.setItem('auth_token', null);
-    expect(service.isAuthenticated()).toBeFalse();
+    expect(service.isAuthenticated()).toEqual(false);
   });
 
   it('should interpret undefined as not authenticated', () => {
     // @ts-ignore
     localStorage.setItem('auth_token', undefined);
-    expect(service.isAuthenticated()).toBeFalse();
+    expect(service.isAuthenticated()).toEqual(false);
   });
 
   it('constructor should set user name correctly', () => {
+    currentUserService.setUser = jest.fn();
+
     localStorage.setItem('auth_token', 'eyJ2YWxpZF91bnRpbCI6MjU4ODM3MTQ0MywidXNlciI6InRlc3QtdXNlciIsInVpZCI6IjEyMzQ1Iiwic2VjcmV0IjoiMHZWdkJZNHNRWDQrTTY5byt4TEhLSm5oYWZIekNkNlFDWWh3L2pzNlR0MD0ifQo=');
 
     service.setUserNameFromToken();
 
-    expect(currentUserService.getUserName()).toEqual('test-user'); // Encoded in token
-    expect(currentUserService.getUserId()).toEqual('12345'); // Encoded in token
+    expect(currentUserService.setUser).toHaveBeenCalledWith('test-user', '12345');
   });
 });

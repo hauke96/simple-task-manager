@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -29,7 +29,6 @@ import { MaxValidatorDirective } from './ui/max-validator.directive';
 import { MinValidatorDirective } from './ui/min-validator.directive';
 import { ShapeRemoteComponent } from './project-creation/shape-remote/shape-remote.component';
 
-import { TranslationExtractionComponent } from './translation-extraction.component';
 import { LanguageSelectionComponent } from './ui/language-selection/language-selection.component';
 import { SelectedLanguageGuard } from './common/selected-language.guard';
 import { DrawingToolbarComponent } from './project-creation/drawing-toolbar/drawing-toolbar.component';
@@ -43,6 +42,8 @@ import { GlobalErrorHandler } from './error-handler';
 import { ProjectImportComponent } from './project-creation/project-import/project-import.component';
 import { CopyProjectComponent } from './project-creation/copy-project/copy-project.component';
 import { MapComponent } from './common/components/map/map.component';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 @NgModule({
   declarations: [
@@ -68,7 +69,6 @@ import { MapComponent } from './common/components/map/map.component';
     MaxValidatorDirective,
     MinValidatorDirective,
     ShapeRemoteComponent,
-    TranslationExtractionComponent,
     LanguageSelectionComponent,
     DrawingToolbarComponent,
     TaskDraftListComponent,
@@ -85,7 +85,14 @@ import { MapComponent } from './common/components/map/map.component';
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: (httpClient: HttpClient) => new TranslateHttpLoader(httpClient),
+        deps: [HttpClient],
+      },
+    })
   ],
   providers: [
     SelectedLanguageGuard,

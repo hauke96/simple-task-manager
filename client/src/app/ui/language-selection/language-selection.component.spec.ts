@@ -1,30 +1,29 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { LanguageSelectionComponent } from './language-selection.component';
-import { RouterTestingModule } from '@angular/router/testing';
-import { SelectedLanguageService } from '../../common/services/selected-language.service';
+import { LanguageService } from '../../common/services/language.service';
 import { Language } from '../../common/entities/language';
+import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
+import { ActivatedRoute } from '@angular/router';
 
-describe('LanguageSelectionComponent', () => {
+describe(LanguageSelectionComponent.name, () => {
   let component: LanguageSelectionComponent;
-  let fixture: ComponentFixture<LanguageSelectionComponent>;
-  let selectedLanguageService: SelectedLanguageService;
+  let fixture: MockedComponentFixture<LanguageSelectionComponent>;
+  let languageService: LanguageService;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [LanguageSelectionComponent],
-      imports: [
-        RouterTestingModule.withRoutes([])
-      ]
-    })
-      .compileComponents();
+    languageService = {} as LanguageService;
+    languageService.getKnownLanguages = jest.fn();
+    languageService.getSelectedLanguage = jest.fn();
+    const activatedRoute = {} as unknown as ActivatedRoute;
 
-    selectedLanguageService = TestBed.inject(SelectedLanguageService);
+    return MockBuilder(LanguageSelectionComponent, AppModule)
+      .provide({provide: ActivatedRoute, useFactory: () => activatedRoute})
+      .provide({provide: LanguageService, useFactory: () => languageService});
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LanguageSelectionComponent);
-    component = fixture.componentInstance;
+    fixture = MockRender(LanguageSelectionComponent);
+    component = fixture.point.componentInstance;
     fixture.detectChanges();
   });
 
@@ -33,23 +32,27 @@ describe('LanguageSelectionComponent', () => {
   });
 
   it('should call service to get languages', () => {
+    const languages = [
+      new Language('en-US', 'English'),
+      new Language('de', 'Deutsch'),
+      new Language('test', 'Testish'),
+    ];
     component.languages = [];
-    const serviceSpy = spyOn(selectedLanguageService, 'getKnownLanguages').and.callThrough();
+    languageService.getKnownLanguages = jest.fn().mockReturnValue(languages);
 
     component.ngOnInit();
 
-    expect(serviceSpy).toHaveBeenCalled();
-    expect(component.languages).toBeTruthy();
-    expect(component.languages.length).toEqual(5);
+    expect(component.languages).toEqual(languages);
+    expect(component.languages.length).toEqual(languages.length);
   });
 
   it('should call service to set language', () => {
-    const serviceSpy = spyOn(selectedLanguageService, 'selectLanguageByCode');
+    languageService.selectLanguageByCode = jest.fn();
     // @ts-ignore
-    selectedLanguageService.selectedLanguage = new Language('en-US', 'English');
+    languageService.selectedLanguage = new Language('en-US', 'English');
 
     component.onLanguageChange({target: {value: 'de'}});
 
-    expect(serviceSpy).toHaveBeenCalledWith('de');
+    expect(languageService.selectLanguageByCode).toHaveBeenCalledWith('de');
   });
 });

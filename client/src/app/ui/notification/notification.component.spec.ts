@@ -1,32 +1,31 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-
 import { NotificationComponent } from './notification.component';
-import { RouterTestingModule } from '@angular/router/testing';
 import { LoadingService } from '../../common/services/loading.service';
 import { NotificationService } from '../../common/services/notification.service';
+import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
 
-describe('NotificationComponent', () => {
+describe(NotificationComponent.name, () => {
   let component: NotificationComponent;
-  let fixture: ComponentFixture<NotificationComponent>;
+  let fixture: MockedComponentFixture<NotificationComponent>;
   let loadingService: LoadingService;
   let notificationService: NotificationService;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [NotificationComponent],
-      imports: [
-        RouterTestingModule.withRoutes([])
-      ]
-    })
-      .compileComponents();
+  beforeEach(() => {
+    loadingService = {} as LoadingService;
+    loadingService.isLoading = jest.fn();
+    notificationService = {} as NotificationService;
+    notificationService.hasError = jest.fn();
+    notificationService.hasWarning = jest.fn();
+    notificationService.hasInfo = jest.fn();
 
-    loadingService = TestBed.inject(LoadingService);
-    notificationService = TestBed.inject(NotificationService);
-  }));
+    return MockBuilder(NotificationComponent, AppModule)
+      .provide({provide: LoadingService, useFactory: () => loadingService})
+      .provide({provide: NotificationService, useFactory: () => notificationService});
+  });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NotificationComponent);
-    component = fixture.componentInstance;
+    fixture = MockRender(NotificationComponent);
+    component = fixture.point.componentInstance;
     fixture.detectChanges();
   });
 
@@ -35,78 +34,71 @@ describe('NotificationComponent', () => {
   });
 
   it('should get loading state correctly', () => {
-    loadingService.start();
+    loadingService.isLoading = jest.fn().mockReturnValue(true);
     expect(component.isLoading).toEqual(true);
 
-    loadingService.end();
+    loadingService.isLoading = jest.fn().mockReturnValue(false);
     expect(component.isLoading).toEqual(false);
   });
 
   it('should get existing notification state correctly', () => {
-    spyOn(notificationService, 'hasError').and.returnValue(true);
+    notificationService.hasError = jest.fn().mockReturnValue(true);
     expect(component.hasError).toEqual(true);
 
-    spyOn(notificationService, 'hasWarning').and.returnValue(true);
+    notificationService.hasWarning = jest.fn().mockReturnValue(true);
     expect(component.hasWarning).toEqual(true);
 
-    spyOn(notificationService, 'hasInfo').and.returnValue(true);
+    notificationService.hasInfo = jest.fn().mockReturnValue(true);
     expect(component.hasInfo).toEqual(true);
   });
 
   it('should get not existing notification state correctly', () => {
-    spyOn(notificationService, 'hasError').and.returnValue(false);
+    notificationService.hasError = jest.fn().mockReturnValue(false);
     expect(component.hasError).toEqual(false);
 
-    spyOn(notificationService, 'hasWarning').and.returnValue(false);
+    notificationService.hasWarning = jest.fn().mockReturnValue(false);
     expect(component.hasWarning).toEqual(false);
 
-    spyOn(notificationService, 'hasInfo').and.returnValue(false);
+    notificationService.hasInfo = jest.fn().mockReturnValue(false);
     expect(component.hasInfo).toEqual(false);
   });
 
   it('should get notification test correctly', () => {
     const errorText = 'Some test error';
-    spyOn(notificationService, 'getError').and.returnValue(errorText);
+    notificationService.getError = jest.fn().mockReturnValue(errorText);
     expect(component.currentErrorText).toEqual(errorText);
 
     const warningText = 'Some test warning';
-    spyOn(notificationService, 'getWarning').and.returnValue(warningText);
+    notificationService.getWarning = jest.fn().mockReturnValue(warningText);
     expect(component.currentWarningText).toEqual(warningText);
 
     const infoText = 'Some test info';
-    spyOn(notificationService, 'getInfo').and.returnValue(infoText);
+    notificationService.getInfo = jest.fn().mockReturnValue(infoText);
     expect(component.currentInfoText).toEqual(infoText);
   });
 
   it('should close notifications correctly', () => {
-    notificationService.addError('some error');
-    expect(notificationService.hasError()).toEqual(true);
+    notificationService.dropError = jest.fn();
     component.onCloseErrorButtonClicked();
-    expect(notificationService.hasError()).toEqual(false);
+    expect(notificationService.dropError).toHaveBeenCalled();
 
-    notificationService.addWarning('some warning');
-    expect(notificationService.hasWarning()).toEqual(true);
+    notificationService.dropWarning = jest.fn();
     component.onCloseWarningButtonClicked();
-    expect(notificationService.hasWarning()).toEqual(false);
+    expect(notificationService.dropError).toHaveBeenCalled();
 
-    notificationService.addInfo('some info');
-    expect(notificationService.hasInfo()).toEqual(true);
+    notificationService.dropInfo = jest.fn();
     component.onCloseInfoButtonClicked();
-    expect(notificationService.hasInfo()).toEqual(false);
+    expect(notificationService.dropInfo).toHaveBeenCalled();
   });
 
   it('should get the amount of notifications correctly', () => {
-    notificationService.addError('e1');
-    notificationService.addError('e2');
-    notificationService.addError('e3');
-
-    notificationService.addWarning('w1');
-    notificationService.addWarning('w2');
-
-    notificationService.addInfo('i1');
-
+    notificationService.remainingErrors = jest.fn().mockReturnValue(3);
     expect(component.remainingErrors).toEqual(3);
+
+    notificationService.remainingWarning = jest.fn().mockReturnValue(2);
     expect(component.remainingWarning).toEqual(2);
+
+    notificationService.remainingInfo = jest.fn().mockReturnValue(1);
     expect(component.remainingInfo).toEqual(1);
   });
 });

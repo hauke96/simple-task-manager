@@ -1,32 +1,33 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-
 import { TaskListComponent } from './task-list.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Task, TestTaskFeature } from '../task.material';
 import { TaskService } from '../task.service';
 import { CurrentUserService } from '../../user/current-user.service';
 import { User } from '../../user/user.material';
+import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
+import { EventEmitter } from '@angular/core';
 
-describe('TaskListComponent', () => {
+describe(TaskListComponent.name, () => {
   let component: TaskListComponent;
-  let fixture: ComponentFixture<TaskListComponent>;
+  let fixture: MockedComponentFixture<TaskListComponent, any>;
   let taskService: TaskService;
   let currentUserService: CurrentUserService;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [TaskListComponent],
-      imports: [HttpClientTestingModule],
-    })
-      .compileComponents();
+  beforeEach(() => {
+    taskService = {} as TaskService;
+    taskService.selectedTaskChanged = new EventEmitter();
+    taskService.tasksUpdated = new EventEmitter();
 
-    taskService = TestBed.inject(TaskService);
-    currentUserService = TestBed.inject(CurrentUserService);
-  }));
+    currentUserService = {} as CurrentUserService;
+
+    return MockBuilder(TaskListComponent, AppModule)
+      .provide({provide: TaskService, useFactory: () => taskService})
+      .provide({provide: CurrentUserService, useFactory: () => currentUserService});
+  });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TaskListComponent);
-    component = fixture.componentInstance;
+    fixture = MockRender(TaskListComponent, {tasks: []});
+    component = fixture.point.componentInstance;
     fixture.detectChanges();
   });
 
@@ -34,37 +35,52 @@ describe('TaskListComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should sort tasks', () => {
-    const tasks: Task[] = [];
-    tasks.push(new Task('1', 'a', 10, 100, TestTaskFeature));
-    tasks.push(new Task('2', 'b', 100, 100, TestTaskFeature));
-    tasks.push(new Task('3', 'z', 60, 100, TestTaskFeature));
-    tasks.push(new Task('4', 'a', 100, 100, TestTaskFeature));
-    tasks.push(new Task('5', 'g', 30, 100, TestTaskFeature));
-    component.tasks = [...tasks];
+  it('should use empty string as default task id', () => {
+    taskService.getSelectedTask = jest.fn().mockReturnValue(undefined);
+    expect(component.selectedTaskId).toEqual('');
 
-    // Actually update some tasks
-    expect(component.tasks[0]).toEqual(tasks[0]);
-    expect(component.tasks[1]).toEqual(tasks[4]);
-    expect(component.tasks[2]).toEqual(tasks[2]);
-    expect(component.tasks[3]).toEqual(tasks[3]);
-    expect(component.tasks[4]).toEqual(tasks[1]);
+    taskService.getSelectedTask = jest.fn().mockReturnValue({} as Task);
+    expect(component.selectedTaskId).toEqual('');
   });
 
-  it('should select correct task', () => {
-    const selectSpy = spyOn(taskService, 'selectTask').and.callThrough();
-    const eventSpy = spyOn(taskService.selectedTaskChanged, 'emit').and.callThrough();
-
+  describe('with tasks', () => {
     const tasks: Task[] = [];
-    tasks.push(new Task('42', '', 10, 100, TestTaskFeature));
-    tasks.push(new Task('43', '', 55, 100, TestTaskFeature));
-    component.tasks = [...tasks];
 
-    component.onListItemClicked('42');
+    beforeEach(() => {
+      tasks.push(new Task('1', 'a', 10, 100, TestTaskFeature));
+      tasks.push(new Task('2', 'b', 100, 100, TestTaskFeature));
+      tasks.push(new Task('3', 'z', 60, 100, TestTaskFeature));
+      tasks.push(new Task('4', 'a', 100, 100, TestTaskFeature));
+      tasks.push(new Task('5', 'g', 30, 100, TestTaskFeature));
+      component.tasks = [...tasks];
+    });
 
-    expect(selectSpy).toHaveBeenCalled();
-    expect(eventSpy).toHaveBeenCalled();
-    expect(component.selectedTaskId).toEqual('42');
+    it('should sort tasks', () => {
+      // Actually update some tasks
+      expect(component.tasks[0]).toEqual(tasks[0]);
+      expect(component.tasks[1]).toEqual(tasks[4]);
+      expect(component.tasks[2]).toEqual(tasks[2]);
+      expect(component.tasks[3]).toEqual(tasks[3]);
+      expect(component.tasks[4]).toEqual(tasks[1]);
+    });
+
+    describe('with selected task', () => {
+      beforeEach(() => {
+        taskService.selectTask = jest.fn();
+
+        component.onListItemClicked(tasks[2].id);
+      });
+
+      it('should call task service correctly', () => {
+        expect(taskService.selectTask).toHaveBeenCalledTimes(1);
+        expect(taskService.selectTask).toHaveBeenCalledWith(tasks[2]);
+      });
+
+      it('should get correct selected task id', () => {
+        taskService.getSelectedTask = jest.fn().mockReturnValue(tasks[2]);
+        expect(component.selectedTaskId).toEqual(tasks[2].id);
+      });
+    });
   });
 
   describe('update event', () => {
@@ -106,14 +122,14 @@ describe('TaskListComponent', () => {
       expect(component.tasks[0].processPoints).toEqual(100);
       expect(component.tasks[3].id).toEqual(t4.id);
       expect(component.tasks[3].processPoints).toEqual(50);
-      expect(component.tasks[3].assignedUser).not.toBeFalse();
+      expect(component.tasks[3].assignedUser).not.toBeFalsy();
       expect(component.tasks[3].assignedUser?.name).toEqual('bar');
       expect(component.tasks[3].assignedUser?.uid).toEqual('123');
     });
   });
 
   it('should determine correctly whether user is assigned', () => {
-    currentUserService.setUser('Mr. Answer', '42');
+    currentUserService.getUserId = jest.fn().mockReturnValue('42');
 
     expect(component.isAssignedToCurrentUser(new Task('1', '', 10, 100, TestTaskFeature))).toEqual(false);
     expect(component.isAssignedToCurrentUser(new Task('2', '', 10, 100, TestTaskFeature,

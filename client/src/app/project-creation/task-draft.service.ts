@@ -1,7 +1,8 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { TaskDraft } from '../task/task.material';
 import { Feature } from 'ol';
 import { Geometry } from 'ol/geom';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,10 +11,10 @@ export class TaskDraftService {
   private tasks: TaskDraft[] = [];
   private selectedTask: TaskDraft | undefined;
 
-  public tasksAdded: EventEmitter<TaskDraft[]> = new EventEmitter<TaskDraft[]>();
-  public taskRemoved: EventEmitter<string> = new EventEmitter<string>();
-  public taskChanged: EventEmitter<TaskDraft> = new EventEmitter<TaskDraft>();
-  public taskSelected: EventEmitter<void> = new EventEmitter();
+  public tasksAdded: Subject<TaskDraft[]> = new Subject<TaskDraft[]>();
+  public taskRemoved: Subject<string> = new Subject<string>();
+  public taskChanged: Subject<TaskDraft> = new Subject<TaskDraft>();
+  public taskSelected: Subject<void> = new Subject();
 
   constructor() {
   }
@@ -22,24 +23,24 @@ export class TaskDraftService {
     return this.tasks;
   }
 
-  public selectTask(id: string) {
+  public selectTask(id: string): void {
     this.selectedTask = this.tasks.find(t => t.id === id);
 
     if (!!this.selectedTask) {
-      this.taskSelected.emit();
+      this.taskSelected.next();
     }
   }
 
-  public deselectTask() {
+  public deselectTask(): void {
     this.selectedTask = undefined;
-    this.taskSelected.emit(undefined);
+    this.taskSelected.next(undefined);
   }
 
   public getSelectedTask(): TaskDraft | undefined {
     return this.selectedTask;
   }
 
-  public removeTask(id: string) {
+  public removeTask(id: string): void {
     // Check if task exists before filtering anything.
     if (this.tasks.filter(t => t.id === id).length !== 0) {
       this.tasks = this.tasks.filter(t => t.id !== id);
@@ -48,11 +49,11 @@ export class TaskDraftService {
         this.deselectTask();
       }
 
-      this.taskRemoved.emit(id);
+      this.taskRemoved.next(id);
     }
   }
 
-  public changeTaskName(id: string, name: string) {
+  public changeTaskName(id: string, name: string): void {
     const task = this.tasks.find(t => t.id === id);
     if (!task) {
       return;
@@ -64,7 +65,7 @@ export class TaskDraftService {
       this.selectedTask = task;
     }
 
-    this.taskChanged.emit(task);
+    this.taskChanged.next(task);
   }
 
   /**
@@ -92,7 +93,7 @@ export class TaskDraftService {
    * @param transformGeometry Default: true. Set to false if all geometries of the tasks are already in 'EPSG:3857' (no transformation
    * needed) and to true if the geometries are in 'EPSG:4326' projection.
    */
-  public addTasks(tasks: TaskDraft[], transformGeometry = true) {
+  public addTasks(tasks: TaskDraft[], transformGeometry = true): void {
     // Transform geometries into the correct projection
     tasks.forEach(f => {
       if (transformGeometry) {
@@ -114,7 +115,7 @@ export class TaskDraftService {
     });
 
     this.tasks.push(...tasks);
-    this.tasksAdded.emit(tasks);
+    this.tasksAdded.next(tasks);
   }
 
   /**

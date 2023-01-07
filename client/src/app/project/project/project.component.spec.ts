@@ -1,56 +1,50 @@
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-
 import { ProjectComponent } from './project.component';
-import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Task, TestTaskFeature, TestTaskGeometry } from '../../task/task.material';
+import { Task, TestTaskFeature } from '../../task/task.material';
 import { User } from '../../user/user.material';
-import { Project, ProjectDto } from '../project.material';
+import { Project } from '../project.material';
 import { of, throwError } from 'rxjs';
-import { WebsocketMessage, WebsocketMessageType } from '../../common/entities/websocket-message';
+import { WebsocketMessage } from '../../common/entities/websocket-message';
 import { ProjectService } from '../project.service';
 import { WebsocketClientService } from '../../common/services/websocket-client.service';
-import { MockRouter } from '../../common/mock-router';
 import { NotificationService } from '../../common/services/notification.service';
+import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
+import { EventEmitter } from '@angular/core';
 
-describe('ProjectComponent', () => {
+describe(ProjectComponent.name, () => {
   let component: ProjectComponent;
-  let fixture: ComponentFixture<ProjectComponent>;
+  let fixture: MockedComponentFixture<ProjectComponent>;
   let projectService: ProjectService;
   let websocketService: WebsocketClientService;
-  let routerMock: MockRouter;
+  let router: Router;
   let notificationService: NotificationService;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ProjectComponent],
-      imports: [
-        RouterTestingModule.withRoutes([]),
-        HttpClientTestingModule
-      ],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: {snapshot: {data: {project: createProject()}}}
-        },
-        {
-          provide: Router,
-          useClass: MockRouter
-        },
-      ]
-    })
-      .compileComponents();
+  beforeEach(() => {
+    projectService = {
+      projectAdded: new EventEmitter<Project>(),
+      projectChanged: new EventEmitter<Project>(),
+      projectDeleted: new EventEmitter<string>(),
+      projectUserRemoved: new EventEmitter<string>(),
+    } as ProjectService;
+    router = {} as Router;
+    websocketService = {
+      messageReceived: new EventEmitter<WebsocketMessage>(),
+    } as WebsocketClientService;
+    notificationService = {} as NotificationService;
+    const activatedRoute = {snapshot: {data: {project: createProject()}}} as unknown as ActivatedRoute;
 
-    projectService = TestBed.inject(ProjectService);
-    routerMock = TestBed.inject(Router);
-    websocketService = TestBed.inject(WebsocketClientService);
-    notificationService = TestBed.inject(NotificationService);
-  }));
+    return MockBuilder(ProjectComponent, AppModule)
+      .provide({provide: ProjectService, useFactory: () => projectService})
+      .provide({provide: Router, useFactory: () => router})
+      .provide({provide: ActivatedRoute, useFactory: () => activatedRoute})
+      .provide({provide: WebsocketClientService, useFactory: () => websocketService})
+      .provide({provide: NotificationService, useFactory: () => notificationService});
+  });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ProjectComponent);
-    component = fixture.componentInstance;
+    fixture = MockRender(ProjectComponent);
+    component = fixture.point.componentInstance;
     fixture.detectChanges();
   });
 
@@ -59,72 +53,69 @@ describe('ProjectComponent', () => {
   });
 
   it('should update project on update', () => {
+    // Arrange
     component.project = createProject();
 
     const p = createProject();
     p.name = 'flubby';
-    spyOn(projectService, 'getProject').and.returnValue(of(p));
+    projectService.getProject = jest.fn().mockReturnValue(of(p));
 
-    // Trigger all needed events
-    websocketService.messageReceived.emit(new WebsocketMessage(
-      WebsocketMessageType.MessageType_ProjectUpdated,
-      p.id
-    ));
+    // Act
+    projectService.projectChanged.next(p);
 
+    // Assert
     expect(component.project).toEqual(p);
   });
 
   it('should navigate on deleted project', () => {
-    const spyRouter = spyOn(routerMock, 'navigate').and.callThrough();
-
+    // Arrange
+    router.navigate = jest.fn();
     component.project = createProject();
+    notificationService.addInfo = jest.fn();
 
-    // Trigger all needed events
-    websocketService.messageReceived.emit(new WebsocketMessage(
-      WebsocketMessageType.MessageType_ProjectDeleted,
-      component.project.id
-    ));
+    // Act
+    projectService.projectDeleted.next(component.project.id);
 
-    expect(spyRouter).toHaveBeenCalledWith(['/dashboard']);
+    // Assert
+    expect(notificationService.addInfo).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith(['/dashboard']);
   });
 
   it('should do nothing on foreign deleted project', () => {
-    const spyRouter = spyOn(routerMock, 'navigate').and.callThrough();
-
+    // Arrange
+    router.navigate = jest.fn();
     component.project = createProject();
 
-    // Trigger all needed events
-    websocketService.messageReceived.emit(new WebsocketMessage(
-      WebsocketMessageType.MessageType_ProjectDeleted,
-      'flubby dubby'
-    ));
+    // Act
+    projectService.projectDeleted.next('flubby dubby');
 
-    expect(spyRouter).not.toHaveBeenCalled();
+    // Assert
+    expect(router.navigate).not.toHaveBeenCalled();
   });
 
   it('should show error message on error during user removal', () => {
-    spyOn(routerMock, 'navigate').and.callThrough();
-    const removeUserSpy = spyOn(projectService, 'removeUser').and.returnValue(throwError('test error'));
-    const notificationServiceSpy = spyOn(notificationService, 'addError').and.callThrough();
+    router.navigate = jest.fn();
+    projectService.removeUser = jest.fn().mockReturnValue(throwError(() => new Error('test error')));
+    notificationService.addError = jest.fn();
 
     component.project = createProject();
     component.onUserRemoved('123');
 
-    expect(removeUserSpy).toHaveBeenCalledWith('1', '123');
-    expect(notificationServiceSpy).toHaveBeenCalled();
+    expect(projectService.removeUser).toHaveBeenCalledWith('1', '123');
+    expect(notificationService.addError).toHaveBeenCalled();
   });
 
   it('should show error message on error inviting user', () => {
-    const inviteUserSpy = spyOn(projectService, 'inviteUser').and.returnValue(throwError('test error'));
-    const notificationServiceSpy = spyOn(notificationService, 'addError').and.callThrough();
+    projectService.inviteUser = jest.fn().mockReturnValue(throwError(() => new Error('test error')));
+    notificationService.addError = jest.fn();
 
     component.onUserInvited(new User('foo bar', '222'));
 
-    expect(inviteUserSpy).toHaveBeenCalledWith('1', '222');
-    expect(notificationServiceSpy).toHaveBeenCalled();
+    expect(projectService.inviteUser).toHaveBeenCalledWith('1', '222');
+    expect(notificationService.addError).toHaveBeenCalled();
   });
 
-  function createProject() {
+  function createProject(): Project {
     const t = new Task('567', '', 10, 100, TestTaskFeature);
     const u1 = new User('test-user', '123');
     const u2 = new User('test-user2', '234');

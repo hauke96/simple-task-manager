@@ -70,9 +70,9 @@ export class AuthService {
   }
 
   // Removes all login information from the local storage and also from the user service.
-  public logout() {
+  public logout(): void {
     this.currentUserService.resetUser();
-    localStorage.clear();
+    localStorage.removeItem('auth_token');
     this.router.navigate(['/']);
   }
 }

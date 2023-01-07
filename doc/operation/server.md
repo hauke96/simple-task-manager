@@ -40,15 +40,15 @@ First steps before we start:
 
 The plan is to use public-key-authentication and to change some `sshd` configs.
 
-* Edit the `sshd` config file: `vim /etc/ssh/sshd_config`
+* Edit the `sshd` config file on the server: `vim /etc/ssh/sshd_config`
     * Change the line `#Port 22` into e.g. `Port 4242`
         * Important: Remember that number for the firewall config below
     * Disable SSH root-login. Change the `PermitRootLogin` line to `PermitRootLogin no`
-        * Disable SSH password-login. Change the `PasswordAuthentication` line to `PasswordAuthentication no`
-* Copy your public SSH key. This requires a working SSH-setup on your private machine, so make sure you have
-  a `~/.ssh/id_rsa.pub` file (or any other pubkey file you can use).
-    * use `ssh-copy-id` or manually copy content of the `.pub` file to your servers `~/.ssh/authorized_keys` and make
-      sure the permissions are on 600 (if not, execute `chmod 600 ~/.ssh/authorized_keys`)
+    * Disable SSH password-login. Change the `PasswordAuthentication` line to `PasswordAuthentication no`
+* Copy your personal public SSH key from your home computer:
+    * Make sure you have an SSH key (we need a `~/.ssh/id_rsa.pub` file). If not create one using `ssh-keygen`.
+    * Use `ssh-copy-id` or manually copy content of the `.pub` file to your servers `~/.ssh/authorized_keys`.
+	* Make sure the permissions are on 600 (if not, execute `chmod 600 ~/.ssh/authorized_keys`)
 
 Test the setup using `ssh -p 4242 foo@bar.com`. A succeeded login without entering a password means that the SSH-setup
 is completed.

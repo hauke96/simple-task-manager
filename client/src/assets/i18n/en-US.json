@@ -1,0 +1,154 @@
+{
+  "title": "SimpleTaskManager",
+  "users": "Users:",
+  "settings": "Settings:",
+  "description": "Description:",
+  "properties": "Properties:",
+  "tasks": "Tasks:",
+  "name": "Name:",
+  "save-button": "Save",
+  "done-button": "Done",
+  "cancel-button": "Cancel",
+  "ok-button": "OK",
+  "meters": "meters",
+  "yes": "Yes",
+  "no": "No",
+  "test-instance-notice": "This is a <b>test instance</b> of the SimpleTaskManager.",
+  "footer": "Version: <a href=\"https://github.com/hauke96/simple-task-manager/releases/tag/v{{version}}\" target=\"_blank\">{{version}}</a><span class=\"sep\"></span>Code: <a href=\"https://github.com/hauke96/simple-task-manager\" target=\"_blank\">GitHub</a><span class=\"sep\"></span>License: <a href=\"https://github.com/hauke96/simple-task-manager/blob/master/LICENSE\" target=\"_blank\">GPLv3</a><span class=\"sep\"></span>Icons: <a href=\"https://linearicons.com\" target=\"_blank\">Linearicons</a>",
+  "project-has-been-removed": "The project '{{projectName}}' has been removed",
+  "you-have-been-removed": "You have been removed from project '{{projectName}}'",
+  "feature-upload-error": "No polygons exist or data has unknown format. Supported formats are: GeoJson, OSM-XML, GPX, KML, EsriJson and WKT.",
+  "file-upload-error": "Could not upload file '{{fileName}}'",
+  "login-failed": "Logout because authorization was not successful",
+  "language-selection": "Language selection:",
+  "login": {
+    "welcome": "Welcome to SimpleTaskManager for <a href=\"https://openstreetmap.org\">OpenStreetMap</a>",
+    "login-button": "Login"
+  },
+  "dashboard": {
+    "welcome": "Welcome {{userName}} :)",
+    "logout-button": "Logout",
+    "create-project": "Create project",
+    "import-project": "Import project"
+  },
+  "project": {
+    "back-button": "Back",
+    "title": "Project:",
+    "creation-date": "Created on:",
+    "description": "Description:",
+    "could-not-remove-user": "Could not remove user",
+    "could-not-invite-user": "Could not remove user {{userName}}",
+    "tab-titles": {
+      "tasks": "Tasks",
+      "users": "User",
+      "settings": "Settings"
+    },
+    "live-updates-init-error": "Could not initialize live-updates",
+    "could-not-load-project": "Could not load project '{{projectId}}'",
+    "could-not-load-projects": "Could not load projects"
+  },
+  "project-list": {
+    "projects": "Projects:",
+    "no-project-notice": "You currently don't have any projects.",
+    "you-own-this-project-notice": "* you own this project"
+  },
+  "project-settings": {
+    "delete-button": "Delete project",
+    "really-delete-notice": "Really delete the project?",
+    "leave-button": "Leave project",
+    "really-leave-notice": "Really leave the project?",
+    "export-button": "Export",
+    "successfully-removed": "Project removed successfully",
+    "successfully-updated": "Successfully updated project",
+    "could-not-remove-project": "Could not delete project",
+    "could-not-leave-project": "Could not leave project",
+    "could-not-update-project": "Unable to update project title and/or description",
+    "could-not-export-project": "Creating project export failed"
+  },
+  "project-creation": {
+    "copy": "Copy:",
+    "copy-notice": "Copy and import an existing project you are a member of.",
+    "no-project-notice": "No projects available!",
+    "loading-projects": "Loading projects ...",
+    "available-projects": "Available projects:",
+    "import-button": "Import",
+    "import-heading": "Import:",
+    "import-notice": "Import an existing project from your computer. Existing properties will be overwritten.",
+    "new-polygon": "Draw new polygon",
+    "edit-polygon": "Edit polygon",
+    "remove-polygon": "Remove polygon",
+    "subdivide": "Subdivide:",
+    "upload-project-button": "Upload project",
+    "max-points-notice": "Max. points per task:",
+    "subdivide-notice": "This divides the selected task into smaller tasks of the selected shape and size.",
+    "subdivide-result-too-large-notice": "Result with {{amountTasksAfterDividing}} tasks is too large, only {{maxTasksPerProject}} tasks allowed.",
+    "subdivide-result-way-too-large-notice": "Result would be way too large, only {{maxTasksPerProject}} tasks allowed.",
+    "subdivide-result-notice": "You will have {{amountTasksAfterDividing}} tasks in total.",
+    "shape-size": "Shape size:",
+    "shape": "Shape:",
+    "square": "square",
+    "hexagon": "hexagon",
+    "triangle": "triangle",
+    "preview-button": "Preview",
+    "divide-button": "Divide",
+    "url-file-format-notice": "URL to GeoJSON, OSM-XML, GPX, EsriJson, KML or WKT data:",
+    "load-button": "Load",
+    "loading-title": "Loading data from Overpass:",
+    "load-li-1": "Create your query",
+    "load-li-2": "Click on \"Export\"",
+    "load-li-3": "Copy the link after \"raw data directly from\" (right click and \"copy link\")",
+    "load-li-4": "Paste this URL in here",
+    "upload": "Upload:",
+    "upload-notice": "Upload a GeoJSON, OSM-XML, GPX, EsriJson, KML or WKT file, which contains polygons. Each polygon will result in a single task.",
+    "remote-url-error": "Unable to load data from remote URL",
+    "upload-file-button": "Upload file",
+    "no-task-yet-notice": "There are no tasks here yet. Use the pencil-tool to draw tasks or import tasks via the \"Upload\" or \"Remote\" tab.",
+    "could-not-import-project": "Could not import project '{{projectName}}'",
+    "tab-titles": {
+      "properties": "Properties",
+      "tasks": "Tasks",
+      "import": "Import",
+      "remote": "Remote"
+    },
+    "could-not-create-project": "Could not create project"
+  },
+  "task-details": {
+    "title": "Task",
+    "assign-to-me": "Assign to me",
+    "assigned-to": "Assigned to:",
+    "unassign": "Unassign",
+    "points": "Points:",
+    "open-in-josm-button": "Open in JOSM",
+    "open-in-id-button": "Open in iD",
+    "unable-load-assigned-user": "Unable to load assigned user",
+    "unable-assign-user": "Could not assign user",
+    "unable-unassign-user": "Could not unassign user",
+    "unable-set-process-points": "Could not set process points",
+    "unable-load-josm": "Unable to open JOSM. Is it running?"
+  },
+  "task-list": {
+    "you": "(you)"
+  },
+  "notification": {
+    "loading": "Loading ...",
+    "error": "ERROR:",
+    "errors-left": "errors left",
+    "warning": "WARNING:",
+    "warnings-left": "warnings left",
+    "notifications-left": "notifications left"
+  },
+  "zoom-controls": {
+    "zoom-in": "Zoom in",
+    "zoom-out": "Zoom out"
+  },
+  "user": {
+    "invite-button": "Invite",
+    "remove-button": "Remove",
+    "already-member": "User {{user}} is already a member of this project",
+    "unable-load-user": "Could not load user ID for user {{user}}. The user must have at least one changeset or note."
+  },
+  "task-map": {
+    "task-done": "DONE",
+    "you": "you"
+  }
+}

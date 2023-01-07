@@ -1,16 +1,16 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-
 import { ShapeRemoteComponent } from './shape-remote.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HttpClient } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
 import { Polygon } from 'ol/geom';
 import { NotificationService } from '../../common/services/notification.service';
 import { GeometryService } from '../../common/services/geometry.service';
 import { LoadingService } from '../../common/services/loading.service';
-import { RouterTestingModule } from '@angular/router/testing';
 import { TaskDraftService } from '../task-draft.service';
 import { TaskDraft } from '../../task/task.material';
+import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
+import { AppComponent } from '../../app.component';
+import { TranslateService } from '@ngx-translate/core';
+import { AppModule } from '../../app.module';
 
 const remoteGeometry = `<?xml version="1.0" encoding="UTF-8"?>
 <osm version="0.6" generator="Overpass API 0.7.56.3 eb200aeb">
@@ -27,36 +27,38 @@ const remoteGeometry = `<?xml version="1.0" encoding="UTF-8"?>
 </osm>
 `;
 
-describe('ShapeRemoteComponent', () => {
+describe(ShapeRemoteComponent.name, () => {
   let component: ShapeRemoteComponent;
-  let fixture: ComponentFixture<ShapeRemoteComponent>;
+  let fixture: MockedComponentFixture<ShapeRemoteComponent>;
   let httpClient: HttpClient;
   let notificationService: NotificationService;
   let geometryService: GeometryService;
   let loadingService: LoadingService;
   let taskDraftService: TaskDraftService;
-
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ShapeRemoteComponent],
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule.withRoutes([])
-      ],
-      providers: [TaskDraftService]
-    })
-      .compileComponents();
-
-    httpClient = TestBed.inject(HttpClient);
-    notificationService = TestBed.inject(NotificationService);
-    geometryService = TestBed.inject(GeometryService);
-    loadingService = TestBed.inject(LoadingService);
-  }));
+  let translateService: TranslateService;
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ShapeRemoteComponent);
-    component = fixture.componentInstance;
-    taskDraftService = fixture.debugElement.injector.get(TaskDraftService);
+    httpClient = {} as HttpClient;
+    notificationService = {} as NotificationService;
+    geometryService = {} as GeometryService;
+    loadingService = {} as LoadingService;
+    loadingService.start = jest.fn();
+    loadingService.end = jest.fn();
+    taskDraftService = {} as TaskDraftService;
+    translateService = {} as TranslateService;
+
+    return MockBuilder(ShapeRemoteComponent, AppModule)
+      .provide({provide: HttpClient, useFactory: () => httpClient})
+      .provide({provide: NotificationService, useFactory: () => notificationService})
+      .provide({provide: GeometryService, useFactory: () => geometryService})
+      .provide({provide: LoadingService, useFactory: () => loadingService})
+      .provide({provide: TaskDraftService, useFactory: () => taskDraftService})
+      .provide({provide: TranslateService, useFactory: () => translateService});
+  });
+
+  beforeEach(() => {
+    fixture = MockRender(ShapeRemoteComponent);
+    component = fixture.point.componentInstance;
     fixture.detectChanges();
   });
 
@@ -65,51 +67,57 @@ describe('ShapeRemoteComponent', () => {
   });
 
   it('should show loading spinner on load', () => {
-    const spy = spyOn(loadingService, 'start');
+    httpClient.get = jest.fn().mockReturnValue(of(remoteGeometry));
     component.onLoadButtonClicked();
-    expect(spy).toHaveBeenCalled();
+    expect(loadingService.start).toHaveBeenCalled();
+    expect(loadingService.end).toHaveBeenCalled();
   });
 
   it('should emit feature after load', () => {
     const expectedCoordinates = [[[0, 0], [2, 0], [1, 1], [0, 0]]];
+    const geometry = new Polygon(expectedCoordinates);
 
-    spyOn(httpClient, 'get').and.returnValue(of(remoteGeometry));
-    const eventSpy = spyOn(taskDraftService, 'addTasks').and.callFake((t: TaskDraft[]) => {
+    httpClient.get = jest.fn().mockReturnValue(of(remoteGeometry));
+    geometryService.parseData = jest.fn().mockReturnValue([geometry]);
+    taskDraftService.addTasks = jest.fn().mockImplementation((t: TaskDraft[]) => {
       expect(t.length).toEqual(1);
       expect((t[0].geometry as Polygon).getCoordinates()).toEqual(expectedCoordinates);
     });
+    taskDraftService.toTaskDraft = jest.fn().mockReturnValue(new TaskDraft('1', 'one', geometry, 10));
 
     component.onLoadButtonClicked();
 
-    expect(eventSpy).toHaveBeenCalled();
+    expect(taskDraftService.addTasks).toHaveBeenCalled();
   });
 
   it('should notify but not emit on parsing error', () => {
-    spyOn(httpClient, 'get').and.returnValue(of(remoteGeometry));
-    spyOn(geometryService, 'toUsableTaskFeature').and.throwError('Intended test error');
+    httpClient.get = jest.fn().mockReturnValue(of(remoteGeometry));
+    geometryService.parseData = jest.fn().mockReturnValue([]);
+    translateService.instant = jest.fn();
 
-    const notificationSpy = spyOn(notificationService, 'addError');
-    const addSpy = spyOn(taskDraftService, 'addTasks');
-    const loadingSpy = spyOn(loadingService, 'end');
+    notificationService.addError = jest.fn();
+    taskDraftService.addTasks = jest.fn();
 
     component.onLoadButtonClicked();
 
-    expect(notificationSpy).toHaveBeenCalled();
-    expect(addSpy).not.toHaveBeenCalled();
-    expect(loadingSpy).toHaveBeenCalled();
+    expect(notificationService.addError).toHaveBeenCalled();
+    expect(taskDraftService.addTasks).not.toHaveBeenCalled();
+    expect(loadingService.start).toHaveBeenCalled();
+    expect(loadingService.end).toHaveBeenCalled();
   });
 
   it('should notify but not emit on http error', () => {
-    spyOn(httpClient, 'get').and.returnValue(throwError('Intended test error'));
+    httpClient.get = jest.fn().mockReturnValue(throwError(() => new Error('Intended test error')));
+    translateService.instant = jest.fn();
 
-    const notificationSpy = spyOn(notificationService, 'addError');
-    const addSpy = spyOn(taskDraftService, 'addTasks');
-    const loadingSpy = spyOn(loadingService, 'end');
+    notificationService.addError = jest.fn();
+    taskDraftService.addTasks = jest.fn();
 
     component.onLoadButtonClicked();
 
-    expect(notificationSpy).toHaveBeenCalled();
-    expect(addSpy).not.toHaveBeenCalled();
-    expect(loadingSpy).toHaveBeenCalled();
+    expect(notificationService.addError).toHaveBeenCalled();
+    expect(taskDraftService.addTasks).not.toHaveBeenCalled();
+    expect(loadingService.start).toHaveBeenCalled();
+    expect(loadingService.end).toHaveBeenCalled();
   });
 });

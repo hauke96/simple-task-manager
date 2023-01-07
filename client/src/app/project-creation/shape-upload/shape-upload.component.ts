@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NotificationService } from '../../common/services/notification.service';
 import { GeometryService } from '../../common/services/geometry.service';
 import { TaskDraftService } from '../task-draft.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-shape-upload',
@@ -12,7 +13,8 @@ export class ShapeUploadComponent {
   constructor(
     private notificationService: NotificationService,
     private geometryService: GeometryService,
-    private taskDraftService: TaskDraftService
+    private taskDraftService: TaskDraftService,
+    private translationService: TranslateService
   ) {
   }
 
@@ -32,7 +34,7 @@ export class ShapeUploadComponent {
       if (!!features && features.length !== 0) {
         this.taskDraftService.addTasks(features.map(f => this.taskDraftService.toTaskDraft(f)));
       } else {
-        this.notificationService.addError($localize`:@@ERROR_OVERPASS_NO_POLYGONS:No polygons exist or data has unknown format. Supported formats are: GeoJson, OSM-XML, GPX, KML, EsriJson and WKT.`);
+        this.notificationService.addError(this.translationService.instant('feature-upload-error'));
       }
     } catch (e) {
       this.notificationService.addError('Error: ' + e);
@@ -48,7 +50,8 @@ export class ShapeUploadComponent {
     reader.onload = loadHandler;
     reader.onerror = (evt) => {
       console.error(evt);
-      this.notificationService.addError($localize`:@@ERROR_COULD_NOT_UPLOAD:Could not upload file '${(evt.target as any).files[0]}:INTERPOLATION:'`);
+      const message = this.translationService.instant('file-upload-error', {fileName: (evt.target as any).files[0]});
+      this.notificationService.addError(message);
     };
   }
 }

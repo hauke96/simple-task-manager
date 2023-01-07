@@ -2,27 +2,27 @@ import { Component, OnInit } from '@angular/core';
 import { ProjectExport } from '../../project/project.material';
 import { ProjectImportService } from '../project-import.service';
 import { NotificationService } from '../../common/services/notification.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-project-import',
   templateUrl: './project-import.component.html',
   styleUrls: ['./project-import.component.scss']
 })
-export class ProjectImportComponent implements OnInit {
+export class ProjectImportComponent {
 
   constructor(
     private notificationService: NotificationService,
-    private projectImportService: ProjectImportService) {
+    private projectImportService: ProjectImportService,
+    private translationService: TranslateService
+  ) {
   }
 
-  ngOnInit(): void {
-  }
-
-  public onProjectSelected(event: any) {
+  public onProjectSelected(event: any): void {
     this.uploadFile(event, (e) => this.addProjectExport(e));
   }
 
-  public addProjectExport(evt: Event) {
+  public addProjectExport(evt: Event): void {
     if (!evt || !evt.target) {
       return;
     }
@@ -32,7 +32,7 @@ export class ProjectImportComponent implements OnInit {
     this.projectImportService.importProjectAsNewProject(project);
   }
 
-  private uploadFile(event: any, loadHandler: (evt: Event) => void) {
+  private uploadFile(event: any, loadHandler: (evt: Event) => void): void {
     const reader = new FileReader();
     const file = event.target.files[0];
 
@@ -41,7 +41,8 @@ export class ProjectImportComponent implements OnInit {
     reader.onload = loadHandler;
     reader.onerror = (evt) => {
       console.error(evt);
-      this.notificationService.addError($localize`:@@ERROR_COULD_NOT_UPLOAD:Could not upload file '${(evt.target as any).files[0]}:INTERPOLATION:'`);
+      const message = this.translationService.instant('file-upload-error', {fileName: (evt.target as any).files[0]});
+      this.notificationService.addError(message);
     };
   }
 }

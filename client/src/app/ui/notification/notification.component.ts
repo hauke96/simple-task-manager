@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { LoadingService } from '../../common/services/loading.service';
 import { NotificationService } from '../../common/services/notification.service';
 
@@ -7,14 +7,11 @@ import { NotificationService } from '../../common/services/notification.service'
   templateUrl: './notification.component.html',
   styleUrls: ['./notification.component.scss']
 })
-export class NotificationComponent implements OnInit {
+export class NotificationComponent {
   constructor(
     private loadingService: LoadingService,
     private notificationService: NotificationService
   ) {
-  }
-
-  ngOnInit(): void {
   }
 
   public get isLoading(): boolean {

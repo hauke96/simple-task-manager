@@ -23,7 +23,7 @@ export class MapComponent extends Unsubscriber implements OnInit {
   @Output()
   public moveEnd: EventEmitter<Coordinate | undefined> = new EventEmitter();
 
-  private map: Map;
+  map: Map;
 
   constructor(private layerService: MapLayerService) {
     super();

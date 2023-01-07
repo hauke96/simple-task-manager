@@ -5,6 +5,7 @@ import { catchError } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { NotificationService } from '../common/services/notification.service';
 import { environment } from '../../environments/environment';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
 export class LoggedInInterceptor implements HttpInterceptor {
@@ -14,7 +15,8 @@ export class LoggedInInterceptor implements HttpInterceptor {
 
   constructor(
     private authService: AuthService,
-    private notificationService: NotificationService) {
+    private notificationService: NotificationService,
+    private translationService: TranslateService) {
   }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
@@ -36,7 +38,7 @@ export class LoggedInInterceptor implements HttpInterceptor {
         console.error(e);
         if (e.status === 401) {
           console.error('Trigger logout: ' + (e as HttpErrorResponse).message);
-          this.notificationService.addWarning($localize`:@@WARN_AUTH_FAIL:Logout because authorization was not successful`);
+          this.notificationService.addWarning(this.translationService.instant('login-failed'));
           this.authService.logout();
         }
         throw e;

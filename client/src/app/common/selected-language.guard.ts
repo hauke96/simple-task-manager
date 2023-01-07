@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, CanLoad } from '@angular/router';
-import { SelectedLanguageService } from './services/selected-language.service';
+import { LanguageService } from './services/language.service';
 import { environment } from '../../environments/environment';
 
 @Injectable()
 export class SelectedLanguageGuard implements CanActivate {
-  constructor(private selectedLanguageService: SelectedLanguageService) {
+  constructor(private languageService: LanguageService) {
   }
 
-  canActivate() {
+  public canActivate(): boolean {
     // Don't care about language redirect when working locally (when "production === false")
-    return !environment.production || this.selectedLanguageService.loadLanguageFromLocalStorage();
+    return this.languageService.loadLanguageFromLocalStorage();
   }
 }

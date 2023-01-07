@@ -1,0 +1,154 @@
+{
+  "title": "SimpleTaskManager",
+  "users": "Usuarios:",
+  "settings": "Ajustes:",
+  "description": "Descripción:",
+  "properties": "Propiedades:",
+  "tasks": "Tareas:",
+  "name": "Nombre:",
+  "save-button": "Guardar",
+  "done-button": "Hecho",
+  "cancel-button": "Cancelar",
+  "ok-button": "OK",
+  "meters": "metros",
+  "yes": "Sí",
+  "no": "No",
+  "test-instance-notice": "Esta es una <b>instancia de prueba</b> de SimpleTaskManager.",
+  "footer": "Versión: <a href=\"https://github.com/hauke96/simple-task-manager/releases/tag/v{{version}}\" target=\"_blank\">{{version}}</a><span class=\"sep\"></span>Código: <a href=\"https://github.com/hauke96/simple-task-manager\" target=\"_blank\">GitHub</a><span class=\"sep\"></span>Licencia: <a href=\"https://github.com/hauke96/simple-task-manager/blob/master/LICENSE\" target=\"_blank\">GPLv3</a><span class=\"sep\"></span>Iconos: <a href=\"https://linearicons.com\" target=\"_blank\">Linearicons</a>",
+  "project-has-been-removed": "El proyecto '{{projectName}}' ha sido eliminado",
+  "you-have-been-removed": "Ha sido eliminado del proyecto '{{projectName}}'",
+  "feature-upload-error": "No existen polígonos o los datos tienen un formato desconocido. Los formatos admitidos son: GeoJson, OSM-XML, GPX, KML, EsriJson y WKT.",
+  "file-upload-error": "No se pudo cargar el archivo '{{fileName}}'",
+  "login-failed": "Cierre de sesión porque la autorización no fue exitosa",
+  "language-selection": "Selección de idioma:",
+  "login": {
+    "welcome": "Bienvenido al SimpleTaskManager para <a href=\"https://openstreetmap.org\">OpenStreetMap</a>",
+    "login-button": "Iniciar sesión"
+  },
+  "dashboard": {
+    "welcome": "Bienvenido {{userName}} :)",
+    "logout-button": "Cerrar sesión",
+    "create-project": "Crear proyecto",
+    "import-project": "Importar proyecto"
+  },
+  "project": {
+    "back-button": "Volver",
+    "title": "Proyecto:",
+    "creation-date": "Creado el:",
+    "description": "Descripción:",
+    "could-not-remove-user": "No se pudo eliminar el usuario",
+    "could-not-invite-user": "No se pudo eliminar el usuario {{userName}}",
+    "tab-titles": {
+      "tasks": "Tareas",
+      "users": "Usuarios",
+      "settings": "Ajustes"
+    },
+    "live-updates-init-error": "No se pudo inicializar las actualizaciones en tiempo real",
+    "could-not-load-project": "No se pudieron cargar proyectos '{{projectId}}'",
+    "could-not-load-projects": "No se pudieron cargar proyectos"
+  },
+  "project-list": {
+    "projects": "Proyectos:",
+    "no-project-notice": "Actualmente no tiene ningún proyecto.",
+    "you-own-this-project-notice": "* este proyecto es suyo"
+  },
+  "project-settings": {
+    "delete-button": "Borrar proyecto",
+    "really-delete-notice": "¿Borrar realmente el proyecto?",
+    "leave-button": "Abandonar el proyecto",
+    "really-leave-notice": "¿Abandonar realmente el proyecto?",
+    "export-button": "Exportar",
+    "successfully-removed": "Proyecto eliminado con éxito",
+    "successfully-updated": "Proyecto actualizado con éxito",
+    "could-not-remove-project": "No se pudo eliminar el proyecto",
+    "could-not-leave-project": "No se pudo abandonar el proyecto",
+    "could-not-update-project": "No se puede actualizar el título o la descripción del proyecto",
+    "could-not-export-project": "Fallo en la creación de la exportación del proyecto"
+  },
+  "project-creation": {
+    "copy": "Copiar:",
+    "copy-notice": "Copiar e importar un proyecto existente del que sea miembro.",
+    "no-project-notice": "¡No hay proyectos disponibles!",
+    "loading-projects": "Los proyectos se cargan ...",
+    "available-projects": "Proyectos disponibles:",
+    "import-button": "Importar",
+    "import-heading": "Importar:",
+    "import-notice": "Importar un proyecto existente desde su equipo. Las propiedades existentes se sobrescribirán.",
+    "new-polygon": "Dibujar un nuevo polígono",
+    "edit-polygon": "Editar polígono",
+    "remove-polygon": "Borrar polígono",
+    "subdivide": "Subdivide:",
+    "upload-project-button": "Upload project",
+    "max-points-notice": "Puntos máx. por tarea:",
+    "subdivide-notice": "Esto divide la tarea seleccionada en tareas más pequeñas de la forma y el tamaño seleccionados.",
+    "subdivide-result-too-large-notice": "El resultado con {{amountTasksAfterDividing}} tareas es demasiado grande, solo {{maxTasksPerProject}} permitidas.",
+    "subdivide-result-way-too-large-notice": "El resultado sería demasiado grande, sólo se permiten tareas {{maxTasksPerProject}}.",
+    "subdivide-result-notice": "Tendrá {{amountTasksAfterDividing}} tareas en total.",
+    "shape-size": "Tamaño de la forma:",
+    "shape": "Forma:",
+    "square": "cuadrado",
+    "hexagon": "hexágono",
+    "triangle": "triángulo",
+    "preview-button": "Vista previa",
+    "divide-button": "Dividir",
+    "url-file-format-notice": "URL a los datos GeoJSON, OSM-XML, GPX, EsriJson, KML o WKT:",
+    "load-button": "Cargar",
+    "loading-title": "Cargando datos de Overpass:",
+    "load-li-1": "Crear su consulta",
+    "load-li-2": "Haga clic en \"Exportar\"",
+    "load-li-3": "Copiar el enlace después de los \"datos sin procesar directamente desde\" (clic derecho y \"copiar enlace\")",
+    "load-li-4": "Pegue esta URL aquí",
+    "upload": "Cargar:",
+    "upload-notice": "Cargar un archivo GeoJSON, OSM-XML, GPX, EsriJson, KML o WKT que contenga polígonos. Cada polígono dará lugar a una única tarea.",
+    "remote-url-error": "No se pueden cargar los datos de la URL remota",
+    "upload-file-button": "Cargar archivo",
+    "no-task-yet-notice": "Todavía no hay tareas aquí. Use la herramienta del lápiz para dibujar las tareas o importe las tareas desde la pestaña \"Cargar\" o \"Remoto\".",
+    "could-not-import-project": "No se pudo importar el proyecto '{{projectName}}'",
+    "tab-titles": {
+      "properties": "Propiedades",
+      "tasks": "Tareas",
+      "import": "Importar",
+      "remote": "Remoto"
+    },
+    "could-not-create-project": "No se pudo crear el proyecto"
+  },
+  "task-details": {
+    "title": "Tareas",
+    "assign-to-me": "Asignar a mí",
+    "assign-to": "Asignado a:",
+    "unassign": "Desasignar",
+    "points": "Puntos:",
+    "open-in-josm-button": "Abrir en JOSM",
+    "open-in-id-button": "Abrir en iD",
+    "unable-load-assigned-user": "No se puede cargar el usuario asignado",
+    "unable-assign-user": "No se pudo asignar el usuario",
+    "unable-unassign-user": "No se pudo desasignar el usuario",
+    "unable-set-process-points": "No se pudo establecer los puntos de proceso",
+    "unable-load-josm": "No se puede abrir JOSM. ¿Se está ejecutando?"
+  },
+  "task-list": {
+    "you": "(tú)"
+  },
+  "notification": {
+    "loading": "Cargando ...",
+    "error": "ERROR:",
+    "errors-left": "errores restantes",
+    "warning": "ADVERTENCIA:",
+    "warnings-left": "advertencias restantes",
+    "notifications-left": "notificaciones restantes"
+  },
+  "zoom-controls": {
+    "zoom-in": "Reducir",
+    "zoom-out": "Ampliar"
+  },
+  "user": {
+    "invite-button": "Invitar",
+    "remove-button": "Eliminar",
+    "already-member": "El usuario {{user}} ya es miembro de este proyecto",
+    "unable-load-user": "No se pudo cargar el ID de usuario para el usuario {{user}}. El usuario debe tener al menos un conjunto de cambios o una nota."
+  },
+  "task-map": {
+    "task-done": "HECHO",
+    "you": "tú"
+  }
+}

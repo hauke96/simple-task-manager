@@ -1,27 +1,25 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { DrawingToolbarComponent } from './drawing-toolbar.component';
-import { Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { ShortcutService } from '../../common/services/shortcut.service';
+import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
 
-describe('DrawingToolbarComponent', () => {
+describe(DrawingToolbarComponent.name, () => {
   let component: DrawingToolbarComponent;
-  let fixture: ComponentFixture<DrawingToolbarComponent>;
+  let fixture: MockedComponentFixture<DrawingToolbarComponent, any>;
   let shortcutService: ShortcutService;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [DrawingToolbarComponent]
-    })
-      .compileComponents();
+  beforeEach(() => {
+    shortcutService = {} as ShortcutService;
+    shortcutService.add = jest.fn().mockReturnValue(of());
 
-    shortcutService = TestBed.inject(ShortcutService);
+    return MockBuilder(DrawingToolbarComponent, AppModule)
+      .provide({provide: ShortcutService, useFactory: () => shortcutService});
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DrawingToolbarComponent);
-    component = fixture.componentInstance;
-    component.resetSelection = new Subject<void>();
+    fixture = MockRender(DrawingToolbarComponent, {resetSelection: new Subject()});
+    component = fixture.point.componentInstance;
     fixture.detectChanges();
   });
 
@@ -30,20 +28,22 @@ describe('DrawingToolbarComponent', () => {
   });
 
   it('should fire draw event', () => {
-    const spy = spyOn(component.buttonDraw, 'emit');
+    const buttonDrawSpy = jest.fn();
+    component.buttonDraw.subscribe(buttonDrawSpy);
 
     component.onButtonDraw();
 
-    expect(spy).toHaveBeenCalled();
+    expect(buttonDrawSpy).toHaveBeenCalled();
     expect(component.selectedButton).toEqual(component.SELECTION_DRAW);
   });
 
   it('should fire delete event', () => {
-    const spy = spyOn(component.buttonDelete, 'emit');
+    const buttonDeleteSpy = jest.fn();
+    component.buttonDelete.subscribe(buttonDeleteSpy);
 
     component.onButtonDelete();
 
-    expect(spy).toHaveBeenCalled();
+    expect(buttonDeleteSpy).toHaveBeenCalled();
     expect(component.selectedButton).toEqual(component.SELECTION_DELETE);
   });
 
@@ -73,12 +73,13 @@ describe('DrawingToolbarComponent', () => {
 
   it('should deselect selected button', () => {
     component.selectedButton = component.SELECTION_EDIT;
-    const spy = spyOn(component.buttonEdit, 'emit');
+    const buttonEditSpy = jest.fn();
+    component.buttonEdit.subscribe(buttonEditSpy);
 
     // @ts-ignore
     component.onCurrentActiveButton();
 
-    expect(spy).toHaveBeenCalled();
+    expect(buttonEditSpy).toHaveBeenCalled();
     expect(component.selectedButton).toBeUndefined();
   });
 
@@ -94,15 +95,21 @@ describe('DrawingToolbarComponent', () => {
       shortcutEditSubject = new Subject<void>();
       shortcutEscapeSubject = new Subject<void>();
 
-      spyOn(shortcutService, 'add')
-        .withArgs('d').and.returnValue(shortcutDrawSubject.asObservable())
-        .withArgs('shift.d').and.returnValue(shortcutDeleteSubject.asObservable())
-        .withArgs('e').and.returnValue(shortcutEditSubject.asObservable())
-        .withArgs('esc').and.returnValue(shortcutEscapeSubject.asObservable());
+      shortcutService.add = jest.fn().mockImplementation(keys => {
+        switch (keys) {
+          case 'd':
+            return shortcutDrawSubject.asObservable();
+          case 'shift.d':
+            return shortcutDeleteSubject.asObservable();
+          case 'e':
+            return shortcutEditSubject.asObservable();
+          case 'esc':
+            return shortcutEscapeSubject.asObservable();
+        }
+      });
 
-      fixture = TestBed.createComponent(DrawingToolbarComponent);
-      component = fixture.componentInstance;
-      component.resetSelection = new Subject<void>();
+      fixture = MockRender(DrawingToolbarComponent, {resetSelection: new Subject()});
+      component = fixture.point.componentInstance;
       fixture.detectChanges();
     });
 

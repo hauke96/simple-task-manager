@@ -8,12 +8,14 @@
 	width: 100%;
 	position: absolute;
 	bottom: 0;
+	pointer-events: none;
 }
 
 .notification-container {
 	display: flex;
 	flex-direction: column;
 	margin-bottom: $space-large;
+	pointer-events: auto;
 }
 
 .info-container,
@@ -36,6 +38,10 @@
 
 .text-box {
 	margin-right: $space-large;
+}
+
+.ok-button {
+	margin-left: $space-small;
 }
 
 .loading-container {

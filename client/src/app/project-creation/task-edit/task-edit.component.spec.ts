@@ -1,28 +1,25 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { TaskEditComponent } from './task-edit.component';
 import { TaskDraftService } from '../task-draft.service';
 import { TaskDraft } from '../../task/task.material';
 import { Polygon } from 'ol/geom';
+import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
 
-describe('TaskEditComponent', () => {
+describe(TaskEditComponent.name, () => {
   let component: TaskEditComponent;
-  let fixture: ComponentFixture<TaskEditComponent>;
+  let fixture: MockedComponentFixture<TaskEditComponent>;
   let taskDraftService: TaskDraftService;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [TaskEditComponent],
-      providers: [TaskDraftService],
-    })
-      .compileComponents();
+  beforeEach(() => {
+    taskDraftService = {} as TaskDraftService;
 
-    taskDraftService = TestBed.inject(TaskDraftService);
+    return MockBuilder(TaskEditComponent, AppModule)
+      .provide({provide: TaskDraftService, useFactory: () => taskDraftService});
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TaskEditComponent);
-    component = fixture.componentInstance;
+    fixture = MockRender(TaskEditComponent);
+    component = fixture.point.componentInstance;
     fixture.detectChanges();
   });
 
@@ -31,11 +28,11 @@ describe('TaskEditComponent', () => {
   });
 
   it('should call rename function on service', () => {
-    const spy = spyOn(taskDraftService, 'changeTaskName');
+    taskDraftService.changeTaskName = jest.fn();
 
     component.task = new TaskDraft('123', 'some name', new Polygon([]), 0);
     component.onTaskNameChanged({target: {value: 'new name'} as unknown as EventTarget} as Event);
 
-    expect(spy).toHaveBeenCalledWith('123', 'new name');
+    expect(taskDraftService.changeTaskName).toHaveBeenCalledWith('123', 'new name');
   });
 });

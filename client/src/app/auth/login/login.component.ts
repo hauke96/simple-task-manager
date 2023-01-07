@@ -1,23 +1,35 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { WebsocketClientService } from '../../common/services/websocket-client.service';
+import { HttpClient } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
+  public changelogTemplate: string;
+
   constructor(
     private router: Router,
     private ngZone: NgZone,
     private authService: AuthService,
-    private websocketClientService: WebsocketClientService
+    private websocketClientService: WebsocketClientService,
+    private httpClient: HttpClient,
+    private translationService: TranslateService
   ) {
+    this.loadChangelogTemplate();
+
+    translationService.onLangChange.subscribe(() => this.loadChangelogTemplate());
   }
 
-  ngOnInit(): void {
+  private loadChangelogTemplate(): void {
+    const url = 'assets/i18n/changelog.' + this.translationService.currentLang + '.html';
+    this.httpClient.get(url, {responseType: 'text'})
+      .subscribe(response => this.changelogTemplate = response as string);
   }
 
   public onLoginButtonClick(): void {

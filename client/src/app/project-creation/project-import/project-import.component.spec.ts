@@ -1,30 +1,31 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ProjectImportComponent } from './project-import.component';
 import { ProjectImportService } from '../project-import.service';
 import { NotificationService } from '../../common/services/notification.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
+import { TranslateService } from '@ngx-translate/core';
 
-describe('ProjectImportComponent', () => {
+describe(ProjectImportComponent.name, () => {
   let component: ProjectImportComponent;
-  let fixture: ComponentFixture<ProjectImportComponent>;
+  let fixture: MockedComponentFixture<ProjectImportComponent>;
   let notificationService: NotificationService;
   let projectImportService: ProjectImportService;
+  let translationService: TranslateService;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ProjectImportComponent],
-      imports: [HttpClientTestingModule]
-    })
-      .compileComponents();
+  beforeEach(() => {
+    notificationService = {} as NotificationService;
+    projectImportService = {} as ProjectImportService;
+    translationService = {} as TranslateService;
 
-    notificationService = TestBed.inject(NotificationService);
-    projectImportService = TestBed.inject(ProjectImportService);
+    return MockBuilder(ProjectImportComponent, AppModule)
+      .provide({provide: NotificationService, useFactory: () => notificationService})
+      .provide({provide: ProjectImportService, useFactory: () => projectImportService})
+      .provide({provide: TranslateService, useFactory: () => translationService});
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ProjectImportComponent);
-    component = fixture.componentInstance;
+    fixture = MockRender(ProjectImportComponent);
+    component = fixture.point.componentInstance;
     fixture.detectChanges();
   });
 
@@ -33,12 +34,12 @@ describe('ProjectImportComponent', () => {
   });
 
   it('should call service on added project export', () => {
-    const spy = spyOn(projectImportService, 'importProjectAsNewProject');
+    projectImportService.importProjectAsNewProject = jest.fn();
 
     // @ts-ignore
     component.addProjectExport({target: {result: exampleProjectExport}});
 
-    expect(spy).toHaveBeenCalled();
+    expect(projectImportService.importProjectAsNewProject).toHaveBeenCalled();
   });
 });
 

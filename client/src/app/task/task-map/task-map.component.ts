@@ -12,6 +12,7 @@ import { FeatureLike } from 'ol/Feature';
 import { Geometry } from 'ol/geom';
 import { MapLayerService } from '../../common/services/map-layer.service';
 import RenderFeature from 'ol/render/Feature';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-task-map',
@@ -21,7 +22,7 @@ import RenderFeature from 'ol/render/Feature';
 export class TaskMapComponent extends Unsubscriber implements AfterViewInit, OnDestroy {
   @Input() tasks: Task[];
 
-  selectedTask: Task;
+  selectedTask: Task | undefined;
 
   private vectorSource: VectorSource<Geometry>;
   private vectorLayer: VectorLayer<VectorSource<Geometry>>;
@@ -30,7 +31,8 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit, OnD
     private taskService: TaskService,
     private currentUserService: CurrentUserService,
     private processPointColorService: ProcessPointColorService,
-    private layerService: MapLayerService
+    private layerService: MapLayerService,
+    private translationService: TranslateService
   ) {
     super();
   }
@@ -45,8 +47,9 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit, OnD
 
     this.tasks.forEach(t => {
       this.showTaskPolygon(t);
-      this.layerService.fitView(this.vectorSource.getExtent());
     });
+
+    this.layerService.fitView(this.vectorSource.getExtent());
 
     this.unsubscribeLater(
       // react to changed selection and update the map style
@@ -59,7 +62,7 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit, OnD
     this.layerService.addLayer(this.vectorLayer);
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     super.ngOnDestroy();
 
     this.layerService.removeLayer(this.vectorLayer);
@@ -79,7 +82,7 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit, OnD
     }
   }
 
-  private selectTask(task: Task): void {
+  private selectTask(task: Task | undefined): void {
     this.selectedTask = task;
     this.vectorSource.changed();
 
@@ -101,7 +104,7 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit, OnD
   }
 
   private getTaskFeature(): Feature<Geometry> | undefined {
-    return this.vectorSource.getFeatures().find(f => f.get('task_id') === this.selectedTask.id);
+    return this.vectorSource.getFeatures().find(f => f.get('task_id') === this.selectedTask?.id);
   }
 
   public getStyle(feature: FeatureLike): Style {
@@ -135,14 +138,14 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit, OnD
     const labelWeight = currentUserTask ? 'bold' : 'normal';
     let labelText: string;
     if (task.isDone) {
-      labelText = $localize`:@@TASK_MAP_DONE:DONE`;
+      labelText = this.translationService.instant('task-map.task-done');
     } else {
       labelText = Math.floor(100 * task.processPoints / task.maxProcessPoints) + '%';
     }
 
     // Add user name
     if (currentUserTask) {
-      labelText += '\n(' + $localize`:@@TASK_YOU:you` + ')';
+      labelText += '\n(' + this.translationService.instant('task-map.you') + ')';
     } else if (hasAssignedUser) {
       // @ts-ignore "hasAssignedUser" ensures that we have an assignedUser
       labelText += '\n(' + task.assignedUser.name + ')';
@@ -163,7 +166,7 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit, OnD
     });
   }
 
-  private showTaskPolygon(task: Task) {
+  private showTaskPolygon(task: Task): void {
     // Without clone(), the tasks geometry would be changes inline.
     const feature = task.geometry.clone();
     feature.getGeometry()?.transform('EPSG:4326', 'EPSG:3857');

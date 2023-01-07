@@ -1,31 +1,58 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { MapComponent } from './map.component';
 import { MapLayerService } from '../../services/map-layer.service';
 import BaseLayer from 'ol/layer/Base';
-import { Feature } from 'ol';
+import { Feature, Map } from 'ol';
 import { Geometry, Point } from 'ol/geom';
 import { Interaction } from 'ol/interaction';
 import Select from 'ol/interaction/Select';
+import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
+import { AppModule } from '../../../app.module';
+import { Subject } from 'rxjs';
+import { Extent } from 'ol/extent';
+import { Coordinate } from 'ol/coordinate';
 
-describe('MapComponent', () => {
+describe(MapComponent.name, () => {
   let component: MapComponent;
-  let fixture: ComponentFixture<MapComponent>;
+  let fixture: MockedComponentFixture<MapComponent>;
   let mapLayerService: MapLayerService;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [MapComponent],
-      providers: [MapLayerService]
-    })
-      .compileComponents();
+  let layerAddedSubject: Subject<BaseLayer>;
+  let layerRemovedSubject: Subject<BaseLayer>;
+  let interactionAddedSubject: Subject<Interaction>;
+  let interactionRemovedSubject: Subject<Interaction>;
+  let firViewSubject: Subject<Extent>;
+  let fitToFeatureSubject: Subject<Feature<Geometry>[]>;
+  let centerViewSubject: Subject<Coordinate>;
+  let moveToOutsideGeometrySubject: Subject<Extent>;
 
-    mapLayerService = TestBed.inject(MapLayerService);
+  beforeEach(() => {
+    layerAddedSubject = new Subject<BaseLayer>();
+    layerRemovedSubject = new Subject<BaseLayer>();
+    interactionAddedSubject = new Subject<Interaction>();
+    interactionRemovedSubject = new Subject<Interaction>();
+    firViewSubject = new Subject<Extent>();
+    fitToFeatureSubject = new Subject<Feature<Geometry>[]>();
+    centerViewSubject = new Subject<Coordinate>();
+    moveToOutsideGeometrySubject = new Subject<Extent>();
+
+    mapLayerService = {
+      onLayerAdded: layerAddedSubject.asObservable(),
+      onLayerRemoved: layerRemovedSubject.asObservable(),
+      onInteractionAdded: interactionAddedSubject.asObservable(),
+      onInteractionRemoved: interactionRemovedSubject.asObservable(),
+      onFitView: firViewSubject.asObservable(),
+      onFitToFeatures: fitToFeatureSubject.asObservable(),
+      onCenterView: centerViewSubject.asObservable(),
+      onMoveToOutsideGeometry: moveToOutsideGeometrySubject.asObservable(),
+    } as MapLayerService;
+
+    return MockBuilder(MapComponent, AppModule)
+      .provide({provide: MapLayerService, useFactory: () => mapLayerService});
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MapComponent);
-    component = fixture.componentInstance;
+    fixture = MockRender(MapComponent);
+    component = fixture.point.componentInstance;
     fixture.detectChanges();
   });
 
@@ -34,23 +61,17 @@ describe('MapComponent', () => {
   });
 
   it('should have one initial layer', () => {
-    // @ts-ignore
     expect(component.map.getLayers().getLength()).toBe(1);
   });
 
   it('should not have initial interactions', () => {
-    // @ts-ignore
     expect(component.map.getInteractions().getLength()).toBe(9); // default interactions
   });
 
-  describe('with zoom and spy', () => {
-    let spy: jasmine.Spy;
-
+  describe('with zoom', () => {
     beforeEach(() => {
-      // @ts-ignore
       component.map.getView().setZoom(5);
-      // @ts-ignore
-      spy = spyOn(component.map.getView(), 'animate');
+      component.map.getView().animate = jest.fn();
     });
 
     it('should zoom in', () => {
@@ -58,7 +79,8 @@ describe('MapComponent', () => {
       component.onZoomIn();
 
       // Assert
-      expect(spy).toHaveBeenCalledOnceWith({zoom: 5.5, duration: 250});
+      expect(component.map.getView().animate).toHaveBeenCalledTimes(1);
+      expect(component.map.getView().animate).toHaveBeenCalledWith({zoom: 5.5, duration: 250});
     });
 
     it('should zoom out', () => {
@@ -66,12 +88,15 @@ describe('MapComponent', () => {
       component.onZoomOut();
 
       // Assert
-      expect(spy).toHaveBeenCalledOnceWith({zoom: 4.5, duration: 250});
+      expect(component.map.getView().animate).toHaveBeenCalledTimes(1);
+      expect(component.map.getView().animate).toHaveBeenCalledWith({zoom: 4.5, duration: 250});
     });
 
     describe('without map', () => {
+      let animateFn: jest.FunctionLike;
 
       beforeEach(() => {
+        animateFn = component.map.getView().animate;
         // @ts-ignore
         component.map = undefined;
       });
@@ -81,7 +106,7 @@ describe('MapComponent', () => {
         component.onZoomIn();
 
         // Assert
-        expect(spy).not.toHaveBeenCalled();
+        expect(animateFn).not.toHaveBeenCalled();
       });
 
       it('should not zoom out', () => {
@@ -89,7 +114,7 @@ describe('MapComponent', () => {
         component.onZoomOut();
 
         // Assert
-        expect(spy).not.toHaveBeenCalled();
+        expect(animateFn).not.toHaveBeenCalled();
       });
     });
   });
@@ -99,24 +124,20 @@ describe('MapComponent', () => {
 
     beforeEach(() => {
       layer = new BaseLayer({properties: {foo: 'bar'}});
-      // @ts-ignore
-      mapLayerService.addLayer(layer);
+      layerAddedSubject.next(layer);
     });
 
     it('should add layer', () => {
-      // @ts-ignore
       expect(component.map.getLayers().item(1)).toEqual(layer); // index 0 is the OSM base layer
     });
 
     describe('with remove call', () => {
       beforeEach(() => {
-        mapLayerService.removeLayer(layer);
+        layerRemovedSubject.next(layer);
       });
 
       it('should remove layer from map', () => {
-        // @ts-ignore
         expect(component.map.getLayers().getLength()).toEqual(1);
-        // @ts-ignore
         expect(component.map.getLayers().item(0)).not.toEqual(layer);
       });
     });
@@ -127,75 +148,68 @@ describe('MapComponent', () => {
     const padding = [25, 25, 25, 25];
 
     let extent: number[];
-    let spy: jasmine.Spy;
 
     beforeEach(() => {
-      // @ts-ignore
-      spy = spyOn(component.map.getView(), 'fit'); // @ts-ignore
-      spyOn(component.map, 'getSize').and.returnValue(mockSize);
+      component.map.getView().fit = jest.fn();
+      component.map.getSize = jest.fn().mockReturnValue(mockSize);
 
       extent = [0, 1, 2, 3];
-      mapLayerService.fitView(extent);
+      firViewSubject.next(extent);
     });
 
     it('should adjust view fit', () => {
-      // @ts-ignore
-      expect(spy).toHaveBeenCalledOnceWith(extent, {size: mockSize, padding});
+      expect(component.map.getView().fit).toHaveBeenCalledTimes(1);
+      expect(component.map.getView().fit).toHaveBeenCalledWith(extent, {size: mockSize, padding});
     });
   });
 
-  describe('with fit spy', () => {
-    let spy: jasmine.Spy;
-
+  describe('with fit', () => {
     beforeEach(() => {
-      // @ts-ignore
-      spy = spyOn(component.map.getView(), 'fit');
+      component.map.getView().fit = jest.fn();
     });
 
     describe('with geometries', () => {
       beforeEach(() => {
-        mapLayerService.fitToFeatures([new Feature<Geometry>(new Point([10, 10])), new Feature<Geometry>(new Point([100, 100]))]);
+        fitToFeatureSubject.next([new Feature<Geometry>(new Point([10, 10])), new Feature<Geometry>(new Point([100, 100]))]);
       });
 
       it('should adjust view fit', () => {
-        expect(spy).toHaveBeenCalledTimes(1);
+        expect(component.map.getView().fit).toHaveBeenCalledTimes(1);
       });
     });
 
     describe('with features without geometries', () => {
       beforeEach(() => {
-        mapLayerService.fitToFeatures([new Feature<Geometry>(), new Feature<Geometry>()]);
+        fitToFeatureSubject.next([new Feature<Geometry>(), new Feature<Geometry>()]);
       });
 
       it('should not adjust view fit', () => {
-        expect(spy).not.toHaveBeenCalled();
+        expect(component.map.getView().fit).not.toHaveBeenCalled();
       });
     });
 
     describe('without geometries', () => {
       beforeEach(() => {
-        mapLayerService.fitToFeatures([]);
+        fitToFeatureSubject.next([]);
       });
 
       it('should not adjust view fit', () => {
-        expect(spy).not.toHaveBeenCalled();
+        expect(component.map.getView().fit).not.toHaveBeenCalled();
       });
     });
   });
 
   describe('with center map view call', () => {
     const newCenter = [23, 45];
-    let spy: jasmine.Spy;
 
     beforeEach(() => {
-      // @ts-ignore
-      spy = spyOn(component.map.getView(), 'setCenter');
+      component.map.getView().setCenter = jest.fn();
 
-      mapLayerService.centerView(newCenter);
+      centerViewSubject.next(newCenter);
     });
 
     it('should adjust view center', () => {
-      expect(spy).toHaveBeenCalledWith(newCenter);
+      expect(component.map.getView().setCenter).toHaveBeenCalledWith(newCenter);
     });
   });
 
@@ -204,21 +218,19 @@ describe('MapComponent', () => {
 
     beforeEach(() => {
       interaction = new Select();
-      mapLayerService.addInteraction(interaction);
+      interactionAddedSubject.next(interaction);
     });
 
     it('should have one interaction', () => {
-      // @ts-ignore
       expect(component.map.getInteractions().getLength()).toBe(10);
     });
 
     describe('with remove interaction call', () => {
       beforeEach(() => {
-        mapLayerService.removeInteraction(interaction);
+        interactionRemovedSubject.next(interaction);
       });
 
       it('should have no interaction anymore', () => {
-        // @ts-ignore
         expect(component.map.getInteractions().getLength()).toBe(9); // default interactions remain
       });
     });
@@ -228,36 +240,32 @@ describe('MapComponent', () => {
     const requestedExtent: number[] = [0, 0, 100, 100];
 
     let mapExtent: number[];
-    let spy: jasmine.Spy;
 
     beforeEach(() => {
-      // @ts-ignore
-      spy = spyOn(component.map.getView(), 'setCenter'); // @ts-ignore
+      component.map.getView().setCenter = jest.fn();
     });
 
     describe('without outside geometry', () => {
       beforeEach(() => {
         mapExtent = [50, 50, 100, 100];
-        // @ts-ignore
-        spyOn(component.map.getView(), 'calculateExtent').and.returnValue(mapExtent);
-        mapLayerService.moveToOutsideGeometry(requestedExtent);
+        component.map.getView().calculateExtent = jest.fn().mockReturnValue(mapExtent);
+        moveToOutsideGeometrySubject.next(requestedExtent);
       });
 
       it('should not move map', () => {
-        expect(spy).not.toHaveBeenCalled();
+        expect(component.map.getView().setCenter).not.toHaveBeenCalled();
       });
     });
 
     describe('with outside geometry', () => {
       beforeEach(() => {
         mapExtent = [1000, 1000, 1010, 1010];
-        // @ts-ignore
-        spyOn(component.map.getView(), 'calculateExtent').and.returnValue(mapExtent);
-        mapLayerService.moveToOutsideGeometry(requestedExtent);
+        component.map.getView().calculateExtent = jest.fn().mockReturnValue(mapExtent);
+        moveToOutsideGeometrySubject.next(requestedExtent);
       });
 
       it('should move map', () => {
-        expect(spy).toHaveBeenCalledWith([50, 50]);
+        expect(component.map.getView().setCenter).toHaveBeenCalledWith([50, 50]);
       });
     });
   });

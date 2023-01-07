@@ -8,6 +8,7 @@ import { UserService } from '../../user/user.service';
 import { NotificationService } from '../../common/services/notification.service';
 import { Unsubscriber } from '../../common/unsubscriber';
 import { User } from '../../user/user.material';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-project',
@@ -24,7 +25,8 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
     private userService: UserService,
     private taskService: TaskService,
     private currentUserService: CurrentUserService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private translationService: TranslateService
   ) {
     super();
 
@@ -44,7 +46,7 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
         }
 
         if (!this.isOwner()) {
-          this.notificationService.addInfo($localize`:@@WARN_PROJECT_REMOVED:The project '${this.project.name}:INTERPOLATION:' has been removed`);
+          this.notificationService.addInfo(this.translationService.instant('project-has-been-removed', {projectName: this.project.name}));
         }
 
         this.router.navigate(['/dashboard']);
@@ -54,7 +56,7 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
           return;
         }
 
-        this.notificationService.addInfo($localize`:@@WARN_REMOVED_USER_PROJECT:You have been removed from project '${this.project.name}:INTERPOLATION:'`);
+        this.notificationService.addInfo(this.translationService.instant('you-have-been-removed', {projectName: this.project.name}));
         this.router.navigate(['/dashboard']);
       })
     );
@@ -62,27 +64,27 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
 
   public get tabTitles(): string[] {
     return [
-      $localize`:@@TABS_TASKS:Tasks`,
-      $localize`:@@TABS_USERS:Users`,
-      $localize`:@@TABS_SETTINGS:Settings`
+      this.translationService.instant('project.tab-titles.tasks'),
+      this.translationService.instant('project.tab-titles.users'),
+      this.translationService.instant('project.tab-titles.settings')
     ];
   }
 
-  public onUserRemoved(userIdToRemove: string) {
+  public onUserRemoved(userIdToRemove: string): void {
     this.projectService.removeUser(this.project.id, userIdToRemove)
       .subscribe(() => {
       }, err => {
         console.error(err);
-        this.notificationService.addError($localize`:@@ERROR_NOT_REMOVE_USER:Could not remove user`);
+        this.notificationService.addError(this.translationService.instant('project.could-not-remove-user'));
       });
   }
 
-  public onUserInvited(user: User) {
+  public onUserInvited(user: User): void {
     this.projectService.inviteUser(this.project.id, user.uid)
       .subscribe(() => {
       }, err => {
         console.error(err);
-        this.notificationService.addError($localize`:@@ERROR_NOT_INVITE_USER:Could not invite user '${user.name}:INTERPOLATION:'`);
+        this.notificationService.addError(this.translationService.instant('project.could-not-invite-user', {userName: user.name}));
       });
   }
 

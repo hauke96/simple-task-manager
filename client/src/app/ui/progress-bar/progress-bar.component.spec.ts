@@ -1,25 +1,24 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ProgressBarComponent } from './progress-bar.component';
 import { ProcessPointColorService } from '../../common/services/process-point-color.service';
+import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
 
-describe('ProjectProgressBarComponent', () => {
+describe(ProgressBarComponent.name, () => {
   let component: ProgressBarComponent;
-  let fixture: ComponentFixture<ProgressBarComponent>;
+  let fixture: MockedComponentFixture<ProgressBarComponent>;
   let colorService: ProcessPointColorService;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ ProgressBarComponent ]
-    })
-    .compileComponents();
+  beforeEach(() => {
+    colorService = {} as ProcessPointColorService;
+    colorService.getProcessPointsColor = jest.fn();
 
-    colorService = TestBed.inject(ProcessPointColorService);
+    return MockBuilder(ProgressBarComponent, AppModule)
+      .provide({provide: ProcessPointColorService, useFactory: () => colorService});
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ProgressBarComponent);
-    component = fixture.componentInstance;
+    fixture = MockRender(ProgressBarComponent);
+    component = fixture.point.componentInstance;
     fixture.detectChanges();
   });
 
@@ -42,13 +41,18 @@ describe('ProjectProgressBarComponent', () => {
   });
 
   it('should call color service for point color', () => {
-    const spy = spyOn(colorService, 'getProcessPointsColor');
+    // Arrange
+    colorService.getProcessPointsColor = jest.fn().mockReturnValue('123abc');
 
     component.totalPoints = 100;
     component.progressPoints = 10;
-    component.getProcessPointColor();
 
-    expect(spy).toHaveBeenCalledWith(10, 100);
+    // Act
+    const color = component.getProcessPointColor();
+
+    // Assert
+    expect(colorService.getProcessPointsColor).toHaveBeenCalledWith(10, 100);
+    expect(color).toEqual('123abc');
   });
 
   it('should get correct process point width', () => {

@@ -1,35 +1,37 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CopyProjectComponent } from './copy-project.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Project, ProjectExport } from '../../project/project.material';
 import { ProjectService } from '../../project/project.service';
 import { of, throwError } from 'rxjs';
 import { ProjectImportService } from '../project-import.service';
 import { NotificationService } from '../../common/services/notification.service';
+import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
+import { TranslateService } from '@ngx-translate/core';
 
-describe('CopyProjectComponent', () => {
+describe(CopyProjectComponent.name, () => {
   let component: CopyProjectComponent;
-  let fixture: ComponentFixture<CopyProjectComponent>;
+  let fixture: MockedComponentFixture<CopyProjectComponent>;
   let projectService: ProjectService;
   let projectImportService: ProjectImportService;
   let notificationService: NotificationService;
+  let translateService: TranslateService;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [CopyProjectComponent],
-      imports: [HttpClientTestingModule]
-    })
-      .compileComponents();
+  beforeEach(() => {
+    projectService = {} as ProjectService;
+    projectImportService = {} as ProjectImportService;
+    notificationService = {} as NotificationService;
+    translateService = {} as TranslateService;
 
-    projectService = TestBed.inject(ProjectService);
-    projectImportService = TestBed.inject(ProjectImportService);
-    notificationService = TestBed.inject(NotificationService);
+    return MockBuilder(CopyProjectComponent, AppModule)
+      .provide({provide: ProjectService, useFactory: () => projectService})
+      .provide({provide: ProjectImportService, useFactory: () => projectImportService})
+      .provide({provide: NotificationService, useFactory: () => notificationService})
+      .provide({provide: TranslateService, useFactory: () => translateService});
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CopyProjectComponent);
-    component = fixture.componentInstance;
+    fixture = MockRender(CopyProjectComponent);
+    component = fixture.point.componentInstance;
     fixture.detectChanges();
   });
 
@@ -48,46 +50,48 @@ describe('CopyProjectComponent', () => {
   });
 
   it('should call export method', () => {
-    const spy = spyOn(projectService, 'getProjectExport').and.returnValue(of());
+    projectService.getProjectExport = jest.fn().mockReturnValue(of());
     component.selectedProject = {id: '123'} as Project;
 
     component.onImportClicked();
 
-    expect(spy).toHaveBeenCalledWith(component.selectedProject.id);
+    expect(projectService.getProjectExport).toHaveBeenCalledWith(component.selectedProject.id);
   });
 
   it('should call import service correctly', () => {
     const projectExport = {name: 'my project'} as ProjectExport;
     component.selectedProject = {id: '123'} as Project;
-    spyOn(projectService, 'getProjectExport').and.returnValue(of(projectExport));
-    const spy = spyOn(projectImportService, 'importProjectAsNewProject');
+    projectService.getProjectExport = jest.fn().mockReturnValue(of(projectExport));
+    projectImportService.importProjectAsNewProject = jest.fn();
 
     component.onImportClicked();
 
-    expect(spy).toHaveBeenCalledOnceWith(projectExport);
+    expect(projectImportService.importProjectAsNewProject).toHaveBeenCalledTimes(1);
+    expect(projectImportService.importProjectAsNewProject).toHaveBeenCalledWith(projectExport);
     expect(component.selectedProject).toBeUndefined();
   });
 
   it('should not import on undefined project', () => {
     component.selectedProject = undefined;
-    const spyGetExport = spyOn(projectService, 'getProjectExport');
-    const spyImport = spyOn(projectImportService, 'importProjectAsNewProject');
+    projectService.getProjectExport = jest.fn();
+    projectImportService.importProjectAsNewProject = jest.fn();
 
     component.onImportClicked();
 
-    expect(spyGetExport).not.toHaveBeenCalled();
-    expect(spyImport).not.toHaveBeenCalled();
+    expect(projectService.getProjectExport).not.toHaveBeenCalled();
+    expect(projectImportService.importProjectAsNewProject).not.toHaveBeenCalled();
     expect(component.selectedProject).toBeUndefined();
   });
 
   it('should show notification on import error', () => {
     component.selectedProject = {id: '123'} as Project;
-    spyOn(projectService, 'getProjectExport').and.returnValue(throwError('some error'));
-    const spy = spyOn(notificationService, 'addError');
+    projectService.getProjectExport = jest.fn().mockReturnValue(throwError(() => new Error('some error')));
+    notificationService.addError = jest.fn();
+    translateService.instant = jest.fn();
 
     component.onImportClicked();
 
-    expect(spy).toHaveBeenCalled();
+    expect(notificationService.addError).toHaveBeenCalled();
     expect(component.selectedProject).toBeUndefined();
   });
 });

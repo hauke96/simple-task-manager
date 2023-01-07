@@ -1,30 +1,40 @@
-import { TestBed } from '@angular/core/testing';
-
 import { ProjectService } from './project.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TaskService } from '../task/task.service';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
-import { Task, TaskDto, TestTaskFeature, TestTaskGeometry } from '../task/task.material';
+import { Task, TaskDto, TestTaskGeometry } from '../task/task.material';
 import { UserService } from '../user/user.service';
 import { User } from '../user/user.material';
 import { Project, ProjectDto } from './project.material';
 import GeoJSON from 'ol/format/GeoJSON';
+import { WebsocketClientService } from '../common/services/websocket-client.service';
+import { NotificationService } from '../common/services/notification.service';
+import { EventEmitter } from '@angular/core';
+import { WebsocketMessage } from '../common/entities/websocket-message';
+import { Feature } from 'ol';
+import { Geometry } from 'ol/geom';
+import { TranslateService } from '@ngx-translate/core';
 
-describe('ProjectService', () => {
+describe(ProjectService.name, () => {
   let service: ProjectService;
   let taskService: TaskService;
   let userService: UserService;
   let httpClient: HttpClient;
+  let websocketClient: WebsocketClientService;
+  let notificationService: NotificationService;
+  let translationService: TranslateService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule]
-    });
-    service = TestBed.inject(ProjectService);
-    taskService = TestBed.inject(TaskService);
-    userService = TestBed.inject(UserService);
-    httpClient = TestBed.inject(HttpClient);
+    taskService = {} as TaskService;
+    userService = {} as UserService;
+    httpClient = {} as HttpClient;
+    websocketClient = {
+      messageReceived: new EventEmitter<WebsocketMessage>(),
+    } as WebsocketClientService;
+    notificationService = {} as NotificationService;
+    translationService = {} as TranslateService;
+
+    service = new ProjectService(taskService, userService, httpClient, websocketClient, notificationService, translationService);
   });
 
   it('should be created', () => {
@@ -32,19 +42,24 @@ describe('ProjectService', () => {
   });
 
   it('should create tasks when creating project', () => {
-    const tasks = [
-      new Task('1', 'name1', 0, 100, TestTaskFeature),
-      new Task('2', 'name2', 0, 100, TestTaskFeature),
-      // @ts-ignore
-      new Task('3', undefined, 0, 100, TestTaskFeature)
+    // Arrange
+    const taskDtos = [
+      new TaskDto('1', 0, 100, TestTaskGeometry, '1'),
+      new TaskDto('2', 0, 100, TestTaskGeometry, '2'),
+      new TaskDto('3', 0, 100, TestTaskGeometry)
     ];
+    const tasks = taskDtoToTask(taskDtos);
+    const format = new GeoJSON();
+    const projectDto = new ProjectDto('124', 'Project 124', 'bar', ['2'], taskDtos, '2', false, new Date());
 
-    spyOn(taskService, 'createNewTasks').and.callFake((geom: string[], maxProcessPoints: number) => {
+    httpClient.post = jest.fn().mockReturnValue(of(projectDto));
+    userService.getUsersByIds = jest.fn().mockReturnValue(of([new User('U1', '1'), new User('U2', '2')]));
+    taskService.toTaskWithUsers = jest.fn().mockImplementation((dto: TaskDto, users: User[]) => taskDtoToTask([dto])[0]);
+    taskService.createNewTasks = jest.fn().mockImplementation((geom: string[], maxProcessPoints: number) => {
       return of(tasks);
     });
 
-    const format = new GeoJSON();
-
+    // Act & Assert
     service.createNewProject('project name', 100, 'lorem ipsum',
       [
         format.readFeature(TestTaskGeometry),
@@ -69,7 +84,7 @@ describe('ProjectService', () => {
 
     const dto1 = new ProjectDto('123', 'Project 123', 'foo', ['1'], [taskDtos[0]], '1', false, date);
     const dto2 = new ProjectDto('124', 'Project 124', 'bar', ['2'], [taskDtos[1]], '2', false, date);
-    spyOn(httpClient, 'get').and.returnValue(of([dto1, dto2]));
+    httpClient.get = jest.fn().mockReturnValue(of([dto1, dto2]));
 
     service.getProjects().subscribe((projects: Project[]) => {
       expect(projects).toBeTruthy();
@@ -96,7 +111,7 @@ describe('ProjectService', () => {
     const date = new Date();
 
     const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '3'], [taskDtos[0]], '1', false, date);
-    spyOn(httpClient, 'get').and.returnValue(of(dto));
+    httpClient.get = jest.fn().mockReturnValue(of(dto));
 
     service.getProject('123').subscribe((project: Project) => {
       expect(project).toBeTruthy();
@@ -121,17 +136,20 @@ describe('ProjectService', () => {
     const date = new Date();
 
     const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2'], [taskDtos[0]], '2', true, date);
-    spyOn(httpClient, 'post').and.returnValue(of(dto));
+    httpClient.get = jest.fn().mockReturnValue(of(dto));
+
+    // TODO finish test
   });
 
   it('should remove user correctly and return updated project', () => {
     const {users, taskDtos} = setUpUserAndTasks();
     const tasks = taskDtoToTask(taskDtos);
     const date = new Date();
+    const changeSpy = jest.fn();
 
     const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2'], taskDtos, '2', true, date);
-    spyOn(httpClient, 'delete').and.returnValue(of(dto));
-    const changeSpy = spyOn(service.projectChanged, 'emit');
+    httpClient.delete = jest.fn().mockReturnValue(of(dto));
+    service.projectChanged.subscribe(changeSpy);
 
     service.removeUser('123', '3').subscribe((project: Project) => {
       // Check
@@ -153,10 +171,6 @@ describe('ProjectService', () => {
       expect(changeSpy).toHaveBeenCalled();
     }, e => fail(e));
   });
-
-  function taskDtoToTask(tasks: TaskDto[]): Task[] {
-    return tasks.map(t => taskService.toTask(t));
-  }
 
   it('should convert DTOs into Projects', () => {
     const {users, taskDtos} = setUpUserAndTasks();
@@ -202,13 +216,31 @@ describe('ProjectService', () => {
     });
   });
 
+  function taskDtoToTask(tasks: TaskDto[]): Task[] {
+    return tasks.map(dto => {
+      // TODO This is a re-implementation of the TaskService.toTask function. Extract this into own utility class?
+      const feature = (new GeoJSON().readFeature(dto.geometry) as Feature<Geometry>);
+
+      const assignedUser = dto.assignedUser && dto.assignedUserName ? new User(dto.assignedUserName, dto.assignedUser) : undefined;
+
+      return new Task(
+        dto.id,
+        feature.get('name'),
+        dto.processPoints,
+        dto.maxProcessPoints,
+        feature,
+        assignedUser
+      );
+    });
+  }
+
   function setUpUserAndTasks(): { users: User[], taskDtos: TaskDto[] } {
     const users = [
       new User('test user 1', '1'),
       new User('test user 2', '2'),
       new User('test user 3', '3'),
     ];
-    spyOn(userService, 'getUsersByIds').and.callFake((ids: string[]) => {
+    userService.getUsersByIds = jest.fn().mockImplementation((ids: string[]) => {
       return of(users.filter(u => ids.includes(u.uid)));
     });
 
