@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Geometry, GeometryCollection, LinearRing, LineString, MultiLineString, MultiPolygon, Polygon } from 'ol/geom';
-import GeometryType from 'ol/geom/GeometryType';
 import { Feature } from 'ol';
 import FeatureFormat from 'ol/format/Feature';
 import { EsriJSON, GeoJSON, GPX, KML, WKT } from 'ol/format';
@@ -86,13 +85,13 @@ export class GeometryService {
   // line string that's closed, so this will convert it into a Polygon. Unclosed strings are not converted.
   private expandToPolygonLike(geometry: Geometry): Geometry[] {
     switch (geometry.getType()) {
-      case GeometryType.POLYGON:
+      case 'Polygon':
         return [geometry as Polygon];
 
-      case GeometryType.MULTI_POLYGON:
+      case 'MultiPolygon':
         return [geometry as MultiPolygon];
 
-      case GeometryType.GEOMETRY_COLLECTION:
+      case 'GeometryCollection':
         const geomCollection = geometry as GeometryCollection;
         const result: Geometry[] = [];
         geomCollection.getGeometries()
@@ -100,12 +99,12 @@ export class GeometryService {
           .forEach(l => l.forEach(l2 => result.push(l2)));
         return result;
 
-      case GeometryType.MULTI_LINE_STRING:
+      case 'MultiLineString':
         const lineStrings = (geometry as MultiLineString).getLineStrings();
         const closedLines = lineStrings.filter(l => this.hasPolygonCoordinates(l));
         return closedLines.map(l => new Polygon([l.getCoordinates()]));
 
-      case GeometryType.LINE_STRING:
+      case 'LineString':
         const line = geometry as LineString;
 
         // if the line string is closed, then we create a polygon from it
@@ -115,7 +114,7 @@ export class GeometryService {
           return [];
         }
 
-      case GeometryType.LINEAR_RING:
+      case 'LinearRing':
         const ring = (geometry as LinearRing);
         return [new Polygon([ring.getCoordinates()])];
 

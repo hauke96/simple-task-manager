@@ -12,7 +12,6 @@ import GeoJSON from 'ol/format/GeoJSON';
 import { Coordinate } from 'ol/coordinate';
 import FeatureFormat from 'ol/format/Feature';
 import { Feature } from 'ol';
-import GeometryType from 'ol/geom/GeometryType';
 
 @Injectable({
   providedIn: 'root'
@@ -114,11 +113,11 @@ export class TaskService {
     // Make sequential requests to these URLs
     let coordinateString;
     switch (geometry.getType()) {
-      case GeometryType.POLYGON:
+      case 'Polygon':
         const polygon = geometry as Polygon;
         coordinateString = polygon.getCoordinates()[0].map(c => c[1] + ' ' + c[0]).join(' ');
         break;
-      case GeometryType.MULTI_POLYGON:
+      case 'MultiPolygon':
         break;
       default:
         return throwError(() => new Error(`Unsupported task geometry type '${geometry.getType()}'`));

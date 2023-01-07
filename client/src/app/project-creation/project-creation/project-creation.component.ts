@@ -8,7 +8,6 @@ import { Geometry, Polygon } from 'ol/geom';
 import { Fill, Stroke, Style } from 'ol/style';
 import { Draw } from 'ol/interaction';
 import { NotificationService } from '../../common/services/notification.service';
-import GeometryType from 'ol/geom/GeometryType';
 import { CurrentUserService } from '../../user/current-user.service';
 import Snap from 'ol/interaction/Snap';
 import Modify from 'ol/interaction/Modify';
@@ -234,7 +233,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
   private addMapInteractions(): void {
     // DRAW
     this.drawInteraction = new Draw({
-      type: GeometryType.POLYGON
+      type: 'Polygon'
     });
     this.drawInteraction.setActive(false);
     this.drawInteraction.on('drawend', (e: DrawEvent) => {
