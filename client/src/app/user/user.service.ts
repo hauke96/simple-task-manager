@@ -52,7 +52,6 @@ export class UserService {
       return of(cachedUser);
     }
 
-    // Unfortunately these endpoints to not support JSON as response format
     const changesetUrl = environment.osm_api_url + '/changesets?display_name=' + userName;
     const notesUrl = environment.osm_api_url + '/notes/search?display_name=' + userName;
 
