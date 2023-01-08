@@ -38,10 +38,10 @@ describe(ProjectCreationComponent.name, () => {
     projectService = {} as ProjectService;
     projectService.getProjects = jest.fn().mockReturnValue(projectsSubject.asObservable());
     taskDraftService = {} as TaskDraftService;
-    taskDraftService.tasksAdded = new EventEmitter<TaskDraft[]>();
-    taskDraftService.taskChanged = new EventEmitter<TaskDraft>();
-    taskDraftService.taskRemoved = new EventEmitter<string>();
-    taskDraftService.taskSelected = new EventEmitter();
+    taskDraftService.tasksAdded = new Subject<TaskDraft[]>();
+    taskDraftService.taskChanged = new Subject<TaskDraft>();
+    taskDraftService.taskRemoved = new Subject<string>();
+    taskDraftService.taskSelected = new Subject();
     taskDraftService.getTasks = jest.fn().mockReturnValue([]);
     taskDraftService.addTasks = jest.fn();
     taskDraftService.removeTask = jest.fn();
@@ -193,7 +193,7 @@ describe(ProjectCreationComponent.name, () => {
     component.projectProperties.maxProcessPoints = maxProcessPoints;
     component.projectProperties.projectName = name;
     // @ts-ignore
-    component.vectorSource.addFeature(feature);
+    component.vectorSource.getFeatures = jest.fn().mockReturnValue([feature]);
 
     component.onSaveButtonClicked();
 
@@ -344,12 +344,15 @@ describe(ProjectCreationComponent.name, () => {
     const vectorSource = component.vectorSource;
     const drafts = getDummyTasks();
     mapLayerService.fitToFeatures = jest.fn();
+    vectorSource.addFeatures = jest.fn();
 
-    taskDraftService.tasksAdded.emit(drafts);
+    taskDraftService.tasksAdded.next(drafts);
 
-    expect(vectorSource.getFeatures().length).toEqual(2);
-    expect(vectorSource.getFeatures()[0].get('id')).toEqual(drafts[0].id);
-    expect(vectorSource.getFeatures()[1].get('id')).toEqual(drafts[1].id);
+    expect(vectorSource.addFeatures).toHaveBeenCalledTimes(1);
+    const addedFeature = (vectorSource.addFeatures as jest.Mock).mock.calls[0][0] as Feature<Geometry>[];
+    expect(addedFeature.length).toEqual(2);
+    expect(addedFeature[0].get('id')).toEqual(drafts[0].id);
+    expect(addedFeature[1].get('id')).toEqual(drafts[1].id);
     expect(mapLayerService.fitToFeatures).toHaveBeenCalled();
   });
 
@@ -361,7 +364,7 @@ describe(ProjectCreationComponent.name, () => {
     const vectorLayer = component.vectorLayer;
     vectorLayer.changed = jest.fn();
 
-    taskDraftService.taskSelected.emit();
+    taskDraftService.taskSelected.next();
 
     expect(vectorSource.clear).toHaveBeenCalledTimes(1);
     expect(vectorLayer.changed).toHaveBeenCalledTimes(1);
@@ -371,22 +374,24 @@ describe(ProjectCreationComponent.name, () => {
     // @ts-ignore
     component.vectorSource.removeFeature = jest.fn();
 
-    taskDraftService.taskRemoved.emit('test');
+    taskDraftService.taskRemoved.next('test');
 
     // @ts-ignore
     expect(component.vectorSource.removeFeature).not.toHaveBeenCalled();
   });
 
   it('should remove task on taskRemove event', () => {
+    // @ts-ignore
+    const vectorSource = component.vectorSource;
     const feature = new Feature(new Polygon([[[0, 0], [1000, 1000], [2000, 0], [0, 0]]]));
     feature.set('id', '123');
-    // @ts-ignore
-    component.vectorSource.addFeature(feature);
+    vectorSource.getFeatures = jest.fn().mockReturnValue([feature]);
+    vectorSource.removeFeature = jest.fn();
 
-    taskDraftService.taskRemoved.emit('' + feature.get('id'));
+    taskDraftService.taskRemoved.next('' + feature.get('id'));
 
     // @ts-ignore
-    expect(component.vectorSource.getFeatures().length).toEqual(0);
+    expect(vectorSource.removeFeature).toHaveBeenCalledWith(feature);
   });
 
   it('should remove and add task on taskChanged event', () => {
@@ -394,16 +399,18 @@ describe(ProjectCreationComponent.name, () => {
     const vectorSource = component.vectorSource;
     const drafts = getDummyTasks();
     const oldFeatures = getDummyFeatures();
-    vectorSource.addFeatures(oldFeatures);
+    vectorSource.getFeatures = jest.fn().mockReturnValue(oldFeatures);
+    vectorSource.removeFeature = jest.fn();
+    vectorSource.addFeatures = jest.fn();
     mapLayerService.fitToFeatures = jest.fn();
 
-    taskDraftService.taskChanged.emit(drafts[1]);
+    taskDraftService.taskChanged.next(drafts[1]);
 
-    expect(vectorSource.getFeatures()[0]).toEqual(oldFeatures[0]);
-    expect(vectorSource.getFeatures()[1]).not.toEqual(oldFeatures[1]);
-    expect(vectorSource.getFeatures()[1]).not.toBeUndefined();
-    expect(vectorSource.getFeatures()[1].get('id')).toEqual(oldFeatures[1].get('id'));
     expect(mapLayerService.fitToFeatures).toHaveBeenCalled();
+    expect(vectorSource.addFeatures).toHaveBeenCalledTimes(1);
+    const addedFeature = (vectorSource.addFeatures as jest.Mock).mock.calls[0][0] as Feature<Geometry>[];
+    expect(addedFeature.length).toEqual(1);
+    expect(addedFeature[0].get('id')).toEqual(oldFeatures[1].get('id'));
   });
 
   function expectInteractionsToBeInDefaultState(): void {

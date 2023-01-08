@@ -9,7 +9,7 @@ module.exports = {
     "<rootDir>/jest/",
   ],
   transformIgnorePatterns: [
-    "<rootDir>/node_modules/(?!ol|@angular|@ngx-translate|geotiff|observable-fns|quick-lru).+\.js$"
+    "<rootDir>/node_modules/(?!ol|@angular|@ngx-translate|geotiff|observable-fns|quick-lru).+\.(mjs|js)$"
   ],
   globals: {
     "ts-jest": {

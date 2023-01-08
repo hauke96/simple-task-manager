@@ -222,7 +222,9 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
   }
 
   private removeTask(id: string | undefined): void {
-    const featureToRemove = this.vectorSource.getFeatures().find(f => f.get('id') === id);
+    const featureToRemove = this.vectorSource.getFeatures().find(f => {
+      return f.get('id') === id;
+    });
     if (!id || !featureToRemove) {
       return;
     }

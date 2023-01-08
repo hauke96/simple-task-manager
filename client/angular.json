@@ -40,6 +40,7 @@
               "@turf/hex-grid",
               "@turf/triangle-grid",
               "geojson-rbush",
+              "rbush",
               "pbf"
             ]
           },
