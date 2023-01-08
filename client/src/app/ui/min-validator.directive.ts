@@ -1,5 +1,5 @@
 import { Directive, Input } from '@angular/core';
-import { FormControl, NG_VALIDATORS, Validator } from '@angular/forms';
+import { UntypedFormControl, NG_VALIDATORS, Validator } from '@angular/forms';
 
 @Directive({
   selector: '[appMinValidator][ngModel]',
@@ -16,7 +16,7 @@ export class MinValidatorDirective implements Validator {
     this.appMinValidatorNumber = +value;
   }
 
-  public validate(c: FormControl): { [appMinValidator: string]: any } | null {
+  public validate(c: UntypedFormControl): { [appMinValidator: string]: any } | null {
     const v = ('' + c.value).trim();
     return v.match('[-\+]?[0-9]+')
     && (this.appMinValidatorNumber <= +v)

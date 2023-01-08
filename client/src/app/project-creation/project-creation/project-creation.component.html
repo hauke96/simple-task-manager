@@ -1,7 +1,7 @@
 <app-toolbar>
 	<div>
 		<button [routerLink]="['/dashboard']"><span class="lnr lnr-chevron-left cancel-button-icon"></span><span>{{'cancel-button' | translate}}</span></button>
-		<button class="save-button" (click)="onSaveButtonClicked()" [disabled]="!creationForm.form?.valid || !hasTasks">{{'save-button' | translate}}</button>
+		<button class="save-button" (click)="onSaveButtonClicked()" [disabled]="!creationForm.form.valid || !hasTasks">{{'save-button' | translate}}</button>
 	</div>
 </app-toolbar>
 <div class="root-container">

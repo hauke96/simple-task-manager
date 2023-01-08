@@ -20,8 +20,8 @@
 			   appMaxValidator="{{task?.maxProcessPoints}}">
 		<span class="of-process-point-label">/ {{task?.maxProcessPoints}}</span>
 		<div class="save-button-row">
-			<button class="save-button" (click)="onSaveButtonClick()" [disabled]="!processPointsForm.form?.valid">{{'save-button' | translate}}</button>
-			<button class="done-button" (click)="onDoneButtonClick()" [disabled]="!processPointsForm.form?.valid">{{'done-button' | translate}}</button>
+			<button class="save-button" (click)="onSaveButtonClick()" [disabled]="!processPointsForm.form.valid">{{'save-button' | translate}}</button>
+			<button class="done-button" (click)="onDoneButtonClick()" [disabled]="!processPointsForm.form.valid">{{'done-button' | translate}}</button>
 		</div>
 	</form>
 	<ng-template #currentUserElse>

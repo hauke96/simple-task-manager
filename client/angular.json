@@ -133,5 +133,7 @@
       }
     }
   },
-  "defaultProject": "simple-task-manager"
+  "cli": {
+    "analytics": false
+  }
 }
