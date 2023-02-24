@@ -18,7 +18,5 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/swaggo/http-swagger v1.3.0
 	github.com/swaggo/swag v1.8.3
-	golang.org/x/net v0.0.0-20220622184535-263ec571b305 // indirect
-	golang.org/x/sys v0.0.0-20220622161953-175b2fd9d664 // indirect
-	golang.org/x/tools v0.1.11 // indirect
+	golang.org/x/net v0.7.0 // indirect
 )
