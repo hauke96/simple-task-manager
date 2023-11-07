@@ -9,8 +9,8 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/hauke96/sigolo"
-	"github.com/hauke96/simple-task-manager/server/auth"
 	"github.com/hauke96/simple-task-manager/server/config"
+	"github.com/hauke96/simple-task-manager/server/oauth2"
 	"github.com/hauke96/simple-task-manager/server/util"
 )
 
@@ -24,8 +24,9 @@ func Init() error {
 
 	addInfoHandler(router)
 	addDocHandler(router)
-	addAuthLoginHandler(router)
-	addAuthCallbackHandler(router)
+
+	addOAuth2LoginHandler(router)
+	addOAuth2CallbackHandler(router)
 
 	sigolo.Info("Registered general routes:")
 	printRoutes(router)
@@ -40,6 +41,7 @@ func Init() error {
 	// API v2.5
 	// API v2.6
 
+	// TODO Create API 2.8 due to OAuth change
 	// API v2.7
 	router_v2_7, version := Init_v2_7(router)
 	supportedApiVersions = append(supportedApiVersions, version)
@@ -98,25 +100,24 @@ func redirectDocHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/doc/index.html", 302)
 }
 
-// OAuth login
-// @Description Gets OSM login token and therefore redirects to the OSM Login page. See GitHub Repo under '/doc/authentication' for further information.
+// OAuth2 login
+// @Description Redirects to the OSM Login page to start OSM login with OAuth2.
 // @Version 2.7
 // @Tags authentication
-// @Param redirect query string true "The URL that should be redirected to after authentication"
-// @Router /oauth_login [GET]
-func addAuthLoginHandler(router *mux.Router) *mux.Route {
-	return router.HandleFunc("/oauth_login", auth.OauthLogin).Methods(http.MethodGet)
+// @Router /oauth2/login [GET]
+func addOAuth2LoginHandler(router *mux.Router) *mux.Route {
+	return router.HandleFunc("/oauth2/login", oauth2.Login).Methods(http.MethodGet)
 }
 
-// OAuth callback
-// @Description OAuth callback called after OSM login. Performs the OAuth authentication by getting an OSM access token. See GitHub Repo under '/doc/authentication' for further information.
+// OAuth2 callback
+// @Description OAuth2 callback called after OSM login. Performs the OAuth authentication by getting an OSM access token.
 // @Version 2.7
 // @Tags authentication
 // @Param config query string true "The config key sent to the OSM login page."
 // @Param redirect query string true "The URL that should be redirected to after authentication"
-// @Router /oauth_callback [GET]
-func addAuthCallbackHandler(router *mux.Router) *mux.Route {
-	return router.HandleFunc("/oauth_callback", auth.OauthCallback).Methods(http.MethodGet)
+// @Router /oauth2/callback [GET]
+func addOAuth2CallbackHandler(router *mux.Router) *mux.Route {
+	return router.HandleFunc("/oauth2/callback", oauth2.Callback).Methods(http.MethodGet)
 }
 
 func getInfo(w http.ResponseWriter, r *http.Request) {

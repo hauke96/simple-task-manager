@@ -1,6 +1,7 @@
 {
 	"server-url": "https://stm-test.hauke-stieler.de",
 	"port": 8080,
+	"client-auth-redirect-url": "https://stm-test.hauke-stieler.de/oauth-landing",
 	"osm-base-url": "https://www.openstreetmap.org",
 	"debug-logging": false,
 	"ssl-cert-file": "/etc/letsencrypt/live/stm-test.hauke-stieler.de/fullchain.pem",

@@ -15,11 +15,11 @@ var (
 )
 
 const (
-	EnvVarDbUsername       = "STM_DB_USERNAME"
-	EnvVarDbPassword       = "STM_DB_PASSWORD"
-	EnvVarDbHost           = "STM_DB_HOST"
-	EnvVarOAuthConsumerKey = "STM_OAUTH_CONSUMER_KEY"
-	EnvVarOAuthSecret      = "STM_OAUTH_SECRET"
+	EnvVarDbUsername     = "STM_DB_USERNAME"
+	EnvVarDbPassword     = "STM_DB_PASSWORD"
+	EnvVarDbHost         = "STM_DB_HOST"
+	EnvVarOAuth2ClientId = "STM_OAUTH2_CLIENT_ID"
+	EnvVarOAuth2Secret   = "STM_OAUTH2_SECRET"
 
 	DefaultTokenInvalidityDuration = "24h"
 	DefaultDbUsername              = "stm"
@@ -34,6 +34,7 @@ type Config struct {
 	// Can be set via config file:
 	ServerUrl             string `json:"server-url"`
 	Port                  int    `json:"port"`
+	ClientAuthRedirectUrl string `json:"client-auth-redirect-url"`
 	SslCertFile           string `json:"ssl-cert-file"`
 	SslKeyFile            string `json:"ssl-key-file"`
 	OsmBaseUrl            string `json:"osm-base-url"`
@@ -45,11 +46,12 @@ type Config struct {
 	TestEnvironment       bool   `json:"test-env"`
 
 	// Can only be set via environment variables:
-	DbUsername       string `json:"-"`
-	DbPassword       string `json:"-"`
-	DbHost           string `json:"-"`
-	OauthConsumerKey string `json:"-"`
-	OauthSecret      string `json:"-"`
+	DbUsername string `json:"-"`
+	DbPassword string `json:"-"`
+	DbHost     string `json:"-"`
+
+	Oauth2ClientId string `json:"-"`
+	Oauth2Secret   string `json:"-"`
 }
 
 func LoadConfig(file string) {
@@ -67,19 +69,19 @@ func LoadConfig(file string) {
 		sigolo.FatalCheck(err)
 	}
 
-	// OSM Oauth configs
-	oauthConsumerKey, ok := os.LookupEnv(EnvVarOAuthConsumerKey)
-	if len(oauthConsumerKey) == 0 || !ok {
-		sigolo.Error("Environment variable %s for the database user not set and no default value will be used.", EnvVarOAuthConsumerKey)
+	// OSM Oauth2 configs
+	oauth2ClientId, ok := os.LookupEnv(EnvVarOAuth2ClientId)
+	if len(oauth2ClientId) == 0 || !ok {
+		sigolo.Error("Environment variable %s for the database user not set and no default value will be used.", EnvVarOAuth2ClientId)
 	} else {
-		Conf.OauthConsumerKey = oauthConsumerKey
+		Conf.Oauth2ClientId = oauth2ClientId
 	}
 
-	oauthSecret, ok := os.LookupEnv(EnvVarOAuthSecret)
-	if len(oauthSecret) == 0 || !ok {
-		sigolo.Error("Environment variable %s for the database user not set and no default value will be used.", EnvVarOAuthSecret)
+	oauth2Secret, ok := os.LookupEnv(EnvVarOAuth2Secret)
+	if len(oauth2Secret) == 0 || !ok {
+		sigolo.Error("Environment variable %s for the database user not set and no default value will be used.", EnvVarOAuth2Secret)
 	} else {
-		Conf.OauthSecret = oauthSecret
+		Conf.Oauth2Secret = oauth2Secret
 	}
 
 	// Database configs

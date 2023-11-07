@@ -23,7 +23,7 @@
 
 * [gorilla/mux](https://github.com/gorilla/mux)簡単に簡単なレストエンドポイントを作成できます
 * [gorilla/websocket](https://github.com/gorilla/websocket) サーバー→クライアント通信用
-* [kurrik/oauth1a](https://github.com/kurrik/oauth1a) oauth1a 認証用
+* [x/oauth2](https://pkg.go.dev/golang.org/x/oauth2) OAuth2 認証用
 * [lib/pq](https://github.com/lib/pq) PostgreSQL databaseドライバ
 * [pkg/errors](https://github.com/pkg/errors)エラー処理が改善され、スタックトレースを表示できる
 * [hauke96/sigolo](https://github.com/hauke96/sigolo) ロギング
@@ -91,21 +91,10 @@
 
 ログインを実行するには(ローカルで実行しているアプリケーションのログインであっても)、環境変数内にOAuth証明書(つまりOAuthコンシューマキーと秘密鍵)が必要です。
 
-* `export STM_OAUTH_CONSUMER_KEY="Eln7...rY66"`
-* `export STM_OAUTH_SECRET="fgg1...kl09"`
+* `export STM_OAUTH2_CLIENT_ID="Eln7...rY66"`
+* `export STM_OAUTH2_SECRET="fgg1...kl09"`
 
 これらの変数は、新しい端末を起動するたびにエクスポートすることも、任意のファイル(`.bashrc`など)に格納してロードすることもできます。
-
-### ローカル認証サーバ
-
-純粋なローカル設定もあります。
-これは非常に単純な[OAuth-Dummy server](https://github.com/hauke96/osm-oauth1a-dummy)を利用しています。
-リポジトリを複製し、`go run`でこの認証サーバを起動します。
-
-このアプローチを使用すると、OSMサーバーや一般的なインターネット接続から独立したものになります。
-
-**通知:**<br>
-このローカル実行OAuthサーバーを使用するには、`local.config`ファイルを使用する必要があります。そのため、サーバを開始するには、`go run . -c config/local.json`を使用してください。
 
 ## 5. セットアップが完了しました:)
 

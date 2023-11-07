@@ -7,7 +7,7 @@ export const environment = {
   osm_api_url: 'http://localhost:9000/api/0.6',
 
   base_url: baseUrl,
-  url_auth: baseUrl + '/oauth_login',
+  url_auth: baseUrl + '/oauth2/login',
   url_config: baseUrl + '/' + usedApi + '/config',
   url_projects: baseUrl + '/' + usedApi + '/projects',
   url_projects_by_id: baseUrl + '/' + usedApi + '/projects/{id}',

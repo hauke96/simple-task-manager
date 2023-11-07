@@ -3,9 +3,9 @@ package api
 import (
 	"encoding/json"
 	"github.com/gorilla/mux"
-	"github.com/hauke96/simple-task-manager/server/auth"
 	"github.com/hauke96/simple-task-manager/server/config"
 	"github.com/hauke96/simple-task-manager/server/export"
+	"github.com/hauke96/simple-task-manager/server/oauth2"
 	"github.com/hauke96/simple-task-manager/server/project"
 	"github.com/hauke96/simple-task-manager/server/task"
 	"github.com/hauke96/simple-task-manager/server/util"
@@ -495,7 +495,7 @@ func setProcessPoints_v2_7(r *http.Request, context *Context) *ApiResponse {
 // @Tags websocket
 // @Success 200 {object} []project.Project
 // @Router /v2.7/updates [GET]
-func getWebsocketConnection(w http.ResponseWriter, r *http.Request, token *auth.Token, websocketSender *websocket.WebsocketSender) {
+func getWebsocketConnection(w http.ResponseWriter, r *http.Request, token *oauth2.Token, websocketSender *websocket.WebsocketSender) {
 	websocketSender.GetWebsocketConnection(w, r, token.UID)
 }
 

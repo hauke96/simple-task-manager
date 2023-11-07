@@ -1,7 +1,8 @@
 {
-	"server-url": "http://localhost",
+	"server-url": "http://127.0.0.1",
 	"port": 8080,
-	"osm-base-url": "https://master.apis.dev.openstreetmap.org",
+	"client-auth-redirect-url": "http://localhost:4200/oauth-landing",
+	"osm-base-url": "https://www.openstreetmap.org",
 	"debug-logging": true,
 	"source-repo-url": "https://github.com/hauke96/simple-task-manager",
 	"max-task-per-project": 10

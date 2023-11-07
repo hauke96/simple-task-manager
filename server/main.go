@@ -3,20 +3,21 @@ package main
 import (
 	"fmt"
 	"github.com/alecthomas/kong"
+	"github.com/hauke96/simple-task-manager/server/oauth2"
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 	"os"
 
 	"github.com/hauke96/sigolo"
 	"github.com/hauke96/simple-task-manager/server/api"
-	"github.com/hauke96/simple-task-manager/server/auth"
 	"github.com/hauke96/simple-task-manager/server/config"
 	_ "github.com/hauke96/simple-task-manager/server/docs"
 	"github.com/hauke96/simple-task-manager/server/util"
 )
 
 var cli struct {
-	Config  string `help:"The config file. CLI argument override the settings from that file." short:"d" default:"./config/default.json"`
+	Config  string `help:"The config file. CLI argument override the settings from that file." short:"c" default:"./config/default.json"`
 	Version bool   `help:"Print the version of STM" short:"v"`
+	Debug   bool   `help:"Use debug logging" short:"d"`
 }
 
 func configureCliArgs() {
@@ -50,6 +51,10 @@ func main() {
 		return
 	}
 
+	if cli.Debug {
+		sigolo.LogLevel = sigolo.LOG_DEBUG
+	}
+
 	// Load config an override with CLI args
 	sigolo.Info("Init simple-task-manager server v" + util.VERSION)
 	config.LoadConfig(cli.Config)
@@ -58,7 +63,7 @@ func main() {
 	configureLogging()
 
 	// Init of Config, Services, Storages, etc.
-	auth.Init()
+	oauth2.Init()
 	sigolo.Info("Initializes services, storages, etc.")
 
 	err := api.Init()

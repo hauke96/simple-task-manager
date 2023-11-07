@@ -22,11 +22,11 @@ func TestInitConfig(t *testing.T) {
 		if Conf.ServerUrl != "" {
 			return errors.New(fmt.Sprintf("Default value of 'ServerUrl' wrong: Wanted %s but was %s", "''", Conf.ServerUrl))
 		}
-		if Conf.OauthSecret != "" {
-			return errors.New(fmt.Sprintf("Default value of 'OauthSecret' wrong: Wanted %s but was %s", "''", Conf.OauthSecret))
+		if Conf.Oauth2ClientId != "" {
+			return errors.New(fmt.Sprintf("Default value of 'Oauth2ClientId' wrong: Wanted %s but was %s", "''", Conf.Oauth2ClientId))
 		}
-		if Conf.OauthConsumerKey != "" {
-			return errors.New(fmt.Sprintf("Default value of 'OauthConsumerKey' wrong: Wanted %s but was %s", "''", Conf.OauthConsumerKey))
+		if Conf.Oauth2Secret != "" {
+			return errors.New(fmt.Sprintf("Default value of 'Oauth2Secret' wrong: Wanted %s but was %s", "''", Conf.Oauth2Secret))
 		}
 		if Conf.SslCertFile != "" {
 			return errors.New(fmt.Sprintf("Default value of 'SslCertFile' wrong: Wanted %s but was %s", "''", Conf.SslCertFile))
