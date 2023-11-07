@@ -1,7 +1,8 @@
 package main
 
 import (
-	"github.com/alecthomas/kingpin"
+	"fmt"
+	"github.com/alecthomas/kong"
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 	"os"
 
@@ -13,17 +14,14 @@ import (
 	"github.com/hauke96/simple-task-manager/server/util"
 )
 
-var (
-	app       = kingpin.New("Simple Task Manager", "A tool dividing an area of the map into smaller tasks.")
-	appConfig = app.Flag("config", "The config file. CLI argument override the settings from that file.").Short('c').Default("./config/default.json").String()
-)
+var cli struct {
+	Config  string `help:"The config file. CLI argument override the settings from that file." short:"d" default:"./config/default.json"`
+	Version bool   `help:"Print the version of STM" short:"v"`
+}
 
 func configureCliArgs() {
-	app.Author("Hauke Stieler")
-	app.Version(util.VERSION)
-
-	app.HelpFlag.Short('h')
-	app.VersionFlag.Short('v')
+	kong.Name("Simple Task Manager")
+	kong.Description("A tool dividing an area of the map into smaller tasks.")
 }
 
 func configureLogging() {
@@ -44,14 +42,17 @@ func configureLogging() {
 // @license.name GNU General Public License 3.0
 // @license.url https://github.com/hauke96/simple-task-manager/blob/master/LICENSE
 func main() {
-	sigolo.Info("Init simple-task-manager server v" + util.VERSION)
-
 	configureCliArgs()
-	_, err := app.Parse(os.Args[1:])
-	sigolo.FatalCheck(err)
+	kong.Parse(&cli)
+
+	if cli.Version {
+		fmt.Printf("STM - SimpleTaskManager\nVersion %s\n", util.VERSION)
+		return
+	}
 
 	// Load config an override with CLI args
-	config.LoadConfig(*appConfig)
+	sigolo.Info("Init simple-task-manager server v" + util.VERSION)
+	config.LoadConfig(cli.Config)
 	config.PrintConfig()
 
 	configureLogging()
@@ -60,7 +61,7 @@ func main() {
 	auth.Init()
 	sigolo.Info("Initializes services, storages, etc.")
 
-	err = api.Init()
+	err := api.Init()
 	if err != nil {
 		sigolo.Stack(err)
 		os.Exit(1)

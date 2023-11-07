@@ -27,7 +27,7 @@ The frameworks/libraries this project uses are there in order to make the develo
 * [lib/pq](https://github.com/lib/pq) for a postgres database driver
 * [pkg/errors](https://github.com/pkg/errors) better error handling and enables us to show stack traces
 * [hauke96/sigolo](https://github.com/hauke96/sigolo) for logging
-* [hauke96/kingpin](https://github.com/hauke96/kingpin) for cli parameter and flag parsing
+* [alecthomas/kong](https://github.com/alecthomas/kong) for cli parameter and flag parsing
 
 ## 3. Setup the Database
 
