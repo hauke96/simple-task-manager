@@ -2,15 +2,15 @@ package api
 
 import (
 	"database/sql"
-	"github.com/hauke96/simple-task-manager/server/database"
-	"github.com/hauke96/simple-task-manager/server/export"
-	"github.com/hauke96/simple-task-manager/server/oauth2"
-	"github.com/hauke96/simple-task-manager/server/permission"
-	"github.com/hauke96/simple-task-manager/server/project"
-	"github.com/hauke96/simple-task-manager/server/task"
-	"github.com/hauke96/simple-task-manager/server/util"
-	"github.com/hauke96/simple-task-manager/server/websocket"
 	"github.com/pkg/errors"
+	"stm/database"
+	"stm/export"
+	"stm/oauth2"
+	"stm/permission"
+	"stm/project"
+	"stm/task"
+	"stm/util"
+	"stm/websocket"
 )
 
 type Context struct {

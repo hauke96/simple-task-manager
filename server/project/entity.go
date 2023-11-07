@@ -1,7 +1,7 @@
 package project
 
 import (
-	"github.com/hauke96/simple-task-manager/server/task"
+	"stm/task"
 	"time"
 )
 

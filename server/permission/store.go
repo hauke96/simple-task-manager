@@ -3,9 +3,9 @@ package permission
 import (
 	"database/sql"
 	"fmt"
-	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/lib/pq"
 	"github.com/pkg/errors"
+	"stm/util"
 )
 
 type PermissionStore struct {

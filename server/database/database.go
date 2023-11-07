@@ -3,10 +3,10 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"github.com/hauke96/simple-task-manager/server/config"
-	"github.com/hauke96/simple-task-manager/server/util"
 	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
+	"stm/config"
+	"stm/util"
 )
 
 var (

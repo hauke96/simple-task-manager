@@ -3,15 +3,15 @@ package main
 import (
 	"fmt"
 	"github.com/alecthomas/kong"
-	"github.com/hauke96/simple-task-manager/server/oauth2"
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 	"os"
+	"stm/oauth2"
 
 	"github.com/hauke96/sigolo"
-	"github.com/hauke96/simple-task-manager/server/api"
-	"github.com/hauke96/simple-task-manager/server/config"
-	_ "github.com/hauke96/simple-task-manager/server/docs"
-	"github.com/hauke96/simple-task-manager/server/util"
+	"stm/api"
+	"stm/config"
+	_ "stm/docs"
+	"stm/util"
 )
 
 var cli struct {

@@ -9,9 +9,9 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/hauke96/sigolo"
-	"github.com/hauke96/simple-task-manager/server/config"
-	"github.com/hauke96/simple-task-manager/server/oauth2"
-	"github.com/hauke96/simple-task-manager/server/util"
+	"stm/config"
+	"stm/oauth2"
+	"stm/util"
 )
 
 var (

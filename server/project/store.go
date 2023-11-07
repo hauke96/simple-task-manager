@@ -3,10 +3,10 @@ package project
 import (
 	"database/sql"
 	"fmt"
-	"github.com/hauke96/simple-task-manager/server/task"
-	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/lib/pq"
 	"github.com/pkg/errors"
+	"stm/task"
+	"stm/util"
 	"strconv"
 	"time"
 )

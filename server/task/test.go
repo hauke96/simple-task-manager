@@ -4,12 +4,12 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/hauke96/sigolo"
-	"github.com/hauke96/simple-task-manager/server/config"
-	"github.com/hauke96/simple-task-manager/server/database"
-	"github.com/hauke96/simple-task-manager/server/permission"
-	"github.com/hauke96/simple-task-manager/server/test"
-	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/pkg/errors"
+	"stm/config"
+	"stm/database"
+	"stm/permission"
+	"stm/test"
+	"stm/util"
 	"testing"
 
 	_ "github.com/lib/pq" // Make driver "postgres" usable

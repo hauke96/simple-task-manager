@@ -1,4 +1,4 @@
-module github.com/hauke96/simple-task-manager/server
+module stm
 
 go 1.14
 

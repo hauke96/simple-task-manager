@@ -3,23 +3,23 @@ package task
 import (
 	"database/sql"
 	"fmt"
-	"github.com/hauke96/simple-task-manager/server/permission"
-	"github.com/hauke96/simple-task-manager/server/util"
 	geojson "github.com/paulmach/go.geojson"
 	"github.com/pkg/errors"
+	"stm/permission"
+	"stm/util"
 	"strings"
 )
 
 type TaskService struct {
 	*util.Logger
-	store                *StorePg
+	store           *StorePg
 	permissionStore *permission.PermissionStore
 }
 
 func Init(tx *sql.Tx, logger *util.Logger, permissionStore *permission.PermissionStore) *TaskService {
 	return &TaskService{
-		Logger:               logger,
-		store:                GetStore(tx, logger),
+		Logger:          logger,
+		store:           GetStore(tx, logger),
 		permissionStore: permissionStore,
 	}
 }
