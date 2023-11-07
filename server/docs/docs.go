@@ -61,24 +61,24 @@ var doc = `{
                 }
             }
         },
-        "/oauth_callback": {
+        "/oauth2/callback": {
             "get": {
-                "description": "OAuth callback called after OSM login. Performs the OAuth authentication by getting an OSM access token. See GitHub Repo under '/doc/authentication' for further information.",
+                "description": "OAuth2 callback called after OSM login. Performs the OAuth authentication by getting an OSM access token.",
                 "tags": [
                     "authentication"
                 ],
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "The config key sent to the OSM login page.",
-                        "name": "config",
+                        "description": "The state-string that was given to the OAuth service.",
+                        "name": "state",
                         "in": "query",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "description": "The URL that should be redirected to after authentication",
-                        "name": "redirect",
+                        "description": "The authentication code to retrieve the access token.",
+                        "name": "code",
                         "in": "query",
                         "required": true
                     }
@@ -86,20 +86,11 @@ var doc = `{
                 "responses": {}
             }
         },
-        "/oauth_login": {
+        "/oauth2/login": {
             "get": {
-                "description": "Gets OSM login token and therefore redirects to the OSM Login page. See GitHub Repo under '/doc/authentication' for further information.",
+                "description": "Redirects to the OSM Login page to start OSM login with OAuth2.",
                 "tags": [
                     "authentication"
-                ],
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "The URL that should be redirected to after authentication",
-                        "name": "redirect",
-                        "in": "query",
-                        "required": true
-                    }
                 ],
                 "responses": {}
             }

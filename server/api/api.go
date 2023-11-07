@@ -113,8 +113,8 @@ func addOAuth2LoginHandler(router *mux.Router) *mux.Route {
 // @Description OAuth2 callback called after OSM login. Performs the OAuth authentication by getting an OSM access token.
 // @Version 2.7
 // @Tags authentication
-// @Param config query string true "The config key sent to the OSM login page."
-// @Param redirect query string true "The URL that should be redirected to after authentication"
+// @Param state query string true "The state-string that was given to the OAuth service."
+// @Param code query string true "The authentication code to retrieve the access token."
 // @Router /oauth2/callback [GET]
 func addOAuth2CallbackHandler(router *mux.Router) *mux.Route {
 	return router.HandleFunc("/oauth2/callback", oauth2.Callback).Methods(http.MethodGet)

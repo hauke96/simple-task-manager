@@ -52,7 +52,7 @@ Every update is packed into a message of the following format:
 
 ## (Re)Generate Swagger-UI
 
-The swagger documentation UI (available under `...:8080/doc/`) can be (re)generated using [swagger](https://github.com/swaggo/swag) (see installation documentation there).
+The swagger documentation UI (available under `...:8080/doc/`) can be (re)generated using [swagger](https://github.com/swaggo/swag) (use the ` go install` command as mentioned in their installation documentation).
 After installation, go into the `server` folder and execute the command `swag init`.
 The `swag` command is probably not available and the binary (after executing the `go install` command from their installation guide) is in the `bin` folder of your go root folder.
 
