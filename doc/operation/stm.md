@@ -1,98 +1,29 @@
-This file describes roughly the setup process of a new server instance:
+This file described the setup of the STM application server.
+For a potential setup of a linux-machine, see [linux.md](./linux.md).
 
-# 0. Prerequisites
+# Assumptions
 
-I assume some things:
+This guide assumes some basic things:
 
-* You have root-access via an initial root-login provided by the hoster (or someone else)
-* You run an Ubuntu 20.04 (or something compatible, I think 18.04 or latest debian should be fine as well). Of course
-  other distributions will also do the job, I only tried Ubuntu so far.
-* You use a different domain than `stm.hauke-stieler.de`, however I use that domain here because I use it a lot ;)
+* You have (SSH) access to a linux machine
+* Your machine has access to at least docker.com and osm.org.
+* Your machine is able to start docker container
 
-First steps before we start:
+Optional but recommended:
 
-* Login with SSH
-* Change root password: `passwd`
+* Your machine is able to run systemd-services and -timer (for automatic backups and certificate renewal)
 
-# 1 Install all tools
-
-* `apt update`
-* Install all stm-related tools: `apt install npm go postgresql-client-12 git docker docker-compose`
-* Install stuff for letsencrypt:
-    * `apt install software-properties-common`
-    * `apt update`
-    * `apt install certbot`
-
-# 2 Create user `stm`
-
-* Create new user and add to groups
-    * Add new user: `useradd stm`
-    * Add to group `docker`: `usermod -aG docker stm`
-    * Add to group `systemd-journal` to use journalctl: `usermod -aG systemd-journal stm`
-    * Set password (also used to login via SSH): `passwd stm`
-    * Change the shell of `stm` in the `/etc/passwd` to `/bin/bash`
-* Setup home folder
-    * `mkdir /home/stm`
-    * Copy/create `.bashrc`, `.vimrc`, etc.
-    * `chown -R stm:stm /home/stm`
-
-# 3 SSH setup
-
-The plan is to use public-key-authentication and to change some `sshd` configs.
-
-* Edit the `sshd` config file on the server: `vim /etc/ssh/sshd_config`
-    * Change the line `#Port 22` into e.g. `Port 4242`
-        * Important: Remember that number for the firewall config below
-    * Disable SSH root-login. Change the `PermitRootLogin` line to `PermitRootLogin no`
-    * Disable SSH password-login. Change the `PasswordAuthentication` line to `PasswordAuthentication no`
-* Copy your personal public SSH key from your home computer:
-    * Make sure you have an SSH key (we need a `~/.ssh/id_rsa.pub` file). If not create one using `ssh-keygen`.
-    * Use `ssh-copy-id` or manually copy content of the `.pub` file to your servers `~/.ssh/authorized_keys`.
-	* Make sure the permissions are on 600 (if not, execute `chmod 600 ~/.ssh/authorized_keys`)
-
-Test the setup using `ssh -p 4242 foo@bar.com`. A succeeded login without entering a password means that the SSH-setup
-is completed.
-
-# 4 LetsEncrypt
-
-Follow the steps in [ssl-cert.md](./ssl-cert.md) so set up letsencrypt.
-
-# 5 Firewall
-
-I'm not a firewall and networking expert at all but this gives us some kind of basic protection:
-
-* Install tool to persist firewall configs: `apt install iptables-persistent`
-    * Set setup will ask to store current iptable configs, just select "No"
-* Add the following rules:
-    * `iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT`
-        * Allows responses to come back to the server e.g. when `stm-server` makes requests to the OSM-Servers.
-    * `iptables -A INPUT -i lo -j ACCEPT`
-        * Allows local traffic (`-i lo` says "interface localhost")
-    * `iptables -A INPUT -p icmp --icmp-type echo-request -j ACCEPT`
-        * Optional: Allows ping-requests. Not necessary but nice to check whether server is online or what latency there
-          is.
-    * `iptables -A INPUT -p tcp --dport <your ssh port> -j ACCEPT`
-    * `iptables -A INPUT -p tcp --dport 8080 -j ACCEPT`
-    * `iptables -A INPUT -p tcp --dport 443 -j ACCEPT`
-    * `iptables -A INPUT -p tcp --dport 80 -j ACCEPT`
-    * `iptables -P INPUT DROP`
-* Store to file: `iptables-save > /etc/iptables/rules.v4`
-
-There's also the possibility to specify what kind of local traffic (between stm-server, stm-db and localhost) is
-allowed, etc. etc. However, this should block the most basic things: SSH on 22.
-
-# 6 Recommended file structure
+# 1 Recommended file structure
 
 I recommend the following structure and I assume your users home folder is `/home/stm`:
 
 * Create `/home/stm/simple-task-manager/` with following sub-folders:
-  * `backups` for (automated) backups (s. section below)
-  * `configs` contains nginx and stm-server configs
-  * `postgres-data` contains the database files
-  * `repo` contains the actual code repo. This is needed so get the latest `docker-compose.yml`
-  * `systemd` contains timer and service files for cerbot (and optionally the automated backups)
+  * `backups`: for (automated) backups (s. section below)
+  * `configs`: contains nginx and stm-server configs
+  * `postgres-data`: contains the database files
+  * `repo`: contains the actual code repo. This is needed so get the latest `docker-compose.yml`
 
-# 7 Get STM
+# 2 Get STM
 
 ## Via docker hub (recommended)
 
@@ -102,7 +33,7 @@ The deployments (since 1.4.2) work via [docker hub](https://hub.docker.com/u/sim
 * Get the required compose file using **one** of the following ways:
   * Clone the git repo into the `repo` folder and create the symlink `docker-compose.yml` -> `repo/docker-compose.yml`
   * Or: Download the `docker-compose.yml` file from the [STM github repo](https://github.com/hauke96/simple-task-manager/blob/master/docker-compose.yml)
-  
+
 I recommend to clone the git repo in order to easily get new versions of the compose file.
 
 Basically you're done with the preparations. The next step is the configuration.
@@ -122,11 +53,11 @@ Of course you can ignore docker and just build everything manually. Just take a 
 the [server README](../../server/README.md) and the [client README](../../client/README.md) on how to build the
 projetcs.
 
-# 8 Configuration
+# 3 Configuration
 
 The configuration is done via different config files:
 
-* `.env`: A file for docker containing environment variables and paths to the following config files:
+* `.env`: A file (s. below for doc and example) for docker containing environment variables and paths to the following config files:
 * `*.json`: A json file for the server configuration. Configured in the `.env` file with `STM_SERVER_CONFIG=./path/to/server.json`.
 * `*.conf`: A conf file for the nginx server. Configured in the `.env` file with `STM_NGINX_CONFIG=./path/to/nginx.conf`.
 
@@ -210,21 +141,26 @@ STM_DB_USERNAME=mydbuser
 STM_DB_PASSWORD=supersecurepassword123
 STM_SERVER_CONFIG=/path/to/config.json
 STM_NGINX_CONFIG=/path/to/nginx.conf
-```
+``` 
 
-The `STM_DB_...` entries just override the default ones whereas the `STM_OAUTH2_...` entries don't have default configs and
-must be set in order to make authentication work.
+The `STM_OAUTH2_...` entries don't have default values and _must_ be set in order to make authentication work.
 
-The `STM_SERVER_CONFIG` and `STM_NGINX_CONFIG` have to be set, neither the server nor the client will start without
+The `STM_SERVER_CONFIG` and `STM_NGINX_CONFIG` _must_ be set, neither the server nor the client will start without
 them.
 
-# 9 Automatic backups
+### Precedence of configurations
+
+The `STM_DB_...` entries have default values.
+Values from the `config.json` override these default values.
+Values via environment variables override default values as well as values from the `config.json`.
+
+# 4 Automatic backups
 
 This step is optional but recommended and described in the [automatic-backups.md](automatic-backups.md) file.
 
-# 10 Deployment
+# 5 Deployment
 
-*This section only describes the docker hub based deployment!*
+_This section only describes the docker hub based deployment!_
 
 The default deployment process downloads pre-built docker images from [docker hub](https://hub.docker.com/u/simpletaskmanager) and starts them with the configurations
 as describes above.
@@ -246,7 +182,7 @@ using `journalctl` and so some manual checks.
 Check logs and firewall:
 
 * `iptables -S`: Should show the rules describes above.
-    * If not: Restart the machine. The `iptables-persistent` package should reload the firewall config after the reboot.
+  * If not: Restart the machine. The `iptables-persistent` package should reload the firewall config after the reboot.
 * `journalctl -f CONTAINER_NAME=stm-server -n 1000`: Shows the last 1000 log messages for the `stm-server` container.
   Also works for `stm-db` and `stm-client`. This shouldn't display any errors (except token and authentication errors if
   you or someone else tried to login).
@@ -259,6 +195,6 @@ Manual checks (of course use your own domain/ip):
   incoming traffic in ports other than ssh, `8080` and `433`.
 * Open `https://stm.hauke-stieler.de:8080/info`: Should work, so the firewall accepts port 8080 requests.
 * Open `https://stm.hauke-stieler.de`: Should work, this is the normal front page.
-    * Login should work. This would mean that the firewall allows traffic *from* the server *to* the internet and also
-      that the server-communication works.
+  * Login should work. This would mean that the firewall allows traffic *from* the server *to* the internet and also
+    that the server-communication works.
 

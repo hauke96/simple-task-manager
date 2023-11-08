@@ -1,3 +1,6 @@
+
+> **DEPRECATED** Since OAuth2 is used but this file describes the old OAuth1a process!
+
 This file describes the process of authentication, token creation and token validation in the SimpleTaskManager.
 We also take a look on technical aspects (what are the functions exactly doing) and on cryptographic basics (verification, security of the token, etc.).
 

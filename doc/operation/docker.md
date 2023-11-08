@@ -22,7 +22,7 @@ To make deployment easy for everyone, pre-build images are uploaded
 to [docker hub](https://hub.docker.com/u/simpletaskmanager) which can be used to deploy your own instance of STM without
 the whole development setup on your server.
 
-The exact deployment process is described in [the server.md](./server.md) file.
+The exact deployment process is described in the [linux.md](./linux.md) file.
 
 # Logging
 

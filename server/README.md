@@ -154,7 +154,7 @@ There are configuration files in the folder `./server/config/`.
 For local development, you don't need to change anything there.
 
 I you still want to change things, just take a look at the properties, they are quite simple and straight forward.
-Or peek into the [deployment README](../doc/operation/server.md) for further details.
+Or peek into the [deployment README](../doc/operation/stm.md) for further details.
 
 # HTTPS
 
