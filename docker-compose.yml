@@ -5,8 +5,8 @@ services:
     image: simpletaskmanager/stm-server:1.4.4-SNAPSHOT.1
     container_name: stm-server
     environment:
-      - STM_OAUTH_CONSUMER_KEY
-      - STM_OAUTH_SECRET
+      - STM_OAUTH2_CLIENT_ID
+      - STM_OAUTH2_SECRET
       - STM_DB_USERNAME
       - STM_DB_PASSWORD
       - STM_DB_HOST

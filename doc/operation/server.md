@@ -127,8 +127,8 @@ projetcs.
 The configuration is done via different config files:
 
 * `.env`: A file for docker containing environment variables and paths to the following config files:
-* `*.json`: A json file for the server configuration (configured in the `.env` file)
-* `*.conf`: A conf file for the nginx server (configured in the `.env` file)
+* `*.json`: A json file for the server configuration. Configured in the `.env` file with `STM_SERVER_CONFIG=./path/to/server.json`.
+* `*.conf`: A conf file for the nginx server. Configured in the `.env` file with `STM_NGINX_CONFIG=./path/to/nginx.conf`.
 
 As describes above, I recommend to create a config folder on your server (e.g. `/home/stm/simple-task-manager/configs/`) and put all your configs into that folder.
 Even better would be a separate git repo to manage your configs, but that's up to you.
@@ -178,8 +178,8 @@ The following things can be configured:
 
 These environment variables are used by the server:
 
-* ```STM_OAUTH_CONSUMER_KEY```: The OAuth 1a consumer key provided by osm.org (no default value → this must be set)
-* ```STM_OAUTH_SECRET```: The OAuth 1a consumer secret provided by osm.org (no default value → this must be set)
+* ```STM_OAUTH2_CLIENT_ID```: The OAuth2 client ID provided by osm.org (no default value → this must be set)
+* ```STM_OAUTH2_SECRET```: The OAuth2 consumer secret provided by osm.org (no default value → this must be set)
 * ```STM_DB_USERNAME```: The username for the database (default: `stm`)
 * ```STM_DB_PASSWORD```: The password for the database (default: `secret`)
 
@@ -204,15 +204,15 @@ file. This is just a simple file next to the `docker-compose.yml` containing the
 them):
 
 ```
-STM_OAUTH_CONSUMER_KEY=abc123
-STM_OAUTH_SECRET=def234
+STM_OAUTH2_CLIENT_ID=abc123
+STM_OAUTH2_SECRET=def234
 STM_DB_USERNAME=mydbuser
 STM_DB_PASSWORD=supersecurepassword123
 STM_SERVER_CONFIG=/path/to/config.json
 STM_NGINX_CONFIG=/path/to/nginx.conf
 ```
 
-The `STM_DB_...` entries just override the default ones whereas the `STM_OAUTH_` entries don't have default configs and
+The `STM_DB_...` entries just override the default ones whereas the `STM_OAUTH2_...` entries don't have default configs and
 must be set in order to make authentication work.
 
 The `STM_SERVER_CONFIG` and `STM_NGINX_CONFIG` have to be set, neither the server nor the client will start without
