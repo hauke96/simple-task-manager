@@ -78,8 +78,6 @@ In the service-file, pre- and post-hooks also restarts all the docker container.
 You need an `.env` file within the projects root folder, otherwise the docker containers won't get the necessary configs (e.g. database credentials) to start up.
 See the server deployment documentation for more information.
 
-The file `certbot.service` should also be in a `systemd` folder (as described above) and linked using a symlink.
-
 ## Setup Systemd
 
 Enable the timer and service with `systemctl enable /absolute/path/to/certbot.service` and `.../certbot.timer`.
