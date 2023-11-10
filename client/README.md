@@ -1,6 +1,6 @@
 # Client
 
-This is the web application of the simple task manager.
+This is the web application of the SimpleTaskManager.
 It's mainly based on [Angular](https://angular.io), [OpenLayers](https://openlayers.org/) and uses `npm` as a package manager.
 
 # Setup environment

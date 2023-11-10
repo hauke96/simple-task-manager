@@ -6,78 +6,71 @@ actor "User" as user
 control "Web client" as client
 control "Popup window" as popup
 database "STM-Server" as stm
-database "OSM-Auth Server" as osm
+database "OSM-Server" as osm
 
-user -> client : Opens SimpleTaskManager\n(without being logged in)
+user -> client : Opens SimpleTaskManager \n(without being logged in)
 client --> user : ""<login page>""
 
 == Authentication ==
-user -> client : Clicks "login" button
-client --> popup : Opens popup with login-URL \n""(auth.service.ts:requestLogin())""
+user -> client : Clicks "Login" button
+client --> popup : ""AuthService.requestLogin()"" \nOpens popup with login-URL
 activate popup
 
-rnote over client : The client now constantly checks if oauth\ntoken is present in the local storage
+rnote over client : The client now periodically checks for the oauth- \ntoken until it's present in the local storage
 
-popup -> stm : Calls "/oauth_login"
+popup -> stm : Calls ""/oauth2/login""
 activate stm
 
-stm -> osm : Calls "/oauth/request_token" \n""(auth.go:OauthLogin())""
-osm --> stm : ""<request token>""
 
-rnote over stm : STM server stores request token \n""(auth.go:OauthLogin())""
+rnote over stm : STM server creates random string as \nstate in case os multiple concurrent logins
 
-stm --> popup : Redirect to "/oauth/authorize" \n""(auth.go:OauthLogin())""
+stm --> popup : Redirect to """/oauth/authorize"" \n(with state in URL)
 deactivate stm
 
 popup -> osm : Requests login page
 osm --> popup : ""<login page>""
 
-user -> popup : Clicks "Access granted" button
-popup -> stm : Calls "/oauth_callback"
+user -> popup : Enters login data. In case of already \nactive osm.org login, the user \ndoesn't need to do anything here.
+popup -> stm : Calls ""/oauth2/callback"" (""redirect_uri"" parameter in URL), \nwhich calls ""oauth2/auth.go::Callback()""
 activate stm
 
-stm -> stm : Reads previously saved \nconfig for this login request \n""(auth.go:OauthCallback())""
-
-stm -> osm : Calls "/oauth/access_token" \n""(auth.go:requestAccessToken())""
+stm -> osm : Calls ""osm.org/oauth2/token""
 osm --> stm : ""<access token>""
 
-stm -> osm : Calls "/api/0.6/user/details" \n""(auth.go:requestUserInformation())""
+stm -> osm : Calls ""osm.org/api/0.6/user/details"" \n""oauth2/auth.go::requestUserInformation()""
 osm --> stm : ""<user information>""
 
-rnote over stm : STM server creates token \n(see according documentation)
+stm --> stm : Create STM-internal token used for \nall requests from STM-client to -server. \n""oauth2/token.go::createTokenString()""
 
-stm --> popup : Redirect to "/oauth-landing" \n""(auth.go:OauthCallback())""
+stm --> popup : Redirect to ""/oauth-landing"" of the STM-client
 deactivate stm
-popup -> popup : Store token into local storage \n""(oauth-landing.component.ts:constructor)""
+popup -> popup : Store token into local storage \n""OauthLandingComponent.constructor""
 
-popup -> popup ! : Close
+popup -> popup : Close window
 deactivate popup
 
-client -> client : Finds token and redirects to "/manager" \n""(auth.service.ts""\n"" :waitForLocalStorageToken)""
+client -> client : Finds token in local storage and \nredirects to ""/dashboard"". \n""AuthService.waitForLocalStorageToken()""
 
 == Authorization of requests ==
 
-rnote over client : The STM loads the "/manager" \npage which contains a list of \nprojects. Therefore the projects \nare requested from the server.
+client -> client : Web client calls some URL on STM-server
+client -> client : Intercept **all** HTTP-requests to the server \nin order to append the token \n""LoggedInInterceptor.intercept()"" \n\nHTTP-Header now contains ""auth_token"" \nvalue from local storage:\n""  Authorization: "eyJ2...YW=="""
+client -> stm : HTTP request (with token in header) to server API ""/v.../...""
 
-client -> client : Calls "/projects" \n""(project-list.component.ts:ngOnInit())""
-client -> client : Append token \n""(logged-in.interceptor.ts)""
-client -> stm : ""Header:""\n""  Authorization: "eyJ2...YW=="""
-
-stm -> stm : Verifies token using a "canonical \nverification" as cryptoanalysts would say \n\n""(token.go:verifyToken())""
-stm -> stm : Read projects from database/store
-stm --> client : ""<projects>""
+stm -> stm : Verifies token using a "canonical \nverification" as cryptoanalysts would say \n""oauth2/token.go::verifyToken()""
+stm -> stm : Performs operation on server (e.g. load projects)
+stm --> client : ""<some returned data>""
 
 == Token expired ==
 
 client -> client : Calls some URL
-client -> client : Append token \n""(logged-in.interceptor.ts)""
-client -> stm : ""Header:""\n""  Authorization: "eyJ2...YW=="""
+client -> client : Append token \n""LoggedInInterceptor.intercept()""
+client -> stm : HTTP-Header contains the **expired** ""auth_token"" \nvalue from local storage:\n""  Authorization: "eyJ2...YW=="""
 
 stm -> stm : Verification failed (token expired)
 stm --> client : ""ERROR: 401""
 
-client -> client : Logout \n""(logged-in.interceptor.ts)""
-client -> client : Redirect to login page \n""(auth.service.ts:logout())""
+client -> client : Logout + Redirect to login page \n""AuthService.logout()""
 
 rnote over client : Token has been removed \nfrom the local storage
 

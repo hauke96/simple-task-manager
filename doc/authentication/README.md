@@ -1,18 +1,15 @@
-
-> **DEPRECATED** Since OAuth2 is used but this file describes the old OAuth1a process!
-
 This file describes the process of authentication, token creation and token validation in the SimpleTaskManager.
 We also take a look on technical aspects (what are the functions exactly doing) and on cryptographic basics (verification, security of the token, etc.).
 
-# Login and authorization process
+# Login and authentication process
 
-The easiest way to describe the process and the communication between all the servers is by showing you an diagram:
+The following diagram shows the OAuth2 process and the communication between all components:
 
 ![](authentication.png)
 
 # Token generation and handling
 
-STM does not use the OSM request- and access-tokens from the oauth process for two main reasons:
+STM does not use the OSM access-token from the OAuth2 process for its own authorization for two main reasons:
 
 1. We would have to make requests to the OSM-Servers in order to validate the token. In a productive environment, this would result in thousands of requests per day. That's not good.
 2. Having an own token enables us to store user data along with the secret part of the token (expiration date, permissions, roles, user name, etc.)
@@ -21,24 +18,18 @@ STM does not use the OSM request- and access-tokens from the oauth process for t
 We can build a custom solution where the server does not has any state to store.
 All the information is securely stored on the client (specifically the local storage of the browser).
 
-## Why not using the OSM token?
+## Why not using the OSM access-token?
 
 1. I don't want to depend on the OSM servers.
-2. I don't have to secure the OSM tokens in order to prevent unwanted requests by somebody who got the token.
-3. I can decide what to put into the token (user name, uid, dates, maybe further stuff in the future)
+2. I don't have to secure the OSM tokens in order to prevent unwanted requests by somebody else who got the token.
+3. I can decide what to put into the custom token (user name, uid, dates, maybe further stuff in the future)
 4. Even when using the OSM token, I would have to define some sort of expiration date so I would also need a wrapper around the OSM token to store this information
 5. I don't have any possibility to invalidate such token per se (without adding additional secrets or whatnot)
 
-## Encryption key
-
-When the server starts, it initializes the authentication service (`auth.go:Init()`) and chooses an encryption key at random.
-This key consists of 256 random bytes (so 2048 bits) and is later used when creating the secret of a token.
-
 ### Why does the server generate the key?
 
-One could either specify a key by environment variables/CLI arguments or specify it by using a config file/key store on disk.
-Generating a new key every time the server starts has the "effect" (I don't want to call it "disadvantage") to invalidate all currently existing tokens.
-This is not too bad and we don't have to struggle with hiding the key by file permissions, key stores, password databases (keePass or what ever), etc.
+The alternative would be a static key from a config or (maybe static) key from an environment variable.
+That would a) make things more complex and b) less secure.
 
 ## Token structure
 
@@ -49,7 +40,7 @@ A token consists of three fields:
 | `ValidUntil` | `valid_until` | `int64` | The UTC date until the token is valid. This will be checked on each request by the server. |
 | `User` | `user` | `string` | The user name, which is shown in the client
 | `UID` | `uid` | `string` | The user ID, which is used to identify users
-| `Secret` | `secret` | `string` | A secret string created by the server using symmetric encryption and hashing (see blow). This prevents an attacker from faking a token.
+| `Secret` | `secret` | `string` | A secret string created by the server using a keyed hash function (see blow). This prevents an attacker from faking a token.
 
 ## Token Creation
 
@@ -57,16 +48,19 @@ When the authentication process with the OSM-server is done (see above), a new t
 
 ### Creation of the secret
 
-The according function to this is `token.go:createTokenString()`.
+_The according function to this is `token.go:createTokenString()`._
 
-**1.) Hash key**
- 
-As described above, the server creates a key during startup.
-This key is later used to create the secret part of a token (s. step 4.) below).
+The token contains a keyed hash value (called `secret`) which acts as a signature containing all fields of the token and is used verify that the token has not been altered by the client.
 
-**2.) Get the content of the secret.**
+The secret is basically: `secret = hmac(base-string, key)`
 
-I call this the "base string" as it contains the raw information used later in the hash.
+#### 1.) Token init
+
+When the server starts (`auth.go:Init()` calling `token.go:tokenInit()`), a random key of 512 bytes (4096 bit) is created and used later in the HMAC algorithm. 
+
+#### 2.) Create "base string" for hash
+
+First, the "base string" is needed, which contains the raw information from all fields of the token.
 The format of this base string is: `<userName>\n<userId>\n<expirationTime>`.
 
 * The `<userName>` is just the user name as string
@@ -75,19 +69,17 @@ The format of this base string is: `<userName>\n<userId>\n<expirationTime>`.
 
 Example base string: `john-doe\n42\n12345678`
 
-**3.) Create raw hash**
+#### 3.) Create hash
 
-To create the hash value, the `HMAC-SHA256` algorithm is used, which uses the key and the base string.
+The `HMAC-SHA256` algorithm is used for the creation of the secret part of the token.
 `HMAC-SHA256` is a *keyed hash function*, so its output always has a certain length but needs a secret key to create this output.
-
-**4.) Encode to final secret**
 
 The "raw token" (the bare output of `HMAC-SHA256`) is then encoded using `base64` to store and transfer it more easily.
 This final string is then the string we all above called *secret*.
 
 ### Token creation
 
-After creating our secret, we can build the token (which happens in `token.go.createSecret()`, which is called at the end of `auth.go:OauthCallback()`).
+After creating the secret, we can build the token (which happens in `token.go.createSecret()`, which is called at the end of `auth.go:Callback()`).
 This is quite simple:
 
 1. Create a new `Token` object
@@ -97,7 +89,7 @@ This is quite simple:
 
 ### Return token to web-client
 
-The server then start a redirect to the clients landing page (at the end of `auth.go:OauthCallback()`).
+The server then start a redirect to the clients landing page (at the end of `auth.go:Callback()`).
 The token is attached as query parameter, so the full redirect URL look something like this:
 
 ```
@@ -107,6 +99,7 @@ https://your.server.com/oauth-landing?token=eyJ2YWxp...UT0ifQ==
 **Very important:**<br>
 Nothing is stored on the server!
 As soon as this redirect takes place, the server forgets everything about the created token.
+Of course, the key used to create the secret is still stored in memory for token verification (s. below).
 
 ## Token verification
 
