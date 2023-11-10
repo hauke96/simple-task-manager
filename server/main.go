@@ -21,7 +21,7 @@ var cli struct {
 }
 
 func configureCliArgs() {
-	kong.Name("Simple Task Manager")
+	kong.Name("SimpleTaskManager")
 	kong.Description("A tool dividing an area of the map into smaller tasks.")
 }
 

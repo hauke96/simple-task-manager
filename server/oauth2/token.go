@@ -24,7 +24,7 @@ var (
 )
 
 func tokenInit() error {
-	bytes, err := util.GetRandomBytes(64)
+	bytes, err := util.GetRandomBytes(512)
 	key = bytes
 	return err
 }
