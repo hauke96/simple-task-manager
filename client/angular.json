@@ -40,8 +40,12 @@
               "@turf/hex-grid",
               "@turf/triangle-grid",
               "geojson-rbush",
+              "pbf",
+              "polygon-clipping",
               "rbush",
-              "pbf"
+              "web-worker",
+              "xml-utils/find-tags-by-name.js",
+              "xml-utils/get-attribute.js"
             ]
           },
           "configurations": {
