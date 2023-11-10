@@ -156,6 +156,18 @@ The `STM_DB_...` entries have default values.
 Values from the `config.json` override these default values.
 Values via environment variables override default values as well as values from the `config.json`.
 
+## Frontend configuration
+
+All the frontend configuration is within the `environment.ts` files and therefore packed into the bundled artifact.
+Therefore, configuration only takes place via the nginx config (s. above) or the docker-compose file.
+
+### Show notice to users
+
+As admin you can show arbitrary notices to the user in the login page.
+To do so, create `notice.<lang-code>.html` files in some folder and edit your `docker-compose.yml`.
+In there, mount the notice files to the client like this: `- ./path/to/notice.<lang-code>.html:/usr/share/nginx/html/assets/notice.<lang-code>.html`.
+The `<lang-code>` must be replaced by the language code used for the changelog-files as well (so e.g. `de` for German or `en-US` for english).
+
 # 4 Automatic backups
 
 This step is optional but recommended and described in the [automatic-backups.md](automatic-backups.md) file.

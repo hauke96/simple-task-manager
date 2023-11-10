@@ -1,9 +1,9 @@
-import {Component, NgZone} from '@angular/core';
-import {Router} from '@angular/router';
-import {AuthService} from '../auth.service';
-import {WebsocketClientService} from '../../common/services/websocket-client.service';
-import {HttpClient} from '@angular/common/http';
-import {TranslateService} from '@ngx-translate/core';
+import { Component, NgZone } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from '../auth.service';
+import { WebsocketClientService } from '../../common/services/websocket-client.service';
+import { HttpClient } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
@@ -28,15 +28,21 @@ export class LoginComponent {
   }
 
   private loadTemplates(): void {
-    this.changelogTemplate = "";
+    this.changelogTemplate = '';
     const changelogTemplateUrl = 'assets/i18n/changelog.' + this.translationService.currentLang + '.html';
     this.httpClient.get(changelogTemplateUrl, {responseType: 'text'})
-      .subscribe(response => this.changelogTemplate = response as string);
+      .subscribe({
+        next: response => this.changelogTemplate = response as string,
+        error: () => void 0 // Do nothing in case of error, the user would not be able to do anything here
+      });
 
-    this.noticeTemplate = "";
+    this.noticeTemplate = '';
     const noticeTemplateUrl = 'assets/i18n/notice.' + this.translationService.currentLang + '.html';
     this.httpClient.get(noticeTemplateUrl, {responseType: 'text'})
-      .subscribe(response => this.noticeTemplate = response as string);
+      .subscribe({
+        next: response => this.noticeTemplate = response as string,
+        error: () => void 0 // Do nothing in case of error, the user would not be able to do anything here
+      });
   }
 
   public onLoginButtonClick(): void {
