@@ -6,7 +6,7 @@ SCRIPT_PREFIX="./scripts/"
 function create_db() {
   echo "Create new database 'stm'"
 
-  createdb -h localhost -U $STM_DB_USERNAME stm
+  createdb -h $STM_DB_HOST -U $STM_DB_USERNAME stm
 
   if [ $? -ne 0 ]
   then
@@ -29,7 +29,7 @@ function execute() {
     # Check what script-type we have (actually what file extension the script has) and execute the script accordingly
     if [[ "$1" == *".sql" ]]
     then
-  	  psql -q -v ON_ERROR_STOP=1 -h localhost -U $STM_DB_USERNAME -f $1 stm
+      psql -q -v ON_ERROR_STOP=1 -h $STM_DB_HOST -U $STM_DB_USERNAME -f $1 stm
   	  OK=$?
     elif [[ "$1" == *".sh" ]]
     then
@@ -52,7 +52,7 @@ function execute() {
 }
 
 # First check if database exists
-psql -h localhost -U $STM_DB_USERNAME -lqt | cut -d \| -f 1 | grep -qw "stm"
+psql -h $STM_DB_HOST -U $STM_DB_USERNAME -lqt | cut -d \| -f 1 | grep -qw "stm"
 DATABASE_EXISTS=$?
 
 # Loop over all relevant files
@@ -67,7 +67,7 @@ do
     create_db
     execute $SCRIPT_PREFIX$FILE
   else # Database does exist and we're not looking at the init script => check if this script needs to be executed
-    VERSION_ALREADY_APPLIED=$(psql -h localhost -U $STM_DB_USERNAME stm -tc "SELECT * FROM db_versions WHERE version='$VERSION';" | sed '/^$/d' | wc -l)
+    VERSION_ALREADY_APPLIED=$(psql -h $STM_DB_HOST -U $STM_DB_USERNAME stm -tc "SELECT * FROM db_versions WHERE version='$VERSION';" | sed '/^$/d' | wc -l)
     if [ $VERSION_ALREADY_APPLIED -eq 0 ]
     then
       execute $SCRIPT_PREFIX$FILE

@@ -20,7 +20,7 @@ read
 if docker container list | grep -q "stm-db"
 then
 	echo "Remove existing database"
-	psql -h localhost -U $STM_DB_USERNAME postgres -tc "DROP DATABASE stm;"
+	psql -h $STM_DB_HOST -U $STM_DB_USERNAME postgres -tc "DROP DATABASE stm;"
 else
 	cd ../../
 	echo "Start new 'stm-db' container"

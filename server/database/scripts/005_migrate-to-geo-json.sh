@@ -8,7 +8,7 @@ OUTPUT_FILE=".tmp.migrate-task-geometries.sql"
 GEOJSON_HEAD="{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":["
 GEOJSON_FOOT="]},\"properties\":null}"
 
-RAW_DATA=$(psql -h localhost -U $STM_DB_USERNAME -t -A -c "SELECT id,geometry FROM tasks;" stm)
+RAW_DATA=$(psql -h $STM_DB_HOST -U $STM_DB_USERNAME -t -A -c "SELECT id,geometry FROM tasks;" stm)
 
 echo "BEGIN TRANSACTION;" > $OUTPUT_FILE
 
@@ -50,7 +50,7 @@ echo "END TRANSACTION;" >> $OUTPUT_FILE
 echo
 echo "Execute SQL..."
 
-psql -q -v ON_ERROR_STOP=1 -h localhost -U $STM_DB_USERNAME -f $OUTPUT_FILE stm
+psql -q -v ON_ERROR_STOP=1 -h $STM_DB_HOST -U $STM_DB_USERNAME -f $OUTPUT_FILE stm
 OK=$?
 if [ $OK -ne 0 ]
 then

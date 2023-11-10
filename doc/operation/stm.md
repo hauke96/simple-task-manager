@@ -113,10 +113,11 @@ These environment variables are used by the server:
 * ```STM_OAUTH2_SECRET```: The OAuth2 consumer secret provided by osm.org (no default value → this must be set)
 * ```STM_DB_USERNAME```: The username for the database (default: `stm`)
 * ```STM_DB_PASSWORD```: The password for the database (default: `secret`)
+* ```STM_DB_HOST```: The host of the database (default: `localhost`)
 
 It's not possible to override entries from the config file using environment variables and vise versa.
 
-Simply set the variables via `export STM_DB_USERNAME=mydbuser STM_DB_PASSWORD=supersecurepassword123`. To make the
+Simply set the variables via `export STM_DB_USERNAME=mydbuser STM_DB_PASSWORD=supersecurepassword123 STM_DB_HOST=some-host-name`. To make the
 export permanent, move that command into your `.bachrc` (or similar file).
 
 When using docker, you can use the `.env` file to store the variables there instead of using the `.bashrc` file.
@@ -139,6 +140,7 @@ STM_OAUTH2_CLIENT_ID=abc123
 STM_OAUTH2_SECRET=def234
 STM_DB_USERNAME=mydbuser
 STM_DB_PASSWORD=supersecurepassword123
+STM_DB_HOST=some-host-name
 STM_SERVER_CONFIG=/path/to/config.json
 STM_NGINX_CONFIG=/path/to/nginx.conf
 ``` 

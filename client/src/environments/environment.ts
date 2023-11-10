@@ -4,7 +4,7 @@ const usedApi = 'v2.7';
 export const environment = {
   production: false,
   oauth_landing: document.location.origin + '/oauth-landing',
-  osm_api_url: 'https://master.apis.dev.openstreetmap.org/api/0.6',
+  osm_api_url: 'https://www.openstreetmap.org/api/0.6',
 
   base_url: baseUrl,
   url_auth: baseUrl + '/oauth2/login',

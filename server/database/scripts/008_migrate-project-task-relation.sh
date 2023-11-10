@@ -3,7 +3,7 @@
 source scripts/common.sh
 
 OUTPUT_FILE=".tmp.migrate-project-task-relation.sql"
-RAW_DATA=$(psql -h localhost -U $STM_DB_USERNAME -t -A -c "SELECT id,task_ids FROM projects;" stm | tr -d "{" | tr -d "}")
+RAW_DATA=$(psql -h $STM_DB_HOST -U $STM_DB_USERNAME -t -A -c "SELECT id,task_ids FROM projects;" stm | tr -d "{" | tr -d "}")
 
 begin_tx
 

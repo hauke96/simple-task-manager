@@ -37,7 +37,7 @@
 ### データベースのユーザー/パスワードを環境変数として設定する
 
 **一言でいうと**
-* `export STM_DB_USERNAME=stm STM_DB_PASSWORD=secret`
+* `export STM_DB_USERNAME=stm STM_DB_PASSWORD=secret STM_DB_HOST=localhost`
 
 以下に示すテストを実行する場合、ユーザーとパスワードは上記と同じでなければなりません。
 

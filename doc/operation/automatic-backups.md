@@ -51,4 +51,4 @@ The SQL script contains all data including the database creation.
 Therefore, I assume that the `stm` database does **not** exist (you should _rename_ it before applying the backup ;) ).
 
 * Decompress backup: `gzip -k -d stm-db-backup_2020-12-24.sql.gz`
-* Apply SQL script: `psql -h localhost -U $STM_DB_USERNAME -f stm-db-backup_2020-12-24.sql`
+* Apply SQL script: `psql -h $STM_DB_HOST -U $STM_DB_USERNAME -f stm-db-backup_2020-12-24.sql`

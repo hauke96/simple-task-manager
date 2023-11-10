@@ -37,7 +37,7 @@ This description assumes that you use docker instead of an direct installation o
 ### Set Database user/password as environment variable
 
 **tl;dr:**
-* `export STM_DB_USERNAME=stm STM_DB_PASSWORD=secret`
+* `export STM_DB_USERNAME=stm STM_DB_PASSWORD=secret STM_DB_HOST=localhost`
 
 You can override the default username and password (`stm` and `secret`) by setting environment variables.
 To make this permanent, you probably want to add this to the `.bachrc` or similar file.

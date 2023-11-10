@@ -25,7 +25,7 @@ function execute()
 {
   echo "Execute SQL..."
 
-  psql -q -v ON_ERROR_STOP=1 -h localhost -U $STM_DB_USERNAME -f $OUTPUT_FILE stm
+  psql -q -v ON_ERROR_STOP=1 -h $STM_DB_HOST -U $STM_DB_USERNAME -f $OUTPUT_FILE stm
   OK=$?
   if [ $OK -ne 0 ]
   then
