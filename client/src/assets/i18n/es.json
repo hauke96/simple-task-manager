@@ -22,7 +22,8 @@
   "login-failed": "Cierre de sesión porque la autorización no fue exitosa",
   "language-selection": "Selección de idioma:",
   "login": {
-    "welcome": "Bienvenido al SimpleTaskManager para <a href=\"https://openstreetmap.org\">OpenStreetMap</a>",
+    "welcome": "Bienvenido al<br><b>SimpleTaskManager</b>",
+    "welcome-subtitle": "El gestor de tareas gratuito y fácil de usar para el trabajo colaborativo en <a href=\"https://openstreetmap.org\">OpenStreetMap</a>. Más información sobre STM en <a href=\"https://wiki.openstreetmap.org/wiki/SimpleTaskManager\">OSM-Wiki</a>.",
     "login-button": "Iniciar sesión"
   },
   "dashboard": {

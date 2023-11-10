@@ -22,7 +22,8 @@
   "login-failed": "Logout because authorization was not successful",
   "language-selection": "Language selection:",
   "login": {
-    "welcome": "Welcome to SimpleTaskManager for <a href=\"https://openstreetmap.org\">OpenStreetMap</a>",
+    "welcome": "Welcome to<br><b>SimpleTaskManager</b>",
+    "welcome-subtitle": "The free and easy to use tasking manager for collaborative work on <a href=\"https://openstreetmap.org\">OpenStreetMap</a>. Learn more about STM in the <a href=\"https://wiki.openstreetmap.org/wiki/SimpleTaskManager\">OSM-Wiki</a>.",
     "login-button": "Login"
   },
   "dashboard": {
