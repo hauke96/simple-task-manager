@@ -6,26 +6,26 @@ set -e
 # First parameter must be tag name
 if [ -z $1 ]
 then
-  echo "ERROR: Specify tag name."
-  echo
-  echo "Example:"
-  echo
-  echo "    $(basename $0) \"0.8.0-dev\""
-  exit 1
+	echo "ERROR: Specify tag name."
+	echo
+	echo "Example:"
+	echo
+	echo "    $(basename $0) \"0.8.0-dev\""
+	exit 1
 fi
 TAG=$1
 
 function ok {
-  echo
-  echo "OK"
+	echo
+	echo "OK"
 }
 
 function hline {
-  echo
-  printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' =
-  echo " $1"
-  printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' =
-  echo
+	echo
+	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' =
+	echo " $1"
+	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' =
+	echo
 }
 
 hline "[1/4] Build server"

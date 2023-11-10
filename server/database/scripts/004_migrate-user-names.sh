@@ -206,12 +206,12 @@ psql -q -v ON_ERROR_STOP=1 -h $STM_DB_HOST -U $STM_DB_USERNAME -f $OUTPUT_FILE s
 OK=$?
 if [ $OK -ne 0 ]
 then
-  echo
-  echo "Migration FAILED!"
-  echo
-  echo "Exit code: $OK"
-  echo "See the error log and the '$OUTPUT_FILE' for details."
-  exit 1
+	echo
+	echo "Migration FAILED!"
+	echo
+	echo "Exit code: $OK"
+	echo "See the error log and the '$OUTPUT_FILE' for details."
+	exit 1
 fi
 
 echo "Migration DONE"

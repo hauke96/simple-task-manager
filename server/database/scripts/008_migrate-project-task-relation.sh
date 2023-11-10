@@ -15,10 +15,10 @@ do
 	PROJECT_ID=${ROW_ARRAY[0]}
 	TASK_IDS=${ROW_ARRAY[1]}
 
-  IFS=$','
-  for TASK_ID in $TASK_IDS
-  do
-    echo "UPDATE tasks SET project_id = $PROJECT_ID WHERE id = $TASK_ID;" >> $OUTPUT_FILE
+	IFS=$','
+	for TASK_ID in $TASK_IDS
+	do
+		echo "UPDATE tasks SET project_id = $PROJECT_ID WHERE id = $TASK_ID;" >> $OUTPUT_FILE
 	done
 
 	IFS=$'\n'
