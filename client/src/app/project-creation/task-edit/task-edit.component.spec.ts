@@ -7,7 +7,7 @@ import { AppModule } from '../../app.module';
 
 describe(TaskEditComponent.name, () => {
   let component: TaskEditComponent;
-  let fixture: MockedComponentFixture<TaskEditComponent>;
+  let fixture: MockedComponentFixture<TaskEditComponent, any>;
   let taskDraftService: TaskDraftService;
 
   beforeEach(() => {
@@ -18,7 +18,7 @@ describe(TaskEditComponent.name, () => {
   });
 
   beforeEach(() => {
-    fixture = MockRender(TaskEditComponent);
+    fixture = MockRender(TaskEditComponent, {task: {}});
     component = fixture.point.componentInstance;
     fixture.detectChanges();
   });
