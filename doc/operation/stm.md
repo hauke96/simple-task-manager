@@ -165,7 +165,7 @@ Therefore, configuration only takes place via the nginx config (s. above) or the
 
 As admin you can show arbitrary notices to the user in the login page.
 To do so, create `notice.<lang-code>.html` files in some folder and edit your `docker-compose.yml`.
-In there, mount the notice files to the client like this: `- ./path/to/notice.<lang-code>.html:/usr/share/nginx/html/assets/notice.<lang-code>.html`.
+In there, mount the notice files to the client like this: `- ./path/to/notice.<lang-code>.html:/usr/share/nginx/html/assets/i18n/notice.<lang-code>.html`.
 The `<lang-code>` must be replaced by the language code used for the changelog-files as well (so e.g. `de` for German or `en-US` for english).
 
 # 4 Automatic backups
