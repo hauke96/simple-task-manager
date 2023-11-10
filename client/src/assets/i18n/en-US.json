@@ -23,7 +23,7 @@
   "language-selection": "Language selection:",
   "login": {
     "welcome": "Welcome to<br><b>SimpleTaskManager</b>",
-    "welcome-subtitle": "The free and easy to use tasking manager for collaborative work on <a href=\"https://openstreetmap.org\">OpenStreetMap</a>. Learn more about STM in the <a href=\"https://wiki.openstreetmap.org/wiki/SimpleTaskManager\">OSM-Wiki</a>.",
+    "welcome-subtitle": "The free and easy to use tasking manager for collaborative work on <a href=\"https://openstreetmap.org\" target=\"_blank\">OpenStreetMap</a>. Learn more about STM in the <a href=\"https://wiki.openstreetmap.org/wiki/SimpleTaskManager\" target=\"_blank\">OSM-Wiki</a>.",
     "login-button": "Login"
   },
   "dashboard": {
