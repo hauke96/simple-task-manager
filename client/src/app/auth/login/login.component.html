@@ -14,10 +14,14 @@
 		<div class="center login-button">
 			<button (click)="onLoginButtonClick()">{{"login.login-button" | translate}}</button>
 		</div>
-		<div class="notice">
+		<div class="notice" *ngIf="noticeTemplate">
+			<div class="warning-container">
+				<p class="notice-text" [innerHTML]="noticeTemplate"></p>
+			</div>
+		</div>
+		<div class="notice" *ngIf="changelogTemplate">
 			<div class="notice-container">
-				<div class="notice-bar"></div>
-				<div class="notice-text" [innerHTML]="changelogTemplate"></div>
+				<p class="notice-text" [innerHTML]="changelogTemplate"></p>
 			</div>
 		</div>
 	</div>

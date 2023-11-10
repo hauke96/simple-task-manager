@@ -1,4 +1,5 @@
 @import "../../../styles";
+@import "../../../colors";
 
 :host {
 	height: 100%;
@@ -40,22 +41,20 @@
 .notice {
 	display: flex;
 	justify-content: center;
-	padding-top: 25px; // compensate the -5px from below and get 5px actual space
 }
 
 .notice-container {
-	max-width: 500px;
+	width: 500px;
+}
+
+.warning-container {
+	background-color: $color-warn-very-light;
+	padding-left: 20px;
+	padding-right: 20px;
+	width: 500px;
+	margin-bottom: 15px;
 }
 
 .notice-text b {
 	font-weight: 500;
-}
-
-.notice-bar {
-	width: 1px;
-	background-color: $color-gray-mid;
-	margin-left: 15px;
-	margin-right: 15px;
-	margin-top: -20px;
-	margin-bottom: -5px;
 }

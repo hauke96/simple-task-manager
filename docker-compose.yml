@@ -28,6 +28,8 @@ services:
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
       - $STM_NGINX_CONFIG:/etc/nginx/conf.d/default.conf
+      # This allows you to show arbitrary notes on the login screen (e.g. to inform user about maintenance):
+      # - ./path/to/notice.*.html:/usr/share/nginx/html/assets/notice.*.html
     logging:
       driver: 'journald'
   stm-db:

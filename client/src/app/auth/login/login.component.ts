@@ -1,9 +1,9 @@
-import { Component, NgZone } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService } from '../auth.service';
-import { WebsocketClientService } from '../../common/services/websocket-client.service';
-import { HttpClient } from '@angular/common/http';
-import { TranslateService } from '@ngx-translate/core';
+import {Component, NgZone} from '@angular/core';
+import {Router} from '@angular/router';
+import {AuthService} from '../auth.service';
+import {WebsocketClientService} from '../../common/services/websocket-client.service';
+import {HttpClient} from '@angular/common/http';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
@@ -11,6 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
+  public noticeTemplate: string;
   public changelogTemplate: string;
 
   constructor(
@@ -21,15 +22,21 @@ export class LoginComponent {
     private httpClient: HttpClient,
     private translationService: TranslateService
   ) {
-    this.loadChangelogTemplate();
+    this.loadTemplates();
 
-    translationService.onLangChange.subscribe(() => this.loadChangelogTemplate());
+    translationService.onLangChange.subscribe(() => this.loadTemplates());
   }
 
-  private loadChangelogTemplate(): void {
-    const url = 'assets/i18n/changelog.' + this.translationService.currentLang + '.html';
-    this.httpClient.get(url, {responseType: 'text'})
+  private loadTemplates(): void {
+    this.changelogTemplate = "";
+    const changelogTemplateUrl = 'assets/i18n/changelog.' + this.translationService.currentLang + '.html';
+    this.httpClient.get(changelogTemplateUrl, {responseType: 'text'})
       .subscribe(response => this.changelogTemplate = response as string);
+
+    this.noticeTemplate = "";
+    const noticeTemplateUrl = 'assets/i18n/notice.' + this.translationService.currentLang + '.html';
+    this.httpClient.get(noticeTemplateUrl, {responseType: 'text'})
+      .subscribe(response => this.noticeTemplate = response as string);
   }
 
   public onLoginButtonClick(): void {
