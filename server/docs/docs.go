@@ -95,7 +95,7 @@ var doc = `{
                 "responses": {}
             }
         },
-        "/v2.7/config": {
+        "/v2.8/config": {
             "get": {
                 "produces": [
                     "application/json"
@@ -114,7 +114,7 @@ var doc = `{
                 }
             }
         },
-        "/v2.7/project/{id}": {
+        "/v2.8/project/{id}": {
             "get": {
                 "description": "Gets a specific project. The requesting user must be a member of the project.",
                 "produces": [
@@ -143,7 +143,7 @@ var doc = `{
                 }
             }
         },
-        "/v2.7/projects": {
+        "/v2.8/projects": {
             "get": {
                 "produces": [
                     "application/json"
@@ -193,7 +193,7 @@ var doc = `{
                 }
             }
         },
-        "/v2.7/projects/import": {
+        "/v2.8/projects/import": {
             "post": {
                 "description": "This aims to import a project from e.g. a backup or to migrate to another STM instance.",
                 "produces": [
@@ -217,7 +217,7 @@ var doc = `{
                 "responses": {}
             }
         },
-        "/v2.7/projects/{id}": {
+        "/v2.8/projects/{id}": {
             "delete": {
                 "description": "Deletes the specified project. The requesting user must be the owner of the project.",
                 "tags": [
@@ -236,7 +236,7 @@ var doc = `{
                 "responses": {}
             }
         },
-        "/v2.7/projects/{id}/description": {
+        "/v2.8/projects/{id}/description": {
             "put": {
                 "description": "Update the projects description. The requesting user must be the owner of the project.",
                 "produces": [
@@ -274,7 +274,7 @@ var doc = `{
                 }
             }
         },
-        "/v2.7/projects/{id}/export": {
+        "/v2.8/projects/{id}/export": {
             "get": {
                 "description": "This aims to transfer a project to another STM instance or to simply create a backup of a project.",
                 "produces": [
@@ -303,7 +303,7 @@ var doc = `{
                 }
             }
         },
-        "/v2.7/projects/{id}/name": {
+        "/v2.8/projects/{id}/name": {
             "put": {
                 "description": "Updates the projects name/title. The requesting user must be the owner of the project.",
                 "produces": [
@@ -341,7 +341,7 @@ var doc = `{
                 }
             }
         },
-        "/v2.7/projects/{id}/users": {
+        "/v2.8/projects/{id}/users": {
             "post": {
                 "description": "Adds the given user to the project. The requesting user must be the owner of the project.",
                 "produces": [
@@ -394,7 +394,7 @@ var doc = `{
                 "responses": {}
             }
         },
-        "/v2.7/projects/{id}/users/{uid}": {
+        "/v2.8/projects/{id}/users/{uid}": {
             "delete": {
                 "description": "Removes a user from the project. The requesting user must be the owner of the project and cannot be removed.",
                 "produces": [
@@ -430,7 +430,7 @@ var doc = `{
                 }
             }
         },
-        "/v2.7/tasks/{id}/assignedUser": {
+        "/v2.8/tasks/{id}/assignedUser": {
             "post": {
                 "description": "Assigns the requesting user to the given task. The requesting user must be a member of the project.",
                 "produces": [
@@ -486,7 +486,7 @@ var doc = `{
                 }
             }
         },
-        "/v2.7/tasks/{id}/processPoints": {
+        "/v2.8/tasks/{id}/processPoints": {
             "post": {
                 "description": "Sets the process points of a task. The requesting user must be a member of the project. If the project has more than one member, the requesting user must be assigned to the given task.",
                 "produces": [
@@ -523,7 +523,7 @@ var doc = `{
                 }
             }
         },
-        "/v2.7/updates": {
+        "/v2.8/updates": {
             "get": {
                 "description": "Established an websocket connection to receive updates on projects. This requires the same authentication as normal HTTP endpoints. See the GitHub repo '/doc/api' for information on the messaging protocol.",
                 "tags": [

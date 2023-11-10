@@ -40,13 +40,14 @@ func Init() error {
 	// API v2.4
 	// API v2.5
 	// API v2.6
-
-	// TODO Create API 2.8 due to OAuth change
 	// API v2.7
-	router_v2_7, version := Init_v2_7(router)
+	// (see doc/api for documentation of API changes)
+
+	// API v2.8
+	router_v2_8, version := Init_v2_8(router)
 	supportedApiVersions = append(supportedApiVersions, version)
 	sigolo.Info("Registered routes for API %s:", version)
-	printRoutes(router_v2_7)
+	printRoutes(router_v2_8)
 
 	router.Methods(http.MethodOptions).HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -76,7 +77,7 @@ func Init() error {
 
 // Info
 // @Summary Shows very basic information about this server.
-// @Version 2.7
+// @Version 2.8
 // @Tags info
 // @Produce text/plain
 // @Success 200 {string} string "Some bunch of text with basic information about this server"
@@ -87,7 +88,7 @@ func addInfoHandler(router *mux.Router) {
 
 // API documentation
 // @Summary A Swagger UI with all kinds of API related information.
-// @Version 2.7
+// @Version 2.8
 // @Tags info
 // @Produce text/html
 // @Router /doc [GET]
@@ -102,7 +103,7 @@ func redirectDocHandler(w http.ResponseWriter, r *http.Request) {
 
 // OAuth2 login
 // @Description Redirects to the OSM Login page to start OSM login with OAuth2.
-// @Version 2.7
+// @Version 2.8
 // @Tags authentication
 // @Router /oauth2/login [GET]
 func addOAuth2LoginHandler(router *mux.Router) *mux.Route {
@@ -111,7 +112,7 @@ func addOAuth2LoginHandler(router *mux.Router) *mux.Route {
 
 // OAuth2 callback
 // @Description OAuth2 callback called after OSM login. Performs the OAuth authentication by getting an OSM access token.
-// @Version 2.7
+// @Version 2.8
 // @Tags authentication
 // @Param state query string true "The state-string that was given to the OAuth service."
 // @Param code query string true "The authentication code to retrieve the access token."

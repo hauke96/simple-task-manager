@@ -7,6 +7,9 @@ For `localhost` it's [`http://localhost:8080/doc/`](http://localhost:8080/doc/).
 
 ## Changelog
 
+**Changes in v2.8**
+* Switch from OAuth1a to OAuth2 (login and callback endpoint are now under `/oauth2/...` + the frontend is not involved in the callback anymore)
+
 **Changes in v2.7**
 * Add export/import endpoints to projects
 

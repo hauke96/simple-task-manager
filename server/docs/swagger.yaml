@@ -216,7 +216,7 @@ paths:
       responses: {}
       tags:
       - authentication
-  /v2.7/config:
+  /v2.8/config:
     get:
       produces:
       - application/json
@@ -229,7 +229,7 @@ paths:
         the client.
       tags:
       - config
-  /v2.7/project/{id}:
+  /v2.8/project/{id}:
     get:
       description: Gets a specific project. The requesting user must be a member of
         the project.
@@ -249,7 +249,7 @@ paths:
       summary: Get a specific project.
       tags:
       - projects
-  /v2.7/projects:
+  /v2.8/projects:
     get:
       produces:
       - application/json
@@ -281,7 +281,7 @@ paths:
       summary: Adds a new project.
       tags:
       - projects
-  /v2.7/projects/{id}:
+  /v2.8/projects/{id}:
     delete:
       description: Deletes the specified project. The requesting user must be the
         owner of the project.
@@ -295,7 +295,7 @@ paths:
       summary: Delete a project.
       tags:
       - projects
-  /v2.7/projects/{id}/description:
+  /v2.8/projects/{id}/description:
     put:
       description: Update the projects description. The requesting user must be the
         owner of the project.
@@ -321,7 +321,7 @@ paths:
       summary: Update project description.
       tags:
       - projects
-  /v2.7/projects/{id}/export:
+  /v2.8/projects/{id}/export:
     get:
       description: This aims to transfer a project to another STM instance or to simply
         create a backup of a project.
@@ -341,7 +341,7 @@ paths:
       summary: Get a JSON representation of the project.
       tags:
       - projects
-  /v2.7/projects/{id}/name:
+  /v2.8/projects/{id}/name:
     put:
       description: Updates the projects name/title. The requesting user must be the
         owner of the project.
@@ -367,7 +367,7 @@ paths:
       summary: Update project name.
       tags:
       - projects
-  /v2.7/projects/{id}/users:
+  /v2.8/projects/{id}/users:
     delete:
       description: The requesting user must be a member (but not the owner) of the
         project will be removed.
@@ -405,7 +405,7 @@ paths:
       summary: Adds a user to the project
       tags:
       - projects
-  /v2.7/projects/{id}/users/{uid}:
+  /v2.8/projects/{id}/users/{uid}:
     delete:
       description: Removes a user from the project. The requesting user must be the
         owner of the project and cannot be removed.
@@ -430,7 +430,7 @@ paths:
       summary: Remove a user from a project.
       tags:
       - projects
-  /v2.7/projects/import:
+  /v2.8/projects/import:
     post:
       description: This aims to import a project from e.g. a backup or to migrate
         to another STM instance.
@@ -447,7 +447,7 @@ paths:
       summary: Imports a previously exported project.
       tags:
       - projects
-  /v2.7/tasks/{id}/assignedUser:
+  /v2.8/tasks/{id}/assignedUser:
     delete:
       description: Unassigns the requesting user from the given task. The requesting
         user must be a member of the project and must be assigned to the given task.
@@ -486,7 +486,7 @@ paths:
       summary: Assigns a user to a task
       tags:
       - tasks
-  /v2.7/tasks/{id}/processPoints:
+  /v2.8/tasks/{id}/processPoints:
     post:
       description: Sets the process points of a task. The requesting user must be
         a member of the project. If the project has more than one member, the requesting
@@ -513,7 +513,7 @@ paths:
       summary: Sets the process points of a task.
       tags:
       - tasks
-  /v2.7/updates:
+  /v2.8/updates:
     get:
       description: Established an websocket connection to receive updates on projects.
         This requires the same authentication as normal HTTP endpoints. See the GitHub
