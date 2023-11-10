@@ -1,5 +1,6 @@
 # Server side
 server/server
+server/stm
 server/server.debug
 server/coverage.out
 server/go.sum

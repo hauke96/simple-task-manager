@@ -29,13 +29,13 @@ function hline {
 }
 
 hline "[1/4] Build server"
-docker build -t simpletaskmanager/stm-server:$TAG server
+docker buildx build --progress=plain -t simpletaskmanager/stm-server:$TAG server
 ok
 
 hline "[2/4] Build Client"
 echo "This step might take a while..."
 echo
-docker build -t simpletaskmanager/stm-client:$TAG client
+docker buildx build --progress=plain -t simpletaskmanager/stm-client:$TAG client
 ok
 
 hline "[3/4] Push server"
