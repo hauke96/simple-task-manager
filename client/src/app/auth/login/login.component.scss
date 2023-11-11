@@ -16,16 +16,14 @@ $image-blur-size-mobile: 65px;
 }
 
 .white-transparent {
-	background-color: #ffffff80;
+	background-color: #ffffff60;
 }
 
 .background-images {
-	position: absolute;
+	position: fixed;
 	min-width: 100%;
 	display: flex;
 	justify-content: space-between;
-	left: 50%;
-	transform: translateX(-50%);
 
 	.fadeout-image {
 		width: $image-width;
@@ -145,12 +143,18 @@ $image-blur-size-mobile: 65px;
 }
 
 .sub-heading {
-	max-width: $content-width * 0.7;
+	max-width: $content-width * 0.5;
 	text-align: center;
 	line-height: 1.5;
 	margin-top: $space-large;
 	margin-left: $space-large;
 	margin-right: $space-large;
+}
+
+@media (max-width: $image-width) {
+	.sub-heading {
+		max-width: $content-width * 0.35;
+	}
 }
 
 .login-button {
