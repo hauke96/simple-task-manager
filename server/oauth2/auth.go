@@ -30,7 +30,7 @@ func Init() {
 		RedirectURL:  fmt.Sprintf("%s:%d/oauth2/callback", config.Conf.ServerUrl, config.Conf.Port),
 		ClientID:     config.Conf.Oauth2ClientId,
 		ClientSecret: config.Conf.Oauth2Secret,
-		Scopes:       []string{"read_prefs", "openid"},
+		Scopes:       []string{"read_prefs"},
 		Endpoint: oauth2.Endpoint{
 			AuthURL:  config.Conf.OsmBaseUrl + "/oauth2/authorize",
 			TokenURL: config.Conf.OsmBaseUrl + "/oauth2/token",
