@@ -2,6 +2,8 @@ import { UserService } from './user.service';
 import { User } from './user.material';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
+import { ConfigProvider } from '../config/config.provider';
+import { getConfiguredPackageManager } from '@angular/cli/src/utilities/config';
 
 const userList = {
   users: [
@@ -115,10 +117,12 @@ describe(UserService.name, () => {
   let service: UserService;
   let userMap: Map<string, User>;
   let httpClient: HttpClient;
+  let configProvider: ConfigProvider;
 
   beforeEach(() => {
     httpClient = {} as HttpClient;
-    service = new UserService(httpClient);
+    configProvider = {} as ConfigProvider;
+    service = new UserService(httpClient, configProvider);
   });
 
   it('should be created', () => {
