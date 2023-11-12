@@ -8,7 +8,7 @@ OUTPUT_FILE=".tmp.migrate-task-geometries.sql"
 GEOJSON_HEAD="{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":["
 GEOJSON_FOOT="]},\"properties\":null}"
 
-RAW_DATA=$(psql -h $STM_DB_HOST -U $STM_DB_USERNAME -t -A -c "SELECT id,geometry FROM tasks;" stm)
+RAW_DATA=$(psql -h $STM_DB_HOST -U $STM_DB_USERNAME -t -A -c "SELECT id,geometry FROM tasks;" $STM_DB_DATABASE)
 
 echo "BEGIN TRANSACTION;" > $OUTPUT_FILE
 
@@ -31,7 +31,6 @@ do
 
 	GEOJSON_GEOMETRY="$GEOJSON_HEAD$ORIGINAL_GEOMETRY$GEOJSON_FOOT"
 	echo "$GEOJSON_GEOMETRY"
-	echo
 
 	echo "UPDATE tasks SET geometry='$GEOJSON_GEOMETRY' WHERE id='$TASK_ID';" >> $OUTPUT_FILE
 done
@@ -47,10 +46,9 @@ echo "INSERT INTO db_versions VALUES('005');" >> $OUTPUT_FILE
 
 echo "END TRANSACTION;" >> $OUTPUT_FILE
 
-echo
 echo "Execute SQL..."
 
-psql -q -v ON_ERROR_STOP=1 -h $STM_DB_HOST -U $STM_DB_USERNAME -f $OUTPUT_FILE stm
+psql -q -v ON_ERROR_STOP=1 -h $STM_DB_HOST -U $STM_DB_USERNAME -f $OUTPUT_FILE $STM_DB_DATABASE
 OK=$?
 if [ $OK -ne 0 ]
 then
@@ -63,6 +61,5 @@ then
 fi
 
 echo "Migration DONE"
-
 echo "Remove '$OUTPUT_FILE'"
 rm $OUTPUT_FILE

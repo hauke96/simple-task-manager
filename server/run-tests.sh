@@ -4,33 +4,30 @@ set -e
 
 SLEEP=3
 
+# Export variable to be accessible within called scripts
+export STM_DB_DATABASE="stm_test"
+
 function wait()
 {
 	echo "Wait... ($SLEEP s)"
 	sleep $SLEEP
 }
 
-echo "!! WARNING !!"
-echo "This script will remove the database folder"
-echo
-echo "Any key to continue ..."
-read
-
 # If container "stm-db" exists, stop and remove it
-if docker container list | grep -q "stm-db"
+if ! docker container list | grep -q "stm-db"
 then
-	echo "Remove existing database"
-	psql -h $STM_DB_HOST -U $STM_DB_USERNAME postgres -tc "DROP DATABASE stm;"
-else
-	cd ../../
+	cd ../
 	echo "Start new 'stm-db' container"
 	docker-compose up -d --build stm-db
 	wait
-	cd server/test/
+	cd server/
 fi
 
+echo "Remove existing database"
+psql -h $STM_DB_HOST -U $STM_DB_USERNAME postgres -tc "DROP DATABASE IF EXISTS $STM_DB_DATABASE;"
+
 echo "Initialize new database"
-cd ../database
+cd ./database
 ./init-db.sh
 
 # Switch from "./server/database" into "./server" folder
@@ -42,7 +39,6 @@ echo
 go test -p 1 -coverprofile=coverage.out -v ./... | tee test.log
 
 # Show failed functions with file and line number. This makes it a bit easier to find them.
-echo
 echo
 if cat test.log | grep -i -q "fail"
 then
@@ -56,15 +52,17 @@ then
 		echo " : " | tr -d '\n'
 		echo $FUNC_DEF | grep -o --color=never "[[:digit:]]*"
 	done
+	echo
+	echo "========================================"
+	echo "                 FAIL"
+	echo "========================================"
 else
-	echo "PASSED"
+	echo "Open coverage with:"
+	echo "    go tool cover -html=../coverage.out"
+	echo
+	echo "========================================"
+	echo "                PASSED"
+	echo "========================================"
 fi
-echo
-echo
 
 rm -f test.log
-
-echo "Open coverage with:"
-echo
-echo "    go tool cover -html=../coverage.out"
-echo

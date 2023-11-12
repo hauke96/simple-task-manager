@@ -4,9 +4,9 @@
 SCRIPT_PREFIX="./scripts/"
 
 function create_db() {
-	echo "Create new database 'stm'"
+	echo "Create new database \"$STM_DB_DATABASE\""
 
-	createdb -h $STM_DB_HOST -U $STM_DB_USERNAME stm
+	createdb -h $STM_DB_HOST -U $STM_DB_USERNAME $STM_DB_DATABASE
 
 	if [ $? -ne 0 ]
 	then
@@ -16,20 +16,17 @@ function create_db() {
 		exit 1
 	fi
 
-	echo
 	echo "Ok"
-	echo
 }
 
 function execute() {
 		echo "=============================="
-		echo
 		echo "Execute file: $1"
 
 		# Check what script-type we have (actually what file extension the script has) and execute the script accordingly
 		if [[ "$1" == *".sql" ]]
 		then
-			psql -q -v ON_ERROR_STOP=1 -h $STM_DB_HOST -U $STM_DB_USERNAME -f $1 stm
+			psql -q -v ON_ERROR_STOP=1 -h $STM_DB_HOST -U $STM_DB_USERNAME -f $1 $STM_DB_DATABASE
 			OK=$?
 		elif [[ "$1" == *".sh" ]]
 		then
@@ -40,19 +37,18 @@ function execute() {
 	# Check return value
 	if [ $OK -ne 0 ]
 	then
-		echo
 		echo "Error during script $1"
 		echo "Abort."
 		exit 1
 		fi
 
-		echo
 		echo "Ok"
-		echo
 }
 
+echo "Initialize database $STM_DB_DATABASE"
+
 # First check if database exists
-psql -h $STM_DB_HOST -U $STM_DB_USERNAME -lqt | cut -d \| -f 1 | grep -qw "stm"
+psql -h $STM_DB_HOST -U $STM_DB_USERNAME -lqt | cut -d \| -f 1 | grep -qw "$STM_DB_DATABASE"
 DATABASE_EXISTS=$?
 
 # Loop over all relevant files
@@ -64,18 +60,17 @@ do
 
 	if [ $DATABASE_EXISTS -ne 0 ] && [ "$VERSION" == "000" ]
 	then # Database does not exist and we're looking at the init script => so execute initial script
+		echo "Database $STM_DB_DATABASE does not exist. I'll create it."
 		create_db
 		execute $SCRIPT_PREFIX$FILE
 	else # Database does exist and we're not looking at the init script => check if this script needs to be executed
-		VERSION_ALREADY_APPLIED=$(psql -h $STM_DB_HOST -U $STM_DB_USERNAME stm -tc "SELECT * FROM db_versions WHERE version='$VERSION';" | sed '/^$/d' | wc -l)
+		VERSION_ALREADY_APPLIED=$(psql -h $STM_DB_HOST -U $STM_DB_USERNAME $STM_DB_DATABASE -tc "SELECT * FROM db_versions WHERE version='$VERSION';" | sed '/^$/d' | wc -l)
 		if [ $VERSION_ALREADY_APPLIED -eq 0 ]
 		then
 			execute $SCRIPT_PREFIX$FILE
 		else
 			echo "=============================="
-			echo
 			echo "Skip $VERSION: File $FILE already applied"
-			echo
 		fi
 	fi
 done

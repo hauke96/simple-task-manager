@@ -6,7 +6,6 @@ import (
 	"github.com/hauke96/sigolo"
 	"github.com/pkg/errors"
 	"stm/config"
-	"stm/database"
 	"stm/permission"
 	"stm/test"
 	"stm/util"
@@ -22,27 +21,18 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	h = &test.TestHelper{
-		Setup: setup,
-	}
-
+	h = test.NewTestHelper(setup)
 	m.Run()
 }
 
 func setup() {
-	config.LoadConfig("../config/test.json")
-	test.InitWithDummyData(config.Conf.DbUsername, config.Conf.DbPassword)
 	sigolo.LogLevel = sigolo.LOG_DEBUG
+	config.LoadConfig("../test/test-config.json")
+	h.InitWithDummyData(config.Conf.DbUsername, config.Conf.DbPassword, config.Conf.DbDatabase)
+	tx = h.NewTransaction()
 
 	logger := util.NewLogger()
 
-	var err error
-	tx, err = database.GetTransaction(logger)
-	if err != nil {
-		panic(err)
-	}
-
-	h.Tx = tx
 	permissionStore := permission.Init(tx, logger)
 	s = Init(tx, logger, permissionStore)
 }

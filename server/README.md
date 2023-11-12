@@ -47,7 +47,6 @@ To make this permanent, you probably want to add this to the `.bachrc` or simila
 
 **tl;dr:**
 * `docker-compose up --build stm-db`
-* done
 
 The `docker-compose.yml` defines such container, just execute `docker-compose up --build stm-db` to start it.
 **Notice: ** This just starts the database server, the database tables are created in the next step.
@@ -59,7 +58,6 @@ The `docker-compose.yml` defines such container, just execute `docker-compose up
 * start database (if not already running)
 * `cd server/database/`
 * `./init-db.sh`
-* done
 
 The folder `server/database/` contains the script `init-db.sh`.
 Start your database and call this script (from within that folder).
@@ -72,7 +70,6 @@ You need the tools `createdb` and `psql`. Both are - for ubuntu users - availabl
 * `psql -h localhost -U postgres -c 'DROP DATABASE stm;'`
 * `cd server/database`
 * `./init-db.sh`
-* done
 
 This is just needed if you want to get rid of the current data (e.g. after testing).
 
@@ -116,25 +113,31 @@ The server starts under port `8080` and has an info page to check if it's runnin
 
 # Run Tests
 
-Use the `server/test/run.sh` script to run tests and provide the database with dummy data (required for the tests).
-This script will setup the database in a docker container, fill the database with dummy data and executes the tests.
+**tl;dr:**
+* `cd server`
+* `./run-tests.sh`
 
-**Warning:**
-This script will remove your `postgres-data` folder created by the `stm-db` docker container.
+Use the `server/run-tests.sh` script to run tests and provide the database with dummy data (required for the tests).
+This script will set up the database `stm_test` in the docker container `stm-db`, fill the database with dummy data and execute the tests.
+
+# Build & Run
+
+## Run the server
 
 **tl;dr:**
-* `cd server/test`
-* `./run.sh`
-* done
+* `cd server`
+* `go run . -c path/to/your/config.json`
 
-# Build
+I suggest to use the `config/default.json` file together with the two environment variables `STM_OAUTH2_CLIENT_ID` and `STM_OAUTH2_SECRET` set.
+See [Configuration](#configuration) below for more details.
+
+## Build the server
 
 **tl;dr:**
 * `cd server`
 * `go build .`
-* done
 
-However, I don't use this in practice as the `Dockerfile` for the server uses `go run` to build and directly start the server.
+However, I don't use this during development but only during deployment and only within the `Dockerfile`.
 
 # Development
 
@@ -156,9 +159,10 @@ See the [development README](../doc/development/README.md) for details.
 
 There are configuration files in the folder `./server/config/`.
 For local development, you don't need to change anything there.
+If you still want to change things, just take a look at the properties, they are quite simple and straight forward.
 
-I you still want to change things, just take a look at the properties, they are quite simple and straight forward.
-Or peek into the [deployment README](../doc/operation/stm.md) for further details.
+You still need to specify your OAuth2 values (client-ID and secret) and it's recommended to do that via environment variables, e.g. in your IDE setup.
+Peek into the [deployment README](../doc/operation/stm.md) for further details.
 
 # HTTPS
 

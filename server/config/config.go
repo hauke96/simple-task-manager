@@ -31,6 +31,7 @@ const (
 	EnvVarDbUsername = "STM_DB_USERNAME"
 	EnvVarDbPassword = "STM_DB_PASSWORD"
 	EnvVarDbHost     = "STM_DB_HOST"
+	EnvVarDbDatabase = "STM_DB_DATABASE"
 
 	EnvVarOAuth2ClientId = "STM_OAUTH2_CLIENT_ID"
 	EnvVarOAuth2Secret   = "STM_OAUTH2_SECRET"
@@ -48,6 +49,7 @@ const (
 	DefaultDbUsername = "stm"
 	DefaultDbPassword = "secret"
 	DefaultDbHost     = "localhost"
+	DefaultDbDatabase = "stm"
 )
 
 type Config struct {
@@ -66,6 +68,7 @@ type Config struct {
 	DbUsername string `json:"db-username"`
 	DbPassword string `json:"db-password"`
 	DbHost     string `json:"db-host"`
+	DbDatabase string `json:"db-database"`
 
 	Oauth2ClientId string `json:"oauth2-client-id"`
 	Oauth2Secret   string `json:"oauth2-secret"`
@@ -111,6 +114,7 @@ func LoadConfig(file string) {
 	Conf.DbUsername = getConfigEntry(EnvVarDbUsername, Conf.DbUsername)
 	Conf.DbPassword = getConfigEntry(EnvVarDbPassword, Conf.DbPassword)
 	Conf.DbHost = getConfigEntry(EnvVarDbHost, Conf.DbHost)
+	Conf.DbDatabase = getConfigEntry(EnvVarDbDatabase, Conf.DbDatabase)
 
 	// Misc
 	Conf.DebugLogging = getConfigEntryBool(EnvVarDebugLogging, Conf.DebugLogging)
@@ -131,6 +135,7 @@ func initDefaultConfig() {
 	Conf.DbUsername = DefaultDbUsername
 	Conf.DbPassword = DefaultDbPassword
 	Conf.DbHost = DefaultDbHost
+	Conf.DbDatabase = DefaultDbDatabase
 }
 
 func verifyRequiredConfigFields() {
@@ -165,16 +170,20 @@ func verifyRequiredConfigFields() {
 	}
 
 	// Database
-	if Conf.DbHost == "" {
-		sigolo.Error("Config entry missing: Database host (config entry '%s' or environment variable '%s')", getTagValue("DbHost"), EnvVarDbHost)
-		hasMissingConfigs = true
-	}
 	if Conf.DbPassword == "" {
 		sigolo.Error("Config entry missing: Database password (config entry '%s' or environment variable '%s')", getTagValue("DbPassword"), EnvVarDbPassword)
 		hasMissingConfigs = true
 	}
 	if Conf.DbUsername == "" {
 		sigolo.Error("Config entry missing: Database username (config entry '%s' or environment variable '%s')", getTagValue("DbUsername"), EnvVarDbUsername)
+		hasMissingConfigs = true
+	}
+	if Conf.DbHost == "" {
+		sigolo.Error("Config entry missing: Database host (config entry '%s' or environment variable '%s')", getTagValue("DbHost"), EnvVarDbHost)
+		hasMissingConfigs = true
+	}
+	if Conf.DbDatabase == "" {
+		sigolo.Error("Config entry missing: Database name (config entry '%s' or environment variable '%s')", getTagValue("DbDatabase"), EnvVarDbDatabase)
 		hasMissingConfigs = true
 	}
 
