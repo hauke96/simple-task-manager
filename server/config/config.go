@@ -42,15 +42,21 @@ const (
 )
 
 const (
-	DefaultTokenInvalidityDuration = "24h"
+	DefaultPort                    = 8080
+	DefaultSourceRepoUrl           = "https://github.com/hauke96/simple-task-manager"
+	DefaultOsmBaseUrl              = "https://www.openstreetmap.org"
+	DefaultOsmApiUrl               = "https://api.openstreetmap.org/api/0.6"
+	DefaultTokenInvalidityDuration = "168h"
 	DefaultMaxTaskPerProject       = 1000
 	DefaultMaxDescriptionLength    = 1000
-	DefaultTestEnvironment         = false
 
 	DefaultDbUsername = "stm"
 	DefaultDbPassword = "secret"
 	DefaultDbHost     = "localhost"
 	DefaultDbDatabase = "stm"
+
+	DefaultDebugLogging    = false
+	DefaultTestEnvironment = false
 )
 
 type Config struct {
@@ -130,15 +136,21 @@ func LoadConfig(file string) {
 func initDefaultConfig() {
 	Conf = &Config{}
 
+	Conf.Port = DefaultPort
+	Conf.OsmBaseUrl = DefaultOsmBaseUrl
+	Conf.OsmApiUrl = DefaultOsmApiUrl
 	Conf.TokenValidityDuration = DefaultTokenInvalidityDuration
+	Conf.SourceRepoURL = DefaultSourceRepoUrl
 	Conf.MaxTasksPerProject = DefaultMaxTaskPerProject
 	Conf.MaxDescriptionLength = DefaultMaxDescriptionLength
-	Conf.TestEnvironment = DefaultTestEnvironment
 
 	Conf.DbUsername = DefaultDbUsername
 	Conf.DbPassword = DefaultDbPassword
 	Conf.DbHost = DefaultDbHost
 	Conf.DbDatabase = DefaultDbDatabase
+
+	Conf.DebugLogging = DefaultDebugLogging
+	Conf.TestEnvironment = DefaultTestEnvironment
 }
 
 func verifyRequiredConfigFields() {
