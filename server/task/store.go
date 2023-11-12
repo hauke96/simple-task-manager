@@ -3,10 +3,10 @@ package task
 import (
 	"database/sql"
 	"fmt"
-	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/lib/pq"
 	geojson "github.com/paulmach/go.geojson"
 	"github.com/pkg/errors"
+	"stm/util"
 	"strconv"
 )
 

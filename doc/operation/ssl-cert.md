@@ -67,55 +67,21 @@ Therefore, just starting the container will use this config file and changing th
 I use the systemd timer functionality to trigger a renewal of the certificate.
 This tutorial is pretty simple and straight forward, however, I changed some things: https://stevenwestmoreland.com/2017/11/renewing-certbot-certificates-using-a-systemd-timer.html
 
-## Systemd timer
+## Systemd files
 
-Specifies how often the certbot should try to renew the certificate.
+There are two files:
 
-The file `certbot.timer` contains the following content.
-I recommend to create a symlink to `/lib/systemd/system/certbot.timer` instead of copying the original file to that location.
-In the [server.md](./server.md) I describe a folder structure with a `systemd` folder where this file fits into.
+* The `certbot.timer` file specifies how often the certbot should try to renew the certificate.
+* The `certbot.service` file specifies how the certbot should renew the certificate.
 
-```
-[Unit]
-Description=Certbot renewal
-
-[Timer]
-OnCalendar=Mon *-*-* 00:00:00
-
-[Install]
-WantedBy=multi-user.target
-```
-
-## Systemd service
-
-Specified how the certbot should renew the certificate.
-Here the pre- and post-hooks also restarts all the docker container.
+In the service-file, pre- and post-hooks also restarts all the docker container.
 You need an `.env` file within the projects root folder, otherwise the docker containers won't get the necessary configs (e.g. database credentials) to start up.
 See the server deployment documentation for more information.
 
-The file `certbot.service` should also be in a `systemd` folder (as described above) and linked using a symlink.
-
-```
-[Unit]
-Description=Certbot
-
-[Service]
-Type=oneshot
-PrivateTmp=true
-ExecStart=/usr/bin/certbot renew --pre-hook "bash -c \"cd /home/stm/simple-task-manager && docker-compose stop\"" --post-hook "bash -c \"cd /home/stm/simple-task-manager && docker-compose start\""
-
-# For custom docker-file
-#ExecStart=/usr/bin/certbot renew --pre-hook "bash -c \"cd /root/simple-task-manager && docker-compose -f docker-compose.test.yml stop\"" --post-hook "bash -c \"cd /root/simple-task-manager && docker-compose -f docker-compose.test.yml stop\""
-
-[Install]
-WantedBy=multi-user.target
-```
-
 ## Setup Systemd
 
-1. Create the two files mentioned above (or edit them, they probably already exist)
-2. Reload via `systemd daemon-reload`
-3. Restart the timer with `systemctl restart certbot.timer`
+Enable the timer and service with `systemctl enable /absolute/path/to/certbot.service` and `.../certbot.timer`.
+Start the timer with `systemctl start certbot.timer`
 
 Now, probably nothing happens unless you used a very low `OnUnitActiveSec` and `OnBootSec` value.
 To check everything (maybe there are starting errors), check the logs with `journalctl -f -u certbot.*`.

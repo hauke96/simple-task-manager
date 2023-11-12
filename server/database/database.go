@@ -3,10 +3,10 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"github.com/hauke96/simple-task-manager/server/config"
-	"github.com/hauke96/simple-task-manager/server/util"
 	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
+	"stm/config"
+	"stm/util"
 )
 
 var (
@@ -41,7 +41,7 @@ func GetTransaction(logger *util.Logger) (*sql.Tx, error) {
 // open tries to open to the database and performs a simple health-check by using the "Ping" function on the database.
 // Only if the check was successful, the "db" variable is set.
 func open() error {
-	dbConn, err := sql.Open("postgres", fmt.Sprintf("host=%s user=%s password=%s dbname=stm sslmode=disable", config.Conf.DbHost, config.Conf.DbUsername, config.Conf.DbPassword))
+	dbConn, err := sql.Open("postgres", fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable", config.Conf.DbHost, config.Conf.DbUsername, config.Conf.DbPassword, config.Conf.DbDatabase))
 	if err != nil {
 		return errors.Wrap(err, "unable to open database connection")
 	}

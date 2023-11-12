@@ -2,8 +2,8 @@ package websocket
 
 import (
 	"github.com/gorilla/websocket"
-	"github.com/hauke96/simple-task-manager/server/util"
 	"net/http"
+	"stm/util"
 )
 
 const (
@@ -15,8 +15,8 @@ const (
 
 type Message struct {
 	// One of the "MessageType" strings
-	Type string      `json:"type"`
-	Id   string      `json:"id"`
+	Type string `json:"type"`
+	Id   string `json:"id"`
 }
 
 var (

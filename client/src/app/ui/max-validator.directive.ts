@@ -1,5 +1,5 @@
 import { Directive, Input } from '@angular/core';
-import { FormControl, NG_VALIDATORS, Validator } from '@angular/forms';
+import { UntypedFormControl, NG_VALIDATORS, Validator } from '@angular/forms';
 
 @Directive({
   selector: '[appMaxValidator][ngModel]',
@@ -16,7 +16,7 @@ export class MaxValidatorDirective implements Validator {
     this.appMaxValidatorNumber = +value;
   }
 
-  public validate(c: FormControl): { [appMaxValidator: string]: any } | null {
+  public validate(c: UntypedFormControl): { [appMaxValidator: string]: any } | null {
     const v = ('' + c.value).trim();
     return v.match('[-\+]?[0-9]+')
     && (+v <= this.appMaxValidatorNumber)

@@ -1,6 +1,12 @@
 import 'jest-preset-angular/setup-jest';
 
-// TODO Remove when ngx-translate is used:
-import '@angular/localize/init';
-
 window.URL.createObjectURL = () => '';
+
+// Mock the RBush for OpenLayers. Otherwise, the RBush constructor is somehow unavailable.
+jest.mock('ol/structs/RBush');
+
+window.ResizeObserver = jest.fn().mockImplementation(() => ({
+  observe: jest.fn(),
+  unobserve: jest.fn(),
+  disconnect: jest.fn(),
+}))

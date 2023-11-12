@@ -1,29 +1,30 @@
-Here you'll find some documentation about the simple task manager. This is ordered into few categories:
+The documentation  is ordered into few categories:
 
 ### [api](api)
-* link to general information about the API
-* (re)generating swagger UI
-* versions
+* Link to general information about the API
+* Generating swagger UI
+* Versions and API changes
 
 ### [architecture](architecture)
-* client and server code architecture
+* Client and server code architecture
 
 ### [authentication](authentication)
-* technical in-depth description of the authentication and authorization process
-* token creation, handling and validation
+* Technical in-depth description of the authentication and authorization process
+* Token creation, handling and validation
 
 ### [development](development)
-
 * Steps to get started
 * Git workflow
 * Overview over client, server, docker and further links
 
 ### [operation](operation)
+* Setup and configuration of the STM server
+* Setup of a linux machine
 * HTTPS
-    * create SSL certificates
-    * automatic renewal of SSL certs
-* docker
+    * Create SSL certificates via let's encrypt
+    * Automatic renewal of SSL certs
+* Automatic backups
 
 ### [testing](testing)
-* write server and client tests
-* run these tests
+* Write server and client tests
+* Run these tests

@@ -95,7 +95,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
       },
       e => {
         console.error(e);
-        this.notificationService.addError(this.translationService.instant('unable-load-assigned-user'));
+        this.notificationService.addError(this.translationService.instant('task-details.unable-load-assigned-user'));
       }
     );
   }
@@ -111,7 +111,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
         },
         e => {
           console.error(e);
-          this.notificationService.addError(this.translationService.instant('unable-assign-user'));
+          this.notificationService.addError(this.translationService.instant('task-details.unable-assign-user'));
         });
   }
 
@@ -126,7 +126,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
         },
         e => {
           console.error(e);
-          this.notificationService.addError(this.translationService.instant('unable-unassign-user'));
+          this.notificationService.addError(this.translationService.instant('task-details.unable-unassign-user'));
         });
   }
 
@@ -141,7 +141,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
         },
         e => {
           console.error(e);
-          this.notificationService.addError(this.translationService.instant('unable-set-process-points'));
+          this.notificationService.addError(this.translationService.instant('task-details.unable-set-process-points'));
         });
   }
 
@@ -156,7 +156,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
         },
         e => {
           console.error(e);
-          this.notificationService.addError(this.translationService.instant('unable-set-process-points'));
+          this.notificationService.addError(this.translationService.instant('task-details.unable-set-process-points'));
         });
   }
 
@@ -169,7 +169,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
       .subscribe(() => {
         },
         err => {
-          this.notificationService.addError(this.translationService.instant('unable-load-josm'));
+          this.notificationService.addError(this.translationService.instant('task-details.unable-load-josm'));
         });
   }
 

@@ -1,13 +1,12 @@
 const baseUrl = document.location.protocol + '//' + document.location.hostname + ':8080';
-const usedApi = 'v2.7';
+const usedApi = 'v2.8';
 
 export const environment = {
   production: true,
   oauth_landing: document.location.origin + '/oauth-landing',
-  osm_api_url: 'https://api.openstreetmap.org/api/0.6',
 
   base_url: baseUrl,
-  url_auth: baseUrl + '/oauth_login',
+  url_auth: baseUrl + '/oauth2/login',
   url_config: baseUrl + '/' + usedApi + '/config',
   url_projects: baseUrl + '/' + usedApi + '/projects',
   url_projects_by_id: baseUrl + '/' + usedApi + '/projects/{id}',

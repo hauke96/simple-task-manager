@@ -1,6 +1,6 @@
 # Server
 
-The server is written in go (aka golang) so you need to install go and setup your development environment (paths, IDE, etc.)
+The server is written in go (aka golang) so you need to install go and set up your development environment (paths, IDE, etc.)
 
 # Setup development environment
 
@@ -23,11 +23,11 @@ The frameworks/libraries this project uses are there in order to make the develo
 
 * [gorilla/mux](https://github.com/gorilla/mux) to easily create simple rest endpoints
 * [gorilla/websocket](https://github.com/gorilla/websocket) for server → client communication
-* [kurrik/oauth1a](https://github.com/kurrik/oauth1a) for the oauth1a authentication
+* [x/oauth2](https://pkg.go.dev/golang.org/x/oauth2) for the OAuth2 authentication
 * [lib/pq](https://github.com/lib/pq) for a postgres database driver
 * [pkg/errors](https://github.com/pkg/errors) better error handling and enables us to show stack traces
 * [hauke96/sigolo](https://github.com/hauke96/sigolo) for logging
-* [hauke96/kingpin](https://github.com/hauke96/kingpin) for cli parameter and flag parsing
+* [alecthomas/kong](https://github.com/alecthomas/kong) for cli parameter and flag parsing
 
 ## 3. Setup the Database
 
@@ -37,16 +37,16 @@ This description assumes that you use docker instead of an direct installation o
 ### Set Database user/password as environment variable
 
 **tl;dr:**
-* `export STM_DB_USERNAME=stm STM_DB_PASSWORD=secret`
+* `export STM_DB_USERNAME=stm STM_DB_PASSWORD=secret STM_DB_HOST=localhost`
+* **or** Set the database entries in a custom JSON-config and use that file with the `-c`/`--config` parameter. 
 
-You can override the default username and password (`stm` and `secret`) by setting environment variables.
-To make this permanent, you probably want to add this to the `.bachrc` or similar file.
+You can override the default DB username, password (`stm` and `secret`) and host by setting environment variables.
+To make this permanent, you probably want to add this to the `.bachrc` or similar files.
 
 ### Start as docker container
 
 **tl;dr:**
 * `docker-compose up --build stm-db`
-* done
 
 The `docker-compose.yml` defines such container, just execute `docker-compose up --build stm-db` to start it.
 **Notice: ** This just starts the database server, the database tables are created in the next step.
@@ -58,7 +58,6 @@ The `docker-compose.yml` defines such container, just execute `docker-compose up
 * start database (if not already running)
 * `cd server/database/`
 * `./init-db.sh`
-* done
 
 The folder `server/database/` contains the script `init-db.sh`.
 Start your database and call this script (from within that folder).
@@ -71,7 +70,6 @@ You need the tools `createdb` and `psql`. Both are - for ubuntu users - availabl
 * `psql -h localhost -U postgres -c 'DROP DATABASE stm;'`
 * `cd server/database`
 * `./init-db.sh`
-* done
 
 This is just needed if you want to get rid of the current data (e.g. after testing).
 
@@ -89,23 +87,15 @@ So you need to have an account there and also need to register your local applic
 
 #### OSM OAuth credentials
 
-To perform a login (even a login of your locally running application), you'll need OAuth credentials (so the OAuth consumer-key and -secret) within environment variables:
+To perform a login (even a login of your locally running application), you'll need OAuth credentials (so the OAuth2 client-ID and -secret).
+You can set these with environment variables:
 
-* `export STM_OAUTH_CONSUMER_KEY="Eln7...rY66"`
-* `export STM_OAUTH_SECRET="fgg1...kl09"`
+* `export STM_OAUTH2_CLIENT_ID="Eln7...rY66"`
+* `export STM_OAUTH2_SECRET="fgg1...kl09"`
 
 You can export these variables each time you start a new terminal or just put it into a file of your choice (e.g. `.bashrc`) to load then e.g. after your system booted.
 
-### Local Auth-Server
-
-There's also a pure local config.
-This makes use of a very simple [OAuth-Dummy server](https://github.com/hauke96/osm-oauth1a-dummy).
-Just clone the repo and start this auth server with `go run .`.
-
-Using this approach makes you independent of the OSM server and of an internet connection in general.
-
-**Notice:**<br>
-You have to use the `local.config` file to use this locally running OAuth server, so use `go run . -c config/local.json` to start the server.
+You can also create your own JSON-config file and set everything there.
 
 ## 5. Setup finished :)
 
@@ -123,25 +113,31 @@ The server starts under port `8080` and has an info page to check if it's runnin
 
 # Run Tests
 
-Use the `server/test/run.sh` script to run tests and provide the database with dummy data (required for the tests).
-This script will setup the database in a docker container, fill the database with dummy data and executes the tests.
+**tl;dr:**
+* `cd server`
+* `./run-tests.sh`
 
-**Warning:**
-This script will remove your `postgres-data` folder created by the `stm-db` docker container.
+Use the `server/run-tests.sh` script to run tests and provide the database with dummy data (required for the tests).
+This script will set up the database `stm_test` in the docker container `stm-db`, fill the database with dummy data and execute the tests.
+
+# Build & Run
+
+## Run the server
 
 **tl;dr:**
-* `cd server/test`
-* `./run.sh`
-* done
+* `cd server`
+* `go run . -c path/to/your/config.json`
 
-# Build
+I suggest to use the `config/default.json` file together with the two environment variables `STM_OAUTH2_CLIENT_ID` and `STM_OAUTH2_SECRET` set.
+See [Configuration](#configuration) below for more details.
+
+## Build the server
 
 **tl;dr:**
 * `cd server`
 * `go build .`
-* done
 
-However, I don't use this in practice as the `Dockerfile` for the server uses `go run` to build and directly start the server.
+However, I don't use this during development but only during deployment and only within the `Dockerfile`.
 
 # Development
 
@@ -163,9 +159,10 @@ See the [development README](../doc/development/README.md) for details.
 
 There are configuration files in the folder `./server/config/`.
 For local development, you don't need to change anything there.
+If you still want to change things, just take a look at the properties, they are quite simple and straight forward.
 
-I you still want to change things, just take a look at the properties, they are quite simple and straight forward.
-Or peek into the [deployment README](../doc/operation/server.md) for further details.
+You still need to specify your OAuth2 values (client-ID and secret) and it's recommended to do that via environment variables, e.g. in your IDE setup.
+Peek into the [deployment README](../doc/operation/stm.md) for further details.
 
 # HTTPS
 

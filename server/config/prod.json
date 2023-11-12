@@ -1,10 +1,6 @@
 {
 	"server-url": "https://stm.hauke-stieler.de",
-	"port": 8080,
-	"osm-base-url": "https://www.openstreetmap.org",
-	"debug-logging": false,
+	"client-auth-redirect-url": "https://stm.hauke-stieler.de/oauth-landing",
 	"ssl-cert-file": "/etc/letsencrypt/live/stm.hauke-stieler.de/fullchain.pem",
-	"ssl-key-file": "/etc/letsencrypt/live/stm.hauke-stieler.de/privkey.pem",
-	"token-validity": "168h",
-	"source-repo-url": "https://github.com/hauke96/simple-task-manager"
+	"ssl-key-file": "/etc/letsencrypt/live/stm.hauke-stieler.de/privkey.pem"
 }

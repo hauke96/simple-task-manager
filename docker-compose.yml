@@ -2,11 +2,11 @@ version: '3.4'
 
 services:
   stm-server:
-    image: simpletaskmanager/stm-server:1.4.3
+    image: simpletaskmanager/stm-server:1.5.0
     container_name: stm-server
     environment:
-      - STM_OAUTH_CONSUMER_KEY
-      - STM_OAUTH_SECRET
+      - STM_OAUTH2_CLIENT_ID
+      - STM_OAUTH2_SECRET
       - STM_DB_USERNAME
       - STM_DB_PASSWORD
       - STM_DB_HOST
@@ -21,13 +21,15 @@ services:
     logging:
       driver: 'journald'
   stm-client:
-    image: simpletaskmanager/stm-client:1.4.3
+    image: simpletaskmanager/stm-client:1.5.0
     container_name: stm-client
     network_mode: host
     restart: unless-stopped
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
       - $STM_NGINX_CONFIG:/etc/nginx/conf.d/default.conf
+      # This allows you to show arbitrary notes on the login screen (e.g. to inform user about maintenance):
+      #- ./notice.de.html:/usr/share/nginx/html/assets/i18n/notice.de.html
     logging:
       driver: 'journald'
   stm-db:

@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/hauke96/sigolo"
-	"github.com/hauke96/simple-task-manager/server/auth"
-	"github.com/hauke96/simple-task-manager/server/util"
-	"github.com/hauke96/simple-task-manager/server/websocket"
 	"github.com/pkg/errors"
 	"net/http"
+	"stm/oauth2"
+	"stm/util"
+	"stm/websocket"
 )
 
 type ApiResponse struct {
@@ -70,7 +70,7 @@ func authenticatedTransactionHandler(handler func(r *http.Request, context *Cont
 	}
 }
 
-func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request, token *auth.Token, websocketSender *websocket.WebsocketSender)) func(http.ResponseWriter, *http.Request) {
+func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request, token *oauth2.Token, websocketSender *websocket.WebsocketSender)) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		logger := util.NewLogger()
 
@@ -88,7 +88,7 @@ func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request,
 		// Add token query param value (set by websocket clients) as authorization so that verifyRequest can check it.
 		r.Header.Add("Authorization", t)
 
-		token, err := auth.VerifyRequest(r, logger)
+		token, err := oauth2.VerifyRequest(r, logger)
 		if err != nil {
 			logger.Debug("Token verification failed: %s", err)
 			// No further information to caller (which is a potential attacker)
@@ -153,7 +153,7 @@ func handleAuthenticatedRequest(w http.ResponseWriter, r *http.Request, handler 
 	// temporary logger before there's a context
 	logger := util.NewLogger()
 
-	token, err := auth.VerifyRequest(r, logger)
+	token, err := oauth2.VerifyRequest(r, logger)
 	if err != nil {
 		logger.Err("URL without valid token called: %s %s", r.Method, r.URL.Path)
 		logger.Err("Token verification failed: %s", err)

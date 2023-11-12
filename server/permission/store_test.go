@@ -4,10 +4,9 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/hauke96/sigolo"
-	"github.com/hauke96/simple-task-manager/server/config"
-	"github.com/hauke96/simple-task-manager/server/database"
-	"github.com/hauke96/simple-task-manager/server/test"
-	"github.com/hauke96/simple-task-manager/server/util"
+	"stm/config"
+	"stm/test"
+	"stm/util"
 	"testing"
 
 	_ "github.com/lib/pq" // Make driver "postgres" usable
@@ -20,27 +19,18 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	h = &test.TestHelper{
-		Setup: setup,
-	}
-
+	h = test.NewTestHelper(setup)
 	m.Run()
 }
 
 func setup() {
-	config.LoadConfig("../config/test.json")
-	test.InitWithDummyData(config.Conf.DbUsername, config.Conf.DbPassword)
 	sigolo.LogLevel = sigolo.LOG_DEBUG
+	config.LoadConfig("../test/test-config.json")
+	h.InitWithDummyData(config.Conf.DbUsername, config.Conf.DbPassword, config.Conf.DbDatabase)
+	tx = h.NewTransaction()
 
 	logger := util.NewLogger()
 
-	var err error
-	tx, err = database.GetTransaction(logger)
-	if err != nil {
-		panic(err)
-	}
-
-	h.Tx = tx
 	s = Init(tx, logger)
 }
 

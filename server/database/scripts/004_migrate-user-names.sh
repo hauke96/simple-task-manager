@@ -41,13 +41,11 @@ function nameToId()
 }
 
 # The returned data is something like "2|{user1,user2}" and the usage of "tr" turns it into "2|user1,user2"
-PROJECT_DATA=$(psql -h localhost -U $STM_DB_USERNAME -t -A -c "SELECT id,users,owner FROM projects;" stm \
+PROJECT_DATA=$(psql -h $STM_DB_HOST -U $STM_DB_USERNAME -t -A -c "SELECT id,users,owner FROM projects;" $STM_DB_DATABASE \
 	| tr -d '}' \
 	| tr -d '{')
 
 echo "$PROJECT_DATA"
-echo
-echo
 
 echo "BEGIN TRANSACTION;" > $OUTPUT_FILE
 
@@ -135,17 +133,12 @@ done
 #
 
 # The returned data is something like "2|user1"
-TASK_DATA=$(psql -h localhost -U $STM_DB_USERNAME -t -A -c "SELECT id,assigned_user FROM tasks;" stm \
+TASK_DATA=$(psql -h $STM_DB_HOST -U $STM_DB_USERNAME -t -A -c "SELECT id,assigned_user FROM tasks;" $STM_DB_DATABASE \
 	| grep -v "|$")
 
-echo
 echo "===================="
-echo
 echo "Adjust tasks"
-echo
 echo "$TASK_DATA"
-echo
-echo
 
 IFS=$'\n'
 for ROW in $TASK_DATA
@@ -199,22 +192,20 @@ echo "INSERT INTO db_versions VALUES('004');" >> $OUTPUT_FILE
 
 echo "END TRANSACTION;" >> $OUTPUT_FILE
 
-echo
 echo "Execute SQL..."
 
-psql -q -v ON_ERROR_STOP=1 -h localhost -U $STM_DB_USERNAME -f $OUTPUT_FILE stm
+psql -q -v ON_ERROR_STOP=1 -h $STM_DB_HOST -U $STM_DB_USERNAME -f $OUTPUT_FILE $STM_DB_DATABASE
 OK=$?
 if [ $OK -ne 0 ]
 then
-  echo
-  echo "Migration FAILED!"
-  echo
-  echo "Exit code: $OK"
-  echo "See the error log and the '$OUTPUT_FILE' for details."
-  exit 1
+	echo
+	echo "Migration FAILED!"
+	echo
+	echo "Exit code: $OK"
+	echo "See the error log and the '$OUTPUT_FILE' for details."
+	exit 1
 fi
 
 echo "Migration DONE"
-
 echo "Remove '$OUTPUT_FILE'"
 rm $OUTPUT_FILE

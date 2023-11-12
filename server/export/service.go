@@ -1,11 +1,10 @@
 package export
 
 import (
-	"github.com/hauke96/simple-task-manager/server/project"
-	"github.com/hauke96/simple-task-manager/server/task"
-	"github.com/hauke96/simple-task-manager/server/util"
+	"stm/project"
+	"stm/task"
+	"stm/util"
 )
-
 
 type ExportService struct {
 	*util.Logger

@@ -1,10 +1,85 @@
+@use "sass:math";
 @import "../../../styles";
+@import "../../../colors";
+
+$content-width: 800px;
+$image-width: 800px;
+$image-blur-size: 165px;
+$image-blur-size-mobile: 65px;
 
 :host {
 	height: 100%;
 	display: flex;
 	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+.white-transparent {
+	background-color: #ffffff60;
+}
+
+.background-images {
+	position: fixed;
+	min-width: 100%;
+	display: flex;
 	justify-content: space-between;
+
+	.fadeout-image {
+		width: $image-width;
+		position: relative;
+		display: inline-block;
+	}
+
+	.fadeout-image img {
+		width: $image-width;
+		opacity: 0.4;
+	}
+
+	.fadeout-to-left:after, .fadeout-to-right:after {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 1;
+		content: "";
+	}
+
+	.fadeout-to-left:after {
+		-moz-box-shadow: inset $image-blur-size (-$image-blur-size) $image-blur-size #fff;
+		-webkit-box-shadow: inset $image-blur-size (-$image-blur-size) $image-blur-size #fff;
+		box-shadow: inset $image-blur-size (-$image-blur-size) $image-blur-size #fff;
+	}
+
+	.fadeout-to-right:after {
+		-moz-box-shadow: inset (-$image-blur-size) (-$image-blur-size) $image-blur-size #fff;
+		-webkit-box-shadow: inset (-$image-blur-size) (-$image-blur-size) $image-blur-size #fff;
+		box-shadow: inset (-$image-blur-size) (-$image-blur-size) $image-blur-size #fff;
+	}
+
+	.image-buffer {
+		display: none;
+	}
+
+	@media (max-width: $image-width) {
+		.image-buffer {
+			min-width: 250px - $image-blur-size-mobile * 1.5;
+			display: unset;
+		}
+
+		.fadeout-to-left:after {
+			-moz-box-shadow: inset $image-blur-size-mobile (-$image-blur-size-mobile) $image-blur-size-mobile #fff;
+			-webkit-box-shadow: inset $image-blur-size-mobile (-$image-blur-size-mobile) $image-blur-size-mobile #fff;
+			box-shadow: inset $image-blur-size-mobile (-$image-blur-size-mobile) $image-blur-size-mobile #fff;
+		}
+
+		.fadeout-to-right:after {
+			-moz-box-shadow: inset (-$image-blur-size-mobile) (-$image-blur-size-mobile) $image-blur-size-mobile #fff;
+			-webkit-box-shadow: inset (-$image-blur-size-mobile) (-$image-blur-size-mobile) $image-blur-size-mobile #fff;
+			box-shadow: inset (-$image-blur-size-mobile) (-$image-blur-size-mobile) $image-blur-size-mobile #fff;
+		}
+	}
 }
 
 .language-selection-label {
@@ -12,11 +87,34 @@
 }
 
 .language-selection {
+	z-index: 3;
+	position: absolute;
+	top: 0;
+	right: 0;
+	align-self: flex-end;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	margin: $space-base;
+	padding: $space-base;
 	justify-content: flex-end;
+	border-bottom: 1px solid $color-gray-light;
+}
+
+@media (max-width: $image-width) {
+	.language-selection {
+		position: unset;
+		align-self: unset;
+	}
+}
+
+.centered-content {
+	z-index: 2;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	width: $content-width;
+	max-width: 100%;
 }
 
 .logo {
@@ -24,38 +122,78 @@
 	opacity: 0.75;
 }
 
+@media (max-width: $image-width) {
+	.logo {
+		margin-top: $space-large;
+	}
+}
+
 .heading {
-	max-width: 500px;
+	max-width: $content-width;
 	font-size: 20pt;
 	margin-top: $space-huge;
+	line-height: 1.5;
+	text-align: center;
+}
+
+@media (max-width: $image-width) {
+	.heading {
+		margin-top: $space-large;
+	}
+}
+
+.sub-heading {
+	max-width: $content-width * 0.5;
+	text-align: center;
+	line-height: 1.5;
+	margin-top: $space-large;
+	margin-left: $space-large;
+	margin-right: $space-large;
+}
+
+@media (max-width: $image-width) {
+	.sub-heading {
+		max-width: $content-width * 0.35;
+	}
 }
 
 .login-button {
-	padding: $space-large;
-	margin: $space-huge;
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	margin-top: $space-huge;
+	padding-top: $space-large;
+	padding-bottom: $space-large;
 	border-top: 1px solid $color-gray-light;
 	border-bottom: 1px solid $color-gray-light;
 }
 
-.notice {
+.notice-container {
+	width: 100%;
 	display: flex;
 	justify-content: center;
-	padding-top: 25px; // compensate the -5px from below and get 5px actual space
+	flex-direction: column;
+	align-items: center;
+	padding-top: $space-large;
+	padding-bottom: $space-large;
 }
 
-.notice-container {
-	max-width: 500px;
+.notice-centered {
+	margin-right: $space-large;
+	margin-left: $space-large;
 }
 
-.notice-text b {
-	font-weight: 500;
+.warning-centered {
+	background-color: $color-warn-very-light-transparent;
+	border: 1px solid $color-warn;
+	padding-left: $space-large;
+	padding-right: $space-large;
+	margin-bottom: $space-base;
+	margin-right: $space-large;
+	margin-left: $space-large;
 }
 
-.notice-bar {
-	width: 1px;
-	background-color: $color-gray-mid;
-	margin-left: 15px;
-	margin-right: 15px;
-	margin-top: -20px;
-	margin-bottom: -5px;
+app-footer {
+	border-top: 1px solid $color-gray-light;
 }

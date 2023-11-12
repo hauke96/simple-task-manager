@@ -4,14 +4,13 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/hauke96/sigolo"
-	"github.com/hauke96/simple-task-manager/server/config"
-	"github.com/hauke96/simple-task-manager/server/database"
-	"github.com/hauke96/simple-task-manager/server/permission"
-	"github.com/hauke96/simple-task-manager/server/task"
-	"github.com/hauke96/simple-task-manager/server/test"
-	"github.com/hauke96/simple-task-manager/server/util"
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 	"github.com/pkg/errors"
+	"stm/config"
+	"stm/permission"
+	"stm/task"
+	"stm/test"
+	"stm/util"
 	"testing"
 	"time"
 )
@@ -24,27 +23,18 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	h = &test.TestHelper{
-		Setup: setup,
-	}
-
+	h = test.NewTestHelper(setup)
 	m.Run()
 }
 
 func setup() {
-	config.LoadConfig("../config/test.json")
-	test.InitWithDummyData(config.Conf.DbUsername, config.Conf.DbPassword)
 	sigolo.LogLevel = sigolo.LOG_DEBUG
+	config.LoadConfig("../test/test-config.json")
+	h.InitWithDummyData(config.Conf.DbUsername, config.Conf.DbPassword, config.Conf.DbDatabase)
+	tx = h.NewTransaction()
 
 	logger := util.NewLogger()
 
-	var err error
-	tx, err = database.GetTransaction(logger)
-	if err != nil {
-		panic(err)
-	}
-
-	h.Tx = tx
 	permissionStore := permission.Init(tx, logger)
 	taskService = task.Init(tx, logger, permissionStore)
 	s = Init(tx, logger, taskService, permissionStore)
@@ -86,7 +76,7 @@ func TestGetProjects(t *testing.T) {
 		if userProjects[0].CreationDate != nil {
 			return errors.New(fmt.Sprintf("Creation date of project 1 should be NIL but was %s", userProjects[0].CreationDate))
 		}
-		projectCreationDate := time.Date(2021,2,13,5,16,55,150015000, time.UTC)
+		projectCreationDate := time.Date(2021, 2, 13, 5, 16, 55, 150015000, time.UTC)
 		if !userProjects[1].CreationDate.Equal(projectCreationDate) {
 			return errors.New(fmt.Sprintf("Creation date of project 1 should be %s but was %s", projectCreationDate, userProjects[1].CreationDate))
 		}
@@ -111,7 +101,7 @@ func TestGetProjects(t *testing.T) {
 		if userProjects[0].TotalProcessPoints != 2000 || userProjects[0].DoneProcessPoints != 345 {
 			return errors.New("Process points on project not set correctly")
 		}
-		projectCreationDate = time.Date(2020,12,22,14,25,23,672123000, time.UTC)
+		projectCreationDate = time.Date(2020, 12, 22, 14, 25, 23, 672123000, time.UTC)
 		if !userProjects[0].CreationDate.Equal(projectCreationDate) {
 			return errors.New(fmt.Sprintf("Creation date of project 3 should be %s but was %s", projectCreationDate, userProjects[0].CreationDate))
 		}

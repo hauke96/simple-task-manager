@@ -1,7 +1,7 @@
 {
 	"server-url": "http://localhost",
-	"port": 8080,
+	"client-auth-redirect-url": "http://localhost:4200/oauth-landing",
 	"osm-base-url": "http://localhost:9000",
-	"debug-logging": true,
-	"source-repo-url": "https://github.com/hauke96/simple-task-manager"
+	"osm-api-url": "http://localhost:9000/api/0.6",
+	"debug-logging": true
 }

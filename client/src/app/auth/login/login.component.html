@@ -1,25 +1,33 @@
-<div>
-	<app-notification></app-notification>
-	<div class="language-selection">
-		<span class="language-selection-label">{{"language-selection" | translate}}</span>
-		<app-language-selection></app-language-selection>
+<div class="background-images">
+	<div class="fadeout-image fadeout-to-right">
+		<img src="./assets/login-background-right.png">
+	</div>
+	<div class="image-buffer"></div>
+	<div class="fadeout-image fadeout-to-left">
+		<img src="./assets/login-background-left.png">
 	</div>
 </div>
-<div>
-	<div>
-		<div class="center logo">
-			<img src="./assets/icon.png">
+<div class="white-transparent language-selection">
+	<span class="language-selection-label">{{"language-selection" | translate}}</span>
+	<app-language-selection></app-language-selection>
+</div>
+<div class="centered-content">
+	<div class="logo">
+		<img src="./assets/icon.png">
+	</div>
+	<div class="heading" [innerHTML]="'login.welcome' | translate"></div>
+	<div class="sub-heading" [innerHTML]="'login.welcome-subtitle' | translate"></div>
+	<div class="white-transparent login-button">
+		<button (click)="onLoginButtonClick()">{{"login.login-button" | translate}}</button>
+	</div>
+	<div class="notice-container white-transparent">
+		<div class="warning-centered" *ngIf="noticeTemplate">
+			<p [innerHTML]="noticeTemplate"></p>
 		</div>
-		<div class="center heading" [innerHTML]="'login.welcome' | translate"></div>
-		<div class="center login-button">
-			<button (click)="onLoginButtonClick()">{{"login.login-button" | translate}}</button>
-		</div>
-		<div class="notice">
-			<div class="notice-container">
-				<div class="notice-bar"></div>
-				<div class="notice-text" [innerHTML]="changelogTemplate"></div>
-			</div>
+		<div class="notice-centered" *ngIf="changelogTemplate">
+			<p [innerHTML]="changelogTemplate"></p>
 		</div>
 	</div>
+	<app-footer></app-footer>
 </div>
-<app-footer></app-footer>
+<app-notification></app-notification>

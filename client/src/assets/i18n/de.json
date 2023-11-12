@@ -22,7 +22,8 @@
   "login-failed": "Du wurdest ausgeloggt, weil die Authentifizierung nicht erfolgreich war.",
   "language-selection": "Sprachauswahl:",
   "login": {
-    "welcome": "Willkommen beim SimpleTaskManager für <a href=\"https://openstreetmap.org\">OpenStreetMap</a>",
+    "welcome": "Willkommen beim<br><b>SimpleTaskManager</b>",
+    "welcome-subtitle": "Der kostenlose und einfach zu bedienende Tasking-Manager für kollaborative Arbeit an <a href=\"https://openstreetmap.org\" target=\"_blank\">OpenStreetMap</a>. Erfahre mehr zu STM im <a href=\"https://wiki.openstreetmap.org/wiki/SimpleTaskManager\" target=\"_blank\">OSM-Wiki</a>.",
     "login-button": "Anmelden"
   },
   "dashboard": {

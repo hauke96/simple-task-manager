@@ -3,7 +3,7 @@
 source scripts/common.sh
 
 OUTPUT_FILE=".tmp.migrate-project-task-relation.sql"
-RAW_DATA=$(psql -h localhost -U $STM_DB_USERNAME -t -A -c "SELECT id,task_ids FROM projects;" stm | tr -d "{" | tr -d "}")
+RAW_DATA=$(psql -h $STM_DB_HOST -U $STM_DB_USERNAME -t -A -c "SELECT id,task_ids FROM projects;" $STM_DB_DATABASE | tr -d "{" | tr -d "}")
 
 begin_tx
 
@@ -15,10 +15,10 @@ do
 	PROJECT_ID=${ROW_ARRAY[0]}
 	TASK_IDS=${ROW_ARRAY[1]}
 
-  IFS=$','
-  for TASK_ID in $TASK_IDS
-  do
-    echo "UPDATE tasks SET project_id = $PROJECT_ID WHERE id = $TASK_ID;" >> $OUTPUT_FILE
+	IFS=$','
+	for TASK_ID in $TASK_IDS
+	do
+		echo "UPDATE tasks SET project_id = $PROJECT_ID WHERE id = $TASK_ID;" >> $OUTPUT_FILE
 	done
 
 	IFS=$'\n'
@@ -34,5 +34,4 @@ set_version "008"
 #
 end_tx
 
-echo
 execute

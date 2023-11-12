@@ -10,20 +10,26 @@
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es2017",
-    "module": "es2020",
+    "target": "ES2022",
+    "module": "ES2022",
     "lib": [
-      "es2018",
+      "es2019",
       "dom"
     ],
     "strict": true,
     "strictPropertyInitialization": false,
     "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "useDefineForClassFields": false
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true,
-    "strictTemplates": true
+    "strictTemplates": true,
+    "extendedDiagnostics": {
+      "checks": {
+        "optionalChainNotNullable": "suppress"
+      }
+    }
   }
 }

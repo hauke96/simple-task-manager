@@ -6,11 +6,11 @@ These examples use the `stm-server` container but everything works for the `stm-
 
 A log entry printed by `journalctl` looks like this:
 
-`Dec 18 15:32:17 v220200733303121946 fac0db6e3d61[3775856]: 2020-12-18 14:32:17.111 [INFO]  api_util.go:123      | #8bef | Call from 'hauke-stieler' (9627921) to GET /v2.5/projects/53/tasks`
+`Dec 18 15:32:17 myhostname fac0db6e3d61[3775856]: 2020-12-18 14:32:17.111 [INFO]  api_util.go:123      | #8bef | Call from 'hauke-stieler' (9627921) to GET /v2.5/projects/53/tasks`
 
-But the relevant part for us is only this:
+But the relevant part for us is only the second half:
 
-`2020-12-18 14:32:17.111 [INFO]  api_util.go:123      | #8bef | Call from 'foo-bar' (123456789) to GET /v2.5/projects/53/tasks`
+`...: 2020-12-18 14:32:17.111 [INFO]  api_util.go:123      | #8bef | Call from 'foo-bar' (123456789) to GET /v2.5/projects/53/tasks`
 
 So we have the following parts from left to right:
 

@@ -1,4 +1,4 @@
-package auth
+package oauth2
 
 import (
 	"crypto/hmac"
@@ -6,8 +6,8 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/pkg/errors"
+	"stm/util"
 	"time"
 )
 
@@ -24,7 +24,7 @@ var (
 )
 
 func tokenInit() error {
-	bytes, err := getRandomBytes(256)
+	bytes, err := util.GetRandomBytes(512)
 	key = bytes
 	return err
 }

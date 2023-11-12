@@ -44,8 +44,7 @@ export class AuthService {
       return x.join('=');
     }).join(',');
 
-    const landingUrl = document.location.protocol + '//' + document.location.hostname + ':' + document.location.port + '/oauth-landing';
-    window.open(environment.url_auth + '?+?t=' + new Date().getTime() + '&redirect=' + landingUrl, 'oauth_window', settings);
+    window.open(environment.url_auth + '?t=' + new Date().getTime(), 'oauth_window', settings);
 
     const localStorageTimer: any = setInterval(() => this.waitForLocalStorageToken(localStorageTimer, callback), 250);
   }

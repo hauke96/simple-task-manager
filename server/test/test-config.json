@@ -1,0 +1,7 @@
+{
+	"server-url": "https://unit-test.stm.org",
+	"client-auth-redirect-url": "https://unit-test.stm.org/oauth-landing",
+	"db-database": "stm_test",
+	"oauth2-client-id": "oAuTH_cliENt-iD",
+	"oauth2-secret": "seCreT"
+}

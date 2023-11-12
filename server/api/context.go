@@ -2,20 +2,20 @@ package api
 
 import (
 	"database/sql"
-	"github.com/hauke96/simple-task-manager/server/auth"
-	"github.com/hauke96/simple-task-manager/server/database"
-	"github.com/hauke96/simple-task-manager/server/export"
-	"github.com/hauke96/simple-task-manager/server/permission"
-	"github.com/hauke96/simple-task-manager/server/project"
-	"github.com/hauke96/simple-task-manager/server/task"
-	"github.com/hauke96/simple-task-manager/server/util"
-	"github.com/hauke96/simple-task-manager/server/websocket"
 	"github.com/pkg/errors"
+	"stm/database"
+	"stm/export"
+	"stm/oauth2"
+	"stm/permission"
+	"stm/project"
+	"stm/task"
+	"stm/util"
+	"stm/websocket"
 )
 
 type Context struct {
 	*util.Logger
-	Token           *auth.Token
+	Token           *oauth2.Token
 	Transaction     *sql.Tx
 	ProjectService  *project.ProjectService
 	TaskService     *task.TaskService
@@ -25,7 +25,7 @@ type Context struct {
 
 // createContext starts a new Transaction and creates new service instances which use this new Transaction so that all
 // services (also those calling each other) are using the same Transaction.
-func createContext(token *auth.Token, logger *util.Logger) (*Context, error) {
+func createContext(token *oauth2.Token, logger *util.Logger) (*Context, error) {
 	ctx := &Context{}
 	ctx.Token = token
 	ctx.Logger = logger

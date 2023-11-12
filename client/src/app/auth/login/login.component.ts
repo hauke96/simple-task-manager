@@ -11,6 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
+  public noticeTemplate: string;
   public changelogTemplate: string;
 
   constructor(
@@ -21,15 +22,27 @@ export class LoginComponent {
     private httpClient: HttpClient,
     private translationService: TranslateService
   ) {
-    this.loadChangelogTemplate();
+    this.loadTemplates();
 
-    translationService.onLangChange.subscribe(() => this.loadChangelogTemplate());
+    translationService.onLangChange.subscribe(() => this.loadTemplates());
   }
 
-  private loadChangelogTemplate(): void {
-    const url = 'assets/i18n/changelog.' + this.translationService.currentLang + '.html';
-    this.httpClient.get(url, {responseType: 'text'})
-      .subscribe(response => this.changelogTemplate = response as string);
+  private loadTemplates(): void {
+    this.changelogTemplate = '';
+    const changelogTemplateUrl = 'assets/i18n/changelog.' + this.translationService.currentLang + '.html';
+    this.httpClient.get(changelogTemplateUrl, {responseType: 'text'})
+      .subscribe({
+        next: response => this.changelogTemplate = response as string,
+        error: () => void 0 // Do nothing in case of error, the user would not be able to do anything here
+      });
+
+    this.noticeTemplate = '';
+    const noticeTemplateUrl = 'assets/i18n/notice.' + this.translationService.currentLang + '.html';
+    this.httpClient.get(noticeTemplateUrl, {responseType: 'text'})
+      .subscribe({
+        next: response => this.noticeTemplate = response as string,
+        error: () => void 0 // Do nothing in case of error, the user would not be able to do anything here
+      });
   }
 
   public onLoginButtonClick(): void {

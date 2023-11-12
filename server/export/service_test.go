@@ -3,14 +3,13 @@ package export
 import (
 	"database/sql"
 	"github.com/hauke96/sigolo"
-	"github.com/hauke96/simple-task-manager/server/config"
-	"github.com/hauke96/simple-task-manager/server/database"
-	"github.com/hauke96/simple-task-manager/server/permission"
-	"github.com/hauke96/simple-task-manager/server/project"
-	"github.com/hauke96/simple-task-manager/server/task"
-	"github.com/hauke96/simple-task-manager/server/test"
-	"github.com/hauke96/simple-task-manager/server/util"
 	"github.com/pkg/errors"
+	"stm/config"
+	"stm/permission"
+	"stm/project"
+	"stm/task"
+	"stm/test"
+	"stm/util"
 	"testing"
 	"time"
 )
@@ -23,27 +22,18 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	h = &test.TestHelper{
-		Setup: setup,
-	}
-
+	h = test.NewTestHelper(setup)
 	m.Run()
 }
 
 func setup() {
-	config.LoadConfig("../config/test.json")
-	test.InitWithDummyData(config.Conf.DbUsername, config.Conf.DbPassword)
 	sigolo.LogLevel = sigolo.LOG_DEBUG
+	config.LoadConfig("../test/test-config.json")
+	h.InitWithDummyData(config.Conf.DbUsername, config.Conf.DbPassword, config.Conf.DbDatabase)
+	tx = h.NewTransaction()
 
 	logger := util.NewLogger()
 
-	var err error
-	tx, err = database.GetTransaction(logger)
-	if err != nil {
-		panic(err)
-	}
-
-	h.Tx = tx
 	permissionStore := permission.Init(tx, logger)
 	taskService := task.Init(tx, logger, permissionStore)
 	projectService := project.Init(tx, logger, taskService, permissionStore)

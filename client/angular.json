@@ -40,7 +40,12 @@
               "@turf/hex-grid",
               "@turf/triangle-grid",
               "geojson-rbush",
-              "pbf"
+              "pbf",
+              "polygon-clipping",
+              "rbush",
+              "web-worker",
+              "xml-utils/find-tags-by-name.js",
+              "xml-utils/get-attribute.js"
             ]
           },
           "configurations": {
@@ -133,5 +138,7 @@
       }
     }
   },
-  "defaultProject": "simple-task-manager"
+  "cli": {
+    "analytics": false
+  }
 }
