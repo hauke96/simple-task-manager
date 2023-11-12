@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { environment } from '../../environments/environment';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { User } from './user.material';
 import { GeoJSON } from 'ol/format';
+import { ConfigProvider } from '../config/config.provider';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +13,8 @@ export class UserService {
   public cache: Map<string, User> = new Map<string, User>();
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private config: ConfigProvider
   ) {
   }
 
@@ -23,7 +24,7 @@ export class UserService {
       return of(cachedUsers);
     }
 
-    const url = environment.osm_api_url + '/users?users=' + uncachedUsers.join(',');
+    const url = this.config.osmBaseUrl + '/users?users=' + uncachedUsers.join(',');
 
     // TODO handle case of removed account: Here a comma separated list of users will return a 404 when one UID doesn't exist anymore
     // The users API support JSON
@@ -52,8 +53,8 @@ export class UserService {
       return of(cachedUser);
     }
 
-    const changesetUrl = environment.osm_api_url + '/changesets?display_name=' + userName;
-    const notesUrl = environment.osm_api_url + '/notes/search?display_name=' + userName;
+    const changesetUrl = this.config.osmBaseUrl + '/changesets?display_name=' + userName;
+    const notesUrl = this.config.osmBaseUrl + '/notes/search?display_name=' + userName;
 
     return this.http.get(changesetUrl, {responseType: 'text', headers: {Accept: 'application/json'}}).pipe(
       map(result => {

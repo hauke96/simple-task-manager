@@ -18,7 +18,7 @@ export class TaskEditComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onTaskNameChanged(evt: Event) {
+  onTaskNameChanged(evt: Event): void {
     const taskId = this.task.id;
     if (!taskId) {
       return;

@@ -3,4 +3,5 @@ export class Config {
   public maxTasksPerProject = 0;
   public maxDescriptionLength = 0;
   public testEnvironment = false;
+  public osmBaseUrl = '';
 }

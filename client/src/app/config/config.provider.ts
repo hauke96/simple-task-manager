@@ -13,7 +13,8 @@ export class ConfigProvider extends Config {
   constructor() {
     super();
   }
-  public apply(config: Config) {
+
+  public apply(config: Config): void {
     this.sourceRepoUrl = config.sourceRepoUrl;
     this.maxTasksPerProject = config.maxTasksPerProject;
     this.maxDescriptionLength = config.maxDescriptionLength;
