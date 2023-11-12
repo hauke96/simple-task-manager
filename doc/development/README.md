@@ -1,7 +1,7 @@
 **Note:** Before you start coding, take a look at the [CONTRIBUTING.md](../../CONTRIBUTING.md) to learn on how to contribute.
 
 This file guides you through the setup process of the project. 
-After this your development environment is setup and ready to go. 
+After this your development environment is set up and ready to go. 
 
 # Components
 

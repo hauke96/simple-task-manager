@@ -18,21 +18,24 @@ Optional but recommended:
 I recommend the following structure and I assume your users home folder is `/home/stm`:
 
 * Create `/home/stm/simple-task-manager/` with following sub-folders:
-  * `backups`: for (automated) backups (s. section below)
-  * `configs`: contains nginx and stm-server configs
-  * `postgres-data`: contains the database files
-  * `repo`: contains the actual code repo. This is needed so get the latest `docker-compose.yml`
+    * `backups`: for (automated) backups (s. section below)
+    * `configs`: contains nginx and stm-server configs
+    * `postgres-data`: contains the database files
+    * `repo`: contains the actual code repo. This is needed so get the latest `docker-compose.yml`
 
 # 2 Get STM
 
 ## Via docker hub (recommended)
 
-The deployments (since 1.4.2) work via [docker hub](https://hub.docker.com/u/simpletaskmanager) and the pre-built docker images from there.
+The deployments (since 1.4.2) work via [docker hub](https://hub.docker.com/u/simpletaskmanager) and the pre-built docker
+images from there.
 
-* Log into your server and go into the folder where all your stuff should be (e.g. `/home/stm/simple-task-manager/` as described above)
+* Log into your server and go into the folder where all your stuff should be (e.g. `/home/stm/simple-task-manager/` as
+  described above)
 * Get the required compose file using **one** of the following ways:
-  * Clone the git repo into the `repo` folder and create the symlink `docker-compose.yml` -> `repo/docker-compose.yml`
-  * Or: Download the `docker-compose.yml` file from the [STM github repo](https://github.com/hauke96/simple-task-manager/blob/master/docker-compose.yml)
+    * Clone the git repo into the `repo` folder and create the symlink `docker-compose.yml` -> `repo/docker-compose.yml`
+    * Or: Download the `docker-compose.yml` file from
+      the [STM github repo](https://github.com/hauke96/simple-task-manager/blob/master/docker-compose.yml)
 
 I recommend to clone the git repo in order to easily get new versions of the compose file.
 
@@ -55,78 +58,67 @@ projetcs.
 
 # 3 Configuration
 
-The configuration is done via different config files:
+The configuration of the whole system is done via different config files:
 
-* `.env`: A file (s. below for doc and example) for docker containing environment variables and paths to the following config files:
-* `*.json`: A json file for the server configuration. Configured in the `.env` file with `STM_SERVER_CONFIG=./path/to/server.json`.
-* `*.conf`: A conf file for the nginx server. Configured in the `.env` file with `STM_NGINX_CONFIG=./path/to/nginx.conf`.
+* `.env`: A file (s. below for doc and examples) for environment variables of docker containers.
+* `*.json`: A json file for the server configuration. Configured in the `.env` file
+  with `STM_SERVER_CONFIG=./path/to/server.json`.
+* `*.conf`: A conf file for the nginx server. Configured in the `.env` file
+  with `STM_NGINX_CONFIG=./path/to/nginx.conf`.
 
-As describes above, I recommend to create a config folder on your server (e.g. `/home/stm/simple-task-manager/configs/`) and put all your configs into that folder.
+As describes above, I recommend to create a config folder on your server (e.g. `/home/stm/simple-task-manager/configs/`)
+and put all your configs into that folder.
 Even better would be a separate git repo to manage your configs, but that's up to you.
 
 ## Server configuration
 
 The server knows two places for configuration:
-A config file (see the files in the `./config/` folder of the repo) and environment variables. When using docker,
-environment variables should be set via the `.env` file (just for convenience).
+A config file (see the files in the `server/config/` folder of this repo) and environment variables.
+When using docker, environment variables should be set via the `.env` file and registered in the `docker-compose.yml` so
+that they are passed to the docker container.
 
-There's no overlap between the config file and environment variables, so they both configure totally different things.
-
-*What can be configured using environment variables?*<br>
-Only OAuth and database credentials.
-
-*What can be configured using the config file?*<br>
-Different things to slightly modify the servers behavior. See the below for a full list.
-
-*Why are there two sources of configurations?*<br>
-To separate sensitive data (credentials) from non-sensitive data that can also be uploaded to a git repo.
+You can configure the entire application with environment variables or the config file or a combination of both.
+Environment variable values take precedence over config entries, which means they override the config entries.
 
 ### Config file for stm-server
 
-Default file is the `./config/default.json` but can be specified using the `--config`/`-c` parameter when starting the
-server. When using docker for deployment, the config file will be overwritten via volumes instead of this CLI parameter,
-but later more about that.
+Default config file is the `./config/default.json` but can be specified using the `--config`/`-c` parameter when
+starting the server or via the `STM_SERVER_CONFIG` environment variable in the setup of this repo (which mounts the
+given config file into the container).
+When using docker for deployment, the config file will be overwritten via volumes instead of this CLI parameter, but
+later more about that.
 
-Take a look at the config folder in the git repository for e.g. the production configuration.
+**Recommendation:** Use environment variables to override sensitive information like passwords and the OAuth secret.
+
+Take a look at the `docker-compose.yml` and the config folder in the git repository for e.g. the production
+configuration.
 
 The following things can be configured:
 
-* ```server-url```: The URL of the server. Is used for SSL, authentication and the info page (
-  e.g. `https://stm.hauke-stieler.de`).
-* ```port```: The port that should be used by the server (e.g. `8080`).
-* ```ssl-cert-file```: Absolute path to the SSL certificate file (e.g. `/etc/letencrypt/.../fullchain.pem`).
-* ```ssl-key-file```: Absolute path to the SSL key file (e.g. `/etc/letencrypt/.../privkey.pem`).
-* ```osm-base-url```: URL to the OSM server (e.g. `https://www.openstreetmap.org`).
-* ```debug-logging```: Set to `true` for more detailed logging (caution: expect tons of log entries!).
-* ```token-validity```: Duration of a token until it's not valid anymore (e.g. `24h` or other valid duration strings
-  according to golang `time.ParseDuration` function).
-* ```source-repo-url```: URL to the GitHub/GitLab/Gitea/... repo. Just used for the info-page.
-* ```max-task-per-project```: Maximum amount of tasks that are allowed per project.
-* ```test-env```: Set to `true` to inform clients that this is a test instance. This will e.g. show the test-banner in
-  the STM-client.
-
-### Environment variables
-
-These environment variables are used by the server:
-
-* ```STM_OAUTH2_CLIENT_ID```: The OAuth2 client ID provided by osm.org (no default value → this must be set)
-* ```STM_OAUTH2_SECRET```: The OAuth2 consumer secret provided by osm.org (no default value → this must be set)
-* ```STM_DB_USERNAME```: The username for the database (default: `stm`)
-* ```STM_DB_PASSWORD```: The password for the database (default: `secret`)
-* ```STM_DB_HOST```: The host of the database (default: `localhost`)
-
-It's not possible to override entries from the config file using environment variables and vise versa.
-
-Simply set the variables via `export STM_DB_USERNAME=mydbuser STM_DB_PASSWORD=supersecurepassword123 STM_DB_HOST=some-host-name`. To make the
-export permanent, move that command into your `.bachrc` (or similar file).
-
-When using docker, you can use the `.env` file to store the variables there instead of using the `.bashrc` file.
-
-**Important:** Use this opportunity to set a secure password for your database!
+| Config entry               | Environment variable           | Default     | Optional | Description                                                                                                                                      |
+|----------------------------|--------------------------------|-------------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------|
+| `server-url`               | `STM_SERVER_URL`               | -           | No       | The URL of the server. Is used for SSL, authentication and the info page ( e.g. `https://stm.hauke-stieler.de`).                                 |
+| `port`                     | `STM_PORT`                     | -           | No       | The port that should be used by the server (e.g. `8080`).                                                                                        |
+| `client-auth-redirect-url` | `STM_CLIENT_AUTH_REDIRECT_URL` | -           | No       | The URL to the STM client which is called after OAuth authorization.                                                                             |
+| `osm-base-url`             | `STM_OSM_BASE_URL`             | -           | No       | URL to the OSM server (e.g. `https://www.openstreetmap.org`).                                                                                    |
+| `token-validity`           | `STM_TOKEN_VALIDITY_DURATION`  | `"24h"`     | Yes      | Duration of a token until it's not valid anymore (e.g. `24h` or other valid duration strings according to golang `time.ParseDuration` function). |
+| `source-repo-url`          | `STM_SOURCE_REPO_URL`          | -           | Yes      | URL to the GitHub/GitLab/Gitea/... repo. Just used for the info-page.                                                                            |
+| `max-task-per-project`     | `STM_MAX_TASKS_PER_PROJECT`    | 1000        | Yes      | Maximum amount of tasks that are allowed per project.                                                                                            |
+| `max-description-length`   | `STM_MAX_DESCRIPTION_LENGTH`   | 1000        | Yes      | Maximum length of project descriptions.                                                                                                          |
+| `ssl-cert-file`            | `STM_SSL_CERT_FILE`            | -           | Yes      | Absolute path to the SSL certificate file (e.g. `/etc/letencrypt/.../fullchain.pem`).                                                            |
+| `ssl-key-file`             | `STM_SSL_KEY_FILE`             | -           | Yes      | Absolute path to the SSL key file (e.g. `/etc/letencrypt/.../privkey.pem`).                                                                      |
+| `db-username`              | `STM_DB_USERNAME`              | `stm`       | No       | Username of the database.                                                                                                                        |
+| `db-password`              | `STM_DB_PASSWORD`              | `secret`    | No       | Password for the database user.                                                                                                                  |
+| `db-host`                  | `STM_DB_HOST`                  | `localhost` | No       | Host of the database.                                                                                                                            |
+| `oauth2-client-id`         | `STM_OAUTH2_CLIENT_ID`         | -           | No       | OAuth2 client-ID.                                                                                                                                |
+| `oauth2-secret`            | `STM_OAUTH2_SECRET`            | -           | No       | OAuth2 client-secret.                                                                                                                            |
+| `debug-logging`            | `STM_DEBUG_LOGGING`            | -           | Yes      | Set to `true` for more detailed logging (caution: expect tons of log entries!).                                                                  |
+| `test-env`                 | `STM_TEST_ENVIRONMENT`         | `false`     | Yes      | Set to `true` to inform clients that this is a test instance. This will e.g. show the test-banner in the STM-client.                             |
 
 ## The nginx configuration
 
-The `docker-compose.yml` uses the `$STM_NGINX_CONFIG` environment variable which references a `.conf` file with all nginx related stuff in it.
+The `docker-compose.yml` uses the `$STM_NGINX_CONFIG` environment variable which references a `.conf` file with all
+nginx related stuff in it.
 See the client folder of this repo for two examples.
 
 ## The `.env` file
@@ -141,20 +133,16 @@ STM_OAUTH2_SECRET=def234
 STM_DB_USERNAME=mydbuser
 STM_DB_PASSWORD=supersecurepassword123
 STM_DB_HOST=some-host-name
+STM_...
 STM_SERVER_CONFIG=/path/to/config.json
 STM_NGINX_CONFIG=/path/to/nginx.conf
-``` 
+```
 
-The `STM_OAUTH2_...` entries don't have default values and _must_ be set in order to make authentication work.
+The `STM_...` entry stands for all kinds of configurations for the server.
+Make sure you register these variables in the `docker-compose.yml` so that they are passed on to the server container.
 
 The `STM_SERVER_CONFIG` and `STM_NGINX_CONFIG` _must_ be set, neither the server nor the client will start without
-them.
-
-### Precedence of configurations
-
-The `STM_DB_...` entries have default values.
-Values from the `config.json` override these default values.
-Values via environment variables override default values as well as values from the `config.json`.
+them because these two environment variables are used in the `docker-compose.yml` to mount these config files.
 
 ## Frontend configuration
 
@@ -165,8 +153,10 @@ Therefore, configuration only takes place via the nginx config (s. above) or the
 
 As admin you can show arbitrary notices to the user in the login page.
 To do so, create `notice.<lang-code>.html` files in some folder and edit your `docker-compose.yml`.
-In there, mount the notice files to the client like this: `- ./path/to/notice.<lang-code>.html:/usr/share/nginx/html/assets/i18n/notice.<lang-code>.html`.
-The `<lang-code>` must be replaced by the language code used for the changelog-files as well (so e.g. `de` for German or `en-US` for english).
+In there, mount the notice files to the client like
+this: `- ./path/to/notice.<lang-code>.html:/usr/share/nginx/html/assets/i18n/notice.<lang-code>.html`.
+The `<lang-code>` must be replaced by the language code used for the changelog-files as well (so e.g. `de` for German
+or `en-US` for english).
 
 # 4 Automatic backups
 
@@ -176,9 +166,11 @@ This step is optional but recommended and described in the [automatic-backups.md
 
 _This section only describes the docker hub based deployment!_
 
-The default deployment process downloads pre-built docker images from [docker hub](https://hub.docker.com/u/simpletaskmanager) and starts them with the configurations
+The default deployment process downloads pre-built docker images
+from [docker hub](https://hub.docker.com/u/simpletaskmanager) and starts them with the configurations
 as describes above.
-You should have your `docker-compose.yml` ready as describes above in section 7 and your configuration set up as described in section 8.
+You should have your `docker-compose.yml` ready as describes above in section 7 and your configuration set up as
+described in section 8.
 
 Now let us deploy everything:
 
@@ -196,7 +188,7 @@ using `journalctl` and so some manual checks.
 Check logs and firewall:
 
 * `iptables -S`: Should show the rules describes above.
-  * If not: Restart the machine. The `iptables-persistent` package should reload the firewall config after the reboot.
+    * If not: Restart the machine. The `iptables-persistent` package should reload the firewall config after the reboot.
 * `journalctl -f CONTAINER_NAME=stm-server -n 1000`: Shows the last 1000 log messages for the `stm-server` container.
   Also works for `stm-db` and `stm-client`. This shouldn't display any errors (except token and authentication errors if
   you or someone else tried to login).
@@ -209,6 +201,6 @@ Manual checks (of course use your own domain/ip):
   incoming traffic in ports other than ssh, `8080` and `433`.
 * Open `https://stm.hauke-stieler.de:8080/info`: Should work, so the firewall accepts port 8080 requests.
 * Open `https://stm.hauke-stieler.de`: Should work, this is the normal front page.
-  * Login should work. This would mean that the firewall allows traffic *from* the server *to* the internet and also
-    that the server-communication works.
+    * Login should work. This would mean that the firewall allows traffic *from* the server *to* the internet and also
+      that the server-communication works.
 

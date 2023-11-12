@@ -1,6 +1,6 @@
 # Server
 
-The server is written in go (aka golang) so you need to install go and setup your development environment (paths, IDE, etc.)
+The server is written in go (aka golang) so you need to install go and set up your development environment (paths, IDE, etc.)
 
 # Setup development environment
 
@@ -38,9 +38,10 @@ This description assumes that you use docker instead of an direct installation o
 
 **tl;dr:**
 * `export STM_DB_USERNAME=stm STM_DB_PASSWORD=secret STM_DB_HOST=localhost`
+* **or** Set the database entries in a custom JSON-config and use that file with the `-c`/`--config` parameter. 
 
-You can override the default username and password (`stm` and `secret`) by setting environment variables.
-To make this permanent, you probably want to add this to the `.bachrc` or similar file.
+You can override the default DB username, password (`stm` and `secret`) and host by setting environment variables.
+To make this permanent, you probably want to add this to the `.bachrc` or similar files.
 
 ### Start as docker container
 
@@ -89,12 +90,15 @@ So you need to have an account there and also need to register your local applic
 
 #### OSM OAuth credentials
 
-To perform a login (even a login of your locally running application), you'll need OAuth credentials (so the OAuth client-ID and -secret) within environment variables:
+To perform a login (even a login of your locally running application), you'll need OAuth credentials (so the OAuth2 client-ID and -secret).
+You can set these with environment variables:
 
 * `export STM_OAUTH2_CLIENT_ID="Eln7...rY66"`
 * `export STM_OAUTH2_SECRET="fgg1...kl09"`
 
 You can export these variables each time you start a new terminal or just put it into a file of your choice (e.g. `.bashrc`) to load then e.g. after your system booted.
+
+You can also create your own JSON-config file and set everything there.
 
 ## 5. Setup finished :)
 

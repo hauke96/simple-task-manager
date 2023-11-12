@@ -8,7 +8,7 @@ import (
 
 func TestInitConfig(t *testing.T) {
 	h.Run(t, func() error {
-		InitDefaultConfig()
+		initDefaultConfig()
 
 		if Conf.DebugLogging {
 			return errors.New(fmt.Sprintf("Default value of 'DebugLogging' wrong: Wanted %s but was %v", "false", Conf.DebugLogging))
