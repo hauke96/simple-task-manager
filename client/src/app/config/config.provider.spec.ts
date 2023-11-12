@@ -18,7 +18,7 @@ describe(ConfigProvider.name, () => {
     config.maxTasksPerProject = 123;
     config.maxDescriptionLength = 234;
     config.testEnvironment = true;
-    config.osmBaseUrl = 'https://test.api.org';
+    config.osmApiUrl = 'https://test.api.org';
     expect(Object.keys(config).length).toEqual(5); // All fields filled
 
     provider.apply(config);
@@ -27,6 +27,6 @@ describe(ConfigProvider.name, () => {
     expect(provider.maxTasksPerProject).toEqual(config.maxTasksPerProject);
     expect(provider.maxDescriptionLength).toEqual(config.maxDescriptionLength);
     expect(provider.testEnvironment).toEqual(config.testEnvironment);
-    expect(provider.osmBaseUrl).toEqual(config.osmBaseUrl);
+    expect(provider.osmApiUrl).toEqual(config.osmApiUrl);
   });
 });

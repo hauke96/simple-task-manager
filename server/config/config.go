@@ -20,6 +20,7 @@ const (
 	EnvVarPort                  = "STM_PORT"
 	EnvVarClientAuthRedirectUrl = "STM_CLIENT_AUTH_REDIRECT_URL"
 	EnvVarOsmBaseUrl            = "STM_OSM_BASE_URL"
+	EnvVarOsmApiUrl             = "STM_OSM_API_URL"
 	EnvVarTokenValidityDuration = "STM_TOKEN_VALIDITY_DURATION"
 	EnvVarSourceRepoURL         = "STM_SOURCE_REPO_URL"
 	EnvVarMaxTasksPerProject    = "STM_MAX_TASKS_PER_PROJECT"
@@ -57,6 +58,7 @@ type Config struct {
 	Port                  int    `json:"port"`
 	ClientAuthRedirectUrl string `json:"client-auth-redirect-url"`
 	OsmBaseUrl            string `json:"osm-base-url"`
+	OsmApiUrl             string `json:"osm-api-url"`
 	TokenValidityDuration string `json:"token-validity"`
 	SourceRepoURL         string `json:"source-repo-url"`
 	MaxTasksPerProject    int    `json:"max-task-per-project"`   // Maximum amount of tasks allowed for a project.
@@ -97,6 +99,7 @@ func LoadConfig(file string) {
 	Conf.Port = getConfigEntryInt(EnvVarPort, Conf.Port)
 	Conf.ClientAuthRedirectUrl = getConfigEntry(EnvVarClientAuthRedirectUrl, Conf.ClientAuthRedirectUrl)
 	Conf.OsmBaseUrl = getConfigEntry(EnvVarOsmBaseUrl, Conf.OsmBaseUrl)
+	Conf.OsmApiUrl = getConfigEntry(EnvVarOsmApiUrl, Conf.OsmApiUrl)
 	Conf.TokenValidityDuration = getConfigEntry(EnvVarTokenValidityDuration, Conf.TokenValidityDuration)
 	Conf.SourceRepoURL = getConfigEntry(EnvVarSourceRepoURL, Conf.SourceRepoURL)
 	Conf.MaxTasksPerProject = getConfigEntryInt(EnvVarMaxTasksPerProject, Conf.MaxTasksPerProject)
@@ -156,6 +159,10 @@ func verifyRequiredConfigFields() {
 	}
 	if Conf.OsmBaseUrl == "" {
 		sigolo.Error("Config entry missing:  (config entry '%s' or environment variable '%s')", getTagValue("OsmBaseUrl"), EnvVarOsmBaseUrl)
+		hasMissingConfigs = true
+	}
+	if Conf.OsmApiUrl == "" {
+		sigolo.Error("Config entry missing:  (config entry '%s' or environment variable '%s')", getTagValue("OsmApiUrl"), EnvVarOsmApiUrl)
 		hasMissingConfigs = true
 	}
 

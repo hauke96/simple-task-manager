@@ -3,6 +3,7 @@
 	"port": 8080,
 	"client-auth-redirect-url": "https://stm.hauke-stieler.de/oauth-landing",
 	"osm-base-url": "https://www.openstreetmap.org",
+	"osm-api-url": "https://api.openstreetmap.org/api/0.6",
 	"debug-logging": false,
 	"ssl-cert-file": "/etc/letsencrypt/live/stm.hauke-stieler.de/fullchain.pem",
 	"ssl-key-file": "/etc/letsencrypt/live/stm.hauke-stieler.de/privkey.pem",

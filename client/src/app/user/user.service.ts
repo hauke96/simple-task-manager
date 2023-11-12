@@ -24,7 +24,7 @@ export class UserService {
       return of(cachedUsers);
     }
 
-    const url = this.config.osmBaseUrl + '/users?users=' + uncachedUsers.join(',');
+    const url = this.config.osmApiUrl + '/users?users=' + uncachedUsers.join(',');
 
     // TODO handle case of removed account: Here a comma separated list of users will return a 404 when one UID doesn't exist anymore
     // The users API support JSON
@@ -53,8 +53,8 @@ export class UserService {
       return of(cachedUser);
     }
 
-    const changesetUrl = this.config.osmBaseUrl + '/changesets?display_name=' + userName;
-    const notesUrl = this.config.osmBaseUrl + '/notes/search?display_name=' + userName;
+    const changesetUrl = this.config.osmApiUrl + '/changesets?display_name=' + userName;
+    const notesUrl = this.config.osmApiUrl + '/notes/search?display_name=' + userName;
 
     return this.http.get(changesetUrl, {responseType: 'text', headers: {Accept: 'application/json'}}).pipe(
       map(result => {

@@ -3,6 +3,7 @@
 	"port": 8080,
 	"client-auth-redirect-url": "https://unit-test.stm.org/oauth-landing",
 	"osm-base-url": "https://www.openstreetmap.org",
+	"osm-api-url": "https://api.openstreetmap.org/api/0.6",
 	"token-validity": "168h",
 	"source-repo-url": "https://github.com/hauke96/simple-task-manager",
 	"ssl-cert-file": "/etc/letsencrypt/live/unit-test.stm.org/fullchain.pem",

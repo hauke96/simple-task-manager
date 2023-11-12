@@ -19,6 +19,6 @@ export class ConfigProvider extends Config {
     this.maxTasksPerProject = config.maxTasksPerProject;
     this.maxDescriptionLength = config.maxDescriptionLength;
     this.testEnvironment = config.testEnvironment;
-    this.osmBaseUrl = config.osmBaseUrl;
+    this.osmApiUrl = config.osmApiUrl;
   }
 }
