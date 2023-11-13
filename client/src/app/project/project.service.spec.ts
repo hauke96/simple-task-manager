@@ -41,7 +41,7 @@ describe(ProjectService.name, () => {
     expect(service).toBeTruthy();
   });
 
-  it('should create tasks when creating project', () => {
+  it('should create tasks when creating project', done => {
     // Arrange
     const taskDtos = [
       new TaskDto('1', 0, 100, TestTaskGeometry, '1'),
@@ -66,69 +66,89 @@ describe(ProjectService.name, () => {
         format.readFeature(TestTaskGeometry),
         format.readFeature(TestTaskGeometry)
       ], ['user'], 'user')
-      .subscribe(p => {
-        // Only these properties can be checked. All others (like 'owner') are set by the server, which we don't use here
-        expect(p.id).toEqual('');
-        expect(p.name).toEqual('project name');
-        expect(p.tasks).toEqual(tasks);
-      }, err => {
-        console.error(err);
-        fail();
+      .subscribe({
+        next: p => {
+          // Only these properties can be checked. All others (like 'owner') are set by the server, which we don't use here
+          expect(p.id).toEqual(projectDto.id);
+          expect(p.name).toEqual(projectDto.name);
+          expect(p.tasks.length).toEqual(tasks.length);
+          expect(p.tasks.map(t => t.id)).toContain(tasks[0].id);
+          expect(p.tasks.map(t => t.id)).toContain(tasks[1].id);
+          expect(p.tasks.map(t => t.id)).toContain(tasks[2].id);
+          done();
+        },
+        error: e => {
+          console.error(e);
+        }
       });
   });
 
-  it('should add users when getting all projects', () => {
+  it('should add users when getting all projects', done => {
     const {users, taskDtos} = setUpUserAndTasks();
     const tasks = taskDtoToTask(taskDtos);
     const date = new Date();
+
+    taskService.toTaskWithUsers = jest.fn().mockImplementation((dto: TaskDto, _: User[]) => taskDtoToTask([dto])[0]);
 
     const dto1 = new ProjectDto('123', 'Project 123', 'foo', ['1'], [taskDtos[0]], '1', false, date);
     const dto2 = new ProjectDto('124', 'Project 124', 'bar', ['2'], [taskDtos[1]], '2', false, date);
     httpClient.get = jest.fn().mockReturnValue(of([dto1, dto2]));
 
-    service.getProjects().subscribe((projects: Project[]) => {
-      expect(projects).toBeTruthy();
-      expect(projects.length).toEqual(2);
+    service.getProjects().subscribe({
+      next: (projects: Project[]) => {
+        expect(projects).toBeTruthy();
+        expect(projects.length).toEqual(2);
 
-      expect(projects[0].users.length).toEqual(1);
-      expect(projects[0].users[0]).toEqual(users[0]);
-      expect(projects[0].tasks.length).toEqual(1);
-      expect(projects[0].tasks[0].id).toEqual(tasks[0].id);
+        expect(projects[0].users.length).toEqual(1);
+        expect(projects[0].users[0]).toEqual(users[0]);
+        expect(projects[0].tasks.length).toEqual(1);
+        expect(projects[0].tasks[0].id).toEqual(tasks[0].id);
 
-      expect(projects[1].users.length).toEqual(1);
-      expect(projects[1].users[0]).toEqual(users[1]);
-      expect(projects[1].tasks.length).toEqual(1);
-      expect(projects[1].tasks[0].id).toEqual(tasks[1].id);
+        expect(projects[1].users.length).toEqual(1);
+        expect(projects[1].users[0]).toEqual(users[1]);
+        expect(projects[1].tasks.length).toEqual(1);
+        expect(projects[1].tasks[0].id).toEqual(tasks[1].id);
 
-      expect(projects[0].creationDate).toEqual(date);
-      expect(projects[1].creationDate).toEqual(date);
-    }, e => fail(e));
+        expect(projects[0].creationDate).toEqual(date);
+        expect(projects[1].creationDate).toEqual(date);
+
+        done();
+      },
+      error: e => fail(e)
+    });
   });
 
-  it('should add users when getting a specific project', () => {
+  it('should add users when getting a specific project', done => {
     const {users, taskDtos} = setUpUserAndTasks();
     const tasks = taskDtoToTask(taskDtos);
     const date = new Date();
 
+    taskService.toTaskWithUsers = jest.fn().mockImplementation((d: TaskDto, _: User[]) => taskDtoToTask([d])[0]);
+
     const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '3'], [taskDtos[0]], '1', false, date);
     httpClient.get = jest.fn().mockReturnValue(of(dto));
 
-    service.getProject('123').subscribe((project: Project) => {
-      expect(project).toBeTruthy();
-      expect(project.id).toEqual(dto.id);
-      expect(project.name).toEqual(dto.name);
-      expect(project.description).toEqual(dto.description);
+    service.getProject('123').subscribe({
+      next: (project: Project) => {
+        expect(project).toBeTruthy();
+        expect(project.id).toEqual(dto.id);
+        expect(project.name).toEqual(dto.name);
+        expect(project.description).toEqual(dto.description);
 
-      expect(project.owner.uid).toEqual(dto.owner);
-      expect(project.owner.name).toEqual('test user 1');
+        expect(project.owner.uid).toEqual(dto.owner);
+        expect(project.owner.name).toEqual('test user 1');
 
-      expect(project.tasks.map(t => t.id)).toContain(tasks[0].id);
+        expect(project.tasks.map(t => t.id)).toContain(tasks[0].id);
 
-      expect(project.users).toContain(users[0]);
-      expect(project.users).toContain(users[2]);
+        expect(project.users).toContain(users[0]);
+        expect(project.users).toContain(users[2]);
 
-      expect(project.creationDate).toEqual(date);
-    }, e => fail(e));
+        expect(project.creationDate).toEqual(date);
+
+        done();
+      },
+      error: e => fail(e)
+    });
   });
 
   it('should return project after invitation', () => {
@@ -141,78 +161,97 @@ describe(ProjectService.name, () => {
     // TODO finish test
   });
 
-  it('should remove user correctly and return updated project', () => {
+  it('should remove user correctly and return updated project', done => {
     const {users, taskDtos} = setUpUserAndTasks();
     const tasks = taskDtoToTask(taskDtos);
     const date = new Date();
     const changeSpy = jest.fn();
 
+    taskService.toTaskWithUsers = jest.fn().mockImplementation((d: TaskDto, _: User[]) => taskDtoToTask([d])[0]);
+
     const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2'], taskDtos, '2', true, date);
     httpClient.delete = jest.fn().mockReturnValue(of(dto));
     service.projectChanged.subscribe(changeSpy);
 
-    service.removeUser('123', '3').subscribe((project: Project) => {
-      // Check
-      expect(project).toBeTruthy();
+    service.removeUser('123', '3').subscribe({
+      next: (project: Project) => {
+        // Check
+        expect(project).toBeTruthy();
 
-      expect(project.owner.uid).toEqual('2');
-      expect(project.owner.name).toEqual('test user 2');
+        expect(project.owner.uid).toEqual('2');
+        expect(project.owner.name).toEqual('test user 2');
 
-      expect(project.tasks.map(t => t.id)).toContain(tasks[0].id);
-      expect(project.tasks.map(t => t.id)).toContain(tasks[1].id);
-      expect(project.tasks.map(t => t.id)).toContain(tasks[2].id);
+        expect(project.tasks.map(t => t.id)).toContain(tasks[0].id);
+        expect(project.tasks.map(t => t.id)).toContain(tasks[1].id);
+        expect(project.tasks.map(t => t.id)).toContain(tasks[2].id);
 
-      expect(project.users).toContain(users[0]);
-      expect(project.users).toContain(users[1]);
-      expect(project.users).not.toContain(users[2]);
+        expect(project.users).toContain(users[0]);
+        expect(project.users).toContain(users[1]);
+        expect(project.users).not.toContain(users[2]);
 
-      expect(project.creationDate).toEqual(date);
+        expect(project.creationDate).toEqual(date);
 
-      expect(changeSpy).toHaveBeenCalled();
-    }, e => fail(e));
+        expect(changeSpy).toHaveBeenCalled();
+
+        done();
+      },
+      error: e => fail(e)
+    });
   });
 
-  it('should convert DTOs into Projects', () => {
+  it('should convert DTOs into Projects', done => {
     const {users, taskDtos} = setUpUserAndTasks();
     const tasks = taskDtoToTask(taskDtos);
     const date = new Date();
 
+    userService.getUsersByIds = jest.fn().mockImplementation((ids: string[]) => of(users.filter(u => ids.includes(u.uid))));
+    taskService.toTaskWithUsers = jest.fn().mockImplementation((d: TaskDto, _: User[]) => taskDtoToTask([d])[0]);
+
     const dto: ProjectDto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2', '3'], taskDtos, '2', true, date);
 
     // Execute
-    service.toProject(dto).subscribe((project: Project) => {
-      // Check
-      expect(project).toBeTruthy();
-      expect(project.id).toEqual(dto.id);
-      expect(project.name).toEqual(dto.name);
-      expect(project.description).toEqual(dto.description);
+    service.toProject(dto).subscribe({
+      next: (project: Project) => {
+        // Check
+        expect(project).toBeTruthy();
+        expect(project.id).toEqual(dto.id);
+        expect(project.name).toEqual(dto.name);
+        expect(project.description).toEqual(dto.description);
 
-      expect(project.owner.uid).toEqual(dto.owner);
-      expect(project.owner.name).toEqual('test user 2');
+        expect(project.owner.uid).toEqual(dto.owner);
+        expect(project.owner.name).toEqual('test user 2');
 
-      expect(project.tasks.map(t => t.id)).toContain(tasks[0].id);
-      expect(project.tasks.map(t => t.id)).toContain(tasks[1].id);
-      expect(project.tasks.map(t => t.id)).toContain(tasks[2].id);
+        expect(project.tasks.map(t => t.id)).toContain(tasks[0].id);
+        expect(project.tasks.map(t => t.id)).toContain(tasks[1].id);
+        expect(project.tasks.map(t => t.id)).toContain(tasks[2].id);
 
-      expect(project.tasks.find(t => t.id === tasks[0].id)?.assignedUser?.name).toEqual(users[0].name);
-      expect(project.tasks.find(t => t.id === tasks[1].id)?.assignedUser?.name).toEqual(users[1].name);
-      expect(project.tasks.find(t => t.id === tasks[2].id)?.assignedUser).toBeUndefined();
+        expect(project.tasks.find(t => t.id === tasks[0].id)?.assignedUser?.name).toEqual(users[0].name);
+        expect(project.tasks.find(t => t.id === tasks[1].id)?.assignedUser?.name).toEqual(users[1].name);
+        expect(project.tasks.find(t => t.id === tasks[2].id)?.assignedUser).toBeUndefined();
 
-      expect(project.users).toContain(users[0]);
-      expect(project.users).toContain(users[1]);
-      expect(project.users).toContain(users[2]);
+        expect(project.users).toContain(users[0]);
+        expect(project.users).toContain(users[1]);
+        expect(project.users).toContain(users[2]);
 
-      expect(project.creationDate).toEqual(date);
-    }, e => fail(e));
+        expect(project.creationDate).toEqual(date);
+
+        done();
+      },
+      error: e => fail(e)
+    });
   });
 
-  it('should return no project for no dto', () => {
-    service.toProjects([]).subscribe((projects: Project[]) => {
-      expect(projects).toBeTruthy();
-      expect(projects.length).toEqual(0);
-    }, e => {
-      console.error(e);
-      fail(e);
+  it('should return no project for no dto', done => {
+    service.toProjects([]).subscribe({
+      next: (projects: Project[]) => {
+        expect(projects).toBeTruthy();
+        expect(projects.length).toEqual(0);
+        done();
+      },
+      error: e => {
+        console.error(e);
+        fail(e);
+      }
     });
   });
 
@@ -245,8 +284,8 @@ describe(ProjectService.name, () => {
     });
 
     const taskDtos = [
-      new TaskDto('7', 0, 100, TestTaskGeometry, '1'),
-      new TaskDto('8', 10, 100, TestTaskGeometry, '2'),
+      new TaskDto('7', 0, 100, TestTaskGeometry, users[0].uid, users[0].name),
+      new TaskDto('8', 10, 100, TestTaskGeometry, users[1].uid, users[1].name),
       new TaskDto('9', 100, 100, TestTaskGeometry)
     ];
 

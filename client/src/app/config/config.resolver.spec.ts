@@ -21,7 +21,7 @@ describe(ConfigResolver.name, () => {
     expect(service).toBeTruthy();
   });
 
-  it('should apply config to config provider', () => {
+  it('should apply config to config provider', done => {
     const configFromServer = {
       sourceRepoUrl: 'foo',
       maxTasksPerProject: 2,
@@ -32,6 +32,7 @@ describe(ConfigResolver.name, () => {
 
     service.resolve({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot).subscribe(() => {
       expect(configProviderSpy).toHaveBeenCalledWith(configFromServer);
+      done();
     });
   });
 });
