@@ -106,13 +106,12 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
     }
 
     this.taskService.assign(this.task.id)
-      .subscribe(
-        () => {
-        },
-        e => {
+      .subscribe({
+        error: e => {
           console.error(e);
           this.notificationService.addError(this.translationService.instant('task-details.unable-assign-user'));
-        });
+        }
+      });
   }
 
   public onUnassignButtonClicked(): void {
@@ -121,13 +120,12 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
     }
 
     this.taskService.unassign(this.task.id)
-      .subscribe(
-        () => {
-        },
-        e => {
+      .subscribe({
+        error: e => {
           console.error(e);
           this.notificationService.addError(this.translationService.instant('task-details.unable-unassign-user'));
-        });
+        }
+      });
   }
 
   public onSaveButtonClick(): void {
@@ -136,13 +134,12 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
     }
 
     this.taskService.setProcessPoints(this.task.id, this.newProcessPoints)
-      .subscribe(
-        () => {
-        },
-        e => {
+      .subscribe({
+        error: e => {
           console.error(e);
           this.notificationService.addError(this.translationService.instant('task-details.unable-set-process-points'));
-        });
+        }
+      });
   }
 
   public onDoneButtonClick(): void {
@@ -151,13 +148,12 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
     }
 
     this.taskService.setProcessPoints(this.task.id, this.task.maxProcessPoints)
-      .subscribe(
-        () => {
-        },
-        e => {
+      .subscribe({
+        error: e => {
           console.error(e);
           this.notificationService.addError(this.translationService.instant('task-details.unable-set-process-points'));
-        });
+        }
+      });
   }
 
   public onOpenJosmButtonClicked(): void {
@@ -166,11 +162,12 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
     }
 
     this.taskService.openInJosm(this.task)
-      .subscribe(() => {
-        },
-        err => {
+      .subscribe({
+        error: err => {
+          console.error('Error opening JOSM:', err);
           this.notificationService.addError(this.translationService.instant('task-details.unable-load-josm'));
-        });
+        }
+      });
   }
 
   public onOpenOsmOrgButtonClicked(): void {

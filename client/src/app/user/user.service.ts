@@ -53,15 +53,16 @@ export class UserService {
       return of(cachedUser);
     }
 
-    const changesetUrl = this.config.osmApiUrl + '/changesets?display_name=' + userName;
-    const notesUrl = this.config.osmApiUrl + '/notes/search?display_name=' + userName;
+    const changesetUrl = this.config.osmApiUrl + '/changesets.json?display_name=' + userName;
+    const notesUrl = this.config.osmApiUrl + '/notes/search.json?display_name=' + userName;
 
     return this.http.get(changesetUrl, {responseType: 'text', headers: {Accept: 'application/json'}}).pipe(
       map(result => {
-        const uid = JSON.parse(result)?.changesets[0]?.user;
+        const uid = JSON.parse(result)?.changesets[0]?.uid;
         if (uid != null) {
-          const user = new User(userName, uid);
-          this.cache.set(uid, user);
+          const uidString = '' + uid;
+          const user = new User(userName, uidString);
+          this.cache.set(uidString, user);
           return user;
         } else {
           throw new Error('User \'' + userName + '\' not found in changesets');
@@ -75,15 +76,15 @@ export class UserService {
         // Second try, this time via the notes API
         return this.http.get(notesUrl, {responseType: 'text', headers: {Accept: 'application/json'}}).pipe(
           map(result => {
-            console.log(new GeoJSON().readFeatures(result));
             const allNoteComments = new GeoJSON().readFeatures(result)?.flatMap(f => f.get('comments'));
             const uid = allNoteComments.filter(c => c.user === userName)[0]?.uid;
-            if (!uid) {
-              throw new Error('User \'' + userName + '\' not found in notes');
+            if (uid != null) {
+              const uidString = '' + uid;
+              const user = new User(userName, uidString);
+              this.cache.set(uidString, user);
+              return user;
             }
-            const user = new User(userName, uid);
-            this.cache.set(uid, user);
-            return user;
+            throw new Error('User \'' + userName + '\' not found in notes');
           })
         );
       })
@@ -99,7 +100,6 @@ export class UserService {
       if (!!user) {
         cachedUsers.push(user);
       } else {
-        console.log('Cache miss for user \'' + u + '\'');
         uncachedUsers.push(u);
       }
     }

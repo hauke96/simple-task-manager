@@ -38,7 +38,16 @@ const userList = {
   ]
 };
 
-const changesets = `{
+const emptyChangesetResponse = `{
+  "version": "0.6",
+  "generator": "OpenStreetMap server",
+  "copyright": "OpenStreetMap and contributors",
+  "attribution": "http://www.openstreetmap.org/copyright",
+  "license": "http://opendatacommons.org/licenses/odbl/1-0/",
+  "changesets": []
+}`;
+
+const changesetsResponseForFoo = `{
   "version": "0.6",
   "generator": "OpenStreetMap server",
   "copyright": "OpenStreetMap and contributors",
@@ -50,7 +59,7 @@ const changesets = `{
       "uid": 1,
       "user": "foo",
       "tags": {
-        "abc": "def",
+        "abc": "def"
       }
     }
   ]
@@ -142,30 +151,44 @@ describe(UserService.name, () => {
     expect(uncachedUsers).toContain('5');
   });
 
-  it('should get uncached user by name', () => {
+  it('should get cached user by name', done => {
     fillCacheWithDummyData();
 
-    service.getUserByName('test2').subscribe(
-      user => {
+    service.getUserByName('test2').subscribe({
+      next: user => {
         // @ts-ignore
         expect(user).toEqual(userMap.get('2'));
+        done();
       },
-      () => fail());
-
-    httpClient.get = jest.fn().mockReturnValue(of(changesets));
-    service.getUserByName('test5').subscribe(
-      user => {
-        // @ts-ignore
-        expect(user).toEqual(undefined);
-      },
-      () => fail());
+      error: e => {
+        console.error(e);
+      }
+    });
   });
 
-  it('should parse user list to get users by ID correctly', () => {
+  it('should throw for HTTP responses without UIDs', done => {
+    fillCacheWithDummyData();
+
+    httpClient.get = jest.fn()
+      .mockReturnValueOnce(of(emptyChangesetResponse))
+      .mockReturnValueOnce(of(comments));
+
+    service.getUserByName('test5').subscribe({
+      next: () => {
+        fail();
+      },
+      error: e => {
+        console.error(e);
+        done();
+      }
+    });
+  });
+
+  it('should parse user list to get users by ID correctly', done => {
     httpClient.get = jest.fn().mockReturnValue(of(userList));
 
-    service.getUsersByIds(['1', '2']).subscribe(
-      u => {
+    service.getUsersByIds(['1', '2']).subscribe({
+      next: u => {
         expect(u.length).toEqual(2);
         expect(u[0].uid).toEqual('1');
         expect(u[0].name).toEqual('foo');
@@ -175,19 +198,21 @@ describe(UserService.name, () => {
         expect(service.cache.has(u[1].uid));
         expect(service.cache.get('1')).toEqual(u[0]);
         expect(service.cache.get('2')).toEqual(u[1]);
+        done();
       },
-      e => {
+      error: e => {
         console.error(e);
-        fail();
-      });
+      }
+    });
   });
 
-  it('should use cache on hit', () => {
+  it('should use cache on hit', done => {
     httpClient.get = jest.fn();
 
     fillCacheWithDummyData();
 
-    service.getUsersByIds(['1', '2']).subscribe(u => {
+    service.getUsersByIds(['1', '2']).subscribe({
+      next: u => {
         expect(u.length).toEqual(2);
         expect(u[0].uid).toEqual('1');
         expect(u[0].name).toEqual('test1');
@@ -198,30 +223,33 @@ describe(UserService.name, () => {
         expect(service.cache.get('1')).toEqual(u[0]);
         expect(service.cache.get('2')).toEqual(u[1]);
         expect(httpClient.get).not.toHaveBeenCalled();
+        done();
       },
-      e => {
+      error: e => {
         console.error(e);
-        fail();
-      });
+      }
+    });
   });
 
-  it('should find UID via changesets by given name correctly', () => {
-    httpClient.get = jest.fn().mockReturnValue(of(changesets));
+  it('should find UID via changesets by given name correctly', done => {
+    httpClient.get = jest.fn().mockReturnValue(of(changesetsResponseForFoo));
 
-    service.getUserByName('foo').subscribe(user => {
+    service.getUserByName('foo').subscribe({
+      next: user => {
         expect(user).toBeTruthy();
         expect(user.uid).toEqual('1');
         expect(user.name).toEqual('foo');
         expect(service.cache.has(user.uid));
         expect(service.cache.get('1')).toEqual(user);
+        done();
       },
-      e => {
+      error: e => {
         console.error(e);
-        fail();
-      });
+      }
+    });
   });
 
-  it('should find UID via comments by given name correctly', () => {
+  it('should find UID via comments by given name correctly', done => {
     // @ts-ignore
     httpClient.get = jest.fn().mockImplementation((url: string, options: {}) => {
       if (url.includes('notes')) {
@@ -230,31 +258,34 @@ describe(UserService.name, () => {
       return of('Not found');
     });
 
-    service.getUserByName('foo').subscribe(user => {
+    service.getUserByName('foo').subscribe({
+      next: user => {
         expect(user).toBeTruthy();
         expect(user.uid).toEqual('1');
         expect(user.name).toEqual('foo');
         expect(service.cache.has(user.uid));
         expect(service.cache.get('1')).toEqual(user);
+        done();
       },
-      e => {
+      error: e => {
         console.error(e);
-        fail();
-      });
+      }
+    });
   });
 
-  it('should return error when user not found', () => {
+  it('should return error when user not found', done => {
     httpClient.get = jest.fn().mockReturnValue(of('Not found'));
 
-    service.getUserByName('foo').subscribe(
-      () => fail(),
-      (e: Error) => {
-        expect(service.cache.size).toEqual(0);
+    service.getUserByName('foo').subscribe({
+      next: () => fail(),
+      error: e => {
+        console.error(e);
+        done();
       }
-    );
+    });
   });
 
-  it('should return error on invalid comment result', () => {
+  it('should return error on invalid comment result', done => {
     // @ts-ignore
     httpClient.get = jest.fn().mockImplementation((url: string, options: {}) => {
       if (url.includes('notes')) {
@@ -263,12 +294,13 @@ describe(UserService.name, () => {
       return of('Not found');
     });
 
-    service.getUserByName('foo').subscribe(
-      () => fail(),
-      (e: Error) => {
-        expect(service.cache.size).toEqual(0);
+    service.getUserByName('foo').subscribe({
+      next: () => fail(),
+      error: e => {
+        console.error(e);
+        done();
       }
-    );
+    });
   });
 
   function fillCacheWithDummyData(): void {
