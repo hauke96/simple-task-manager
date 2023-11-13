@@ -164,6 +164,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
     this.taskService.openInJosm(this.task)
       .subscribe({
         error: err => {
+          console.error('Error opening JOSM:', err);
           this.notificationService.addError(this.translationService.instant('task-details.unable-load-josm'));
         }
       });
