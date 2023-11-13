@@ -99,7 +99,6 @@ export class UserService {
       if (!!user) {
         cachedUsers.push(user);
       } else {
-        console.log('Cache miss for user \'' + u + '\'');
         uncachedUsers.push(u);
       }
     }
