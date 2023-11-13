@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	VERSION = "1.5.0"
+	VERSION = "1.5.1-SNAPSHOT.1"
 )
 
 func GetParam(param string, r *http.Request) (string, error) {
