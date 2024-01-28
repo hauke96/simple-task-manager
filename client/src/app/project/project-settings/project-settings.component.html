@@ -23,21 +23,25 @@
 
 <button class="export-project-button" (click)="onExportButtonClicked()"><span class="lnr lnr-download"></span>{{'project-settings.export-button' | translate}}</button>
 
-<div class="hline"></div>
+<ng-container *ngIf="isOwner">
+	<div class="hline"></div>
 
-<div>
-	<form #creationForm="ngForm">
-		<h2>{{'settings' | translate}}</h2>
-		<div class="form-entry">
-			<p class="input-field-label">{{'name' | translate}}</p>
-			<input class="name-input" [(ngModel)]="newProjectName" required name="nameField">
-		</div>
-		<div class="form-entry">
-			<p class="input-field-label">{{'description' | translate}}</p>
-			<textarea name="description-text-area" class="description-text-area" [(ngModel)]="newProjectDescription"></textarea>
-		</div>
-	</form>
+	<div>
+		<form #creationForm="ngForm">
+			<h2>{{ 'settings' | translate }}</h2>
+			<div class="form-entry">
+				<p class="input-field-label">{{ 'name' | translate }}</p>
+				<input class="name-input" [(ngModel)]="newProjectName" required name="nameField">
+			</div>
+			<div class="form-entry">
+				<p class="input-field-label">{{ 'description' | translate }}</p>
+				<textarea name="description-text-area" class="description-text-area"
+						  [(ngModel)]="newProjectDescription"></textarea>
+			</div>
+		</form>
 
-	<button class="save-button" (click)="onSaveButtonClicked()" [disabled]="!creationForm.form?.valid">{{'save-button' | translate}}</button>
-</div>
-
+		<button class="save-button" (click)="onSaveButtonClicked()"
+				[disabled]="!creationForm.form?.valid">{{ 'save-button' | translate }}
+		</button>
+	</div>
+</ng-container>
