@@ -115,6 +115,7 @@ $image-blur-size-mobile: 65px;
 	align-items: center;
 	width: $content-width;
 	max-width: 100%;
+	min-height: 100%;
 }
 
 .logo {
@@ -196,4 +197,6 @@ $image-blur-size-mobile: 65px;
 
 app-footer {
 	border-top: 1px solid $color-gray-light;
+	margin-top: auto;
+	width: 100%;
 }
