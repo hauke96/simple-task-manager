@@ -16,6 +16,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class TaskDetailsComponent extends Unsubscriber implements OnInit {
   @Input() public projectId: string;
+  @Input() public projectOwnerId: string;
   @Input() public needUserAssignment: boolean;
 
   public task?: Task;
@@ -81,6 +82,10 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
 
   public get currentUserId(): string | undefined {
     return this.currentUserService.getUserId();
+  }
+
+  public get currentUserIsProjectOwner(): boolean {
+    return this.projectOwnerId === this.currentUserService.getUserId();
   }
 
   private updateUser(): void {

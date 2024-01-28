@@ -37,7 +37,7 @@ func (l *Logger) Stack(err error) {
 
 func (l *Logger) LogQuery(query string, args ...interface{}) {
 	for i, a := range args {
-		query = strings.Replace(query, fmt.Sprintf("$%d", i+1), fmt.Sprintf("%v", a), 1)
+		query = strings.ReplaceAll(query, fmt.Sprintf("$%d", i+1), fmt.Sprintf("%v", a))
 	}
 
 	sigolo.Debugb(1, query)

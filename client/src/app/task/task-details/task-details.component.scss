@@ -14,13 +14,14 @@
 
 .process-point-container {
 	display: flex;
-	align-items: center;
+	align-items: start;
 	height: 40px; // To stay equally high, regardless of what the content is
 	margin-bottom: $space-base;
 }
 
-.points-label {
-	margin-right: $space-small;
+.task-metadata-container {
+	display: flex;
+	flex-direction: column;
 }
 
 .process-point-input {

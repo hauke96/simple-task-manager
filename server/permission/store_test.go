@@ -157,21 +157,27 @@ func TestVerifyMembershipTasks(t *testing.T) {
 
 func TestVerifyAssignment(t *testing.T) {
 	h.Run(t, func() error {
-		err := s.VerifyAssignment("1", "Peter")
+		err := s.VerifyCanUnassign("1", "Peter")
 		if err != nil {
 			return fmt.Errorf("User 'Peter' is in deed assigned to task '1': %s", err.Error())
 		}
 
 		// Not assigned
-		err = s.VerifyAssignment("2", "Clara")
+		err = s.VerifyCanUnassign("2", "Clara")
 		if err == nil {
 			return fmt.Errorf("User 'Clara' is in NOT assigned to task '2'")
 		}
 
 		// Not existing task
-		err = s.VerifyAssignment("875435", "Clara")
+		err = s.VerifyCanUnassign("875435", "Clara")
 		if err == nil {
 			return fmt.Errorf("User 'Clara' should not be treated as 'assigned' to not existing task '875435'")
+		}
+
+		// Not assigned
+		err = s.VerifyCanUnassign("7", "Maria")
+		if err != nil {
+			return fmt.Errorf("User 'Maria' is owner of project and should be allowed to unassign other users")
 		}
 
 		return nil
