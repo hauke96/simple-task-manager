@@ -50,7 +50,6 @@ export class LoginComponent {
     // outside the angular context which then causes an error. Using "ngZone.run"
     // executes the passed function within the context which then works perfectly.
     this.authService.requestLogin(() => this.ngZone.run(() => {
-      this.websocketClientService.connect();
       this.router.navigate(['/dashboard']);
     }));
   }

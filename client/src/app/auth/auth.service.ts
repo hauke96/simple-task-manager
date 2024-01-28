@@ -15,7 +15,7 @@ export class AuthService {
   ) {
   }
 
-  public setUserNameFromToken() {
+  public setUserNameFromToken(): void {
     const encodedToken = localStorage.getItem('auth_token');
     const decodedToken = atob(encodedToken ?? '');
     const token = JSON.parse(decodedToken);
@@ -51,7 +51,7 @@ export class AuthService {
 
   // Checks wether the local storate contains a token. If so, the user will be
   // set and the callback function called.
-  private waitForLocalStorageToken(timer: number, callback: () => void) {
+  private waitForLocalStorageToken(timer: number, callback: () => void): void {
     // Is authenticated and the timer exists (otherwise we'll get an error when
     // we try to reset it)
     if (this.isAuthenticated() && !!timer) {
@@ -70,8 +70,8 @@ export class AuthService {
 
   // Removes all login information from the local storage and also from the user service.
   public logout(): void {
-    this.currentUserService.resetUser();
     localStorage.removeItem('auth_token');
+    this.currentUserService.resetUser();
     this.router.navigate(['/']);
   }
 }
