@@ -14,7 +14,7 @@
 
 .process-point-container {
 	display: flex;
-	align-items: start;
+	align-items: flex-start;
 	height: 40px; // To stay equally high, regardless of what the content is
 	margin-bottom: $space-base;
 }
