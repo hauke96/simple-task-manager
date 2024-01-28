@@ -53,7 +53,6 @@ export class ShapeDivideComponent implements OnInit {
   }
 
   onPreviewButtonClicked(): void {
-    this.previewTasks.forEach(t => t.geometry.transform('EPSG:4326', 'EPSG:3857'));
     this.previewClicked.emit(this.previewTasks);
   }
 
@@ -73,7 +72,7 @@ export class ShapeDivideComponent implements OnInit {
     }
 
     this.taskDraftService.removeTask(selectedTaskId);
-    this.taskDraftService.addTasks(taskDrafts, true);
+    this.taskDraftService.addTasks(taskDrafts, false);
   }
 
   /**
@@ -150,5 +149,6 @@ export class ShapeDivideComponent implements OnInit {
 
   public taskDividePropertyChanged(): void {
     this.previewTasks = this.createTaskDrafts() ?? [];
+    this.previewTasks.forEach(t => t.geometry.transform('EPSG:4326', 'EPSG:3857'));
   }
 }
