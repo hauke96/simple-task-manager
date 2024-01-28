@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import BBox, { polygon as turfPolygon, Units } from '@turf/helpers';
+import BBox, { Feature as TurfFeature, multiPolygon as turfMultiPolygon, polygon as turfPolygon, Units } from '@turf/helpers';
 import squareGrid from '@turf/square-grid';
 import hexGrid from '@turf/hex-grid';
 import triangleGrid from '@turf/triangle-grid';
-import { Polygon } from 'ol/geom';
+import { MultiPolygon, Polygon } from 'ol/geom';
 import { NotificationService } from '../../common/services/notification.service';
 import { TaskDraft } from '../../task/task.material';
 import { TaskDraftService } from '../task-draft.service';
@@ -52,7 +52,7 @@ export class ShapeDivideComponent implements OnInit {
     return this.taskDraftService.getTasks().length - 1 + this.previewTasks.length;
   }
 
-  onPreviewButtonClicked(): void {
+  public onPreviewWanted(): void {
     this.previewClicked.emit(this.previewTasks);
   }
 
@@ -72,20 +72,33 @@ export class ShapeDivideComponent implements OnInit {
     }
 
     this.taskDraftService.removeTask(selectedTaskId);
-    this.taskDraftService.addTasks(taskDrafts, false);
+    this.taskDraftService.addTasks(taskDrafts, true);
   }
 
   /**
    * This just creates the tasks but does not add them to the TaskDraftService.
    */
   private createTaskDrafts(): TaskDraft[] | undefined {
-    const polygon = this.selectedTask.geometry.clone() as Polygon;
-    const extent = polygon.transform('EPSG:3857', 'EPSG:4326').getExtent() as BBox.BBox;
+    const selectedTaskGeometry = this.selectedTask.geometry.clone();
+    selectedTaskGeometry.transform('EPSG:3857', 'EPSG:4326');
+    const extent = selectedTaskGeometry.getExtent() as BBox.BBox;
+
+    let feature: TurfFeature<any>;
+    switch (this.selectedTask.geometry.getType()) {
+      case 'Polygon':
+        feature = turfPolygon((selectedTaskGeometry as Polygon).getCoordinates());
+        break;
+      case 'MultiPolygon':
+        feature = turfMultiPolygon((selectedTaskGeometry as MultiPolygon).getCoordinates());
+        break;
+      default:
+        throw new Error(`Unsupported task geometry type '${this.selectedTask.geometry.getType()}'`);
+    }
 
     // Use meters and only show grid cells within the original polygon (-> mask)
     const options = {
       units: 'meters' as Units,
-      mask: turfPolygon(polygon.getCoordinates()),
+      mask: feature,
     };
 
     const cellSize = this.gridCellSize;
@@ -107,9 +120,11 @@ export class ShapeDivideComponent implements OnInit {
     }
     this.estimatedResultTooLarge = false;
 
-    return grid.features.map((g: any) => {
+    console.log(grid);
+
+    return grid.features.map((gridCell: any) => {
       // Turn geo GeoJSON polygon from turf.js into an openlayers polygon
-      const geometry = new Polygon(g.geometry.coordinates);
+      const geometry = new Polygon(gridCell.geometry.coordinates);
 
       return new TaskDraft('', '', geometry, 0);
     });
@@ -128,7 +143,21 @@ export class ShapeDivideComponent implements OnInit {
         break;
     }
 
-    return (this.selectedTask.geometry as Polygon).getArea() / (Math.pow(this.gridCellSize, 2) * scale);
+    console.log('Get area');
+    let area = 0;
+    switch (this.selectedTask.geometry.getType()) {
+      case 'Polygon':
+        area = (this.selectedTask.geometry as Polygon).getArea();
+        break;
+      case 'MultiPolygon':
+        area = (this.selectedTask.geometry as MultiPolygon).getArea();
+        break;
+      default:
+        throw new Error(`Unsupported task geometry type '${this.selectedTask.geometry.getType()}'`);
+    }
+    console.log('Got area', area, area / (Math.pow(this.gridCellSize, 2) * scale));
+
+    return area / (Math.pow(this.gridCellSize, 2) * scale);
   }
 
   private createGrid(extent: BBox.BBox, cellSize: number, options: any): any {
@@ -150,5 +179,6 @@ export class ShapeDivideComponent implements OnInit {
   public taskDividePropertyChanged(): void {
     this.previewTasks = this.createTaskDrafts() ?? [];
     this.previewTasks.forEach(t => t.geometry.transform('EPSG:4326', 'EPSG:3857'));
+    this.onPreviewWanted();
   }
 }

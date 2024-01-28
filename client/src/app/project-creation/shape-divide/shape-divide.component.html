@@ -22,7 +22,7 @@
 		</select>
 	</div>
 
-	<button (click)="onPreviewButtonClicked()"
+	<button (click)="onPreviewWanted()"
 			[disabled]="!divisionForm.form?.valid">{{'project-creation.preview-button' | translate}}</button>
 	<button (click)="onDivideButtonClicked()" [disabled]="!divisionForm.form?.valid || !canDivideTasks"
 			class="divide-button">{{'project-creation.divide-button' | translate}}</button>
