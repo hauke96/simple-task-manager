@@ -44,6 +44,7 @@ import { CopyProjectComponent } from './project-creation/copy-project/copy-proje
 import { MapComponent } from './common/components/map/map.component';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { IconButtonComponent } from './ui/icon-button/icon-button.component';
 
 @NgModule({
   declarations: [
@@ -79,7 +80,8 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
     TaskTitlePipe,
     ProjectImportComponent,
     CopyProjectComponent,
-    MapComponent
+    MapComponent,
+    IconButtonComponent
   ],
   imports: [
     BrowserModule,

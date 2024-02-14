@@ -8,6 +8,7 @@
 	</div>
 </div>
 <div class="white-transparent language-selection">
+	<span class="lnr lnr-earth language-selection-label"></span>
 	<span class="language-selection-label">{{"language-selection" | translate}}</span>
 	<app-language-selection></app-language-selection>
 </div>
@@ -17,8 +18,8 @@
 	</div>
 	<div class="heading" [innerHTML]="'login.welcome' | translate"></div>
 	<div class="sub-heading" [innerHTML]="'login.welcome-subtitle' | translate"></div>
-	<div class="white-transparent login-button">
-		<button (click)="onLoginButtonClick()">{{"login.login-button" | translate}}</button>
+	<div class="white-transparent login-button-container">
+		<app-icon-button (click)="onLoginButtonClick()" icon="lnr-enter" textKey="login.login-button"></app-icon-button>
 	</div>
 	<div class="notice-container white-transparent">
 		<div class="warning-centered" *ngIf="noticeTemplate">

@@ -21,23 +21,25 @@
 	</div>
 </div>
 
-<button class="export-project-button" (click)="onExportButtonClicked()"><span class="lnr lnr-download"></span>{{'project-settings.export-button' | translate}}</button>
+<app-icon-button (click)="onExportButtonClicked()" class="export-project-button" icon="lnr-download" textKey="project-settings.export-button"></app-icon-button>
 
-<div class="hline"></div>
+<ng-container *ngIf="isOwner">
+	<div class="hline"></div>
 
-<div>
-	<form #creationForm="ngForm">
-		<h2>{{'settings' | translate}}</h2>
-		<div class="form-entry">
-			<p class="input-field-label">{{'name' | translate}}</p>
-			<input class="name-input" [(ngModel)]="newProjectName" required name="nameField">
-		</div>
-		<div class="form-entry">
-			<p class="input-field-label">{{'description' | translate}}</p>
-			<textarea name="description-text-area" class="description-text-area" [(ngModel)]="newProjectDescription"></textarea>
-		</div>
-	</form>
+	<div>
+		<form #creationForm="ngForm">
+			<h2>{{ 'settings' | translate }}</h2>
+			<div class="form-entry">
+				<p class="input-field-label">{{ 'name' | translate }}</p>
+				<input class="name-input" [(ngModel)]="newProjectName" required name="nameField">
+			</div>
+			<div class="form-entry">
+				<p class="input-field-label">{{ 'description' | translate }}</p>
+				<textarea name="description-text-area" class="description-text-area"
+						  [(ngModel)]="newProjectDescription"></textarea>
+			</div>
+		</form>
 
-	<button class="save-button" (click)="onSaveButtonClicked()" [disabled]="!creationForm.form?.valid">{{'save-button' | translate}}</button>
-</div>
-
+		<app-icon-button (click)="onSaveButtonClicked()" class="save-button" icon="lnr-checkmark-circle" [disabled]="!creationForm.form?.valid" textKey="save-button"></app-icon-button>
+	</div>
+</ng-container>

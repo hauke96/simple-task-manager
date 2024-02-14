@@ -112,9 +112,10 @@ func (s *PermissionStore) VerifyMembershipTasks(taskIds []string, user string) e
 	return nil
 }
 
-// VerifyAssignment returns an error when the given user is not assigned to the given task.
-func (s *PermissionStore) VerifyAssignment(taskId string, user string) error {
-	query := fmt.Sprintf("SELECT * FROM %s WHERE id=$1 AND assigned_user=$2;", taskTable)
+// VerifyCanUnassign returns an error when the given user is not allowed to unassign the current user of the given task.
+func (s *PermissionStore) VerifyCanUnassign(taskId string, user string) error {
+	// Get task only if the given user is assigned OR the given user is the owner of the project.
+	query := fmt.Sprintf("SELECT * FROM %s t WHERE t.id=$1 AND (t.assigned_user=$2 OR (SELECT p.owner FROM projects p WHERE p.id = t.project_id)=$2);", taskTable)
 
 	s.LogQuery(query, taskId, user)
 	rows, err := s.tx.Query(query, taskId, user)

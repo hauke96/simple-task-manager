@@ -6,7 +6,7 @@
 // =====================
 
 $space-base: 10px;
-$space-small: math.div($space-base, 2);
+$space-small: $space-base * 0.5;
 $space-large: $space-base * 2;
 $space-huge: $space-base * 3.5;
 

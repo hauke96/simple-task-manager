@@ -2,8 +2,7 @@
 	<h2>{{'task-details.title' | translate}} {{task | taskTitle}}</h2>
 	<div class="assign-button-container" *ngIf="needUserAssignment">
 		<button *ngIf="!task?.assignedUser?.uid" (click)="onAssignButtonClicked()">{{'task-details.assign-to-me' | translate}}</button>
-		<span *ngIf="!!task?.assignedUser?.uid && task?.assignedUser?.uid !== currentUserId">{{'task-details.assigned-to' | translate}} {{assignedUserName}}</span>
-		<button *ngIf="task?.assignedUser?.uid === currentUserId" (click)="onUnassignButtonClicked()">{{'task-details.unassign' | translate}}</button>
+		<button *ngIf="task?.assignedUser?.uid === currentUserId || task?.assignedUser?.uid && currentUserIsProjectOwner" (click)="onUnassignButtonClicked()">{{'task-details.unassign' | translate}}</button>
 	</div>
 </div>
 
@@ -25,10 +24,10 @@
 		</div>
 	</form>
 	<ng-template #currentUserElse>
-		<span class="points-label">{{'task-details.points' | translate}}</span>
-		{{task?.processPoints}}
-		/
-		{{task?.maxProcessPoints}}
+		<div class="task-metadata-container">
+			<span>{{ 'task-details.points' | translate }} {{ task?.processPoints }} / {{ task?.maxProcessPoints }}</span>
+			<span *ngIf="!!task?.assignedUser?.uid && task?.assignedUser?.uid !== currentUserId">{{ 'task-details.assigned-to' | translate }} {{ assignedUserName }}</span>
+		</div>
 	</ng-template>
 </div>
 

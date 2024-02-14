@@ -22,14 +22,18 @@ const routes: Routes = [
     path: 'dashboard',
     component: DashboardComponent,
     canActivate: [AuthGuard, SelectedLanguageGuard],
-    resolve: {projects: AllProjectsResolver, config: ConfigResolver}
+    resolve: {
+      projects: AllProjectsResolver,
+      config: ConfigResolver
+    }
   },
   {
     path: 'project/:id',
     component: ProjectComponent,
     canActivate: [AuthGuard, SelectedLanguageGuard],
     resolve: {
-      project: ProjectResolver
+      project: ProjectResolver,
+      config: ConfigResolver
     }
   },
   {

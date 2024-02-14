@@ -95,7 +95,7 @@ func (s *TaskService) AssignUser(taskId, userId string) (*Task, error) {
 }
 
 func (s *TaskService) UnassignUser(taskId, requestingUserId string) (*Task, error) {
-	err := s.permissionStore.VerifyAssignment(taskId, requestingUserId)
+	err := s.permissionStore.VerifyCanUnassign(taskId, requestingUserId)
 	if err != nil {
 		return nil, err
 	}
@@ -117,7 +117,7 @@ func (s *TaskService) SetProcessPoints(taskId string, newPoints int, requestingU
 		return nil, err
 	}
 	if needsAssignment {
-		err := s.permissionStore.VerifyAssignment(taskId, requestingUserId)
+		err := s.permissionStore.VerifyCanUnassign(taskId, requestingUserId)
 		if err != nil {
 			return nil, err
 		}

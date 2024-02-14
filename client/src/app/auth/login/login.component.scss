@@ -1,6 +1,7 @@
 @use "sass:math";
 @import "../../../styles";
 @import "../../../colors";
+@import "../../../icons";
 
 $content-width: 800px;
 $image-width: 800px;
@@ -115,6 +116,7 @@ $image-blur-size-mobile: 65px;
 	align-items: center;
 	width: $content-width;
 	max-width: 100%;
+	min-height: 100%;
 }
 
 .logo {
@@ -157,7 +159,7 @@ $image-blur-size-mobile: 65px;
 	}
 }
 
-.login-button {
+.login-button-container {
 	width: 100%;
 	display: flex;
 	flex-direction: row;
@@ -167,6 +169,18 @@ $image-blur-size-mobile: 65px;
 	padding-bottom: $space-large;
 	border-top: 1px solid $color-gray-light;
 	border-bottom: 1px solid $color-gray-light;
+
+	.login-button {
+		display: flex;
+		align-items: center;
+
+		.lnr {
+			margin-right: $space-base;
+			margin-bottom: $space-base * 0.1;
+			//color: #303030;
+			//font-size: 1.25em;
+		}
+	}
 }
 
 .notice-container {
@@ -196,4 +210,6 @@ $image-blur-size-mobile: 65px;
 
 app-footer {
 	border-top: 1px solid $color-gray-light;
+	margin-top: auto;
+	width: 100%;
 }

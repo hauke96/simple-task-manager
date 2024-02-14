@@ -236,7 +236,7 @@ func (s *ProjectService) RemoveUser(projectId, requestingUserId, userIdToRemove 
 	// Unassign removed user from all tasks
 	newTasks := make([]*task.Task, len(project.Tasks))
 	for i, t := range project.Tasks {
-		err := s.permissionStore.VerifyAssignment(t.Id, userIdToRemove)
+		err := s.permissionStore.VerifyCanUnassign(t.Id, userIdToRemove)
 
 		// err != nil means: The user is assigned to the task 't'
 		if err == nil {

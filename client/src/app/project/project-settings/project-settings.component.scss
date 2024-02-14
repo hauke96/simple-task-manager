@@ -1,20 +1,12 @@
 @import "../../../styles";
 @import "../../../icons";
 
-.export-project-button {
+.export-project-button, .save-button  {
 	margin-top: $space-base;
-
-	.lnr-download {
-		margin-right: $space-base;
-	}
 }
 
 .space-right {
 	margin-right: $space-base;
-}
-
-.save-button {
-	margin-top: $space-base;
 }
 
 .description-text-area {

@@ -1,23 +1,29 @@
 import { Injectable } from '@angular/core';
 import { User } from './user.material';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CurrentUserService {
   private currentUser?: User;
-
-  // TODO changed event?
+  private $userChanged: Subject<User | undefined> = new Subject<User | undefined>();
 
   constructor() {
   }
 
+  get onUserChanged(): Observable<User | undefined> {
+    return this.$userChanged.asObservable();
+  }
+
   public setUser(userName: string, uid: string): void {
     this.currentUser = new User(userName, uid);
+    this.$userChanged.next(this.currentUser);
   }
 
   public resetUser(): void {
     this.currentUser = undefined;
+    this.$userChanged.next(undefined);
   }
 
   public getUserName(): string | undefined {
