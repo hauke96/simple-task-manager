@@ -21,7 +21,7 @@
 	</div>
 </div>
 
-<button class="export-project-button" (click)="onExportButtonClicked()"><span class="lnr lnr-download"></span>{{'project-settings.export-button' | translate}}</button>
+<app-icon-button (click)="onExportButtonClicked()" class="export-project-button" icon="lnr-download" textKey="project-settings.export-button"></app-icon-button>
 
 <ng-container *ngIf="isOwner">
 	<div class="hline"></div>
@@ -40,8 +40,6 @@
 			</div>
 		</form>
 
-		<button class="save-button" (click)="onSaveButtonClicked()"
-				[disabled]="!creationForm.form?.valid">{{ 'save-button' | translate }}
-		</button>
+		<app-icon-button (click)="onSaveButtonClicked()" class="save-button" icon="lnr-checkmark-circle" [disabled]="!creationForm.form?.valid" textKey="save-button"></app-icon-button>
 	</div>
 </ng-container>

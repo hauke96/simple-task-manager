@@ -54,4 +54,8 @@ export class DashboardComponent {
       this.notificationService.addError(message);
     };
   }
+
+  public onUploadClicked(): void {
+    document.getElementById('projectInput')?.click();
+  }
 }

@@ -1,0 +1,4 @@
+<button (click)="click.emit($event)" [disabled]="disabled" class="button">
+	<span [class]="'lnr ' + this.icon"></span>
+	{{ textKey | translate }}
+</button>

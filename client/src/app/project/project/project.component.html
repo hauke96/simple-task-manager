@@ -1,7 +1,7 @@
 <app-toolbar>
 	<div class="toolbar-item">
 		<div class="back-button-container">
-			<button [routerLink]="['/dashboard']"><span class="lnr lnr-chevron-left back-button-icon"></span><span>{{'project.back-button' | translate}}</span></button>
+			<app-icon-button [routerLink]="['/dashboard']" icon="lnr-chevron-left" textKey="project.back-button"></app-icon-button>
 			<p class="project-label">{{'project.title' | translate}} {{project.name}}</p>
 		</div>
 		<app-progress-bar [progressPoints]="project.doneProcessPoints" [totalPoints]="project.totalProcessPoints"></app-progress-bar>

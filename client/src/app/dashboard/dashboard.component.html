@@ -3,19 +3,20 @@
 		<p>{{'dashboard.welcome' | translate: {userName: userName} }}</p>
 		<div class="toolbar-left">
 			<div class="language-selection">
+				<span class="lnr lnr-earth language-selection-label"></span>
 				<span class="language-selection-label">{{'language-selection' | translate}}</span>
 				<app-language-selection></app-language-selection>
 			</div>
 			<div class="separator"></div>
-			<button (click)="onLogoutClicked()">{{'dashboard.logout-button' | translate}}</button>
+			<app-icon-button (click)="onLogoutClicked()" icon="lnr-exit" textKey="dashboard.logout-button"></app-icon-button>
 		</div>
 	</app-toolbar>
 	<div class="root-container">
 		<app-project-list></app-project-list>
-		<div>
-			<button [routerLink]="['/new-project']">{{'dashboard.create-project' | translate}}</button>
+		<div class="new-project-buttons-container">
+			<app-icon-button [routerLink]="['/new-project']" icon="lnr-plus-circle" textKey="dashboard.create-project"></app-icon-button>
 			<input id="projectInput" type="file" content="Upload" accept=".json" (change)="onImportProjectClicked($event)" style="display:none;">
-			<button class="import-button" onclick="document.getElementById('projectInput').click();">{{'dashboard.import-project' | translate}}</button>
+			<app-icon-button (click)="onUploadClicked()" class="import-button" icon="lnr-upload" textKey="dashboard.import-project"></app-icon-button>
 		</div>
 	</div>
 </div>
