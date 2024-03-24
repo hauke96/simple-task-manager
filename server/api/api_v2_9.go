@@ -33,6 +33,7 @@ func Init_v2_9(router *mux.Router) (*mux.Router, string) {
 	r.HandleFunc("/projects/{id}/users", authenticatedTransactionHandler(addUserToProject_v2_9)).Methods(http.MethodPost)
 	r.HandleFunc("/projects/{id}/users", authenticatedTransactionHandler(leaveProject_v2_9)).Methods(http.MethodDelete)
 	r.HandleFunc("/projects/{id}/users/{uid}", authenticatedTransactionHandler(removeUser_v2_9)).Methods(http.MethodDelete)
+	r.HandleFunc("/projects/{id}/comments", authenticatedTransactionHandler(addProjectComments_v2_9)).Methods(http.MethodPost)
 
 	r.HandleFunc("/tasks/{id}/assignedUser", authenticatedTransactionHandler(assignUser_v2_9)).Methods(http.MethodPost)
 	r.HandleFunc("/tasks/{id}/assignedUser", authenticatedTransactionHandler(unassignUser_v2_9)).Methods(http.MethodDelete)
@@ -189,6 +190,44 @@ func removeUser_v2_9(r *http.Request, context *Context) *ApiResponse {
 	context.Log("Successfully removed user '%s' from project %s", userToRemove, projectId)
 
 	return JsonResponse(updatedProject)
+}
+
+// Add a new comment to the given project.
+// @Summary Add a new comment to the given project.
+// @Description Add a new comment to the given project. The number of maximum characters is restricted by the server config.
+// @Version 2.9
+// @Tags projects
+// @Produce json
+// @Param id path string true "The ID of the project"
+// @Param comment body string true "The comment DTO for the given project"
+// @Success 200 {object} comment.Comment
+// @Router /v2.9/projects/{id}/comments [POST]
+func addProjectComments_v2_9(r *http.Request, context *Context) *ApiResponse {
+	vars := mux.Vars(r)
+	projectId, ok := vars["id"]
+	if !ok {
+		return BadRequestError(errors.New("url segment 'id' not set"))
+	}
+
+	bodyBytes, err := io.ReadAll(r.Body)
+	if err != nil {
+		return BadRequestError(errors.Wrap(err, "error reading request body"))
+	}
+
+	var dto comment.CommentDraftDto
+	err = json.Unmarshal(bodyBytes, &dto)
+	if err != nil {
+		return InternalServerError(errors.Wrap(err, "error unmarshalling comment draft"))
+	}
+
+	user := context.Token.UID
+
+	newComment, err := context.ProjectService.AddComment(projectId, &dto, user)
+	if err != nil {
+		return InternalServerError(err)
+	}
+
+	return JsonResponse(newComment)
 }
 
 // Delete project
