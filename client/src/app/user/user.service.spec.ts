@@ -3,7 +3,8 @@ import { User } from './user.material';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 import { ConfigProvider } from '../config/config.provider';
-import { getConfiguredPackageManager } from '@angular/cli/src/utilities/config';
+import any = jasmine.any;
+import anything = jasmine.anything;
 
 const userList = {
   users: [

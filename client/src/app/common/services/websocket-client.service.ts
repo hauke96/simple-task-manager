@@ -35,47 +35,47 @@ export class WebsocketClientService extends Unsubscriber {
     let currentlySubscribing = false;
 
     setInterval(() => {
-        if (!currentlyConnecting && (!this.websocket || this.websocket.closed)) {
-          currentlyConnecting = true;
+      if (!currentlyConnecting && (!this.websocket || this.websocket.closed)) {
+        currentlyConnecting = true;
 
-          const authToken = localStorage.getItem('auth_token');
-          if (authToken && authToken.trim().length > 0) {
-            console.log('Try to connect to updates');
-            this.websocket = new WebSocketSubject<WebsocketMessage[]>({
-              url: environment.url_updates + '?token=' + encodeURIComponent(authToken)
-            });
-          }
-
-          currentlyConnecting = false;
+        const authToken = localStorage.getItem('auth_token');
+        if (authToken && authToken.trim().length > 0) {
+          console.log('Try to connect to updates');
+          this.websocket = new WebSocketSubject<WebsocketMessage[]>({
+            url: environment.url_updates + '?token=' + encodeURIComponent(authToken)
+          });
         }
-      },
-      1000);
+
+        currentlyConnecting = false;
+      }
+    },
+    1000);
 
     setInterval(() => {
-        const hasWebsocketConnection = this.websocket && !this.websocket.closed;
-        const hasWebsocketSubscription = this.websocketSubscription && !this.websocketSubscription.closed;
-        if (!currentlySubscribing && hasWebsocketConnection && !hasWebsocketSubscription) {
-          console.log('Try to subscribe to updates');
-          currentlySubscribing = true;
+      const hasWebsocketConnection = this.websocket && !this.websocket.closed;
+      const hasWebsocketSubscription = this.websocketSubscription && !this.websocketSubscription.closed;
+      if (!currentlySubscribing && hasWebsocketConnection && !hasWebsocketSubscription) {
+        console.log('Try to subscribe to updates');
+        currentlySubscribing = true;
 
-          this.websocketSubscription = this.websocket?.subscribe({
-            next: (messages: WebsocketMessage[]) => {
-              for (const msg of messages) {
-                this.messageReceived.emit(msg);
-              }
-            },
-            error: err => {
-              console.log('WebSocket connection lost');
-              console.error(err);
-              // Close all connections to reconnect in a second
-              this.websocketSubscription?.unsubscribe();
-              this.websocket?.complete();
+        this.websocketSubscription = this.websocket?.subscribe({
+          next: (messages: WebsocketMessage[]) => {
+            for (const msg of messages) {
+              this.messageReceived.emit(msg);
             }
-          });
+          },
+          error: err => {
+            console.log('WebSocket connection lost');
+            console.error(err);
+            // Close all connections to reconnect in a second
+            this.websocketSubscription?.unsubscribe();
+            this.websocket?.complete();
+          }
+        });
 
-          currentlySubscribing = false;
-        }
-      },
-      1000);
+        currentlySubscribing = false;
+      }
+    },
+    1000);
   }
 }

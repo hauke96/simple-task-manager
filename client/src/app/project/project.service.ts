@@ -20,10 +20,10 @@ import { TranslateService } from '@ngx-translate/core';
   providedIn: 'root'
 })
 export class ProjectService {
-  public projectAdded: EventEmitter<Project> = new EventEmitter();
-  public projectChanged: EventEmitter<Project> = new EventEmitter();
-  public projectDeleted: EventEmitter<string> = new EventEmitter();
-  public projectUserRemoved: EventEmitter<string> = new EventEmitter();
+  public projectAdded: EventEmitter<Project> = new EventEmitter<Project>();
+  public projectChanged: EventEmitter<Project> = new EventEmitter<Project>();
+  public projectDeleted: EventEmitter<string> = new EventEmitter<string>();
+  public projectUserRemoved: EventEmitter<string> = new EventEmitter<string>();
 
   constructor(
     private taskService: TaskService,

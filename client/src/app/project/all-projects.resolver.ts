@@ -3,7 +3,7 @@ import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/r
 import { Project } from './project.material';
 import { ProjectService } from './project.service';
 import { Observable } from 'rxjs';
-import { catchError, share, tap } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NotificationService } from '../common/services/notification.service';
 import { TranslateService } from '@ngx-translate/core';

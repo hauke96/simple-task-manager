@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
@@ -5,6 +6,7 @@ import { catchError, map } from 'rxjs/operators';
 import { User } from './user.material';
 import { GeoJSON } from 'ol/format';
 import { ConfigProvider } from '../config/config.provider';
+
 
 @Injectable({
   providedIn: 'root'
@@ -40,9 +42,9 @@ export class UserService {
   private getUsersFromUserApiResult(result: any): User[] {
     const users = [];
     for (const u of result.users) {
-      const name = u?.user?.display_name;
-      const uid = u?.user?.id;
-      users.push(new User(name, '' + uid));
+      const name = '' + u?.user?.display_name;
+      const uid = '' + u?.user?.id;
+      users.push(new User(name, uid));
     }
     return users;
   }
@@ -58,6 +60,7 @@ export class UserService {
 
     return this.http.get(changesetUrl, {responseType: 'text', headers: {Accept: 'application/json'}}).pipe(
       map(result => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const uid = JSON.parse(result)?.changesets[0]?.uid;
         if (uid != null) {
           const uidString = '' + uid;

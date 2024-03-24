@@ -36,8 +36,8 @@ export class NotificationService {
     this.errorMessages.shift();
   }
 
-  public addError(message: string): void {
-    this.errorMessages.push(message);
+  public addError(message: any): void {
+    this.errorMessages.push('' + message);
   }
 
   //

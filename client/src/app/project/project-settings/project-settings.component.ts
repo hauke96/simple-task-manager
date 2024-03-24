@@ -114,7 +114,8 @@ export class ProjectSettingsComponent implements OnInit {
   }
 
   onExportButtonClicked(): void {
-    this.projectService.getProjectExport(this.projectId).subscribe(projectExport => {
+    this.projectService.getProjectExport(this.projectId).subscribe(
+      projectExport => {
         const element = document.createElement('a');
         element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(projectExport)));
         element.setAttribute('download', 'stm-project-export.json');
