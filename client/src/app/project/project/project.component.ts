@@ -4,11 +4,11 @@ import { ProjectService } from '../project.service';
 import { TaskService } from '../../task/task.service';
 import { Project } from '../project.material';
 import { CurrentUserService } from '../../user/current-user.service';
-import { UserService } from '../../user/user.service';
 import { NotificationService } from '../../common/services/notification.service';
 import { Unsubscriber } from '../../common/unsubscriber';
 import { User } from '../../user/user.material';
 import { TranslateService } from '@ngx-translate/core';
+import { Task } from '../../task/task.material';
 
 @Component({
   selector: 'app-project',
@@ -22,7 +22,6 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private projectService: ProjectService,
-    private userService: UserService,
     private taskService: TaskService,
     private currentUserService: CurrentUserService,
     private notificationService: NotificationService,
@@ -46,45 +45,57 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
         }
 
         if (!this.isOwner()) {
-          this.notificationService.addInfo(this.translationService.instant('project-has-been-removed', {projectName: this.project.name}));
+          const message = this.translationService.instant('project-has-been-removed', {projectName: this.project.name}) as string;
+          this.notificationService.addInfo(message);
         }
 
-        this.router.navigate(['/dashboard']);
+        void this.router.navigate(['/dashboard']);
       }),
       this.projectService.projectUserRemoved.subscribe(projectId => {
         if (this.project.id !== projectId) {
           return;
         }
 
-        this.notificationService.addInfo(this.translationService.instant('you-have-been-removed', {projectName: this.project.name}));
-        this.router.navigate(['/dashboard']);
+        const message = this.translationService.instant('you-have-been-removed', {projectName: this.project.name}) as string;
+        this.notificationService.addInfo(message);
+        void this.router.navigate(['/dashboard']);
       })
     );
   }
 
   public get tabTitles(): string[] {
     return [
-      this.translationService.instant('project.tab-titles.tasks'),
-      this.translationService.instant('project.tab-titles.users'),
-      this.translationService.instant('project.tab-titles.settings')
+      this.translationService.instant('project.tab-titles.tasks') as string,
+      this.translationService.instant('project.tab-titles.users') as string,
+      this.translationService.instant('project.tab-titles.settings') as string
     ];
+  }
+
+  public get selectedTask(): Task | undefined {
+    return this.taskService.getSelectedTask();
   }
 
   public onUserRemoved(userIdToRemove: string): void {
     this.projectService.removeUser(this.project.id, userIdToRemove)
-      .subscribe(() => {
-      }, err => {
-        console.error(err);
-        this.notificationService.addError(this.translationService.instant('project.could-not-remove-user'));
+      .subscribe({
+        next: () => {
+        },
+        error: err => {
+          console.error(err);
+          this.notificationService.addError(this.translationService.instant('project.could-not-remove-user'));
+        }
       });
   }
 
   public onUserInvited(user: User): void {
     this.projectService.inviteUser(this.project.id, user.uid)
-      .subscribe(() => {
-      }, err => {
-        console.error(err);
-        this.notificationService.addError(this.translationService.instant('project.could-not-invite-user', {userName: user.name}));
+      .subscribe({
+        next: () => {
+        },
+        error: err => {
+          console.error(err);
+          this.notificationService.addError(this.translationService.instant('project.could-not-invite-user', {userName: user.name}));
+        }
       });
   }
 

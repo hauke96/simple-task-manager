@@ -35,6 +35,7 @@ func Init_v2_9(router *mux.Router) (*mux.Router, string) {
 	r.HandleFunc("/projects/{id}/users/{uid}", authenticatedTransactionHandler(removeUser_v2_9)).Methods(http.MethodDelete)
 	r.HandleFunc("/projects/{id}/comments", authenticatedTransactionHandler(addProjectComments_v2_9)).Methods(http.MethodPost)
 
+	r.HandleFunc("/tasks/{id}", authenticatedTransactionHandler(getTask_v2_9)).Methods(http.MethodGet)
 	r.HandleFunc("/tasks/{id}/assignedUser", authenticatedTransactionHandler(assignUser_v2_9)).Methods(http.MethodPost)
 	r.HandleFunc("/tasks/{id}/assignedUser", authenticatedTransactionHandler(unassignUser_v2_9)).Methods(http.MethodDelete)
 	r.HandleFunc("/tasks/{id}/processPoints", authenticatedTransactionHandler(setProcessPoints_v2_9)).Methods(http.MethodPost)
@@ -417,6 +418,30 @@ func addUserToProject_v2_9(r *http.Request, context *Context) *ApiResponse {
 	context.Log("Successfully added user '%s' to project %s", userToAdd, projectId)
 
 	return JsonResponse(updatedProject)
+}
+
+// Get a task
+// @Summary Gets the task with the given id.
+// @Description Gets the task with the given id.
+// @Version 2.9
+// @Tags tasks
+// @Produce json
+// @Param id path string true "The ID of the task"
+// @Success 200 {object} task.Task
+// @Router /v2.9/tasks/{id} [GET]
+func getTask_v2_9(r *http.Request, context *Context) *ApiResponse {
+	vars := mux.Vars(r)
+	taskId, ok := vars["id"]
+	if !ok {
+		return BadRequestError(errors.New("url segment 'id' not set"))
+	}
+
+	task, err := context.TaskService.GetTask(taskId)
+	if err != nil {
+		return InternalServerError(err)
+	}
+
+	return JsonResponse(*task)
 }
 
 // Assign user

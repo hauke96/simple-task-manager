@@ -1,15 +1,15 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
-import { Project } from './project.material';
-import { ProjectService } from './project.service';
 import { of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NotificationService } from '../common/services/notification.service';
 import { TranslateService } from '@ngx-translate/core';
+import { TaskService } from './task.service';
+import { Task } from './task.material';
 
-export const projectResolver: ResolveFn<Project> = (route: ActivatedRouteSnapshot, _) => {
-  const projectService = inject(ProjectService);
+export const taskResolver: ResolveFn<Task> = (route: ActivatedRouteSnapshot, _) => {
+  const taskService = inject(TaskService);
   const notificationService = inject(NotificationService);
   const translateService = inject(TranslateService);
 
@@ -18,9 +18,9 @@ export const projectResolver: ResolveFn<Project> = (route: ActivatedRouteSnapsho
   }
 
   // @ts-ignore
-  return projectService.getProject(route.paramMap.get('id')).pipe(
+  return taskService.getTask(route.paramMap.get('id')).pipe(
     catchError((e: HttpErrorResponse) => {
-      const message = translateService.instant('project.could-not-load-project', {projectId: route.paramMap.get('id')});
+      const message = translateService.instant('task.could-not-load-task', {taskId: route.paramMap.get('id')});
       notificationService.addError(message);
       throw e;
     })

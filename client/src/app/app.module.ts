@@ -45,6 +45,7 @@ import { MapComponent } from './common/components/map/map.component';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { IconButtonComponent } from './ui/icon-button/icon-button.component';
+import { CommentComponent } from './comments/comment/comment.component';
 
 @NgModule({
   declarations: [
@@ -81,7 +82,8 @@ import { IconButtonComponent } from './ui/icon-button/icon-button.component';
     ProjectImportComponent,
     CopyProjectComponent,
     MapComponent,
-    IconButtonComponent
+    IconButtonComponent,
+    CommentComponent
   ],
   imports: [
     BrowserModule,
@@ -108,6 +110,9 @@ import { IconButtonComponent } from './ui/icon-button/icon-button.component';
       provide: ErrorHandler,
       useClass: GlobalErrorHandler
     }
+  ],
+  exports: [
+    IconButtonComponent
   ],
   bootstrap: [AppComponent]
 })

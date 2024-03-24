@@ -27,6 +27,15 @@ func Init(tx *sql.Tx, logger *util.Logger, permissionStore *permission.Permissio
 	}
 }
 
+func (s *TaskService) GetTask(taskId string) (*Task, error) {
+	task, err := s.store.getTask(taskId)
+	if err != nil {
+		return nil, err
+	}
+
+	return task, err
+}
+
 // Simply gets the tasks for the given project
 func (s *TaskService) GetTasks(projectId string) ([]*Task, error) {
 	tasks, err := s.store.GetAllTasksOfProject(projectId)

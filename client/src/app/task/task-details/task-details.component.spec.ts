@@ -346,6 +346,6 @@ describe(TaskDetailsComponent.name, () => {
   });
 
   function createTask(processPoints: number, id: string = '123'): Task {
-    return new Task(id, '', processPoints, 789, TestTaskFeature);
+    return new Task(id, '', processPoints, 789, TestTaskFeature, []);
   }
 });

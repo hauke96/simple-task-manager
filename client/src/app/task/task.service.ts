@@ -50,10 +50,17 @@ export class TaskService {
     return this.selectedTask;
   }
 
+  public getTask(taskId: string): Observable<Task> {
+    return this.http.get<TaskDto>(environment.url_task.replace('{id}', taskId))
+      .pipe(
+        mergeMap((task: TaskDto) => this.addUserNames([task])),
+        map(dtos => this.toTask(dtos[0])),
+        tap(task => this.selectedTaskChanged.emit(task)),
+      );
+  }
+
   public createNewTasks(geometries: string[], maxProcessPoints: number): Observable<Task[]> {
-    const draftTasks = geometries.map(g => {
-      return new TaskDto('', 0, maxProcessPoints, g);
-    });
+    const draftTasks = geometries.map(g => new TaskDto('', 0, maxProcessPoints, g, []));
     return this.http.post<TaskDto[]>(environment.url_tasks, JSON.stringify(draftTasks))
       .pipe(
         mergeMap((tasks: TaskDto[]) => this.addUserNames(tasks)),
@@ -127,20 +134,20 @@ export class TaskService {
       return throwError(() => new Error('Empty coordinates'));
     }
 
-    const overpassUrl = 'https://overpass-api.de/api/interpreter?data=[out:json];nwr(poly:"' + coordinateString + '");out meta;(<; - rel._;);(._;>;); out meta;';
+    const overpassUrl = 'https://overpass-api.de/api/interpreter?data=' +
+      `out:json];nwr(poly:"${coordinateString}");out meta;(<; - rel._;);(._;>;); out meta;`;
     const taskGeometryString = encodeURIComponent(this.getGeometryAsOsm(task));
 
     return from([
       // The task-polygon
       'http://localhost:8111/load_data?new_layer=true&layer_name=task ' + task.name + '&upload_policy=never&data=' + taskGeometryString,
       // Load data for the extent of the task
+      // eslint-disable-next-line max-len
       // 'http://localhost:8111/load_and_zoom?new_layer=true&left=' + e[0] + '&right=' + e[2] + '&top=' + e[3] + '&bottom=' + e[1] + '&changeset_comment=' + encodeURIComponent('#stm #stm-project-' + projectId + ' ')
       'http://localhost:8111/import?new_layer=true&url=' + overpassUrl
     ])
       .pipe(
-        concatMap(url => {
-          return this.http.get(url, {responseType: 'text'});
-        })
+        concatMap(url => this.http.get(url, {responseType: 'text'}))
       );
   }
 
@@ -155,7 +162,9 @@ export class TaskService {
     const comment = encodeURIComponent('#stm #stm-project-' + projectId + ' ');
     const hashtags = encodeURIComponent('#stm,#stm-project-' + projectId);
 
-    window.open('https://openstreetmap.org/edit?editor=id#map=' + mapView.zoom + '/' + mapView.centerLat + '/' + mapView.centerLon + '&comment=' + comment + '&hashtags=' + hashtags);
+    const url = 'https://openstreetmap.org/edit?editor=id#map=' +
+      `${mapView.zoom}/${mapView.centerLat}/${mapView.centerLon}&comment=${comment}&hashtags=${hashtags}`;
+    window.open(url);
   }
 
   /**
@@ -166,7 +175,7 @@ export class TaskService {
    * @param mapWidth The width of the screen/map.
    * @param mapHeight The height of the screen/map.
    */
-  public fitExtentToScreen(bounds: Extent, mapWidth: number, mapHeight: number): { centerLat: number, centerLon: number, zoom: number } {
+  public fitExtentToScreen(bounds: Extent, mapWidth: number, mapHeight: number): { centerLat: number; centerLon: number; zoom: number } {
     if (bounds == null || bounds.length < 4) {
       return {
         centerLat: 0,
@@ -182,7 +191,6 @@ export class TaskService {
     const tileSize = 256;
 
     let boundsDeltaX: number;
-    let centerLat: number;
     let centerLon: number;
 
     // Check if east value is greater than west value which would indicate that bounding box crosses the antimeridian.
@@ -198,7 +206,7 @@ export class TaskService {
     const ry2 = Math.log((Math.sin(bounds[3] * Math.PI / 180) + 1) / Math.cos(bounds[3] * Math.PI / 180));
     const ryc = (ry1 + ry2) / 2;
 
-    centerLat = Math.atan(Math.sinh(ryc)) * 180 / Math.PI;
+    const centerLat = Math.atan(Math.sinh(ryc)) * 180 / Math.PI;
 
     const resolutionHorizontal = boundsDeltaX / (mapWidth - padding * 2);
 
@@ -292,10 +300,11 @@ export class TaskService {
 
     return new Task(
       dto.id,
-      feature.get('name'),
+      feature.get('name') as string,
       dto.processPoints,
       dto.maxProcessPoints,
       feature,
+      [], // TODO Turn comment DTO to comment with fetching of users
       assignedUser
     );
   }
@@ -310,10 +319,11 @@ export class TaskService {
 
     return new Task(
       dto.id,
-      feature.get('name'),
+      feature.get('name') as string,
       dto.processPoints,
       dto.maxProcessPoints,
       feature,
+      [], // TODO Turn comment DTO to comment with fetching of users
       assignedUser
     );
   }

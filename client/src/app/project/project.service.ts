@@ -204,6 +204,7 @@ export class ProjectService {
       owner,
       p.needsAssignment,
       p.creationDate,
+      [], // TODO Convert comments just as tasks (with fetching of users)
       p.totalProcessPoints ?? 0,
       p.doneProcessPoints ?? 0
     ));

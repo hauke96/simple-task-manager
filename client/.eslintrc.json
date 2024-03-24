@@ -138,7 +138,7 @@
             }
           }
         ],
-//        "@typescript-eslint/member-ordering": "error",
+        //        "@typescript-eslint/member-ordering": "error",
         "@typescript-eslint/naming-convention": [
           "error",
           {
@@ -171,6 +171,7 @@
             "hoist": "all"
           }
         ],
+        "@typescript-eslint/no-unsafe-assignment": "off",
         "@typescript-eslint/no-unused-expressions": "error",
         "@typescript-eslint/no-use-before-define": "off",
         "@typescript-eslint/no-var-requires": "off",
@@ -179,7 +180,11 @@
         "@typescript-eslint/prefer-namespace-keyword": "error",
         "@typescript-eslint/quotes": [
           "error",
-          "single"
+          "single",
+          {
+            "avoidEscape": true,
+            "allowTemplateLiterals": true
+          }
         ],
         "@typescript-eslint/semi": [
           "error",
@@ -293,12 +298,6 @@
         "one-var": [
           "error",
           "never"
-        ],
-        "prefer-arrow/prefer-arrow-functions": [
-          "error",
-          {
-            "allowStandaloneDeclarations": true
-          }
         ],
         "prefer-const": "error",
         "quote-props": [

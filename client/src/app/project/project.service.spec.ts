@@ -44,13 +44,13 @@ describe(ProjectService.name, () => {
   it('should create tasks when creating project', done => {
     // Arrange
     const taskDtos = [
-      new TaskDto('1', 0, 100, TestTaskGeometry, '1'),
-      new TaskDto('2', 0, 100, TestTaskGeometry, '2'),
-      new TaskDto('3', 0, 100, TestTaskGeometry)
+      new TaskDto('1', 0, 100, TestTaskGeometry, [], '1'),
+      new TaskDto('2', 0, 100, TestTaskGeometry, [], '2'),
+      new TaskDto('3', 0, 100, TestTaskGeometry, [])
     ];
     const tasks = taskDtoToTask(taskDtos);
     const format = new GeoJSON();
-    const projectDto = new ProjectDto('124', 'Project 124', 'bar', ['2'], taskDtos, '2', false, new Date());
+    const projectDto = new ProjectDto('124', 'Project 124', 'bar', ['2'], taskDtos, '2', false, new Date(), []);
 
     httpClient.post = jest.fn().mockReturnValue(of(projectDto));
     userService.getUsersByIds = jest.fn().mockReturnValue(of([new User('U1', '1'), new User('U2', '2')]));
@@ -62,9 +62,9 @@ describe(ProjectService.name, () => {
     // Act & Assert
     service.createNewProject('project name', 100, 'lorem ipsum',
       [
-        format.readFeature(TestTaskGeometry) as Feature,
-        format.readFeature(TestTaskGeometry) as Feature,
-        format.readFeature(TestTaskGeometry) as Feature
+        format.readFeature(TestTaskGeometry),
+        format.readFeature(TestTaskGeometry),
+        format.readFeature(TestTaskGeometry)
       ], ['user'], 'user')
       .subscribe({
         next: p => {
@@ -90,8 +90,8 @@ describe(ProjectService.name, () => {
 
     taskService.toTaskWithUsers = jest.fn().mockImplementation((dto: TaskDto, _: User[]) => taskDtoToTask([dto])[0]);
 
-    const dto1 = new ProjectDto('123', 'Project 123', 'foo', ['1'], [taskDtos[0]], '1', false, date);
-    const dto2 = new ProjectDto('124', 'Project 124', 'bar', ['2'], [taskDtos[1]], '2', false, date);
+    const dto1 = new ProjectDto('123', 'Project 123', 'foo', ['1'], [taskDtos[0]], '1', false, date, []);
+    const dto2 = new ProjectDto('124', 'Project 124', 'bar', ['2'], [taskDtos[1]], '2', false, date, []);
     httpClient.get = jest.fn().mockReturnValue(of([dto1, dto2]));
 
     service.getProjects().subscribe({
@@ -125,7 +125,7 @@ describe(ProjectService.name, () => {
 
     taskService.toTaskWithUsers = jest.fn().mockImplementation((d: TaskDto, _: User[]) => taskDtoToTask([d])[0]);
 
-    const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '3'], [taskDtos[0]], '1', false, date);
+    const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '3'], [taskDtos[0]], '1', false, date, []);
     httpClient.get = jest.fn().mockReturnValue(of(dto));
 
     service.getProject('123').subscribe({
@@ -155,7 +155,7 @@ describe(ProjectService.name, () => {
     const {users, taskDtos} = setUpUserAndTasks();
     const date = new Date();
 
-    const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2'], [taskDtos[0]], '2', true, date);
+    const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2'], [taskDtos[0]], '2', true, date, []);
     httpClient.get = jest.fn().mockReturnValue(of(dto));
 
     // TODO finish test
@@ -169,7 +169,7 @@ describe(ProjectService.name, () => {
 
     taskService.toTaskWithUsers = jest.fn().mockImplementation((d: TaskDto, _: User[]) => taskDtoToTask([d])[0]);
 
-    const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2'], taskDtos, '2', true, date);
+    const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2'], taskDtos, '2', true, date, []);
     httpClient.delete = jest.fn().mockReturnValue(of(dto));
     service.projectChanged.subscribe(changeSpy);
 
@@ -207,7 +207,7 @@ describe(ProjectService.name, () => {
     userService.getUsersByIds = jest.fn().mockImplementation((ids: string[]) => of(users.filter(u => ids.includes(u.uid))));
     taskService.toTaskWithUsers = jest.fn().mockImplementation((d: TaskDto, _: User[]) => taskDtoToTask([d])[0]);
 
-    const dto: ProjectDto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2', '3'], taskDtos, '2', true, date);
+    const dto: ProjectDto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2', '3'], taskDtos, '2', true, date, []);
 
     // Execute
     service.toProject(dto).subscribe({
@@ -258,35 +258,34 @@ describe(ProjectService.name, () => {
   function taskDtoToTask(tasks: TaskDto[]): Task[] {
     return tasks.map(dto => {
       // TODO This is a re-implementation of the TaskService.toTask function. Extract this into own utility class?
-      const feature = (new GeoJSON().readFeature(dto.geometry) as Feature<Geometry>);
+      const feature = new GeoJSON().readFeature(dto.geometry);
 
       const assignedUser = dto.assignedUser && dto.assignedUserName ? new User(dto.assignedUserName, dto.assignedUser) : undefined;
 
       return new Task(
         dto.id,
-        feature.get('name'),
+        feature.get('name') as string,
         dto.processPoints,
         dto.maxProcessPoints,
         feature,
+        [],
         assignedUser
       );
     });
   }
 
-  function setUpUserAndTasks(): { users: User[], taskDtos: TaskDto[] } {
+  function setUpUserAndTasks(): { users: User[]; taskDtos: TaskDto[] } {
     const users = [
       new User('test user 1', '1'),
       new User('test user 2', '2'),
       new User('test user 3', '3'),
     ];
-    userService.getUsersByIds = jest.fn().mockImplementation((ids: string[]) => {
-      return of(users.filter(u => ids.includes(u.uid)));
-    });
+    userService.getUsersByIds = jest.fn().mockImplementation((ids: string[]) => of(users.filter(u => ids.includes(u.uid))));
 
     const taskDtos = [
-      new TaskDto('7', 0, 100, TestTaskGeometry, users[0].uid, users[0].name),
-      new TaskDto('8', 10, 100, TestTaskGeometry, users[1].uid, users[1].name),
-      new TaskDto('9', 100, 100, TestTaskGeometry)
+      new TaskDto('7', 0, 100, TestTaskGeometry, [], users[0].uid, users[0].name),
+      new TaskDto('8', 10, 100, TestTaskGeometry, [], users[1].uid, users[1].name),
+      new TaskDto('9', 100, 100, TestTaskGeometry, [])
     ];
 
     return {users, taskDtos};
