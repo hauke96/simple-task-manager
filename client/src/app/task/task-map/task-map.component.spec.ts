@@ -139,9 +139,9 @@ describe(TaskMapComponent.name, () => {
     }
     const f = new Feature({task_id: component.tasks[taskIndex].id});
     const s = component.getStyle(f);
-    expect(s.getFill().getColor()).toEqual(expectedColor);
-    expect(s.getStroke().getColor()).toEqual('#009688');
-    expect(s.getStroke().getWidth()).toEqual(expectedBorderWidth);
+    expect(s.getFill()?.getColor()).toEqual(expectedColor);
+    expect(s.getStroke()?.getColor()).toEqual('#009688');
+    expect(s.getStroke()?.getWidth()).toEqual(expectedBorderWidth);
   }
 
   function getFeature(): Feature<Polygon> {

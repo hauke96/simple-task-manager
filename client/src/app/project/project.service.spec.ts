@@ -62,9 +62,9 @@ describe(ProjectService.name, () => {
     // Act & Assert
     service.createNewProject('project name', 100, 'lorem ipsum',
       [
-        format.readFeature(TestTaskGeometry),
-        format.readFeature(TestTaskGeometry),
-        format.readFeature(TestTaskGeometry)
+        format.readFeature(TestTaskGeometry) as Feature,
+        format.readFeature(TestTaskGeometry) as Feature,
+        format.readFeature(TestTaskGeometry) as Feature
       ], ['user'], 'user')
       .subscribe({
         next: p => {
