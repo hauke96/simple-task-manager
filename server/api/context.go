@@ -38,10 +38,11 @@ func createContext(token *oauth2.Token, logger *util.Logger) (*Context, error) {
 	ctx.Transaction = tx
 
 	permissionStore := permission.Init(tx, ctx.Logger)
-	commentService := comment.Init(tx, ctx.Logger)
+	commentStore := comment.GetStore(tx, ctx.Logger)
+	commentService := comment.Init(tx, ctx.Logger, commentStore)
 
-	ctx.TaskService = task.Init(tx, ctx.Logger, permissionStore, commentService)
-	ctx.ProjectService = project.Init(tx, ctx.Logger, ctx.TaskService, permissionStore)
+	ctx.TaskService = task.Init(tx, ctx.Logger, permissionStore, commentService, commentStore)
+	ctx.ProjectService = project.Init(tx, ctx.Logger, ctx.TaskService, permissionStore, commentStore)
 	ctx.ExportService = export.Init(logger, ctx.ProjectService)
 	ctx.WebsocketSender = websocket.Init(ctx.Logger)
 

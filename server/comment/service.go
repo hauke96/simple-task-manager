@@ -11,18 +11,14 @@ import (
 
 type CommentService struct {
 	*util.Logger
-	store *storePg
+	store *CommentStore
 }
 
-func Init(tx *sql.Tx, logger *util.Logger) *CommentService {
+func Init(tx *sql.Tx, logger *util.Logger, store *CommentStore) *CommentService {
 	return &CommentService{
 		Logger: logger,
-		store:  getStore(tx, logger),
+		store:  store,
 	}
-}
-
-func (s *CommentService) GetComments(listId string) ([]Comment, error) {
-	return s.store.getComments(listId)
 }
 
 func (s *CommentService) AddComment(listId string, commentDraft *CommentDraftDto, authorId string) (*Comment, error) {
@@ -31,4 +27,8 @@ func (s *CommentService) AddComment(listId string, commentDraft *CommentDraftDto
 	}
 
 	return s.store.addComment(listId, commentDraft.Text, authorId, time.Now().UTC())
+}
+
+func (s *CommentService) NewCommentList() (string, error) {
+	return s.store.addCommentList()
 }

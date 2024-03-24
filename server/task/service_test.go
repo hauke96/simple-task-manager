@@ -35,8 +35,9 @@ func setup() {
 	logger := util.NewLogger()
 
 	permissionStore := permission.Init(tx, logger)
-	commentService := comment.Init(tx, logger)
-	s = Init(tx, logger, permissionStore, commentService)
+	commentStore := comment.GetStore(tx, logger)
+	commentService := comment.Init(tx, logger, commentStore)
+	s = Init(tx, logger, permissionStore, commentService, commentStore)
 }
 
 func TestGetTasks(t *testing.T) {
@@ -92,7 +93,7 @@ func TestAddTasks(t *testing.T) {
 
 		addedTasks, err := s.AddTasks([]TaskDraftDto{rawTask}, "1")
 		if err != nil {
-			return errors.New(fmt.Sprintf("Error: %s\n", err.Error()))
+			return err
 		}
 
 		addedTask := addedTasks[1] // [0] is the original task from the dummy data
@@ -102,6 +103,12 @@ func TestAddTasks(t *testing.T) {
 			addedTask.ProcessPoints != rawTask.ProcessPoints {
 			return errors.New(fmt.Sprintf("Added task does not match:\n%v\n%v\n", rawTask, addedTask))
 		}
+
+		comments := addedTask.Comments
+		if comments == nil || len(comments) != 0 {
+			return errors.Errorf("Existing but empty comment list expected. Got: %+v", comments)
+		}
+
 		return nil
 	})
 }

@@ -37,7 +37,6 @@ func Init_v2_9(router *mux.Router) (*mux.Router, string) {
 	r.HandleFunc("/tasks/{id}/assignedUser", authenticatedTransactionHandler(assignUser_v2_9)).Methods(http.MethodPost)
 	r.HandleFunc("/tasks/{id}/assignedUser", authenticatedTransactionHandler(unassignUser_v2_9)).Methods(http.MethodDelete)
 	r.HandleFunc("/tasks/{id}/processPoints", authenticatedTransactionHandler(setProcessPoints_v2_9)).Methods(http.MethodPost)
-	r.HandleFunc("/tasks/{id}/comments", authenticatedTransactionHandler(getTaskComments_v2_9)).Methods(http.MethodGet)
 	r.HandleFunc("/tasks/{id}/comments", authenticatedTransactionHandler(addTaskComments_v2_9)).Methods(http.MethodPost)
 
 	r.HandleFunc("/updates", authenticatedWebsocket(getWebsocketConnection_v2_9))
@@ -485,30 +484,6 @@ func setProcessPoints_v2_9(r *http.Request, context *Context) *ApiResponse {
 	context.Log("Successfully set process points on task '%s' to %d", taskId, processPoints)
 
 	return JsonResponse(*task)
-}
-
-// Get the comments for the given task.
-// @Summary Get the comments for the given task.
-// @Description Get the comments for the given task.
-// @Version 2.9
-// @Tags tasks
-// @Produce json
-// @Param id path string true "The ID of the task"
-// @Success 200 {object} []comment.Comment
-// @Router /v2.9/tasks/{id}/comments [GET]
-func getTaskComments_v2_9(r *http.Request, context *Context) *ApiResponse {
-	vars := mux.Vars(r)
-	taskId, ok := vars["id"]
-	if !ok {
-		return BadRequestError(errors.New("url segment 'id' not set"))
-	}
-
-	comments, err := context.TaskService.GetComments(taskId)
-	if err != nil {
-		return InternalServerError(err)
-	}
-
-	return JsonResponse(comments)
 }
 
 // Add a new comment to the given task.

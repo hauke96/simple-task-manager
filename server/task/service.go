@@ -18,19 +18,23 @@ type TaskService struct {
 	commentService  *comment.CommentService
 }
 
-func Init(tx *sql.Tx, logger *util.Logger, permissionStore *permission.PermissionStore, commentService *comment.CommentService) *TaskService {
+func Init(tx *sql.Tx, logger *util.Logger, permissionStore *permission.PermissionStore, commentService *comment.CommentService, commentStore *comment.CommentStore) *TaskService {
 	return &TaskService{
 		Logger:          logger,
-		store:           GetStore(tx, logger),
+		store:           GetStore(tx, logger, commentStore),
 		permissionStore: permissionStore,
 		commentService:  commentService,
 	}
 }
 
 // Simply gets the tasks for the given project
-// TODO Not []Task as return type?
 func (s *TaskService) GetTasks(projectId string) ([]*Task, error) {
-	return s.store.GetAllTasksOfProject(projectId)
+	tasks, err := s.store.GetAllTasksOfProject(projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	return tasks, err
 }
 
 // AddTasks sets the ID of the tasks and adds them to the storage.
@@ -60,7 +64,12 @@ func (s *TaskService) AddTasks(newTasks []TaskDraftDto, projectId string) ([]*Ta
 		delete(feature.Properties, "id")
 	}
 
-	tasks, err := s.store.addTasks(newTasks, projectId)
+	commentListId, err := s.commentService.NewCommentList()
+	if err != nil {
+		return nil, err
+	}
+
+	tasks, err := s.store.addTasks(newTasks, projectId, commentListId)
 	if err != nil {
 		return nil, err
 	}
@@ -163,21 +172,8 @@ func (s *TaskService) Delete(taskIds []string, requestingUserId string) error {
 	return nil
 }
 
-func (s *TaskService) getCommentListId(taskId string) (string, error) {
-	return s.store.getCommentListId(taskId)
-}
-
-func (s *TaskService) GetComments(taskId string) ([]comment.Comment, error) {
-	commentListId, err := s.getCommentListId(taskId)
-	if err != nil {
-		return nil, err
-	}
-
-	return s.commentService.GetComments(commentListId)
-}
-
 func (s *TaskService) AddComment(taskId string, draftDto *comment.CommentDraftDto, authorId string) (*comment.Comment, error) {
-	commentListId, err := s.getCommentListId(taskId)
+	commentListId, err := s.store.getCommentListId(taskId)
 	if err != nil {
 		return nil, err
 	}

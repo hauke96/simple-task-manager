@@ -34,7 +34,7 @@ func configureLogging() {
 }
 
 // @title SimpleTaskManager Server
-// @version 1.3.0
+// @version 1.5.2
 // @description This is the SimpleTaskManager (STM) Server. See the GitHub repo '/doc/api/' for further details on authentication, websockets and changelogs.
 
 // @contact.name STM issue tracker

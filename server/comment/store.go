@@ -21,15 +21,15 @@ type commentRow struct {
 	creationDate  *time.Time
 }
 
-type storePg struct {
+type CommentStore struct {
 	*util.Logger
 	tx               *sql.Tx
 	commentListTable string
 	commentTable     string
 }
 
-func getStore(tx *sql.Tx, logger *util.Logger) *storePg {
-	return &storePg{
+func GetStore(tx *sql.Tx, logger *util.Logger) *CommentStore {
+	return &CommentStore{
 		Logger:           logger,
 		tx:               tx,
 		commentListTable: "comment_lists",
@@ -37,18 +37,15 @@ func getStore(tx *sql.Tx, logger *util.Logger) *storePg {
 	}
 }
 
-func (s *storePg) getComments(listId string) ([]Comment, error) {
+func (s *CommentStore) GetComments(listId string) ([]Comment, error) {
 	rawQueryString := `
 SELECT comment.id, comment.text, comment.author_id, comment.creation_date
 FROM %s comment_list, %s comment
 WHERE
 	comment_list.id = $1 AND
-	comment_list.id = comment.comment_list_id`
+	comment_list.id = comment.comment_list_id;`
 
-	query := fmt.Sprintf(rawQueryString,
-		s.commentListTable,
-		s.commentTable)
-
+	query := fmt.Sprintf(rawQueryString, s.commentListTable, s.commentTable)
 	s.LogQuery(query, listId)
 
 	rows, err := s.tx.Query(query, listId)
@@ -72,16 +69,19 @@ WHERE
 	return comments, nil
 }
 
-// TODO call for new projects and tasks
-func (s *storePg) addCommentList(listId string) (string, error) {
-	query := fmt.Sprintf("INSERT INTO %s (id) VALUES($1) RETURNING *", s.commentListTable)
-	s.LogQuery(query, listId)
+func (s *CommentStore) addCommentList() (string, error) {
+	query := fmt.Sprintf("INSERT INTO %s DEFAULT VALUES RETURNING id", s.commentListTable)
+	s.LogQuery(query)
 
-	rows, err := s.tx.Query(query, listId)
+	rows, err := s.tx.Query(query)
 	if err != nil {
 		return "", errors.Wrap(err, "could not run query")
 	}
 	defer rows.Close()
+
+	if !rows.Next() {
+		return "", errors.New("there is no next row or an error happened")
+	}
 
 	if err != nil {
 		return "", err
@@ -96,7 +96,7 @@ func (s *storePg) addCommentList(listId string) (string, error) {
 	return commentListId, nil
 }
 
-func (s *storePg) addComment(listId string, text string, authorId string, creationDate time.Time) (*Comment, error) {
+func (s *CommentStore) addComment(listId string, text string, authorId string, creationDate time.Time) (*Comment, error) {
 	query := fmt.Sprintf("INSERT INTO %s (comment_list_id, text, authorId, creation_date) VALUES($1, $2, $3, $4) RETURNING *", s.commentTable)
 	comment, err := s.execQuery(query, listId, text, authorId, creationDate)
 	if err != nil {
@@ -107,7 +107,7 @@ func (s *storePg) addComment(listId string, text string, authorId string, creati
 }
 
 // execQuery executed the given query, turns the result into a Comment object and closes the query.
-func (s *storePg) execQuery(query string, params ...interface{}) (*Comment, error) {
+func (s *CommentStore) execQuery(query string, params ...interface{}) (*Comment, error) {
 	s.LogQuery(query, params...)
 	rows, err := s.tx.Query(query, params...)
 	if err != nil {
@@ -115,7 +115,10 @@ func (s *storePg) execQuery(query string, params ...interface{}) (*Comment, erro
 	}
 	defer rows.Close()
 
-	rows.Next()
+	if !rows.Next() {
+		return nil, errors.New("there is no next row or an error happened")
+	}
+
 	t, err := rowToComment(rows)
 
 	if t == nil && err == nil {

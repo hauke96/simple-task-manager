@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/pkg/errors"
+	"stm/comment"
 	"stm/config"
 	"stm/permission"
 	"stm/task"
@@ -19,10 +20,10 @@ type ProjectService struct {
 	taskService     *task.TaskService
 }
 
-func Init(tx *sql.Tx, logger *util.Logger, taskService *task.TaskService, permissionStore *permission.PermissionStore) *ProjectService {
+func Init(tx *sql.Tx, logger *util.Logger, taskService *task.TaskService, permissionStore *permission.PermissionStore, commentStore *comment.CommentStore) *ProjectService {
 	return &ProjectService{
 		Logger:          logger,
-		store:           getStore(tx, task.GetStore(tx, logger), logger),
+		store:           getStore(tx, task.GetStore(tx, logger, commentStore), logger),
 		permissionStore: permissionStore,
 		taskService:     taskService,
 	}
