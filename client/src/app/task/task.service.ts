@@ -12,6 +12,8 @@ import GeoJSON from 'ol/format/GeoJSON';
 import { Coordinate } from 'ol/coordinate';
 import FeatureFormat from 'ol/format/Feature';
 import { Feature } from 'ol';
+import { CommentService } from '../comments/comment.service';
+import { defaultUrlMatcher } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +27,8 @@ export class TaskService {
 
   constructor(
     private http: HttpClient,
-    private userService: UserService
+    private userService: UserService,
+    private commentService: CommentService
   ) {
   }
 
@@ -309,12 +312,12 @@ export class TaskService {
     );
   }
 
-  public toTaskWithUsers(dto: TaskDto, users: User[]): Task {
+  public toTaskWithUsers(dto: TaskDto, userMap: Map<string, User>): Task {
     const feature = (this.format.readFeature(dto.geometry) as Feature<Geometry>);
     let assignedUser: User | undefined;
 
     if (dto.assignedUser) {
-      assignedUser = users.find(u => u.uid === dto.assignedUser);
+      assignedUser = userMap.get(dto.assignedUser) as User;
     }
 
     return new Task(
@@ -323,7 +326,7 @@ export class TaskService {
       dto.processPoints,
       dto.maxProcessPoints,
       feature,
-      [], // TODO Turn comment DTO to comment with fetching of users
+      this.commentService.toCommentsWithUserMap(dto.comments, userMap),
       assignedUser
     );
   }

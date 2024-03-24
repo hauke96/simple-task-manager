@@ -1,6 +1,6 @@
 import { User } from '../user/user.material';
 import { Task, TaskDraftDto, TaskDto, TaskExport } from '../task/task.material';
-import { CommentDto } from '../comments/comment.material';
+import { Comment, CommentDto } from '../comments/comment.material';
 
 export class ProjectAddDto {
   constructor(public project: ProjectDraftDto,

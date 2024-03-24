@@ -6,17 +6,20 @@ import { of } from 'rxjs';
 import { Polygon } from 'ol/geom';
 import { User } from '../user/user.material';
 import { UserService } from '../user/user.service';
+import { CommentService } from '../comments/comment.service';
 
 describe(TaskService.name, () => {
   let service: TaskService;
   let httpClient: HttpClient;
   let userService: UserService;
+  let commentService: CommentService;
 
   beforeEach(() => {
     httpClient = {} as HttpClient;
     userService = {} as UserService;
+    commentService = {} as CommentService;
 
-    service = new TaskService(httpClient, userService);
+    service = new TaskService(httpClient, userService, commentService);
   });
 
   it('should be created', () => {
