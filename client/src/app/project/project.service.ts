@@ -174,7 +174,7 @@ export class ProjectService {
     const projectUserIDs = dtos.map(p => [p.owner, ...p.users]); // array of arrays
     const commentUserIDs = [
       ...dtos.flatMap(p => p.comments.map(c => c.authorId)),
-      ...dtos.flatMap(p => p.tasks.flatMap(t => t.comments.map(c => c.authorId))),
+      ...dtos.map(p => p.tasks.flatMap(t => t.comments.map(c => c.authorId))),
     ];
     let userIDs = ([] as string[]).concat(...projectUserIDs, ...commentUserIDs)
       .filter(id => !!id);

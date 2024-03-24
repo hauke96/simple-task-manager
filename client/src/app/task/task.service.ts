@@ -13,7 +13,6 @@ import { Coordinate } from 'ol/coordinate';
 import FeatureFormat from 'ol/format/Feature';
 import { Feature } from 'ol';
 import { CommentService } from '../comments/comment.service';
-import { defaultUrlMatcher } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -56,8 +55,7 @@ export class TaskService {
   public getTask(taskId: string): Observable<Task> {
     return this.http.get<TaskDto>(environment.url_task.replace('{id}', taskId))
       .pipe(
-        mergeMap((task: TaskDto) => this.addUserNames([task])),
-        map(dtos => this.toTask(dtos[0])),
+        mergeMap(dto => this.getUserNameMapFromDtos([dto]).pipe(map(userMap => this.toTaskWithUsers(dto, userMap)))),
         tap(task => this.selectedTaskChanged.emit(task)),
       );
   }
@@ -66,8 +64,11 @@ export class TaskService {
     const draftTasks = geometries.map(g => new TaskDto('', 0, maxProcessPoints, g, []));
     return this.http.post<TaskDto[]>(environment.url_tasks, JSON.stringify(draftTasks))
       .pipe(
-        mergeMap((tasks: TaskDto[]) => this.addUserNames(tasks)),
-        map(dtos => dtos.map(dto => this.toTask(dto))),
+        mergeMap(dtos => this.getUserNameMapFromDtos(dtos)
+          .pipe(
+            map(userMap => dtos.map(dto => this.toTaskWithUsers(dto, userMap)))
+          )
+        ),
         tap(tasks => tasks.forEach(t => this.selectedTaskChanged.emit(t)))
       );
   }
@@ -79,33 +80,31 @@ export class TaskService {
 
     return this.http.post<TaskDto>(environment.url_task_processPoints.replace('{id}', taskId) + '?process_points=' + newProcessPoints, '')
       .pipe(
-        mergeMap(task => this.addUserName(task)),
-        map(dto => this.toTask(dto)),
+        mergeMap(dto => this.getUserNameMapFromDtos([dto]).pipe(map(userMap => this.toTaskWithUsers(dto, userMap)))),
         tap(t => this.selectedTaskChanged.emit(t))
       );
   }
 
   public assign(taskId: string): Observable<Task> {
     if (taskId !== this.selectedTask?.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
-      return throwError('Task with id \'' + taskId + '\' not selected');
+      return throwError(() => new Error('Task with id \'' + taskId + '\' not selected'));
     }
 
     return this.http.post<TaskDto>(environment.url_task_assignedUser.replace('{id}', taskId), '')
       .pipe(
-        mergeMap(task => this.addUserName(task)),
-        map(dto => this.toTask(dto)),
+        mergeMap(dto => this.getUserNameMapFromDtos([dto]).pipe(map(userMap => this.toTaskWithUsers(dto, userMap)))),
         tap(t => this.selectedTaskChanged.emit(t))
       );
   }
 
   public unassign(taskId: string): Observable<Task> {
     if (taskId !== this.selectedTask?.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
-      return throwError('Task with id \'' + taskId + '\' not selected');
+      return throwError(() => new Error('Task with id \'' + taskId + '\' not selected'));
     }
 
     return this.http.delete<TaskDto>(environment.url_task_assignedUser.replace('{id}', taskId))
       .pipe(
-        map(dto => this.toTask(dto)),
+        mergeMap(dto => this.getUserNameMapFromDtos([dto]).pipe(map(userMap => this.toTaskWithUsers(dto, userMap)))),
         tap(t => this.selectedTaskChanged.emit(t))
       );
   }
@@ -269,47 +268,14 @@ export class TaskService {
     return osm;
   }
 
-  // Fills the "assignedUserName" of the task with the actual user name.
-  public addUserNames(tasks: TaskDto[]): Observable<TaskDto[]> {
-    const userIDs = tasks.filter(t => !!t.assignedUser).map(t => t.assignedUser);
+  private getUserNameMapFromDtos(dtos: TaskDto[]): Observable<Map<string, User>> {
+    const userIDs = dtos.flatMap(dto => dto.comments.map(c => c.authorId));
+    userIDs.push(...dtos.filter(dto => !!dto.assignedUser).map(dto => dto.assignedUser as string));
 
-    if (!userIDs || userIDs.length === 0) {
-      return of(tasks);
-    }
-
-    // @ts-ignore
     return this.userService.getUsersByIds(userIDs)
       .pipe(
-        map((users: User[]) => {
-          for (const t of tasks) {
-            const user = users.find(u => t.assignedUser === u.uid);
-            if (!!user) {
-              t.assignedUserName = user.name;
-            }
-          }
-          return tasks;
-        })
+        map((users: User[]) => new Map(users.map(obj => [obj.uid, obj])))
       );
-  }
-
-  public addUserName(task: TaskDto): Observable<TaskDto> {
-    return this.addUserNames([task]).pipe(map(t => t[0]));
-  }
-
-  public toTask(dto: TaskDto): Task {
-    const feature = (this.format.readFeature(dto.geometry) as Feature<Geometry>);
-
-    const assignedUser = dto.assignedUser && dto.assignedUserName ? new User(dto.assignedUserName, dto.assignedUser) : undefined;
-
-    return new Task(
-      dto.id,
-      feature.get('name') as string,
-      dto.processPoints,
-      dto.maxProcessPoints,
-      feature,
-      [], // TODO Turn comment DTO to comment with fetching of users
-      assignedUser
-    );
   }
 
   public toTaskWithUsers(dto: TaskDto, userMap: Map<string, User>): Task {
