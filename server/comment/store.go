@@ -69,7 +69,7 @@ WHERE
 	return comments, nil
 }
 
-func (s *CommentStore) addCommentList() (string, error) {
+func (s *CommentStore) NewCommentList() (string, error) {
 	query := fmt.Sprintf("INSERT INTO %s DEFAULT VALUES RETURNING id", s.commentListTable)
 	s.LogQuery(query)
 

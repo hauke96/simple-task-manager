@@ -95,8 +95,13 @@ func (s *StorePg) getTask(taskId string) (*Task, error) {
 	return task, nil
 }
 
-func (s *StorePg) addTasks(newTasks []TaskDraftDto, projectId string, commentListId string) ([]*Task, error) {
+func (s *StorePg) addTasks(newTasks []TaskDraftDto, projectId string) ([]*Task, error) {
 	taskIds := make([]string, 0)
+
+	commentListId, err := s.commentStore.NewCommentList()
+	if err != nil {
+		return nil, err
+	}
 
 	// TODO Do not add one by one but instead build one large query (otherwise it's really slow)
 	for _, t := range newTasks {

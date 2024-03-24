@@ -28,7 +28,3 @@ func (s *CommentService) AddComment(listId string, commentDraft *CommentDraftDto
 
 	return s.store.addComment(listId, commentDraft.Text, authorId, time.Now().UTC())
 }
-
-func (s *CommentService) NewCommentList() (string, error) {
-	return s.store.addCommentList()
-}

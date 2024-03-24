@@ -18,14 +18,16 @@ type ProjectService struct {
 	store           *storePg
 	permissionStore *permission.PermissionStore
 	taskService     *task.TaskService
+	commentService  *comment.CommentService
 }
 
-func Init(tx *sql.Tx, logger *util.Logger, taskService *task.TaskService, permissionStore *permission.PermissionStore, commentStore *comment.CommentStore) *ProjectService {
+func Init(tx *sql.Tx, logger *util.Logger, taskService *task.TaskService, permissionStore *permission.PermissionStore, commentService *comment.CommentService, commentStore *comment.CommentStore) *ProjectService {
 	return &ProjectService{
 		Logger:          logger,
-		store:           getStore(tx, task.GetStore(tx, logger, commentStore), logger),
+		store:           getStore(tx, logger, task.GetStore(tx, logger, commentStore), commentStore),
 		permissionStore: permissionStore,
 		taskService:     taskService,
+		commentService:  commentService,
 	}
 }
 
@@ -338,4 +340,13 @@ func (s *ProjectService) UpdateDescription(projectId string, newDescription stri
 	}
 
 	return project, nil
+}
+
+func (s *ProjectService) AddComment(projectId string, draftDto *comment.CommentDraftDto, authorId string) (*comment.Comment, error) {
+	commentListId, err := s.store.getCommentListId(projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.commentService.AddComment(commentListId, draftDto, authorId)
 }

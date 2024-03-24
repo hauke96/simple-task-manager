@@ -64,12 +64,7 @@ func (s *TaskService) AddTasks(newTasks []TaskDraftDto, projectId string) ([]*Ta
 		delete(feature.Properties, "id")
 	}
 
-	commentListId, err := s.commentService.NewCommentList()
-	if err != nil {
-		return nil, err
-	}
-
-	tasks, err := s.store.addTasks(newTasks, projectId, commentListId)
+	tasks, err := s.store.addTasks(newTasks, projectId)
 	if err != nil {
 		return nil, err
 	}
