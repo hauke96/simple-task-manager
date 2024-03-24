@@ -6,5 +6,6 @@ type Task struct {
 	ProcessPoints    int    `json:"processPoints"`    // The amount of process points that have been set by the user. It applies that "0 <= processPoints <= maxProcessPoints".
 	MaxProcessPoints int    `json:"maxProcessPoints"` // The maximum amount of process points of this task. Is larger than zero.
 	Geometry         string `json:"geometry"`         // A GeoJson feature of the task wit a polygon or multipolygon geometry. Will never be NULL or empty.
-	AssignedUser     string `json:"assignedUser"`     // The user-ID of the user who is currently assigned to this task. Will never be NULL but might be empty.
+	// TODO Use "Id" as suffix?
+	AssignedUser string `json:"assignedUser"` // The user-ID of the user who is currently assigned to this task. Will never be NULL but might be empty.
 }

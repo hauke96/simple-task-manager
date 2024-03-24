@@ -5,6 +5,7 @@ import (
 	"fmt"
 	geojson "github.com/paulmach/go.geojson"
 	"github.com/pkg/errors"
+	"stm/comment"
 	"stm/permission"
 	"stm/util"
 	"strings"
@@ -14,17 +15,20 @@ type TaskService struct {
 	*util.Logger
 	store           *StorePg
 	permissionStore *permission.PermissionStore
+	commentService  *comment.CommentService
 }
 
-func Init(tx *sql.Tx, logger *util.Logger, permissionStore *permission.PermissionStore) *TaskService {
+func Init(tx *sql.Tx, logger *util.Logger, permissionStore *permission.PermissionStore, commentService *comment.CommentService) *TaskService {
 	return &TaskService{
 		Logger:          logger,
 		store:           GetStore(tx, logger),
 		permissionStore: permissionStore,
+		commentService:  commentService,
 	}
 }
 
 // Simply gets the tasks for the given project
+// TODO Not []Task as return type?
 func (s *TaskService) GetTasks(projectId string) ([]*Task, error) {
 	return s.store.GetAllTasksOfProject(projectId)
 }
@@ -64,14 +68,6 @@ func (s *TaskService) AddTasks(newTasks []TaskDraftDto, projectId string) ([]*Ta
 	s.Debug("Added task IDs: %v", toTaskIds(tasks))
 
 	return tasks, nil
-}
-
-func toTaskIds(tasks []*Task) []string {
-	ids := make([]string, len(tasks))
-	for i, v := range tasks {
-		ids[i] = v.Id
-	}
-	return ids
 }
 
 func (s *TaskService) AssignUser(taskId, userId string) (*Task, error) {
@@ -165,4 +161,34 @@ func (s *TaskService) Delete(taskIds []string, requestingUserId string) error {
 	s.Log("Deleted tasks %v", taskIds)
 
 	return nil
+}
+
+func (s *TaskService) getCommentListId(taskId string) (string, error) {
+	return s.store.getCommentListId(taskId)
+}
+
+func (s *TaskService) GetComments(taskId string) ([]comment.Comment, error) {
+	commentListId, err := s.getCommentListId(taskId)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.commentService.GetComments(commentListId)
+}
+
+func (s *TaskService) AddComment(taskId string, draftDto *comment.CommentDraftDto, authorId string) (*comment.Comment, error) {
+	commentListId, err := s.getCommentListId(taskId)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.commentService.AddComment(commentListId, draftDto, authorId)
+}
+
+func toTaskIds(tasks []*Task) []string {
+	ids := make([]string, len(tasks))
+	for i, v := range tasks {
+		ids[i] = v.Id
+	}
+	return ids
 }

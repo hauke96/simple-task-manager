@@ -69,6 +69,7 @@ type Config struct {
 	SourceRepoURL         string `json:"source-repo-url"`
 	MaxTasksPerProject    int    `json:"max-task-per-project"`   // Maximum amount of tasks allowed for a project.
 	MaxDescriptionLength  int    `json:"max-description-length"` // Maximum length for the project description in characters.
+	MaxCommentLength      int    `json:"max-comment-length"`     // Maximum length for comments in characters.
 
 	SslCertFile string `json:"ssl-cert-file"`
 	SslKeyFile  string `json:"ssl-key-file"`

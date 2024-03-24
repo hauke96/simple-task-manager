@@ -141,6 +141,29 @@ func (s *StorePg) delete(taskIds []string) error {
 	return nil
 }
 
+func (s *StorePg) getCommentListId(taskId string) (string, error) {
+	query := fmt.Sprintf("SELECT comment_list_id FROM %s WHERE id = $1;", s.Table)
+	s.LogQuery(query, taskId)
+
+	rows, err := s.tx.Query(query, taskId)
+	if err != nil {
+		return "", errors.Wrapf(err, "error executing query to get comment list id for task %s", taskId)
+	}
+	defer rows.Close()
+
+	if !rows.Next() {
+		return "", errors.New("there is no next row or an error happened")
+	}
+
+	commentListId := ""
+	err = rows.Scan(&commentListId)
+	if err != nil {
+		return "", errors.Wrap(err, "could not scan row for comment list id")
+	}
+
+	return commentListId, nil
+}
+
 // execQuery executed the given query, turns the result into a Task object and closes the query.
 func (s *StorePg) execQuery(query string, params ...interface{}) (*Task, error) {
 	s.LogQuery(query, params...)

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/hauke96/sigolo"
 	"github.com/pkg/errors"
+	"stm/comment"
 	"stm/config"
 	"stm/permission"
 	"stm/test"
@@ -34,7 +35,8 @@ func setup() {
 	logger := util.NewLogger()
 
 	permissionStore := permission.Init(tx, logger)
-	s = Init(tx, logger, permissionStore)
+	commentService := comment.Init(tx, logger)
+	s = Init(tx, logger, permissionStore, commentService)
 }
 
 func TestGetTasks(t *testing.T) {

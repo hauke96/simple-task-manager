@@ -16,5 +16,6 @@ type TaskExport struct {
 	ProcessPoints    int    `json:"processPoints"`
 	MaxProcessPoints int    `json:"maxProcessPoints"`
 	Geometry         string `json:"geometry"`
-	AssignedUser     string `json:"assignedUser"`
+	// TODO Use "Id" as suffix?
+	AssignedUser string `json:"assignedUser"`
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/hauke96/sigolo"
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 	"github.com/pkg/errors"
+	"stm/comment"
 	"stm/config"
 	"stm/permission"
 	"stm/task"
@@ -36,7 +37,8 @@ func setup() {
 	logger := util.NewLogger()
 
 	permissionStore := permission.Init(tx, logger)
-	taskService = task.Init(tx, logger, permissionStore)
+	commentService := comment.Init(tx, logger)
+	taskService = task.Init(tx, logger, permissionStore, commentService)
 	s = Init(tx, logger, taskService, permissionStore)
 }
 

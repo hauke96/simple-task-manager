@@ -3,6 +3,7 @@ package api
 import (
 	"database/sql"
 	"github.com/pkg/errors"
+	"stm/comment"
 	"stm/database"
 	"stm/export"
 	"stm/oauth2"
@@ -37,7 +38,9 @@ func createContext(token *oauth2.Token, logger *util.Logger) (*Context, error) {
 	ctx.Transaction = tx
 
 	permissionStore := permission.Init(tx, ctx.Logger)
-	ctx.TaskService = task.Init(tx, ctx.Logger, permissionStore)
+	commentService := comment.Init(tx, ctx.Logger)
+
+	ctx.TaskService = task.Init(tx, ctx.Logger, permissionStore, commentService)
 	ctx.ProjectService = project.Init(tx, ctx.Logger, ctx.TaskService, permissionStore)
 	ctx.ExportService = export.Init(logger, ctx.ProjectService)
 	ctx.WebsocketSender = websocket.Init(ctx.Logger)
