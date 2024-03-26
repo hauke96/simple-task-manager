@@ -1,5 +1,8 @@
 <div class="comment-list-container">
-	<p *ngFor="let c of comments">{{ c.author.name }}: {{ c.text }}</p>
+	<div *ngFor="let c of comments" class="comment" [class.own-comment]="isFromCurrentUser(c)">
+		<div>{{ c.text }}</div>
+		<div *ngIf="!isFromCurrentUser(c)" class="author">{{ c.author.name }}</div>
+	</div>
 </div>
 <div class="input-container">
 	<textarea rows="4"></textarea>

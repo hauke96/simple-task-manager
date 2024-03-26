@@ -14,7 +14,8 @@ $space-huge: $space-base * 3.5;
 // Fonts
 // =====
 
-$font-small: 1rem;
+$font-base: 1rem;
+$font-small: $font-base * 0.75;
 
 * {
 	font-family: Dejavu Sans, sans-serif;
@@ -23,11 +24,6 @@ $font-small: 1rem;
 
 b {
 	font-weight: 500;
-}
-
-small,
-.font-small {
-	font-size: $font-small;
 }
 
 code {
@@ -76,7 +72,7 @@ button {
 	padding-right: $space-base;
 	background-color: $color-very-light;
 	border: 1px solid $color-light;
-	font-size: $font-small;
+	font-size: $font-base;
 }
 
 button:hover {
@@ -115,7 +111,7 @@ select {
 	background-size: $space-base * 1.5;
 	background-position: calc(100% - 8px) $space-base;
 	background-repeat: no-repeat;
-	font-size: $font-small;
+	font-size: $font-base;
 }
 
 
@@ -177,7 +173,7 @@ textarea {
 	margin: 0;
 	flex-grow: 1;
 	min-width: 0;
-	font-size: $font-small;
+	font-size: $font-base;
 }
 
 input {

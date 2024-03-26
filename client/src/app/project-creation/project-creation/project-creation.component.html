@@ -22,7 +22,7 @@
 					<div *ngIf="rootTabs.selectedTabIndex === 1" class="tab-container">
 						<div class="task-head">
 							<h2 class="properties-label">{{ 'tasks' | translate }}</h2>
-							<span class="font-small">{{ taskDrafts.length }} / {{ config.maxTasksPerProject }}</span>
+							<span>{{ taskDrafts.length }} / {{ config.maxTasksPerProject }}</span>
 						</div>
 						<app-task-draft-list [tasks]="taskDrafts"
 											 [selectedTask]="selectedTask"></app-task-draft-list>

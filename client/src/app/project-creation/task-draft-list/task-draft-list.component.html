@@ -2,7 +2,7 @@
 	<span>{{'project-creation.no-task-yet-notice' | translate}}</span>
 </div>
 <div *ngFor="let t of tasks" class="list-item"
-	 [ngClass]="{'list-item-selected': t.id === selectedTask?.id}"
+	 [class.list-item-selected]="t.id === selectedTask?.id"
 	 (click)="onTaskClicked(t.id)">
 	<div>
 		{{t.name}}

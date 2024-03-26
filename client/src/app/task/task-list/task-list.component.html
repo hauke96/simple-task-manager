@@ -1,7 +1,7 @@
 <h2>{{ 'tasks' | translate }}</h2>
 
 <div class="list-container">
-	<div *ngFor="let t of tasks" class="list-item" [ngClass]="{selected: t.id === selectedTaskId}">
+	<div *ngFor="let t of tasks" class="list-item" [class.selected]="t.id === selectedTaskId">
 		<div (click)="onListItemClicked(t.id)" class="list-item-inner">
 			<div>
 				{{ t | taskTitle }}
