@@ -17,6 +17,7 @@ import { Task } from '../../task/task.material';
 })
 export class ProjectComponent extends Unsubscriber implements OnInit {
   public project: Project;
+  public showTaskCommentSection: boolean;
 
   constructor(
     private router: Router,
@@ -97,6 +98,14 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
           this.notificationService.addError(this.translationService.instant('project.could-not-invite-user', {userName: user.name}));
         }
       });
+  }
+
+  public onTaskCommentSelected(_: string): void {
+    this.showTaskCommentSection = true;
+  }
+
+  public onTaskCommentBackButtonClicked(): void {
+    this.showTaskCommentSection = false;
   }
 
   public isOwner(): boolean {

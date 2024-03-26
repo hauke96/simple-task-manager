@@ -1,4 +1,5 @@
 @import "../../../styles";
+@import "../../../icons";
 
 :host {
 	margin-top: $space-base;
@@ -8,10 +9,46 @@
 	overflow-y: auto;
 }
 
-.list-item {
+.list-item-container {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
+}
+
+.list-item {
+	display: flex;
+	flex-direction: row;
+}
+
+.list-item-inner {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	flex-grow: 1;
+	margin-right: $space-base;
+}
+
+.list-item-comment {
+	align-self: center;
+	height: $space-base * 2.5;
+	line-height: $space-base * 2.2; // Move icon a bit more up so it's visually centered
+	border: 1px solid transparent;
+	color: $color-gray-dark;
+	padding-left: $space-base;
+	padding-right: $space-base;
+}
+
+.list-item-comment:hover {
+	border: 1px solid $color-light;
+	border-radius: $space-base * 1.25;
+	cursor: pointer;
+}
+
+.selected {
+	.list-item-comment:hover {
+		border: 1px solid $color-light;
+		border-radius: $space-base * 1.25;
+	}
 }
 
 .selected {

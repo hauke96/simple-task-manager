@@ -23,8 +23,8 @@
 					<app-task-details [needUserAssignment]="project.needsAssignment"
 									  [projectId]="project.id"
 									  [projectOwnerId]="project.owner.uid"></app-task-details>
-					<app-comment [comments]="selectedTask?.comments ?? []"></app-comment>
-					<app-task-list *ngIf="project.tasks" [tasks]="project.tasks" class="task-list"></app-task-list>
+					<app-comment *ngIf="showTaskCommentSection" [comments]="selectedTask?.comments ?? []" (backButtonClicked)="onTaskCommentBackButtonClicked()"></app-comment>
+					<app-task-list *ngIf="project.tasks && !showTaskCommentSection" [tasks]="project.tasks" (taskCommentSelected)="onTaskCommentSelected($event)" class="task-list"></app-task-list>
 				</div>
 			</div>
 			<div *ngIf="tabs.tabIndex === 1" class="user-tab">
