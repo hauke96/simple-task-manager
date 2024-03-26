@@ -72,7 +72,7 @@ app-progress-bar {
 	white-space: pre-wrap;
 }
 
-.tab-content {
+.tab-container-padding {
 	padding: $space-base;
 }
 
@@ -80,7 +80,6 @@ app-progress-bar {
 	display: flex;
 	flex-direction: column;
 	min-height: 0; // important for scrolling (for whatever reason, s. above)
-	height: 100%; // To enable scrolling within the tab containers
 }
 
 .task-tab {
@@ -93,8 +92,10 @@ app-progress-bar {
 
 .task-list {
 	overflow-y: hidden;
-	display: flex;
-	flex-direction: column;
+}
+
+.comment-list {
+	overflow-y: hidden;
 }
 
 .map-container {
@@ -111,15 +112,9 @@ app-progress-bar {
 	margin-bottom: $space-large;
 }
 
-app-tabs {
-	flex-grow: 1;
-}
-
 .user-tab {
 	display: flex;
 	flex-direction: column;
-	min-height: 0; // important for scrolling (for whatever reason, s. above)
-	height: 100%; // To enable scrolling within the tab containers
 }
 
 .user-list {

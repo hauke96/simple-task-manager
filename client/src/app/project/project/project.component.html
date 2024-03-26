@@ -21,25 +21,25 @@
 		</div>
 
 		<app-tabs [tabs]="tabTitles" #tabs [borderless]="true">
-			<div *ngIf="tabs.selectedTabIndex === 0" class="task-tab">
-				<div class="tab-content">
+			<div *ngIf="tabs.selectedTabIndex === 0" class="task-tab tab-container">
+				<div class="tab-container-padding">
 					<app-task-details [needUserAssignment]="project.needsAssignment"
 									  [projectId]="project.id"
 									  [projectOwnerId]="project.owner.uid"></app-task-details>
 				</div>
 				<app-tabs *ngIf="project.tasks" [tabs]="innerTabTitles" #innerTabs [borderless]="true"
 						  class="inner-tabs">
-					<div *ngIf="innerTabs.selectedTabIndex === 0" class="user-tab task-list tab-content">
-						<app-task-list [tasks]="project.tasks"
-									   (taskCommentSelected)="onTaskCommentSelected($event)"
-						></app-task-list>
-					</div>
-					<div *ngIf="innerTabs.selectedTabIndex === 1" class="user-tab tab-content">
-						<app-comment [comments]="selectedTask?.comments ?? []"></app-comment>
-					</div>
+					<app-task-list *ngIf="innerTabs.selectedTabIndex === 0"
+								   class="user-tab task-list tab-container-padding tab-container"
+								   [tasks]="project.tasks"
+								   (taskCommentSelected)="onTaskCommentSelected($event)"
+					></app-task-list>
+					<app-comment *ngIf="innerTabs.selectedTabIndex === 1"
+								 class="user-tab comment-list"
+								 [comments]="selectedTask?.comments ?? []"></app-comment>
 				</app-tabs>
 			</div>
-			<div *ngIf="tabs.selectedTabIndex === 1" class="user-tab">
+			<div *ngIf="tabs.selectedTabIndex === 1" class="user-tab tab-container-padding">
 				<div class="tab-container">
 					<h2>{{ 'users' | translate }}</h2>
 					<app-user-invitation *ngIf="isOwner()"
@@ -54,7 +54,7 @@
 					</app-user-list>
 				</div>
 			</div>
-			<div *ngIf="tabs.selectedTabIndex === 2">
+			<div *ngIf="tabs.selectedTabIndex === 2" class="tab-container-padding">
 				<div class="tab-container">
 					<h2>{{ 'settings' | translate }}</h2>
 					<app-project-settings [projectId]="project.id"

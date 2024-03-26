@@ -1,0 +1,17 @@
+@import '../../../styles';
+
+:host {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.comment-list-container {
+	background-color: $color-gray-very-light;
+	overflow-y: auto;
+	flex: 1;
+}
+
+.input-container {
+	height: 200px;
+}
