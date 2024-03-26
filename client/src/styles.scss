@@ -81,6 +81,7 @@ button {
 
 button:hover {
 	border: 1px solid $color-mid;
+	cursor: pointer;
 }
 
 button::-moz-focus-inner { // remove dotted line in Firefox
@@ -130,11 +131,12 @@ select {
 }
 
 .list-item:last-child {
-	border: 1px solid $color-light;
+	border-bottom: 1px solid $color-light;
 }
 
 .list-item:hover {
 	border: 1px solid $color-mid;
+	cursor: pointer;
 }
 
 .list-item:hover + .list-item { // hide border for next list item
