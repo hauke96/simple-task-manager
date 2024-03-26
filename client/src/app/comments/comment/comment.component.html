@@ -1,9 +1,17 @@
 <div class="comment-list-container">
 	<div *ngFor="let c of comments" class="comment" [class.own-comment]="isFromCurrentUser(c)">
 		<div>{{ c.text }}</div>
-		<div *ngIf="!isFromCurrentUser(c)" class="author">{{ c.author.name }}</div>
+		<div class="comment-metadata">
+			<div class="metadata">
+				<div *ngIf="!isFromCurrentUser(c)">
+					{{ c.author.name }}
+				</div>
+			</div>
+			<div class="metadata">{{ c.creationDate | date:'short' : '' : currentLocale }}</div>
+		</div>
 	</div>
 </div>
 <div class="input-container">
 	<textarea rows="4"></textarea>
+	<div class="lnr lnr-chevron-right send-button" (click)="onSendButtonClicked()" title="Send (TODO translate)"></div>
 </div>

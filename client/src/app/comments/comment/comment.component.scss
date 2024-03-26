@@ -1,4 +1,5 @@
 @import '../../../styles';
+@import '../../../icons';
 
 :host {
 	display: flex;
@@ -27,13 +28,18 @@
 	margin-bottom: $space-base;
 }
 
+.comment-metadata {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
 .own-comment {
 	align-self: flex-end;
-	//border-right: 3px solid $color-gray-mid;
 	background-color: $color-very-very-light;
 }
 
-.author {
+.metadata {
 	margin-top: $space-small;
 	font-size: $font-small;
 	font-style: italic;
@@ -41,5 +47,28 @@
 }
 
 .input-container {
-	height: 200px;
+	display: flex;
+	flex-direction: row;
+	padding: $space-base;
+}
+
+.send-button {
+	display: flex;
+	justify-content: center;
+	align-self: flex-end;
+	align-items: center;
+	width: $space-base * 2.5;
+	height: $space-base * 2.5;
+	margin-left: $space-base;
+	font-size: $font-base;
+	color: $color-mid;
+	border: 1px solid $color-mid;
+	border-radius: $space-base * 1.25;
+}
+
+.send-button:hover {
+	color: $color-dark;
+	border: 1px solid $color-dark;
+	background-color: $color-very-light;
+	cursor: pointer;
 }
