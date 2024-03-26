@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectService } from '../project.service';
 import { TaskService } from '../../task/task.service';
@@ -9,6 +9,7 @@ import { Unsubscriber } from '../../common/unsubscriber';
 import { User } from '../../user/user.material';
 import { TranslateService } from '@ngx-translate/core';
 import { Task } from '../../task/task.material';
+import { TabsComponent } from '../../ui/tabs/tabs.component';
 
 @Component({
   selector: 'app-project',
@@ -17,7 +18,9 @@ import { Task } from '../../task/task.material';
 })
 export class ProjectComponent extends Unsubscriber implements OnInit {
   public project: Project;
-  public showTaskCommentSection: boolean;
+
+  @ViewChild('innerTabs')
+  public innerTabControl: TabsComponent;
 
   constructor(
     private router: Router,
@@ -72,6 +75,12 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
     ];
   }
 
+  public get innerTabTitles(): string[] {
+    return [
+      'List', 'Comments'
+    ];
+  }
+
   public get selectedTask(): Task | undefined {
     return this.taskService.getSelectedTask();
   }
@@ -100,12 +109,13 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
       });
   }
 
-  public onTaskCommentSelected(_: string): void {
-    this.showTaskCommentSection = true;
+  public onTaskCommentSelected(task: Task): void {
+    this.taskService.selectTask(task);
+    this.innerTabControl.selectTab(1);
   }
 
   public onTaskCommentBackButtonClicked(): void {
-    this.showTaskCommentSection = false;
+    this.innerTabControl.selectTab(0);
   }
 
   public isOwner(): boolean {

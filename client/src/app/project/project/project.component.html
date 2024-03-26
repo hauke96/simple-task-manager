@@ -1,12 +1,14 @@
 <app-toolbar>
 	<div class="toolbar-item">
 		<div class="back-button-container">
-			<app-icon-button [routerLink]="['/dashboard']" icon="lnr-chevron-left" textKey="project.back-button"></app-icon-button>
-			<p class="project-label">{{'project.title' | translate}} {{project.name}}</p>
+			<app-icon-button [routerLink]="['/dashboard']" icon="lnr-chevron-left"
+							 textKey="project.back-button"></app-icon-button>
+			<p class="project-label">{{ 'project.title' | translate }} {{ project.name }}</p>
 		</div>
-		<app-progress-bar [progressPoints]="project.doneProcessPoints" [totalPoints]="project.totalProcessPoints"></app-progress-bar>
+		<app-progress-bar [progressPoints]="project.doneProcessPoints"
+						  [totalPoints]="project.totalProcessPoints"></app-progress-bar>
 		<div class="created-at-label">
-			<span>{{'project.creation-date' | translate}} {{project.creationDate | date:'longDate'}}</span>
+			<span>{{ 'project.creation-date' | translate }} {{ project.creationDate | date:'longDate' }}</span>
 		</div>
 	</div>
 </app-toolbar>
@@ -14,22 +16,32 @@
 <div class="root-container">
 	<div class="task-list-details-container">
 		<div class="description-container" *ngIf="project.description.trim().length !== 0">
-			<h2 class="description-label">{{'project.description' | translate}}</h2>
-			<div class="description-text">{{project.description}}</div>
+			<h2 class="description-label">{{ 'project.description' | translate }}</h2>
+			<div class="description-text">{{ project.description }}</div>
 		</div>
+
 		<app-tabs [tabs]="tabTitles" #tabs [borderless]="true">
-			<div *ngIf="tabs.tabIndex === 0" class="task-tab">
-				<div class="tab-container">
+			<div *ngIf="tabs.selectedTabIndex === 0" class="task-tab">
+				<div class="tab-content">
 					<app-task-details [needUserAssignment]="project.needsAssignment"
 									  [projectId]="project.id"
 									  [projectOwnerId]="project.owner.uid"></app-task-details>
-					<app-comment *ngIf="showTaskCommentSection" [comments]="selectedTask?.comments ?? []" (backButtonClicked)="onTaskCommentBackButtonClicked()"></app-comment>
-					<app-task-list *ngIf="project.tasks && !showTaskCommentSection" [tasks]="project.tasks" (taskCommentSelected)="onTaskCommentSelected($event)" class="task-list"></app-task-list>
 				</div>
+				<app-tabs *ngIf="project.tasks" [tabs]="innerTabTitles" #innerTabs [borderless]="true"
+						  class="inner-tabs">
+					<div *ngIf="innerTabs.selectedTabIndex === 0" class="user-tab task-list tab-content">
+						<app-task-list [tasks]="project.tasks"
+									   (taskCommentSelected)="onTaskCommentSelected($event)"
+						></app-task-list>
+					</div>
+					<div *ngIf="innerTabs.selectedTabIndex === 1" class="user-tab tab-content">
+						<app-comment [comments]="selectedTask?.comments ?? []"></app-comment>
+					</div>
+				</app-tabs>
 			</div>
-			<div *ngIf="tabs.tabIndex === 1" class="user-tab">
+			<div *ngIf="tabs.selectedTabIndex === 1" class="user-tab">
 				<div class="tab-container">
-					<h2>{{'users' | translate}}</h2>
+					<h2>{{ 'users' | translate }}</h2>
 					<app-user-invitation *ngIf="isOwner()"
 										 class="tab-container-item"
 										 (userInvited)="onUserInvited($event)"
@@ -42,9 +54,9 @@
 					</app-user-list>
 				</div>
 			</div>
-			<div *ngIf="tabs.tabIndex === 2">
+			<div *ngIf="tabs.selectedTabIndex === 2">
 				<div class="tab-container">
-					<h2>{{'settings' | translate}}</h2>
+					<h2>{{ 'settings' | translate }}</h2>
 					<app-project-settings [projectId]="project.id"
 										  [projectOwner]="project.owner"
 										  [projectName]="project.name"

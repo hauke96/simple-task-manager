@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Comment } from '../comment.material';
 
 @Component({
@@ -9,7 +9,4 @@ import { Comment } from '../comment.material';
 export class CommentComponent {
   @Input()
   public comments: Comment[];
-
-  @Output()
-  public backButtonClicked: EventEmitter<void> = new EventEmitter<void>();
 }

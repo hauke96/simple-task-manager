@@ -72,6 +72,10 @@ app-progress-bar {
 	white-space: pre-wrap;
 }
 
+.tab-content {
+	padding: $space-base;
+}
+
 .tab-container {
 	display: flex;
 	flex-direction: column;
@@ -81,6 +85,10 @@ app-progress-bar {
 
 .task-tab {
 	overflow-y: hidden;
+}
+
+.inner-tabs {
+	margin-top: $space-base;
 }
 
 .task-list {

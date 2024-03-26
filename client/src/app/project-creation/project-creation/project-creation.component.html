@@ -1,7 +1,9 @@
 <app-toolbar>
 	<div class="toolbar-buttons-container">
-		<app-icon-button [routerLink]="['/dashboard']" icon="lnr-chevron-left" textKey="cancel-button"></app-icon-button>
-		<app-icon-button (click)="onSaveButtonClicked()" class="save-button" icon="lnr-checkmark-circle" [disabled]="!creationForm.form?.valid || !hasTasks" textKey="save-button"></app-icon-button>
+		<app-icon-button [routerLink]="['/dashboard']" icon="lnr-chevron-left"
+						 textKey="cancel-button"></app-icon-button>
+		<app-icon-button (click)="onSaveButtonClicked()" class="save-button" icon="lnr-checkmark-circle"
+						 [disabled]="!creationForm.form?.valid || !hasTasks" textKey="save-button"></app-icon-button>
 	</div>
 </app-toolbar>
 <div class="root-container">
@@ -9,46 +11,49 @@
 		<form #creationForm="ngForm" class="root-form">
 			<app-tabs #rootTabs [tabs]="rootTabTitles" [borderless]="true" class="root-tabs"
 					  (tabSelected)="onTabSelected()">
-				<!-- Properties -->
-				<div *ngIf="rootTabs.tabIndex === 0">
-					<h2 class="properties-label">{{'properties' | translate}}</h2>
-					<app-project-properties [projectProperties]="projectProperties"></app-project-properties>
-				</div>
-
-				<!-- Tasks -->
-				<div *ngIf="rootTabs.tabIndex === 1" class="tab-container">
-					<div class="task-head">
-						<h2 class="properties-label">{{'tasks' | translate}}</h2>
-						<span class="font-small">{{taskDrafts.length}} / {{config.maxTasksPerProject}}</span>
+				<div class="tab-content">
+					<!-- Properties -->
+					<div *ngIf="rootTabs.selectedTabIndex === 0">
+						<h2 class="properties-label">{{ 'properties' | translate }}</h2>
+						<app-project-properties [projectProperties]="projectProperties"></app-project-properties>
 					</div>
-					<app-task-draft-list [tasks]="taskDrafts"
-										 [selectedTask]="selectedTask"></app-task-draft-list>
 
-					<div *ngIf="selectedTask">
-						<h2>{{'properties' | translate}}</h2>
-						<app-task-edit [task]="selectedTask"></app-task-edit>
+					<!-- Tasks -->
+					<div *ngIf="rootTabs.selectedTabIndex === 1" class="tab-container">
+						<div class="task-head">
+							<h2 class="properties-label">{{ 'tasks' | translate }}</h2>
+							<span class="font-small">{{ taskDrafts.length }} / {{ config.maxTasksPerProject }}</span>
+						</div>
+						<app-task-draft-list [tasks]="taskDrafts"
+											 [selectedTask]="selectedTask"></app-task-draft-list>
 
-						<h2>{{'project-creation.subdivide' | translate}}</h2>
-						<app-shape-divide [selectedTask]="selectedTask"
-										  (previewClicked)="onDividePreviewClicked($event)"></app-shape-divide>
+						<div *ngIf="selectedTask">
+							<h2>{{ 'properties' | translate }}</h2>
+							<app-task-edit [task]="selectedTask"></app-task-edit>
+
+							<h2>{{ 'project-creation.subdivide' | translate }}</h2>
+							<app-shape-divide [selectedTask]="selectedTask"
+											  (previewClicked)="onDividePreviewClicked($event)"></app-shape-divide>
+						</div>
 					</div>
-				</div>
 
-				<!-- Import -->
-				<div *ngIf="rootTabs.tabIndex === 2">
-					<div class="tab-container">
-						<app-shape-upload></app-shape-upload>
-						<div class="hline"></div>
-						<app-project-import></app-project-import>
-						<div class="hline"></div>
-						<app-copy-project [projects]="(existingProjects | async)!" [loading]="loadingProjects"></app-copy-project>
+					<!-- Import -->
+					<div *ngIf="rootTabs.selectedTabIndex === 2">
+						<div class="tab-container">
+							<app-shape-upload></app-shape-upload>
+							<div class="hline"></div>
+							<app-project-import></app-project-import>
+							<div class="hline"></div>
+							<app-copy-project [projects]="(existingProjects | async)!"
+											  [loading]="loadingProjects"></app-copy-project>
+						</div>
 					</div>
-				</div>
 
-				<!-- Remote -->
-				<div *ngIf="rootTabs.tabIndex === 3">
-					<div class="tab-container">
-						<app-shape-remote></app-shape-remote>
+					<!-- Remote -->
+					<div *ngIf="rootTabs.selectedTabIndex === 3">
+						<div class="tab-container">
+							<app-shape-remote></app-shape-remote>
+						</div>
 					</div>
 				</div>
 			</app-tabs>

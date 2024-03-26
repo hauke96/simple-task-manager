@@ -12,6 +12,6 @@
 				  class="color-gray">{{ t.assignedUser.name }}</span>
 			<span *ngIf="isAssignedToCurrentUser(t)" class="color-gray">{{ 'task-list.you' | translate }}</span>
 		</div>
-		<span class="lnr lnr-envelope list-item-comment" (click)="onListItemCommentClicked(t.id)"></span>
+		<span class="lnr lnr-envelope list-item-comment" (click)="onListItemCommentClicked(t)"></span>
 	</div>
 </div>

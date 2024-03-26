@@ -11,7 +11,7 @@ import { Unsubscriber } from '../../common/unsubscriber';
 })
 export class TaskListComponent extends Unsubscriber implements AfterViewInit {
   @Output()
-  public taskCommentSelected = new EventEmitter<string>();
+  public taskCommentSelected = new EventEmitter<Task>();
 
   private currentTasks: Task[];
 
@@ -72,7 +72,7 @@ export class TaskListComponent extends Unsubscriber implements AfterViewInit {
     this.taskService.selectTask(clickedTask);
   }
 
-  public onListItemCommentClicked(id: string): void {
-    this.taskCommentSelected.emit(id)
+  public onListItemCommentClicked(task: Task): void {
+    this.taskCommentSelected.emit(task);
   }
 }
