@@ -46,7 +46,8 @@
     },
     "live-updates-init-error": "Echtzeit-Aktualisierungen konnten nicht initialisieren werden",
     "could-not-load-project": "Projekt '{{projectId}}' konnte nicht geladen werden",
-    "could-not-load-projects": "Projekte konnten nicht geladen werden"
+    "could-not-load-projects": "Projekte konnten nicht geladen werden",
+    "could-not-add-task-comment": "Kommentar konnte nicht an Aufgabe '{{taskName}}' gespeichert werden"
   },
   "project-list": {
     "projects": "Projekte:",

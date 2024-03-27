@@ -1,5 +1,5 @@
 <div class="comment-list-container">
-	<div *ngFor="let c of comments" class="comment" [class.own-comment]="isFromCurrentUser(c)">
+	<div *ngFor="let c of currentComments" class="comment" [class.own-comment]="isFromCurrentUser(c)">
 		<div>{{ c.text }}</div>
 		<div class="comment-metadata">
 			<div class="metadata">

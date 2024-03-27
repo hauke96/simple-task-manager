@@ -46,28 +46,28 @@ export class ProjectService {
   private handleReceivedMessage(m: WebsocketMessage): void {
     switch (m.type) {
       case WebsocketMessageType.MessageType_ProjectAdded:
-        this.getProject(m.id).subscribe(
-          p => {
+        this.getProject(m.id).subscribe({
+          next: p => {
             this.projectAdded.emit(p);
           },
-          e => {
+          error: e => {
             console.error('Unable to process ' + m.type + ' event for project ' + m.id);
             console.error(e);
           }
-        );
+        });
         break;
       case WebsocketMessageType.MessageType_ProjectUpdated:
-        this.getProject(m.id).subscribe(
-          p => {
+        this.getProject(m.id).subscribe({
+          next: p => {
             // Also call the task service to send task-updates to the components.
             this.taskService.updateTasks(p.tasks);
             this.projectChanged.emit(p);
           },
-          e => {
+          error: e => {
             console.error('Unable to process ' + m.type + ' event for project ' + m.id);
             console.error(e);
           }
-        );
+        });
         break;
       case WebsocketMessageType.MessageType_ProjectUserRemoved:
         this.projectUserRemoved.emit(m.id);

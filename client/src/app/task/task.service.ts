@@ -39,7 +39,8 @@ export class TaskService {
     if (this.selectedTask) {
       const updatedSelectedTask = tasks.filter(t => t.id === this.selectedTask?.id);
       if (updatedSelectedTask.length !== 0) {
-        this.selectedTaskChanged.emit(updatedSelectedTask[0]);
+        this.selectedTask = updatedSelectedTask[0];
+        this.selectedTaskChanged.emit(this.selectedTask);
       }
     }
   }

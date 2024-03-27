@@ -595,6 +595,13 @@ func addTaskComments_v2_9(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(err)
 	}
 
+	err = sendTaskUpdate_v2_9(context.WebsocketSender, taskOfComment, context)
+	if err != nil {
+		return InternalServerError(err)
+	}
+
+	context.Log("Successfully added comment to task '%s'", user, taskId)
+
 	return JsonResponse(taskOfComment)
 }
 

@@ -123,7 +123,8 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
       .subscribe({
         error: e => {
           console.error(e);
-          const message = this.translationService.instant('project.could-not-add-task-comment', {taskName: this.selectedTask?.name});
+          const taskName = this.selectedTask?.name ?? this.selectedTask?.id ?? '?';
+          const message = this.translationService.instant('project.could-not-add-task-comment', {taskName});
           this.notificationService.addError(message);
         }
       });
