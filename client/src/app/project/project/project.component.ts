@@ -76,9 +76,7 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
   }
 
   public get innerTabTitles(): string[] {
-    return [
-      'List', 'Comments'
-    ];
+    return ['List', 'Comments'];
   }
 
   public get selectedTask(): Task | undefined {

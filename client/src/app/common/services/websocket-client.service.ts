@@ -1,4 +1,4 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { EventEmitter, Injectable, NgZone } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { WebsocketMessage } from '../entities/websocket-message';
 import { WebSocketSubject } from 'rxjs/webSocket';
@@ -15,7 +15,7 @@ export class WebsocketClientService extends Unsubscriber {
 
   public messageReceived: EventEmitter<WebsocketMessage> = new EventEmitter<WebsocketMessage>();
 
-  constructor(currentUserService: CurrentUserService) {
+  constructor(currentUserService: CurrentUserService, ngZone: NgZone) {
     super();
 
     this.unsubscribeLater(
@@ -27,7 +27,7 @@ export class WebsocketClientService extends Unsubscriber {
       })
     );
 
-    this.connect();
+    ngZone.runOutsideAngular(() => this.connect());
   }
 
   private connect(): void {
