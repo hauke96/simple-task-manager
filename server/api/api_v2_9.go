@@ -600,7 +600,7 @@ func addTaskComments_v2_9(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(err)
 	}
 
-	context.Log("Successfully added comment to task '%s'", user, taskId)
+	context.Log("Successfully added comment to task '%s'", taskId)
 
 	return JsonResponse(taskOfComment)
 }
