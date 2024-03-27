@@ -18,7 +18,7 @@ export class CommentService {
       dto.id,
       dto.text,
       userMap.get(dto.authorId) as User,
-      dto.creationDate
+      new Date(dto.creationDate)
     ));
   }
 }

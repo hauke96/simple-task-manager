@@ -13,6 +13,7 @@ import { Coordinate } from 'ol/coordinate';
 import FeatureFormat from 'ol/format/Feature';
 import { Feature } from 'ol';
 import { CommentService } from '../comments/comment.service';
+import { Comment, CommentDraftDto, CommentDto } from '../comments/comment.material';
 
 @Injectable({
   providedIn: 'root'
@@ -103,6 +104,14 @@ export class TaskService {
     }
 
     return this.http.delete<TaskDto>(environment.url_task_assignedUser.replace('{id}', taskId))
+      .pipe(
+        mergeMap(dto => this.getUserNameMapFromDtos([dto]).pipe(map(userMap => this.toTaskWithUsers(dto, userMap)))),
+        tap(t => this.selectedTaskChanged.emit(t))
+      );
+  }
+
+  public addComment(taskId: string, comment: string): Observable<Task> {
+    return this.http.post<TaskDto>(environment.url_task_comments.replace('{id}', taskId), JSON.stringify(new CommentDraftDto(comment)))
       .pipe(
         mergeMap(dto => this.getUserNameMapFromDtos([dto]).pipe(map(userMap => this.toTaskWithUsers(dto, userMap)))),
         tap(t => this.selectedTaskChanged.emit(t))

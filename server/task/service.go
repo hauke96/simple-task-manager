@@ -176,10 +176,10 @@ func (s *TaskService) Delete(taskIds []string, requestingUserId string) error {
 	return nil
 }
 
-func (s *TaskService) AddComment(taskId string, draftDto *comment.CommentDraftDto, authorId string) (*comment.Comment, error) {
+func (s *TaskService) AddComment(taskId string, draftDto *comment.CommentDraftDto, authorId string) error {
 	commentListId, err := s.store.getCommentListId(taskId)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	return s.commentService.AddComment(commentListId, draftDto, authorId)

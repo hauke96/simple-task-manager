@@ -21,9 +21,9 @@ func Init(tx *sql.Tx, logger *util.Logger, store *CommentStore) *CommentService 
 	}
 }
 
-func (s *CommentService) AddComment(listId string, commentDraft *CommentDraftDto, authorId string) (*Comment, error) {
+func (s *CommentService) AddComment(listId string, commentDraft *CommentDraftDto, authorId string) error {
 	if len(commentDraft.Text) > config.Conf.MaxCommentLength {
-		return nil, errors.New(fmt.Sprintf("Comment too long. Allowed are %d characters but found %d.", config.Conf.MaxCommentLength, len(commentDraft.Text)))
+		return errors.New(fmt.Sprintf("Comment too long. Allowed are %d characters but found %d.", config.Conf.MaxCommentLength, len(commentDraft.Text)))
 	}
 
 	return s.store.addComment(listId, commentDraft.Text, authorId, time.Now().UTC())

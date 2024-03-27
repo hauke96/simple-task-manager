@@ -342,10 +342,10 @@ func (s *ProjectService) UpdateDescription(projectId string, newDescription stri
 	return project, nil
 }
 
-func (s *ProjectService) AddComment(projectId string, draftDto *comment.CommentDraftDto, authorId string) (*comment.Comment, error) {
+func (s *ProjectService) AddComment(projectId string, draftDto *comment.CommentDraftDto, authorId string) error {
 	commentListId, err := s.store.getCommentListId(projectId)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	return s.commentService.AddComment(commentListId, draftDto, authorId)

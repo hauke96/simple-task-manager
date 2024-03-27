@@ -25,6 +25,7 @@ const (
 	EnvVarSourceRepoURL         = "STM_SOURCE_REPO_URL"
 	EnvVarMaxTasksPerProject    = "STM_MAX_TASKS_PER_PROJECT"
 	EnvVarMaxDescriptionLength  = "STM_MAX_DESCRIPTION_LENGTH"
+	EnvVarMaxCommentLength      = "STM_MAX_COMMENT_LENGTH"
 
 	EnvVarSslCertFile = "STM_SSL_CERT_FILE"
 	EnvVarSslKeyFile  = "STM_SSL_KEY_FILE"
@@ -49,6 +50,7 @@ const (
 	DefaultTokenInvalidityDuration = "168h"
 	DefaultMaxTaskPerProject       = 1000
 	DefaultMaxDescriptionLength    = 1000
+	DefaultMaxCommentLength        = 1000
 
 	DefaultDbUsername = "stm"
 	DefaultDbPassword = "secret"
@@ -111,6 +113,7 @@ func LoadConfig(file string) {
 	Conf.SourceRepoURL = getConfigEntry(EnvVarSourceRepoURL, Conf.SourceRepoURL)
 	Conf.MaxTasksPerProject = getConfigEntryInt(EnvVarMaxTasksPerProject, Conf.MaxTasksPerProject)
 	Conf.MaxDescriptionLength = getConfigEntryInt(EnvVarMaxDescriptionLength, Conf.MaxDescriptionLength)
+	Conf.MaxCommentLength = getConfigEntryInt(EnvVarMaxCommentLength, Conf.MaxCommentLength)
 
 	// SSL configs
 	Conf.SslCertFile = getConfigEntry(EnvVarSslCertFile, Conf.SslCertFile)
@@ -144,6 +147,7 @@ func initDefaultConfig() {
 	Conf.SourceRepoURL = DefaultSourceRepoUrl
 	Conf.MaxTasksPerProject = DefaultMaxTaskPerProject
 	Conf.MaxDescriptionLength = DefaultMaxDescriptionLength
+	Conf.MaxCommentLength = DefaultMaxCommentLength
 
 	Conf.DbUsername = DefaultDbUsername
 	Conf.DbPassword = DefaultDbPassword

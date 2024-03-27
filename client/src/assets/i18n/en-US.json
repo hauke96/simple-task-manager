@@ -46,7 +46,8 @@
     },
     "live-updates-init-error": "Could not initialize live-updates",
     "could-not-load-project": "Could not load project '{{projectId}}'",
-    "could-not-load-projects": "Could not load projects"
+    "could-not-load-projects": "Could not load projects",
+    "could-not-add-task-comment": "Could not add comment to task '{{taskName}}'"
   },
   "project-list": {
     "projects": "Projects:",

@@ -9,7 +9,7 @@
 
 .comment-list-container {
 	display: flex;
-	flex-direction: column;
+	flex-direction: column-reverse;
 	align-items: flex-start;
 	background-color: $color-gray-very-light;
 	overflow-y: auto;
@@ -24,7 +24,7 @@
 	border: 1px solid $color-gray-light;
 }
 
-.comment:last-child {
+.comment:first-child { // first-child due to the reverse direction (first-child is the bottom one)
 	margin-bottom: $space-base;
 }
 

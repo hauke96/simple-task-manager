@@ -8,6 +8,11 @@ export class CommentDto {
   }
 }
 
+export class CommentDraftDto {
+  constructor(public text: string) {
+  }
+}
+
 export class Comment {
   constructor(public id: number,
               public text: string,

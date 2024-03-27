@@ -1,5 +1,5 @@
 const baseUrl = document.location.protocol + '//' + document.location.hostname + ':8080';
-const usedApi = 'v2.8';
+const usedApi = 'v2.9';
 
 export const environment = {
   production: true,
@@ -19,5 +19,6 @@ export const environment = {
   url_task: baseUrl + '/' + usedApi + '/tasks/{id}',
   url_task_assignedUser: baseUrl + '/' + usedApi + '/tasks/{id}/assignedUser',
   url_task_processPoints: baseUrl + '/' + usedApi + '/tasks/{id}/processPoints',
+  url_task_comments: baseUrl + '/' + usedApi + '/tasks/{id}/comments',
   url_updates: 'wss://' + document.location.hostname + ':8080' + '/' + usedApi + '/updates'
 };

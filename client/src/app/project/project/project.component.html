@@ -36,7 +36,8 @@
 					></app-task-list>
 					<app-comment *ngIf="innerTabs.selectedTabIndex === 1"
 								 class="user-tab comment-list"
-								 [comments]="selectedTask?.comments ?? []"></app-comment>
+								 [comments]="selectedTask?.comments ?? []"
+								 (commentSendClicked)="onTaskCommentSendClicked(selectedTask?.id, $event)"></app-comment>
 				</app-tabs>
 			</div>
 			<div *ngIf="tabs.selectedTabIndex === 1" class="user-tab tab-container-padding">

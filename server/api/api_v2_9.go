@@ -201,7 +201,7 @@ func removeUser_v2_9(r *http.Request, context *Context) *ApiResponse {
 // @Produce json
 // @Param id path string true "The ID of the project"
 // @Param comment body string true "The comment DTO for the given project"
-// @Success 200 {object} comment.Comment
+// @Success 200 {object} project.Project
 // @Router /v2.9/projects/{id}/comments [POST]
 func addProjectComments_v2_9(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
@@ -223,12 +223,17 @@ func addProjectComments_v2_9(r *http.Request, context *Context) *ApiResponse {
 
 	user := context.Token.UID
 
-	newComment, err := context.ProjectService.AddComment(projectId, &dto, user)
+	err = context.ProjectService.AddComment(projectId, &dto, user)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
-	return JsonResponse(newComment)
+	projectWithComment, err := context.ProjectService.GetProject(projectId, user)
+	if err != nil {
+		return InternalServerError(err)
+	}
+
+	return JsonResponse(projectWithComment)
 }
 
 // Delete project
@@ -558,7 +563,7 @@ func setProcessPoints_v2_9(r *http.Request, context *Context) *ApiResponse {
 // @Produce json
 // @Param id path string true "The ID of the task"
 // @Param comment body string true "The comment DTO for the given task"
-// @Success 200 {object} comment.Comment
+// @Success 200 {object} task.Task
 // @Router /v2.9/tasks/{id}/comments [POST]
 func addTaskComments_v2_9(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
@@ -580,12 +585,17 @@ func addTaskComments_v2_9(r *http.Request, context *Context) *ApiResponse {
 
 	user := context.Token.UID
 
-	newComment, err := context.TaskService.AddComment(taskId, &dto, user)
+	err = context.TaskService.AddComment(taskId, &dto, user)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
-	return JsonResponse(newComment)
+	taskOfComment, err := context.TaskService.GetTask(taskId)
+	if err != nil {
+		return InternalServerError(err)
+	}
+
+	return JsonResponse(taskOfComment)
 }
 
 // Establish websocket connection

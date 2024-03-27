@@ -39,7 +39,7 @@ func GetStore(tx *sql.Tx, logger *util.Logger) *CommentStore {
 
 func (s *CommentStore) GetComments(listId string) ([]Comment, error) {
 	rawQueryString := `
-SELECT comment.id, comment.text, comment.author_id, comment.creation_date
+SELECT comment.*
 FROM %s comment_list, %s comment
 WHERE
 	comment_list.id = $1 AND
@@ -96,14 +96,10 @@ func (s *CommentStore) NewCommentList() (string, error) {
 	return commentListId, nil
 }
 
-func (s *CommentStore) addComment(listId string, text string, authorId string, creationDate time.Time) (*Comment, error) {
-	query := fmt.Sprintf("INSERT INTO %s (comment_list_id, text, authorId, creation_date) VALUES($1, $2, $3, $4) RETURNING *", s.commentTable)
-	comment, err := s.execQuery(query, listId, text, authorId, creationDate)
-	if err != nil {
-		return nil, err
-	}
-
-	return comment, nil
+func (s *CommentStore) addComment(listId string, text string, authorId string, creationDate time.Time) error {
+	query := fmt.Sprintf("INSERT INTO %s (comment_list_id, text, author_id, creation_date) VALUES($1, $2, $3, $4) RETURNING *", s.commentTable)
+	_, err := s.execQuery(query, listId, text, authorId, creationDate)
+	return err
 }
 
 // execQuery executed the given query, turns the result into a Comment object and closes the query.
@@ -131,7 +127,7 @@ func (s *CommentStore) execQuery(query string, params ...interface{}) (*Comment,
 // rowToComment turns the current row into a Project object. This does not close the row.
 func rowToComment(rows *sql.Rows) (*Comment, error) {
 	var c commentRow
-	err := rows.Scan(&c.id, &c.text, &c.authorId, &c.creationDate)
+	err := rows.Scan(&c.commentListId, &c.id, &c.text, &c.creationDate, &c.authorId)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not scan rows")
 	}

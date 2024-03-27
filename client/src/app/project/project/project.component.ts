@@ -114,8 +114,19 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
     this.innerTabControl.selectTab(1);
   }
 
-  public onTaskCommentBackButtonClicked(): void {
-    this.innerTabControl.selectTab(0);
+  public onTaskCommentSendClicked(taskId: string | undefined, comment: string): void {
+    if (!taskId) {
+      return;
+    }
+
+    this.taskService.addComment(taskId, comment)
+      .subscribe({
+        error: e => {
+          console.error(e);
+          const message = this.translationService.instant('project.could-not-add-task-comment', {taskName: this.selectedTask?.name});
+          this.notificationService.addError(message);
+        }
+      });
   }
 
   public isOwner(): boolean {
