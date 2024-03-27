@@ -26,10 +26,10 @@ describe(TabsComponent.name, () => {
     const eventSpy = jest.fn();
     component.tabSelected.subscribe(eventSpy);
 
-    component.selectTab('tab 1');
+    component.selectTab(0);
     expect(eventSpy).toHaveBeenCalledWith(0);
 
-    component.selectTab('tab 2');
+    component.selectTab(1);
     expect(eventSpy).toHaveBeenCalledWith(1);
   });
 });

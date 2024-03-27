@@ -2,7 +2,7 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { Task, TaskDto } from './task.material';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
-import { from, Observable, of, throwError } from 'rxjs';
+import { from, Observable, throwError } from 'rxjs';
 import { concatMap, map, mergeMap, tap } from 'rxjs/operators';
 import { Geometry, Polygon } from 'ol/geom';
 import { Extent } from 'ol/extent';
@@ -13,7 +13,7 @@ import { Coordinate } from 'ol/coordinate';
 import FeatureFormat from 'ol/format/Feature';
 import { Feature } from 'ol';
 import { CommentService } from '../comments/comment.service';
-import { Comment, CommentDraftDto, CommentDto } from '../comments/comment.material';
+import { CommentDraftDto } from '../comments/comment.material';
 
 @Injectable({
   providedIn: 'root'
