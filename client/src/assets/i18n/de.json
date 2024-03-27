@@ -42,7 +42,9 @@
     "tab-titles": {
       "tasks": "Aufgaben",
       "users": "Benutzer",
-      "settings": "Einstellungen"
+      "settings": "Einstellungen",
+      "list": "Liste",
+      "comments": "Kommentare"
     },
     "live-updates-init-error": "Echtzeit-Aktualisierungen konnten nicht initialisieren werden",
     "could-not-load-project": "Projekt '{{projectId}}' konnte nicht geladen werden",
@@ -158,6 +160,6 @@
   },
   "comment": {
     "send": "Kommentar senden (Strg+Enter)",
-    "no-comments-yet": "Noch keine Kommentare.<br>Schreibe den ersten Kommentar."
+    "no-comments-yet": "Noch keine Kommentare,"
   }
 }

@@ -76,7 +76,10 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
   }
 
   public get innerTabTitles(): string[] {
-    return ['List', 'Comments'];
+    return [
+      this.translationService.instant('project.tab-titles.list') as string,
+      this.translationService.instant('project.tab-titles.comments') as string
+    ];
   }
 
   public get selectedTask(): Task | undefined {

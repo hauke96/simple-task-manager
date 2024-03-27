@@ -42,7 +42,9 @@
     "tab-titles": {
       "tasks": "Tasks",
       "users": "User",
-      "settings": "Settings"
+      "settings": "Settings",
+      "list": "List",
+      "comments": "Comments"
     },
     "live-updates-init-error": "Could not initialize live-updates",
     "could-not-load-project": "Could not load project '{{projectId}}'",
@@ -155,6 +157,6 @@
   },
   "comment": {
     "send": "Send comment (Ctrl+Enter)",
-    "no-comments-yet": "Nothing here yet.<br>Write the first comment."
+    "no-comments-yet": "Nothing here yet."
   }
 }

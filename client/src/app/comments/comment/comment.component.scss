@@ -51,7 +51,7 @@
 	flex-direction: row;
 	align-items: center;
 	width: 100%;
-	margin-bottom: $space-large;
+	margin-bottom: $space-base;
 }
 
 .no-comment-marker-container {
@@ -62,7 +62,7 @@
 	padding: $space-base * 2.5;
 
 	.no-comment-marker-line {
-		border-bottom: 1px solid $color-gray-light;
+		border-bottom: 1px solid rgba($color-gray-mid, 0.65);
 	}
 }
 
@@ -88,7 +88,7 @@
 	margin-left: $space-base;
 	font-size: $font-base;
 	color: $color-mid;
-	border: 1px solid $color-mid;
+	border: 1px solid $color-light;
 	border-radius: $space-base * 1.25;
 }
 
