@@ -10,7 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class CommentComponent {
 
-  public currentComments: Comment[];
+  public currentComments: Comment[] = [];
 
   @Output()
   public commentSendClicked = new EventEmitter<string>();

@@ -83,10 +83,12 @@ app-progress-bar {
 }
 
 .task-tab {
+	flex-grow: 1;
 	overflow-y: hidden;
 }
 
 .inner-tabs {
+	flex-grow: 1;
 	margin-top: $space-base;
 }
 
@@ -95,6 +97,7 @@ app-progress-bar {
 }
 
 .comment-list {
+	flex-grow: 1;
 	overflow-y: hidden;
 }
 

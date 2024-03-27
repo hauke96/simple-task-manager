@@ -1,9 +1,10 @@
 @import "../../../styles";
 
 :host {
-	min-height: 0px;
 	display: flex;
 	flex-direction: column;
+	flex-grow: 1;
+	min-height: 0; // Needed to make scrolling right. Otherwise content might exceed the page height and doesn't scroll within its container.
 }
 
 button {
@@ -29,7 +30,6 @@ button:hover {
 .tab-content {
 	margin-top: -1px;
 	border-top: 1px solid $color-light;
-	//padding: $space-base;
 	min-height: 0px;
 	display: flex;
 	flex-direction: column;
