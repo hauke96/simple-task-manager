@@ -10,8 +10,20 @@
 			<div class="metadata">{{ c.creationDate | date:'short' : '' : currentLocale }}</div>
 		</div>
 	</div>
+	<div *ngIf="currentComments.length === 0" class="no-comment-container">
+		<div class="no-comment-marker-container">
+			<div class="no-comment-marker-line"></div>
+			<div></div>
+		</div>
+		<div class="no-comment-notice" [innerHTML]="'comment.no-comments-yet' | translate "></div>
+		<div class="no-comment-marker-container">
+			<div class="no-comment-marker-line"></div>
+			<div></div>
+		</div>
+	</div>
 </div>
 <div class="input-container">
-	<textarea rows="4" [(ngModel)]="enteredComment"></textarea>
-	<div class="lnr lnr-chevron-right send-button" (click)="onSendButtonClicked()" title="Send (TODO translate)"></div>
+	<textarea rows="5" [(ngModel)]="enteredComment" (keydown.control.enter)="onSendButtonClicked()"></textarea>
+	<div class="lnr lnr-chevron-right send-button" (click)="onSendButtonClicked()"
+		 [title]="'comment.send' | translate"></div>
 </div>

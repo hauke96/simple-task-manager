@@ -155,5 +155,9 @@
   "task-map": {
     "task-done": "FERTIG",
     "you": "du"
+  },
+  "comment": {
+    "send": "Kommentar senden (Strg+Enter)",
+    "no-comments-yet": "Noch keine Kommentare.<br>Schreibe den ersten Kommentar."
   }
 }

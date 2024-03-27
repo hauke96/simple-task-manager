@@ -46,6 +46,32 @@
 	color: $color-gray-mid;
 }
 
+.no-comment-container {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	width: 100%;
+	margin-bottom: $space-large;
+}
+
+.no-comment-marker-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+	flex-grow: 1;
+	padding: $space-base * 2.5;
+
+	.no-comment-marker-line {
+		border-bottom: 1px solid $color-gray-light;
+	}
+}
+
+.no-comment-notice {
+	font-style: italic;
+	color: $color-gray-mid;
+	text-align: center;
+}
+
 .input-container {
 	display: flex;
 	flex-direction: row;

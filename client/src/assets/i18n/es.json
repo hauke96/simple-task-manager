@@ -152,5 +152,9 @@
   "task-map": {
     "task-done": "HECHO",
     "you": "tú"
+  },
+  "comment": {
+    "send": "Send comment (Ctrl+Enter)",
+    "no-comments-yet": "Nothing here yet.<br>Write the first comment."
   }
 }
