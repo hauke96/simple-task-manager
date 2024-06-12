@@ -5,7 +5,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"stm/comment"
 	"stm/config"
@@ -300,7 +299,7 @@ func exportProject_v2_9(r *http.Request, context *Context) *ApiResponse {
 // @Param projectExport body export.ProjectExport true "The project to import"
 // @Router /v2.9/projects/import [POST]
 func importProject_v2_9(r *http.Request, context *Context) *ApiResponse {
-	bodyBytes, err := ioutil.ReadAll(r.Body)
+	bodyBytes, err := io.ReadAll(r.Body)
 	if err != nil {
 		return BadRequestError(errors.Wrap(err, "error reading request body"))
 	}
@@ -340,7 +339,7 @@ func updateProjectName_v2_9(r *http.Request, context *Context) *ApiResponse {
 		return BadRequestError(errors.New("url segment 'id' not set"))
 	}
 
-	bodyBytes, err := ioutil.ReadAll(r.Body)
+	bodyBytes, err := io.ReadAll(r.Body)
 	if err != nil {
 		return InternalServerError(errors.Wrap(err, "error reading request body"))
 	}
@@ -374,7 +373,7 @@ func updateProjectDescription_v2_9(r *http.Request, context *Context) *ApiRespon
 		return BadRequestError(errors.New("url segment 'id' not set"))
 	}
 
-	bodyBytes, err := ioutil.ReadAll(r.Body)
+	bodyBytes, err := io.ReadAll(r.Body)
 	if err != nil {
 		return InternalServerError(errors.Wrap(err, "error reading request body"))
 	}

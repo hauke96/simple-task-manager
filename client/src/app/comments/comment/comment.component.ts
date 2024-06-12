@@ -12,6 +12,9 @@ export class CommentComponent {
 
   public currentComments: Comment[] = [];
 
+  @Input()
+  public taskName: string;
+
   @Output()
   public commentSendClicked = new EventEmitter<string>();
 

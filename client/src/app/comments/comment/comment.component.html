@@ -1,3 +1,5 @@
+<h2 class="comment-list-title">{{ taskName }}</h2>
+
 <div class="comment-list-container">
 	<div *ngFor="let c of currentComments" class="comment" [class.own-comment]="isFromCurrentUser(c)">
 		<div>{{ c.text }}</div>

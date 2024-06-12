@@ -69,7 +69,7 @@ func (s *storePg) getAllProjectsOfUser(userId string) ([]*Project, error) {
 		return nil, err
 	}
 
-	// Add task-IDs to projects
+	// Add task-IDs and comments to projects
 	for i, project := range projects {
 		err = s.addTasksToProject(project)
 		if err != nil {
@@ -110,6 +110,9 @@ func (s *storePg) addProject(draft *ProjectDraftDto, creationDate time.Time) (*P
 	if err != nil {
 		return nil, err
 	}
+
+	// No need to fetch anything, a new project always has an empty comment list
+	project.Comments = []comment.Comment{}
 
 	return project, nil
 }
