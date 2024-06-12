@@ -70,14 +70,16 @@
     "could-not-export-project": "Creating project export failed"
   },
   "project-creation": {
-    "copy": "Copy:",
+    "title": "Import from external sources",
+    "description": "Tasks are created from polygons. These geometries can be imported from different external sources.",
+    "copy": "Copy from project:",
     "copy-notice": "Copy and import an existing project you are a member of.",
     "no-project-notice": "No projects available!",
     "loading-projects": "Loading projects ...",
     "available-projects": "Available projects:",
     "import-button": "Import",
-    "import-heading": "Import:",
-    "import-notice": "Import an existing project from your computer. Existing properties will be overwritten.",
+    "import-heading": "Import project:",
+    "import-notice": "Import an existing project from your computer. Existing inputs in the \"Properties\" tab will be overwritten.",
     "new-polygon": "Draw new polygon",
     "edit-polygon": "Edit polygon",
     "remove-polygon": "Remove polygon",
@@ -102,7 +104,7 @@
     "load-li-2": "Click on \"Export\"",
     "load-li-3": "Copy the link after \"raw data directly from\" (right click and \"copy link\")",
     "load-li-4": "Paste this URL in here",
-    "upload": "Upload:",
+    "upload": "Geometries from file:",
     "upload-notice": "Upload a GeoJSON, OSM-XML, GPX, EsriJson, KML or WKT file, which contains polygons. Each polygon will result in a single task.",
     "remote-url-error": "Unable to load data from remote URL",
     "upload-file-button": "Upload file",
@@ -111,10 +113,11 @@
     "tab-titles": {
       "properties": "Properties",
       "tasks": "Tasks",
-      "import": "Import",
-      "remote": "Remote"
+      "import": "Import"
     },
-    "could-not-create-project": "Could not create project"
+    "could-not-create-project": "Could not create project",
+    "remote-heading": "Geometries from URL:",
+    "overpass-heading": "Geometries from Overpass:"
   },
   "task-details": {
     "title": "Task",

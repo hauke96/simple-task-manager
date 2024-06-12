@@ -39,20 +39,18 @@
 
 					<!-- Import -->
 					<div *ngIf="rootTabs.selectedTabIndex === 2">
+						<h2 class="properties-label">{{ 'project-creation.title' | translate }}</h2>
+						<p>{{ 'project-creation.description' | translate }}</p>
+						<div class="hline"></div>
 						<div class="tab-container">
 							<app-shape-upload></app-shape-upload>
+							<div class="hline"></div>
+							<app-shape-remote></app-shape-remote>
 							<div class="hline"></div>
 							<app-project-import></app-project-import>
 							<div class="hline"></div>
 							<app-copy-project [projects]="(existingProjects | async)!"
 											  [loading]="loadingProjects"></app-copy-project>
-						</div>
-					</div>
-
-					<!-- Remote -->
-					<div *ngIf="rootTabs.selectedTabIndex === 3">
-						<div class="tab-container">
-							<app-shape-remote></app-shape-remote>
 						</div>
 					</div>
 				</div>

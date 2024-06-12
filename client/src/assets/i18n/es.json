@@ -70,6 +70,8 @@
     "could-not-export-project": "Fallo en la creación de la exportación del proyecto"
   },
   "project-creation": {
+    "title": "Import from external sources",
+    "description": "Tasks are created from polygons. These geometries can be imported from different external sources.",
     "copy": "Copiar:",
     "copy-notice": "Copiar e importar un proyecto existente del que sea miembro.",
     "no-project-notice": "¡No hay proyectos disponibles!",
@@ -111,10 +113,11 @@
     "tab-titles": {
       "properties": "Propiedades",
       "tasks": "Tareas",
-      "import": "Importar",
-      "remote": "Remoto"
+      "import": "Importar"
     },
-    "could-not-create-project": "No se pudo crear el proyecto"
+    "could-not-create-project": "No se pudo crear el proyecto",
+    "remote-heading": "Geometries from URL:",
+    "overpass-heading": "Geometries from Overpass:"
   },
   "task-details": {
     "title": "Tareas",

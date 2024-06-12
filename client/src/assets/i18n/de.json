@@ -4,7 +4,7 @@
   "settings": "Einstellungen:",
   "description": "Beschreibung:",
   "properties": "Eigenschaften:",
-  "tasks": "Ausgaben:",
+  "tasks": "Aufgaben:",
   "name": "Name:",
   "save-button": "Speichern",
   "done-button": "Fertig",
@@ -70,14 +70,16 @@
     "could-not-export-project": "Projekt konnte nicht exportiert werden"
   },
   "project-creation": {
-    "copy": "Kopie:",
+    "title": "Aus externen Quellen importieren",
+    "description": "Aufgaben werden aus Polygonen erstellt. Diese Geometrien kann man hier aus verschiedenen Quellen importieren.",
+    "copy": "Aus Projekt kopieren:",
     "copy-notice": "Kopiere und importiere ein Projekt, bei dem du Mitglied bist.",
     "no-project-notice": "Keine Projekte verfügbar!",
     "loading-projects": "Projekte werden geladen ...",
     "available-projects": "Verfügbare Projekte:",
     "import-button": "Importieren",
-    "import-heading": "Import:",
-    "import-notice": "Importiere ein Projekt von deinem Computer. Existierende Eigenschaften werden überschrieben.",
+    "import-heading": "Projekt importieren",
+    "import-notice": "Importiere ein Projekt von deinem Computer. Existierende Eingaben im \"Eigenschaften\" Reiter werden überschrieben.",
     "new-polygon": "Zeichne ein neues Polygon",
     "edit-polygon": "Editiere ein Polygon",
     "remove-polygon": "Lösche ein Polygon",
@@ -102,7 +104,7 @@
     "load-li-2": "Klicke auf \"Export\"",
     "load-li-3": "Kopiere die URL nach \"raw data directly from\" (Rechtsklick und \"Link kopieren\")",
     "load-li-4": "Füge die URL hier ein",
-    "upload": "Hochladen:",
+    "upload": "Geometrien aus Datei:",
     "upload-notice": "Lade eine Datei im GeoJSON, OSM-XML, GPX, EsriJson, KML oder WKT Format hoch, die Polygone enthält. Jedes Polygon wird zu einer Aufgabe.",
     "remote-url-error": "Daten konnte nicht von angegebener URL geladen werden",
     "upload-file-button": "Hochladen",
@@ -111,10 +113,11 @@
     "tab-titles": {
       "properties": "Eigenschaften",
       "tasks": "Aufgaben",
-      "import": "Import",
-      "remote": "Link"
+      "import": "Import"
     },
-    "could-not-create-project": "Projekt konnte nicht angelegt werden"
+    "could-not-create-project": "Projekt konnte nicht angelegt werden",
+    "remote-heading": "Geometrien von URL:",
+    "overpass-heading": "Geometrien von Overpass:"
   },
   "task-details": {
     "title": "Aufgabe",

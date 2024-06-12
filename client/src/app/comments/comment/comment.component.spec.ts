@@ -3,6 +3,7 @@ import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
 import { Comment } from '../comment.material';
 import { User } from '../../user/user.material';
 import { TranslateService } from '@ngx-translate/core';
+import { AppModule } from '../../app.module';
 
 describe(CommentComponent.name, () => {
   let component: CommentComponent;
@@ -12,7 +13,7 @@ describe(CommentComponent.name, () => {
   beforeEach(() => {
     translationService = {} as TranslateService;
 
-    return MockBuilder(CommentComponent)
+    return MockBuilder(CommentComponent, AppModule)
       .provide({provide: TranslateService, useFactory: () => translationService});
   });
 
