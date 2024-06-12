@@ -82,23 +82,23 @@ export class MapComponent extends Unsubscriber implements OnInit {
     this.map?.getView().animate({zoom: zoom - 0.5, duration: 250});
   }
 
-  private addLayer(layer: BaseLayer) {
+  private addLayer(layer: BaseLayer): void {
     this.map.addLayer(layer);
   }
 
-  private removeLayer(layer: BaseLayer) {
+  private removeLayer(layer: BaseLayer): BaseLayer | undefined {
     return this.map.removeLayer(layer);
   }
 
-  private addInteraction(interaction: Interaction) {
+  private addInteraction(interaction: Interaction): void {
     this.map.addInteraction(interaction);
   }
 
-  private removeInteraction(interaction: Interaction) {
+  private removeInteraction(interaction: Interaction): Interaction | undefined {
     return this.map.removeInteraction(interaction);
   }
 
-  private fitMapView(extent: number[]) {
+  private fitMapView(extent: number[]): void {
     this.map.getView().fit(
       extent, {
         size: this.map.getSize(),
@@ -110,7 +110,7 @@ export class MapComponent extends Unsubscriber implements OnInit {
     this.map.getView().setCenter(coordinate);
   }
 
-  private moveToOutsideGeometry(extent: number[]) {
+  private moveToOutsideGeometry(extent: number[]): void {
     const geometryVisible = intersects(this.map.getView().calculateExtent(), extent);
     if (!geometryVisible) {
       const center = [extent[0] + (extent[2] - extent[0]) / 2, extent[1] + (extent[3] - extent[1]) / 2];
@@ -118,7 +118,7 @@ export class MapComponent extends Unsubscriber implements OnInit {
     }
   }
 
-  private fitToFeatures(features: Feature<Geometry>[]) {
+  private fitToFeatures(features: Feature<Geometry>[]): void {
     const geometries = features.filter(f => !!f.getGeometry()).map(f => f.getGeometry() as Geometry);
 
     if (geometries.length === 0) {

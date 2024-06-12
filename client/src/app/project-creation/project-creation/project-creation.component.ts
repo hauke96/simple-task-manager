@@ -28,6 +28,7 @@ import { MapLayerService } from '../../common/services/map-layer.service';
 import { TranslateService } from '@ngx-translate/core';
 import { catchError } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
+import CircleStyle from 'ol/style/Circle';
 
 @Component({
   selector: 'app-project-creation',
@@ -37,6 +38,10 @@ import { HttpErrorResponse } from '@angular/common/http';
   providers: [TaskDraftService, ProjectImportService]
 })
 export class ProjectCreationComponent extends Unsubscriber implements OnInit, OnDestroy, AfterViewInit {
+  private static readonly baseColor: '#009688';
+  private static readonly baseLightColor: '#80cbc4';
+  private static readonly baseTransparentColor = ProjectCreationComponent.baseColor + '90';
+
   public projectProperties: ProjectProperties = new ProjectProperties('', 100, '');
   public existingProjects: Observable<Project[]>;
   public loadingProjects: boolean;
@@ -90,8 +95,9 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
     this.loadingProjects = true;
     this.existingProjects = this.projectService.getProjects().pipe(
       tap(() => this.loadingProjects = false),
-      catchError((e: HttpErrorResponse, caught) => {
+      catchError(e => {
         this.loadingProjects = false;
+        console.error(e);
         this.notificationService.addError(this.translationService.instant('project.could-not-load-projects'));
         return of([]);
       })
@@ -103,7 +109,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
     this.vectorSource = new VectorSource();
     this.vectorLayer = new VectorLayer({
       source: this.vectorSource,
-      style: (f, r) => this.getStyle(f)
+      style: f => this.getStyle(f)
     });
 
     // this vector source contains all the task geometries for a preview
@@ -139,7 +145,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
   }
 
   private getLastLocation(): Coordinate | undefined {
-    let lastLocation;
+    let lastLocation: Coordinate | undefined;
     const jsonValue = localStorage.getItem('project_creation_map_center');
 
     if (jsonValue) {
@@ -154,8 +160,8 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
   }
 
   private getStyle(feature: FeatureLike): Style {
-    const borderColor = '#00968890';
-    let fillColor = '#80cbc4';
+    const borderColor = ProjectCreationComponent.baseTransparentColor;
+    let fillColor = ProjectCreationComponent.baseLightColor;
 
     // Less opaque, when selected
     if (!!this.selectedTask && feature.get('id') === this.selectedTask.id) {
@@ -176,22 +182,34 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
   }
 
   private getPreviewStyle(): Style {
-    const borderColor = '#009688';
-
     return new Style({
       stroke: new Stroke({
-        color: borderColor,
+        color: ProjectCreationComponent.baseColor,
         width: 2,
+      })
+    });
+  }
+
+  private getInteractionHandleStyle(): Style {
+    return new Style({
+      image: new CircleStyle({
+        radius: 6,
+        fill: new Fill({
+          color: ProjectCreationComponent.baseTransparentColor
+        }),
+        stroke: new Stroke({
+          width: 1,
+          color: '#fff'
+        })
       })
     });
   }
 
   public get rootTabTitles(): string[] {
     return [
-      this.translationService.instant('project-creation.tab-titles.properties'),
-      this.translationService.instant('project-creation.tab-titles.tasks'),
-      this.translationService.instant('project-creation.tab-titles.import'),
-      this.translationService.instant('project-creation.tab-titles.remote')
+      '' + this.translationService.instant('project-creation.tab-titles.properties'),
+      '' + this.translationService.instant('project-creation.tab-titles.tasks'),
+      '' + this.translationService.instant('project-creation.tab-titles.import')
     ];
   }
 
@@ -214,7 +232,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
     const newFeatures = tasks.map(t => this.toFeature(t));
     this.vectorSource.addFeatures(newFeatures);
 
-    this.mapLayerService.fitToFeatures(newFeatures);
+    this.mapLayerService.fitToFeatures(this.vectorSource.getFeatures());
 
     if (!this.canAddTasks) {
       this.setInteraction(this.drawInteraction, false);
@@ -222,9 +240,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
   }
 
   private removeTask(id: string | undefined): void {
-    const featureToRemove = this.vectorSource.getFeatures().find(f => {
-      return f.get('id') === id;
-    });
+    const featureToRemove = this.vectorSource.getFeatures().find(f => f.get('id') === id);
     if (!id || !featureToRemove) {
       return;
     }
@@ -235,7 +251,13 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
   private addMapInteractions(): void {
     // DRAW
     this.drawInteraction = new Draw({
-      type: 'Polygon'
+      type: 'Polygon',
+      style: f => [
+        // Style for the geometries:
+        this.getStyle(f),
+        // Style for the handle of the cursor:
+        this.getInteractionHandleStyle()
+      ]
     });
     this.drawInteraction.setActive(false);
     this.drawInteraction.on('drawend', (e: DrawEvent) => {
@@ -246,12 +268,13 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
 
     // MODIFY
     const snap = new Snap({
-      source: this.vectorSource
+      source: this.vectorSource,
     });
     this.mapLayerService.addInteraction(snap);
 
     this.modifyInteraction = new Modify({
-      source: this.vectorSource
+      source: this.vectorSource,
+      style: this.getInteractionHandleStyle()
     });
     this.modifyInteraction.setActive(false);
     this.mapLayerService.addInteraction(this.modifyInteraction);
@@ -274,7 +297,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
     });
     this.selectInteraction.on('select', (e: SelectEvent) => {
       if (!!e.selected[0]) {
-        this.taskDraftService.selectTask(e.selected[0].get('id'));
+        this.taskDraftService.selectTask('' + e.selected[0].get('id'));
       } else {
         this.taskDraftService.deselectTask();
       }
@@ -295,7 +318,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
 
       // Even though we transformed the coordinates after their creation from EPSG:4326 into EPSG:3857, the OSM- and overall Geo-World works
       // with lat/lon values, so we transform it back.
-      polygon = polygon.transform('EPSG:3857', 'EPSG:4326') as Polygon;
+      polygon = polygon.transform('EPSG:3857', 'EPSG:4326');
       f.setGeometry(polygon);
 
       return f;
@@ -317,11 +340,14 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
     }
 
     this.projectService.createNewProject(name, maxProcessPoints, projectDescription, features, [owner], owner)
-      .subscribe(project => {
-        this.router.navigate(['/dashboard']);
-      }, e => {
-        console.error(e);
-        this.notificationService.addError(this.translationService.instant('project-creation.could-not-create-project') + ': ' + e.error);
+      .subscribe({
+        next: () => {
+          void this.router.navigate(['/dashboard']);
+        },
+        error: (e: HttpErrorResponse) => {
+          console.error(e);
+          this.notificationService.addError(this.translationService.instant('project-creation.could-not-create-project') + ': ' + e.error);
+        }
       });
   }
 
