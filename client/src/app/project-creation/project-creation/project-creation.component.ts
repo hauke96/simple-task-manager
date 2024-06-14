@@ -38,8 +38,8 @@ import CircleStyle from 'ol/style/Circle';
   providers: [TaskDraftService, ProjectImportService]
 })
 export class ProjectCreationComponent extends Unsubscriber implements OnInit, OnDestroy, AfterViewInit {
-  private static readonly baseColor: '#009688';
-  private static readonly baseLightColor: '#80cbc4';
+  private static readonly baseColor = '#009688';
+  private static readonly baseLightColor = '#80cbc4';
   private static readonly baseTransparentColor = ProjectCreationComponent.baseColor + '90';
 
   public projectProperties: ProjectProperties = new ProjectProperties('', 100, '');

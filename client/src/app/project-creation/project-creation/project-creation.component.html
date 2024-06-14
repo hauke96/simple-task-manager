@@ -1,9 +1,14 @@
 <app-toolbar>
 	<div class="toolbar-buttons-container">
+<<<<<<< HEAD
 		<app-icon-button [routerLink]="['/dashboard']" icon="lnr-chevron-left"
 						 textKey="cancel-button"></app-icon-button>
 		<app-icon-button (click)="onSaveButtonClicked()" class="save-button" icon="lnr-checkmark-circle"
 						 [disabled]="!creationForm.form?.valid || !hasTasks" textKey="save-button"></app-icon-button>
+=======
+		<app-icon-button [routerLink]="['/dashboard']" icon="lnr-chevron-left" textKey="cancel-button"></app-icon-button>
+		<app-icon-button (clicked)="onSaveButtonClicked()" class="save-button" icon="lnr-checkmark-circle" [disabled]="!creationForm.form?.valid || !hasTasks" textKey="save-button"></app-icon-button>
+>>>>>>> dev
 	</div>
 </app-toolbar>
 <div class="root-container">
