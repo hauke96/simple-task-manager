@@ -2,7 +2,7 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, mergeMap, tap } from 'rxjs/operators';
 import { Project, ProjectAddDto, ProjectDraftDto, ProjectDto, ProjectExport } from './project.material';
-import { TaskDraftDto } from './../task/task.material';
+import { Task, TaskDraftDto, TaskDto } from './../task/task.material';
 import { TaskService } from './../task/task.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
@@ -16,6 +16,7 @@ import GeoJSON from 'ol/format/GeoJSON';
 import { Geometry } from 'ol/geom';
 import { TranslateService } from '@ngx-translate/core';
 import { CommentService } from '../comments/comment.service';
+import { CommentDraftDto } from '../comments/comment.material';
 
 @Injectable({
   providedIn: 'root'
@@ -142,6 +143,14 @@ export class ProjectService {
 
   public updateDescription(projectId: string, newDescription: string): Observable<Project> {
     return this.http.put<ProjectDto>(environment.url_projects_description.replace('{id}', projectId), newDescription)
+      .pipe(
+        mergeMap(dto => this.toProject(dto)),
+        tap(p => this.projectChanged.emit(p))
+      );
+  }
+
+  public addComment(projectId: string, comment: string): Observable<Project> {
+    return this.http.post<ProjectDto>(environment.url_projects_comments.replace('{id}', projectId), JSON.stringify(new CommentDraftDto(comment)))
       .pipe(
         mergeMap(dto => this.toProject(dto)),
         tap(p => this.projectChanged.emit(p))

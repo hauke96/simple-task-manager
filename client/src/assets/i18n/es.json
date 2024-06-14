@@ -49,7 +49,7 @@
     "live-updates-init-error": "No se pudo inicializar las actualizaciones en tiempo real",
     "could-not-load-project": "No se pudieron cargar proyectos '{{projectId}}'",
     "could-not-load-projects": "No se pudieron cargar proyectos",
-    "could-not-add-task-comment": "Could not add comment to task '{{taskName}}'"
+    "could-not-add-task-comment": "Could not add comment"
   },
   "project-list": {
     "projects": "Proyectos:",

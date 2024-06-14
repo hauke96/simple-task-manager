@@ -117,8 +117,16 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
   }
 
   public onProjectCommentSendClicked(comment: string): void {
-    // TODO implement
-    console.log('Send comment ' + comment);
+    this.projectService.addComment(this.project.id, comment)
+      .subscribe({
+        next: () => {
+        },
+        error: err => {
+          console.error(err);
+          const message = this.translationService.instant('project.could-not-add-task-comment');
+          this.notificationService.addError(message);
+        }
+      });
   }
 
   public onTaskCommentSendClicked(taskId: string | undefined, comment: string): void {
@@ -130,8 +138,7 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
       .subscribe({
         error: e => {
           console.error(e);
-          const taskName = this.selectedTask?.name ?? this.selectedTask?.id ?? '?';
-          const message = this.translationService.instant('project.could-not-add-task-comment', {taskName});
+          const message = this.translationService.instant('project.could-not-add-task-comment');
           this.notificationService.addError(message);
         }
       });

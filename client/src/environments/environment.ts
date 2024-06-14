@@ -15,6 +15,7 @@ export const environment = {
   url_projects_description: baseUrl + '/' + usedApi + '/projects/{id}/description',
   url_projects_export: baseUrl + '/' + usedApi + '/projects/{id}/export',
   url_projects_import: baseUrl + '/' + usedApi + '/projects/import',
+  url_projects_comments: baseUrl + '/' + usedApi + '/projects/{id}/comments',
   url_tasks: baseUrl + '/' + usedApi + '/tasks',
   url_task: baseUrl + '/' + usedApi + '/tasks/{id}',
   url_task_assignedUser: baseUrl + '/' + usedApi + '/tasks/{id}/assignedUser',

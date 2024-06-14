@@ -13,11 +13,15 @@
 
 .comment-list-container {
 	display: flex;
-	flex-direction: column-reverse;
+	flex-direction: column-reverse; // Reverse direction to always automatically scroll to the bottom (i.e. to the latest comment)
 	align-items: flex-start;
 	background-color: $color-gray-very-light;
 	overflow-y: auto;
 	flex: 1;
+
+	[class~='comment']:last-child {
+		margin-top: $space-base;
+	}
 }
 
 .comment {
