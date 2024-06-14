@@ -109,8 +109,10 @@ export class ShapeDivideComponent implements OnInit {
       return undefined;
     }
 
-    const grid = this.createGrid(extent, cellSize, options);
-    if (!grid) {
+    if (!(cellSize > 0)) {
+      const e = `Invalid cell size ${this.gridCellSize}`;
+      console.error(e);
+      this.notificationService.addError(e);
       return undefined;
     }
 
@@ -120,7 +122,10 @@ export class ShapeDivideComponent implements OnInit {
     }
     this.estimatedResultTooLarge = false;
 
-    console.log(grid);
+    const grid = this.createGrid(extent, cellSize, options);
+    if (!grid) {
+      return undefined;
+    }
 
     return grid.features.map((gridCell: any) => {
       // Turn geo GeoJSON polygon from turf.js into an openlayers polygon
@@ -160,7 +165,7 @@ export class ShapeDivideComponent implements OnInit {
     return area / (Math.pow(this.gridCellSize, 2) * scale);
   }
 
-  private createGrid(extent: BBox.BBox, cellSize: number, options: any): any {
+  private createGrid(extent: BBox.BBox, cellSize: number, options: any): BBox.FeatureCollection | undefined {
     switch (this.gridCellShape) {
       case 'squareGrid':
         return squareGrid(extent, cellSize, options);
