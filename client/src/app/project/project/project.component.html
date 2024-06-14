@@ -36,12 +36,17 @@
 					></app-task-list>
 					<app-comment *ngIf="innerTabs.selectedTabIndex === 1"
 								 class="user-tab comment-list"
-								 [taskName]="selectedTask?.name ?? ''"
+								 [title]="selectedTask?.name ?? ''"
 								 [comments]="selectedTask?.comments ?? []"
 								 (commentSendClicked)="onTaskCommentSendClicked(selectedTask?.id, $event)"></app-comment>
 				</app-tabs>
 			</div>
 			<div *ngIf="tabs.selectedTabIndex === 1" class="user-tab tab-container-padding">
+				<app-comment class="user-tab comment-list"
+							 [comments]="project?.comments ?? []"
+							 (commentSendClicked)="onProjectCommentSendClicked($event)"></app-comment>
+			</div>
+			<div *ngIf="tabs.selectedTabIndex === 2" class="user-tab tab-container-padding">
 				<div class="tab-container">
 					<h2>{{ 'users' | translate }}</h2>
 					<app-user-invitation *ngIf="isOwner()"
@@ -56,7 +61,7 @@
 					</app-user-list>
 				</div>
 			</div>
-			<div *ngIf="tabs.selectedTabIndex === 2" class="tab-container-padding">
+			<div *ngIf="tabs.selectedTabIndex === 3" class="tab-container-padding">
 				<div class="tab-container">
 					<h2>{{ 'settings' | translate }}</h2>
 					<app-project-settings [projectId]="project.id"

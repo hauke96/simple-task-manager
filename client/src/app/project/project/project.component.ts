@@ -70,6 +70,7 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
   public get tabTitles(): string[] {
     return [
       this.translationService.instant('project.tab-titles.tasks') as string,
+      this.translationService.instant('project.tab-titles.comments') as string,
       this.translationService.instant('project.tab-titles.users') as string,
       this.translationService.instant('project.tab-titles.settings') as string
     ];
@@ -113,6 +114,11 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
   public onTaskCommentSelected(task: Task): void {
     this.taskService.selectTask(task);
     this.innerTabControl.selectTab(1);
+  }
+
+  public onProjectCommentSendClicked(comment: string): void {
+    // TODO implement
+    console.log('Send comment ' + comment);
   }
 
   public onTaskCommentSendClicked(taskId: string | undefined, comment: string): void {
