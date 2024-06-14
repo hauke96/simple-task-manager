@@ -18,8 +18,10 @@ export class ProjectSettingsComponent implements OnInit {
   @Input() projectOwner: User;
   @Input() projectName: string;
   @Input() projectDescription: string;
+  @Input() projectJosmDataSource: string;
 
   public newProjectName: string;
+  public newJosmDataSource: string;
   public newProjectDescription: string;
 
   public requestConfirmation: boolean;
@@ -41,6 +43,7 @@ export class ProjectSettingsComponent implements OnInit {
     this.action = this.isOwner ? 'delete' : 'leave';
     this.newProjectName = this.projectName;
     this.newProjectDescription = this.projectDescription;
+    this.newJosmDataSource = this.projectJosmDataSource;
   }
 
   public get isOwner(): boolean {
@@ -95,11 +98,15 @@ export class ProjectSettingsComponent implements OnInit {
   onSaveButtonClicked(): void {
     const calls: Observable<Project>[] = [];
 
+    // TODO merge these calls into one
     if (this.projectName !== this.newProjectName) {
       calls.push(this.projectService.updateName(this.projectId, this.newProjectName));
     }
     if (this.projectDescription !== this.newProjectDescription) {
       calls.push(this.projectService.updateDescription(this.projectId, this.newProjectDescription));
+    }
+    if (this.projectJosmDataSource !== this.newJosmDataSource) {
+      // calls.push(this.projectService.updateJosmDataSource(this.projectId, this.newProjectDescription));
     }
 
     forkJoin(calls).subscribe(

@@ -86,7 +86,7 @@
     "subdivide": "Subdivide:",
     "upload-project-button": "Upload project",
     "max-points-label": "Puntos máx. por tarea:",
-    "josm-data-source-label": "JOSM data source",
+    "josm-data-source-label": "JOSM data source:",
     "subdivide-notice": "Esto divide la tarea seleccionada en tareas más pequeñas de la forma y el tamaño seleccionados.",
     "subdivide-result-too-large-notice": "El resultado con {{amountTasksAfterDividing}} tareas es demasiado grande, solo {{maxTasksPerProject}} permitidas.",
     "subdivide-result-way-too-large-notice": "El resultado sería demasiado grande, sólo se permiten tareas {{maxTasksPerProject}}.",

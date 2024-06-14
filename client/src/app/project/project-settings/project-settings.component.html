@@ -34,6 +34,16 @@
 				<input class="name-input" [(ngModel)]="newProjectName" required name="nameField">
 			</div>
 			<div class="form-entry">
+				<p class="input-field-label">{{'project-creation.josm-data-source-label' | translate}}</p>
+				<select [(ngModel)]="newJosmDataSource"
+						required
+						name="josmDataSourceField"
+						class="josm-data-source-input">
+					<option value="OSM">OSM</option>
+					<option value="OVERPASS">Overpass</option>
+				</select>
+			</div>
+			<div class="form-entry">
 				<p class="input-field-label">{{ 'description' | translate }}</p>
 				<textarea name="description-text-area" class="description-text-area"
 						  [(ngModel)]="newProjectDescription"></textarea>
