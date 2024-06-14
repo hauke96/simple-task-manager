@@ -9,6 +9,8 @@ import { Unsubscriber } from '../../common/unsubscriber';
 import { ShortcutService } from '../../common/services/shortcut.service';
 import { TranslateService } from '@ngx-translate/core';
 
+import { JosmDataSource } from '../../common/entities/josm-data-source';
+
 @Component({
   selector: 'app-task-details',
   templateUrl: './task-details.component.html',
@@ -16,6 +18,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class TaskDetailsComponent extends Unsubscriber implements OnInit {
   @Input() public projectId: string;
+  @Input() public josmDataSource: JosmDataSource;
   @Input() public projectOwnerId: string;
   @Input() public needUserAssignment: boolean;
 
@@ -166,7 +169,7 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
       return;
     }
 
-    this.taskService.openInJosm(this.task)
+    this.taskService.openInJosm(this.task, this.josmDataSource)
       .subscribe({
         error: err => {
           console.error('Error opening JOSM:', err);

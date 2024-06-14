@@ -8,7 +8,6 @@ import { User } from '../user/user.material';
 import { UserService } from '../user/user.service';
 import { CommentService } from '../comments/comment.service';
 import { Comment, CommentDto } from '../comments/comment.material';
-import { statsHasErrors } from '@angular-devkit/build-angular/src/tools/webpack/utils/stats';
 
 describe(TaskService.name, () => {
   let service: TaskService;

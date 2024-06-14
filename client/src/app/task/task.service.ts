@@ -15,6 +15,8 @@ import { Feature } from 'ol';
 import { CommentService } from '../comments/comment.service';
 import { CommentDraftDto } from '../comments/comment.material';
 
+import { JosmDataSource } from '../common/entities/josm-data-source';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -119,7 +121,7 @@ export class TaskService {
       );
   }
 
-  public openInJosm(task: Task): Observable<any> {
+  public openInJosm(task: Task, josmDataSource: JosmDataSource): Observable<any> {
     if (!task) {
       return throwError(() => new Error('Task is undefined'));
     }
@@ -146,17 +148,27 @@ export class TaskService {
       return throwError(() => new Error('Empty coordinates'));
     }
 
-    const overpassUrl = 'https://overpass-api.de/api/interpreter?data=' +
-      `out:json];nwr(poly:"${coordinateString}");out meta;(<; - rel._;);(._;>;); out meta;`;
+    let dataUrl = '';
+    if (josmDataSource === 'OSM') {
+      const e = this.getExtent(task);
+      // TODO Add (default) comment with issue #161: '&changeset_comment=' + encodeURIComponent('#stm #stm-project-' + projectId + ' ')
+      dataUrl = 'http://localhost:8111/load_and_zoom?new_layer=true&left=' + e[0] + '&right=' + e[2] + '&top=' + e[3] + '&bottom=' + e[1];
+    } else if (josmDataSource === 'OVERPASS') {
+      // eslint-disable-next-line max-len
+      const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];nwr(poly:"${coordinateString}");out meta;(<; - rel._;);(._;>;); out meta;`;
+      dataUrl = 'http://localhost:8111/import?new_layer=true&url=' + overpassUrl;
+    } else {
+      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+      return throwError(() => new Error('Unknown JosmDataSource "' + josmDataSource + '"'));
+    }
+
     const taskGeometryString = encodeURIComponent(this.getGeometryAsOsm(task));
 
     return from([
       // The task-polygon
       'http://localhost:8111/load_data?new_layer=true&layer_name=task ' + task.name + '&upload_policy=never&data=' + taskGeometryString,
       // Load data for the extent of the task
-      // eslint-disable-next-line max-len
-      // 'http://localhost:8111/load_and_zoom?new_layer=true&left=' + e[0] + '&right=' + e[2] + '&top=' + e[3] + '&bottom=' + e[1] + '&changeset_comment=' + encodeURIComponent('#stm #stm-project-' + projectId + ' ')
-      'http://localhost:8111/import?new_layer=true&url=' + overpassUrl
+      dataUrl
     ])
       .pipe(
         concatMap(url => this.http.get(url, {responseType: 'text'}))

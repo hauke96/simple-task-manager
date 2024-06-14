@@ -1,8 +1,7 @@
 import { User } from '../user/user.material';
 import { Task, TaskDraftDto, TaskDto, TaskExport } from '../task/task.material';
 import { Comment, CommentDto } from '../comments/comment.material';
-
-export type JosmDataSource = 'OSM' | 'OVERPASS';
+import { JosmDataSource } from '../common/entities/josm-data-source';
 
 export class ProjectAddDto {
   constructor(public project: ProjectDraftDto,

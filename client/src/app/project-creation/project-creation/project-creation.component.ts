@@ -21,7 +21,7 @@ import { TaskDraft } from '../../task/task.material';
 import { FeatureLike } from 'ol/Feature';
 import { ConfigProvider } from '../../config/config.provider';
 import { ProjectImportService } from '../project-import.service';
-import { JosmDataSource, Project } from '../../project/project.material';
+import { Project } from '../../project/project.material';
 import { Unsubscriber } from '../../common/unsubscriber';
 import { Coordinate } from 'ol/coordinate';
 import { MapLayerService } from '../../common/services/map-layer.service';
@@ -29,6 +29,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { catchError } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import CircleStyle from 'ol/style/Circle';
+import { JosmDataSource } from '../../common/entities/josm-data-source';
 
 @Component({
   selector: 'app-project-creation',

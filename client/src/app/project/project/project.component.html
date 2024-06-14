@@ -25,6 +25,7 @@
 				<div class="tab-container-padding">
 					<app-task-details [needUserAssignment]="project.needsAssignment"
 									  [projectId]="project.id"
+									  [josmDataSource]="project.josmDataSource"
 									  [projectOwnerId]="project.owner.uid"></app-task-details>
 				</div>
 				<app-tabs *ngIf="project.tasks" [tabs]="innerTabTitles" #innerTabs [borderless]="true"

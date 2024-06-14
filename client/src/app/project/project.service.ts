@@ -1,7 +1,7 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, mergeMap, tap } from 'rxjs/operators';
-import { JosmDataSource, Project, ProjectAddDto, ProjectDraftDto, ProjectDto, ProjectExport } from './project.material';
+import { Project, ProjectAddDto, ProjectDraftDto, ProjectDto, ProjectExport } from './project.material';
 import { Task, TaskDraftDto, TaskDto } from './../task/task.material';
 import { TaskService } from './../task/task.service';
 import { HttpClient } from '@angular/common/http';
@@ -17,6 +17,7 @@ import { Geometry } from 'ol/geom';
 import { TranslateService } from '@ngx-translate/core';
 import { CommentService } from '../comments/comment.service';
 import { CommentDraftDto } from '../comments/comment.material';
+import { JosmDataSource } from '../common/entities/josm-data-source';
 
 @Injectable({
   providedIn: 'root'

@@ -1,4 +1,4 @@
-import { JosmDataSource } from '../project/project.material';
+import { JosmDataSource } from '../common/entities/josm-data-source';
 
 export class ProjectProperties {
   constructor(
