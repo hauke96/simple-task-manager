@@ -10,7 +10,7 @@ type JosmDataSource string
 
 const (
 	OSM      JosmDataSource = "OSM"
-	Overpass                = "OVERPASS"
+	Overpass JosmDataSource = "OVERPASS"
 )
 
 type Project struct {

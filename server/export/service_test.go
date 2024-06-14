@@ -18,7 +18,6 @@ import (
 var (
 	tx *sql.Tx
 	s  *ExportService
-	p  *project.ProjectService
 	h  *test.TestHelper
 )
 

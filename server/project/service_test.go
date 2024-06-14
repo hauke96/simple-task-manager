@@ -554,7 +554,7 @@ func TestDeleteProject(t *testing.T) {
 	})
 }
 
-func TestUpdateName(t *testing.T) {
+func TestUpdate(t *testing.T) {
 	h.Run(t, func() error {
 		oldProject, err := s.GetProject("1", "Peter")
 		if err != nil {
@@ -562,9 +562,11 @@ func TestUpdateName(t *testing.T) {
 		}
 
 		newName := "flubby dubby"
-		project, err := s.Update("1", newName, "Peter")
+		newDescription := "flubby dubby\n foo bar"
+		newJosmDataSource := Overpass
+		project, err := s.Update("1", newName, newDescription, newJosmDataSource, "Peter")
 		if err != nil {
-			return errors.New(fmt.Sprintf("Error updating name wasn't expected: %s", err))
+			return errors.New(fmt.Sprintf("Error updating project wasn't expected: %s", err))
 		}
 		if project.Name != newName {
 			return errors.New(fmt.Sprintf("New name doesn't match with expected one: %s != %s", oldProject.Name, newName))
@@ -572,43 +574,24 @@ func TestUpdateName(t *testing.T) {
 		if project.TotalProcessPoints != 10 || project.DoneProcessPoints != 0 {
 			return errors.New(fmt.Sprintf("Process points on project not set correctly"))
 		}
+		if project.Description != newDescription {
+			return errors.New(fmt.Sprintf("New description doesn't match with expected one: %s != %s", oldProject.Name, newDescription))
+		}
+		if project.TotalProcessPoints != 10 || project.DoneProcessPoints != 0 {
+			return errors.New(fmt.Sprintf("Process points on project not set correctly"))
+		}
+		if project.JosmDataSource != newJosmDataSource {
+			return errors.New(fmt.Sprintf("New JOSM data source doesn't match with expected one: %s != %s", oldProject.JosmDataSource, newJosmDataSource))
+		}
 
 		// With newline
-
 		newNewlineName := "foo\nbar\nwhatever"
-		project, err = s.Update("1", newNewlineName, "Peter")
+		project, err = s.Update("1", newNewlineName, newDescription, newJosmDataSource, "Peter")
 		if err != nil {
 			return errors.New(fmt.Sprintf("Error updating name wasn't expected: %s", err))
 		}
 		if project.Name != "foo" {
 			return errors.New(fmt.Sprintf("New name doesn't match with expected one: %s != foo", oldProject.Name))
-		}
-
-		// With non-owner (Maria)
-
-		_, err = s.Update("1", "skfgkf", "Maria")
-		if err == nil {
-			return errors.New("Updating name should not be possible for non-owner user Maria")
-		}
-
-		// Empty name
-
-		_, err = s.Update("1", "  ", "Peter")
-		if err == nil {
-			return errors.New("Updating name should not be possible with empty name")
-		}
-		return nil
-	})
-}
-
-func TestUpdateDescription(t *testing.T) {
-	h.Run(t, func() error {
-		oldProject, _ := s.GetProject("1", "Peter")
-
-		newDescription := "flubby dubby\n foo bar"
-		project, err := s.UpdateDescription("1", newDescription, "Peter")
-		if err != nil {
-			return errors.New(fmt.Sprintf("Error updating description wasn't expected: %s", err))
 		}
 		if project.Description != newDescription {
 			return errors.New(fmt.Sprintf("New description doesn't match with expected one: %s != %s", oldProject.Name, newDescription))
@@ -616,39 +599,27 @@ func TestUpdateDescription(t *testing.T) {
 		if project.TotalProcessPoints != 10 || project.DoneProcessPoints != 0 {
 			return errors.New(fmt.Sprintf("Process points on project not set correctly"))
 		}
-
-		return nil
-	})
-}
-
-func TestUpdateDescriptionWithNonOwnerUser(t *testing.T) {
-	h.Run(t, func() error {
-		_, err := s.UpdateDescription("1", "skfgkf", "Maria")
-		if err == nil {
-			return errors.New("Updating description should not be possible for non-owner user Maria")
+		if project.JosmDataSource != newJosmDataSource {
+			return errors.New(fmt.Sprintf("New JOSM data source doesn't match with expected one: %s != %s", oldProject.JosmDataSource, newJosmDataSource))
 		}
 
-		return nil
-	})
-}
-
-func TestUpdateDescriptionWithEmptyText(t *testing.T) {
-	h.Run(t, func() error {
-		_, err := s.UpdateDescription("1", "  ", "Peter")
+		// With non-owner (Maria)
+		_, err = s.Update("1", "skfgkf", "sadkfzh", OSM, "Maria")
 		if err == nil {
-			return errors.New("Updating description should not be possible with empty description")
+			return errors.New("Updating name should not be possible for non-owner user Maria")
 		}
 
-		return nil
-	})
-}
+		// Empty name
+		_, err = s.Update("1", "  ", "adsfkjg", OSM, "Peter")
+		if err == nil {
+			return errors.New("Updating name should not be possible with empty name")
+		}
 
-func TestUpdateDescriptionWithTooLargeText(t *testing.T) {
-	h.Run(t, func() error {
+		// Too long description
 		config.Conf.MaxDescriptionLength = 10 // lower the border for test purposes
-		newDescription := "This is some too long description"
+		newDescription = "This is some too long description"
 
-		_, err := s.UpdateDescription("1", newDescription, "Peter")
+		_, err = s.Update("1", "name", newDescription, OSM, "Peter")
 		if err == nil {
 			return errors.New(fmt.Sprintf("Updating project description should not work. Allowed description length %d but was %d", config.Conf.MaxDescriptionLength, len(newDescription)))
 		}
