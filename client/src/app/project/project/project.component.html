@@ -41,11 +41,9 @@
 								 (commentSendClicked)="onTaskCommentSendClicked(selectedTask?.id, $event)"></app-comment>
 				</app-tabs>
 			</div>
-			<div *ngIf="tabs.selectedTabIndex === 1" class="user-tab tab-container-padding">
-				<app-comment class="user-tab comment-list"
-							 [comments]="project?.comments ?? []"
-							 (commentSendClicked)="onProjectCommentSendClicked($event)"></app-comment>
-			</div>
+			<app-comment *ngIf="tabs.selectedTabIndex === 1" class="user-tab tab-container-padding comment-list"
+						 [comments]="project?.comments ?? []"
+						 (commentSendClicked)="onProjectCommentSendClicked($event)"></app-comment>
 			<div *ngIf="tabs.selectedTabIndex === 2" class="user-tab tab-container-padding">
 				<div class="tab-container">
 					<h2>{{ 'users' | translate }}</h2>
