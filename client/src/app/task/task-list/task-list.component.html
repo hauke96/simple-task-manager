@@ -1,15 +1,17 @@
-<h2>{{'tasks' | translate}}</h2>
+<h2>{{ 'tasks' | translate }}</h2>
 
 <div class="list-container">
-	<div *ngFor="let t of tasks" class="list-item" (click)="onListItemClicked(t.id)"
-		 [ngClass]="{selected: t.id == selectedTaskId}">
-		<div>
-			{{t | taskTitle}}
-			<span class="color-gray">({{t.processPoints}} / {{t.maxProcessPoints}})</span>
-			<span *ngIf="t.isDone" class="done-label">{{'done-button' | translate}}</span>
+	<div *ngFor="let t of tasks" class="list-item" [class.selected]="t.id === selectedTaskId">
+		<div (click)="onListItemClicked(t.id)" class="list-item-inner">
+			<div>
+				{{ t | taskTitle }}
+				<span class="color-gray">({{ t.processPoints }} / {{ t.maxProcessPoints }})</span>
+				<span *ngIf="t.isDone" class="done-label">{{ 'done-button' | translate }}</span>
+			</div>
+			<span *ngIf="!!t.assignedUser && !isAssignedToCurrentUser(t)"
+				  class="color-gray">{{ t.assignedUser.name }}</span>
+			<span *ngIf="isAssignedToCurrentUser(t)" class="color-gray">{{ 'task-list.you' | translate }}</span>
 		</div>
-		<span *ngIf="!!t.assignedUser && !isAssignedToCurrentUser(t)"
-			  class="color-gray">{{t.assignedUser.name}}</span>
-		<span *ngIf="isAssignedToCurrentUser(t)" class="color-gray">{{'task-list.you' | translate}}</span>
+		<span class="lnr lnr-envelope list-item-comment" (click)="onListItemCommentClicked(t)"></span>
 	</div>
 </div>

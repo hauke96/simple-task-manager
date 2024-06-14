@@ -2,7 +2,7 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, mergeMap, tap } from 'rxjs/operators';
 import { Project, ProjectAddDto, ProjectDraftDto, ProjectDto, ProjectExport } from './project.material';
-import { TaskDraftDto } from './../task/task.material';
+import { Task, TaskDraftDto, TaskDto } from './../task/task.material';
 import { TaskService } from './../task/task.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
@@ -15,6 +15,8 @@ import { Feature } from 'ol';
 import GeoJSON from 'ol/format/GeoJSON';
 import { Geometry } from 'ol/geom';
 import { TranslateService } from '@ngx-translate/core';
+import { CommentService } from '../comments/comment.service';
+import { CommentDraftDto } from '../comments/comment.material';
 
 @Injectable({
   providedIn: 'root'
@@ -29,9 +31,10 @@ export class ProjectService {
     private taskService: TaskService,
     private userService: UserService,
     private http: HttpClient,
-    private websocketClient: WebsocketClientService,
     private notificationService: NotificationService,
-    private translationService: TranslateService
+    private translationService: TranslateService,
+    private commentService: CommentService,
+    websocketClient: WebsocketClientService
   ) {
     websocketClient.messageReceived.subscribe((m: WebsocketMessage) => {
       this.handleReceivedMessage(m);
@@ -44,28 +47,28 @@ export class ProjectService {
   private handleReceivedMessage(m: WebsocketMessage): void {
     switch (m.type) {
       case WebsocketMessageType.MessageType_ProjectAdded:
-        this.getProject(m.id).subscribe(
-          p => {
+        this.getProject(m.id).subscribe({
+          next: p => {
             this.projectAdded.emit(p);
           },
-          e => {
+          error: e => {
             console.error('Unable to process ' + m.type + ' event for project ' + m.id);
             console.error(e);
           }
-        );
+        });
         break;
       case WebsocketMessageType.MessageType_ProjectUpdated:
-        this.getProject(m.id).subscribe(
-          p => {
+        this.getProject(m.id).subscribe({
+          next: p => {
             // Also call the task service to send task-updates to the components.
             this.taskService.updateTasks(p.tasks);
             this.projectChanged.emit(p);
           },
-          e => {
+          error: e => {
             console.error('Unable to process ' + m.type + ' event for project ' + m.id);
             console.error(e);
           }
-        );
+        });
         break;
       case WebsocketMessageType.MessageType_ProjectUserRemoved:
         this.projectUserRemoved.emit(m.id);
@@ -146,6 +149,14 @@ export class ProjectService {
       );
   }
 
+  public addComment(projectId: string, comment: string): Observable<Project> {
+    return this.http.post<ProjectDto>(environment.url_projects_comments.replace('{id}', projectId), JSON.stringify(new CommentDraftDto(comment)))
+      .pipe(
+        mergeMap(dto => this.toProject(dto)),
+        tap(p => this.projectChanged.emit(p))
+      );
+  }
+
   public getProjectExport(projectId: string): Observable<ProjectExport> {
     return this.http.get<ProjectExport>(environment.url_projects_export.replace('{id}', projectId));
   }
@@ -170,8 +181,13 @@ export class ProjectService {
     }
 
     const projectUserIDs = dtos.map(p => [p.owner, ...p.users]); // array of arrays
-    let userIDs = ([] as string[]).concat(...projectUserIDs); // array of strings
-    userIDs = [...new Set(userIDs)]; // array of strings without duplicates
+    const commentUserIDs = [
+      ...dtos.flatMap(p => p.comments.map(c => c.authorId)),
+      ...dtos.map(p => p.tasks.flatMap(t => t.comments.map(c => c.authorId))),
+    ];
+    let userIDs = ([] as string[]).concat(...projectUserIDs, ...commentUserIDs)
+      .filter(id => !!id);
+    userIDs = [...new Set(userIDs)]; // Remove duplicates
 
     return this.userService.getUsersByIds(userIDs)
       .pipe(
@@ -179,11 +195,9 @@ export class ProjectService {
           const projects: Observable<Project>[] = [];
 
           for (const p of dtos) {
-            const owner = allUsers.find(u => p.owner === u.uid);
-            const users = allUsers.filter(u => p.users.includes(u.uid));
+            const userMap = new Map(allUsers.map(obj => [obj.uid, obj]));
 
-            // @ts-ignore As we assume that getUsersByIds returns users for all given user IDs
-            projects.push(this.toProjectWithTasks(p, users, owner));
+            projects.push(this.toProjectWithTasks(p, userMap));
           }
 
           return projects;
@@ -194,16 +208,17 @@ export class ProjectService {
   }
 
   // Takes the given project dto, the owner, users, gets the tasks from the server and build an Project object
-  private toProjectWithTasks(p: ProjectDto, users: User[], owner: User): Observable<Project> {
+  private toProjectWithTasks(p: ProjectDto, userMap: Map<string, User>): Observable<Project> {
     return of(new Project(
       p.id,
       p.name,
       p.description,
-      p.tasks.map(dto => this.taskService.toTaskWithUsers(dto, users)),
-      users,
-      owner,
+      p.tasks.map(dto => this.taskService.toTaskWithUsers(dto, userMap)),
+      p.users.map(u => userMap.get(u) as User),
+      userMap.get(p.owner) as User,
       p.needsAssignment,
       p.creationDate,
+      this.commentService.toCommentsWithUserMap(p.comments, userMap),
       p.totalProcessPoints ?? 0,
       p.doneProcessPoints ?? 0
     ));

@@ -1,5 +1,6 @@
 import { User } from '../user/user.material';
 import { Task, TaskDraftDto, TaskDto, TaskExport } from '../task/task.material';
+import { Comment, CommentDto } from '../comments/comment.material';
 
 export class ProjectAddDto {
   constructor(public project: ProjectDraftDto,
@@ -25,6 +26,7 @@ export class ProjectDto {
               public owner: string,
               public needsAssignment: boolean = true,
               public creationDate: Date,
+              public comments: CommentDto[],
               public totalProcessPoints?: number,
               public doneProcessPoints?: number
   ) {
@@ -40,6 +42,7 @@ export class Project {
               public owner: User,
               public needsAssignment: boolean,
               public creationDate: Date,
+              public comments: Comment[],
               public totalProcessPoints: number,
               public doneProcessPoints: number
   ) {

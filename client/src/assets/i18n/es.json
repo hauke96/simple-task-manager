@@ -42,11 +42,14 @@
     "tab-titles": {
       "tasks": "Tareas",
       "users": "Usuarios",
-      "settings": "Ajustes"
+      "settings": "Ajustes",
+      "list": "List",
+      "comments": "Comments"
     },
     "live-updates-init-error": "No se pudo inicializar las actualizaciones en tiempo real",
     "could-not-load-project": "No se pudieron cargar proyectos '{{projectId}}'",
-    "could-not-load-projects": "No se pudieron cargar proyectos"
+    "could-not-load-projects": "No se pudieron cargar proyectos",
+    "could-not-add-task-comment": "Could not add comment"
   },
   "project-list": {
     "projects": "Proyectos:",
@@ -154,5 +157,9 @@
   "task-map": {
     "task-done": "HECHO",
     "you": "tú"
+  },
+  "comment": {
+    "send": "Send comment (Ctrl+Enter)",
+    "no-comments-yet": "Nothing here yet."
   }
 }

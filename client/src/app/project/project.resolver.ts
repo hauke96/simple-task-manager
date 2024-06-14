@@ -1,33 +1,28 @@
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
+import { inject } from '@angular/core';
+import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
 import { Project } from './project.material';
 import { ProjectService } from './project.service';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NotificationService } from '../common/services/notification.service';
 import { TranslateService } from '@ngx-translate/core';
 
-@Injectable({providedIn: 'root'})
-export class ProjectResolver implements Resolve<Project> {
-  constructor(
-    private projectService: ProjectService,
-    private notificationService: NotificationService,
-    private translationService: TranslateService
-  ) {
+export const projectResolver: ResolveFn<Project> = (route: ActivatedRouteSnapshot, _) => {
+  const projectService = inject(ProjectService);
+  const notificationService = inject(NotificationService);
+  const translateService = inject(TranslateService);
+
+  if (!route.paramMap.has('id')) {
+    return of();
   }
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Project> {
-    if (!route.paramMap.has('id')) {
-      return of();
-    }
-
-    // @ts-ignore
-    return this.projectService.getProject(route.paramMap.get('id')).pipe(
-      catchError((e: HttpErrorResponse) => {
-        this.notificationService.addError(this.translationService.instant('project.could-not-load-project', {projectId: route.paramMap.get('id')}));
-        throw e;
-      })
-    );
-  }
-}
+  // @ts-ignore
+  return projectService.getProject(route.paramMap.get('id')).pipe(
+    catchError((e: HttpErrorResponse) => {
+      const message = translateService.instant('project.could-not-load-project', {projectId: route.paramMap.get('id')});
+      notificationService.addError(message);
+      throw e;
+    })
+  );
+};

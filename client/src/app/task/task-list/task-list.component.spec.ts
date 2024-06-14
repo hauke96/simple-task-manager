@@ -47,11 +47,11 @@ describe(TaskListComponent.name, () => {
     const tasks: Task[] = [];
 
     beforeEach(() => {
-      tasks.push(new Task('1', 'a', 10, 100, TestTaskFeature));
-      tasks.push(new Task('2', 'b', 100, 100, TestTaskFeature));
-      tasks.push(new Task('3', 'z', 60, 100, TestTaskFeature));
-      tasks.push(new Task('4', 'a', 100, 100, TestTaskFeature));
-      tasks.push(new Task('5', 'g', 30, 100, TestTaskFeature));
+      tasks.push(new Task('1', 'a', 10, 100, TestTaskFeature, []));
+      tasks.push(new Task('2', 'b', 100, 100, TestTaskFeature, []));
+      tasks.push(new Task('3', 'z', 60, 100, TestTaskFeature, []));
+      tasks.push(new Task('4', 'a', 100, 100, TestTaskFeature, []));
+      tasks.push(new Task('5', 'g', 30, 100, TestTaskFeature, []));
       component.tasks = [...tasks];
     });
 
@@ -89,10 +89,10 @@ describe(TaskListComponent.name, () => {
     beforeEach(() => {
       tasks = [];
 
-      tasks.push(new Task('1', '1', 10, 100, TestTaskFeature));
-      tasks.push(new Task('2', '2', 30, 100, TestTaskFeature));
-      tasks.push(new Task('3', '3', 60, 100, TestTaskFeature));
-      tasks.push(new Task('4', '4', 99, 100, TestTaskFeature));
+      tasks.push(new Task('1', '1', 10, 100, TestTaskFeature, []));
+      tasks.push(new Task('2', '2', 30, 100, TestTaskFeature, []));
+      tasks.push(new Task('3', '3', 60, 100, TestTaskFeature, []));
+      tasks.push(new Task('4', '4', 99, 100, TestTaskFeature, []));
 
       component.tasks = [...tasks];
     });
@@ -106,7 +106,7 @@ describe(TaskListComponent.name, () => {
     });
 
     it('should ignore event with other tasks', () => {
-      taskService.tasksUpdated.emit([new Task('1546', '', 100, 100, TestTaskFeature)]);
+      taskService.tasksUpdated.emit([new Task('1546', '', 100, 100, TestTaskFeature, [])]);
       expect(component.tasks).toContain(tasks[0]);
       expect(component.tasks).toContain(tasks[1]);
       expect(component.tasks).toContain(tasks[2]);
@@ -114,8 +114,8 @@ describe(TaskListComponent.name, () => {
     });
 
     it('should correctly update', () => {
-      const t1 = new Task('1', '1', 100, 100, TestTaskFeature);
-      const t4 = new Task('4', '4', 50, 100, TestTaskFeature, new User('bar', '123'));
+      const t1 = new Task('1', '1', 100, 100, TestTaskFeature, []);
+      const t4 = new Task('4', '4', 50, 100, TestTaskFeature, [], new User('bar', '123'));
       taskService.tasksUpdated.emit([t1, t4]);
 
       expect(component.tasks[0].id).toEqual(t1.id);
@@ -131,10 +131,10 @@ describe(TaskListComponent.name, () => {
   it('should determine correctly whether user is assigned', () => {
     currentUserService.getUserId = jest.fn().mockReturnValue('42');
 
-    expect(component.isAssignedToCurrentUser(new Task('1', '', 10, 100, TestTaskFeature))).toEqual(false);
-    expect(component.isAssignedToCurrentUser(new Task('2', '', 10, 100, TestTaskFeature,
+    expect(component.isAssignedToCurrentUser(new Task('1', '', 10, 100, TestTaskFeature, []))).toEqual(false);
+    expect(component.isAssignedToCurrentUser(new Task('2', '', 10, 100, TestTaskFeature, [],
       new User('foo', '1')))).toEqual(false);
-    expect(component.isAssignedToCurrentUser(new Task('3', '', 10, 100, TestTaskFeature,
+    expect(component.isAssignedToCurrentUser(new Task('3', '', 10, 100, TestTaskFeature, [],
       new User('Mr. Answer', '42')))).toEqual(true);
   });
 });

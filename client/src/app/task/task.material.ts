@@ -1,6 +1,7 @@
 import { Feature } from 'ol';
 import { Geometry, Polygon } from 'ol/geom';
 import { User } from '../user/user.material';
+import { Comment, CommentDto } from '../comments/comment.material';
 
 export class TaskDraftDto {
   /**
@@ -31,6 +32,7 @@ export class TaskDto {
     public processPoints: number,
     public maxProcessPoints: number,
     public geometry: string,
+    public comments: CommentDto[],
     public assignedUser?: string,
     public assignedUserName?: string
   ) {
@@ -44,6 +46,7 @@ export class Task {
     public processPoints: number,
     public maxProcessPoints: number,
     public geometry: Feature<Geometry>,
+    public comments: Comment[],
     public assignedUser?: User
   ) {
   }

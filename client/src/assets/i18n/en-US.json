@@ -42,11 +42,14 @@
     "tab-titles": {
       "tasks": "Tasks",
       "users": "User",
-      "settings": "Settings"
+      "settings": "Settings",
+      "list": "List",
+      "comments": "Comments"
     },
     "live-updates-init-error": "Could not initialize live-updates",
     "could-not-load-project": "Could not load project '{{projectId}}'",
-    "could-not-load-projects": "Could not load projects"
+    "could-not-load-projects": "Could not load projects",
+    "could-not-add-task-comment": "Could not add comment"
   },
   "project-list": {
     "projects": "Projects:",
@@ -154,5 +157,9 @@
   "task-map": {
     "task-done": "DONE",
     "you": "you"
+  },
+  "comment": {
+    "send": "Send comment (Ctrl+Enter)",
+    "no-comments-yet": "Nothing here yet."
   }
 }

@@ -1,0 +1,108 @@
+@import '../../../styles';
+@import '../../../icons';
+
+:host {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.comment-list-title {
+	padding: $space-base;
+}
+
+.comment-list-container {
+	display: flex;
+	flex-direction: column-reverse; // Reverse direction to always automatically scroll to the bottom (i.e. to the latest comment)
+	align-items: flex-start;
+	background-color: $color-gray-very-light;
+	overflow-y: auto;
+	flex: 1;
+
+	[class~='comment']:last-child {
+		margin-top: $space-base;
+	}
+}
+
+.comment {
+	width: 70%;
+	padding: $space-base;
+	margin: $space-small $space-base 0 $space-base;
+	background-color: white;
+	border: 1px solid $color-gray-light;
+}
+
+.comment:first-child { // first-child due to the reverse direction (first-child is the bottom one)
+	margin-bottom: $space-base;
+}
+
+.comment-metadata {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.own-comment {
+	align-self: flex-end;
+	background-color: $color-very-very-light;
+}
+
+.metadata {
+	margin-top: $space-small;
+	font-size: $font-small;
+	font-style: italic;
+	color: $color-gray-mid;
+}
+
+.no-comment-container {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	width: 100%;
+	margin-bottom: $space-base;
+}
+
+.no-comment-marker-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+	flex-grow: 1;
+	padding: $space-base * 2.5;
+
+	.no-comment-marker-line {
+		border-bottom: 1px solid rgba($color-gray-mid, 0.65);
+	}
+}
+
+.no-comment-notice {
+	font-style: italic;
+	color: $color-gray-mid;
+	text-align: center;
+}
+
+.input-container {
+	display: flex;
+	flex-direction: row;
+	padding: $space-base;
+}
+
+.send-button {
+	display: flex;
+	justify-content: center;
+	align-self: flex-end;
+	align-items: center;
+	width: $space-base * 2.5;
+	height: $space-base * 2.5;
+	margin-left: $space-base;
+	font-size: $font-base;
+	color: $color-mid;
+	border: 1px solid $color-light;
+	border-radius: $space-base * 1.25;
+}
+
+.send-button:hover {
+	color: $color-dark;
+	border: 1px solid $color-dark;
+	background-color: $color-very-light;
+	cursor: pointer;
+}

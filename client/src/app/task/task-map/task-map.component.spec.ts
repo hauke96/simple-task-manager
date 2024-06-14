@@ -45,10 +45,10 @@ describe(TaskMapComponent.name, () => {
   beforeEach(() => {
     fixture = MockRender(TaskMapComponent, {
       tasks: [
-        new Task('1', '', 0, 100, getFeature()),
-        new Task('2', '', 10, 100, getFeature()),
-        new Task('3', '', 50, 100, getFeature()),
-        new Task('4', '', 100, 100, getFeature()),
+        new Task('1', '', 0, 100, getFeature(), []),
+        new Task('2', '', 10, 100, getFeature(), []),
+        new Task('3', '', 50, 100, getFeature(), []),
+        new Task('4', '', 100, 100, getFeature(), []),
       ]
     });
     component = fixture.point.componentInstance;

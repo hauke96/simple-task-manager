@@ -44,10 +44,15 @@ func Init() error {
 	// (see doc/api for documentation of API changes)
 
 	// API v2.8
+	// TODO v2.8 is deprecated
 	router_v2_8, version := Init_v2_8(router)
 	supportedApiVersions = append(supportedApiVersions, version)
 	sigolo.Info("Registered routes for API %s:", version)
 	printRoutes(router_v2_8)
+
+	router_v2_9, version := Init_v2_9(router)
+	sigolo.Info("Registered routes for API %s:", version)
+	printRoutes(router_v2_9)
 
 	router.Methods(http.MethodOptions).HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")

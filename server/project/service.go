@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/pkg/errors"
+	"stm/comment"
 	"stm/config"
 	"stm/permission"
 	"stm/task"
@@ -17,14 +18,16 @@ type ProjectService struct {
 	store           *storePg
 	permissionStore *permission.PermissionStore
 	taskService     *task.TaskService
+	commentService  *comment.CommentService
 }
 
-func Init(tx *sql.Tx, logger *util.Logger, taskService *task.TaskService, permissionStore *permission.PermissionStore) *ProjectService {
+func Init(tx *sql.Tx, logger *util.Logger, taskService *task.TaskService, permissionStore *permission.PermissionStore, commentService *comment.CommentService, commentStore *comment.CommentStore) *ProjectService {
 	return &ProjectService{
 		Logger:          logger,
-		store:           getStore(tx, task.GetStore(tx, logger), logger),
+		store:           getStore(tx, logger, task.GetStore(tx, logger, commentStore), commentStore),
 		permissionStore: permissionStore,
 		taskService:     taskService,
+		commentService:  commentService,
 	}
 }
 
@@ -337,4 +340,13 @@ func (s *ProjectService) UpdateDescription(projectId string, newDescription stri
 	}
 
 	return project, nil
+}
+
+func (s *ProjectService) AddComment(projectId string, draftDto *comment.CommentDraftDto, authorId string) error {
+	commentListId, err := s.store.getCommentListId(projectId)
+	if err != nil {
+		return err
+	}
+
+	return s.commentService.AddComment(commentListId, draftDto, authorId)
 }

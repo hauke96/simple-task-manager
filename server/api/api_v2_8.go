@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"stm/config"
 	"stm/export"
@@ -14,11 +14,6 @@ import (
 	"stm/util"
 	"stm/websocket"
 )
-
-type ProjectAddDto struct {
-	Project project.ProjectDraftDto `json:"project"`
-	Tasks   []task.TaskDraftDto     `json:"tasks"`
-}
 
 func Init_v2_8(router *mux.Router) (*mux.Router, string) {
 	r := router.PathPrefix("/v2.8").Subrouter()
@@ -41,7 +36,7 @@ func Init_v2_8(router *mux.Router) (*mux.Router, string) {
 	r.HandleFunc("/tasks/{id}/assignedUser", authenticatedTransactionHandler(unassignUser_v2_8)).Methods(http.MethodDelete)
 	r.HandleFunc("/tasks/{id}/processPoints", authenticatedTransactionHandler(setProcessPoints_v2_8)).Methods(http.MethodPost)
 
-	r.HandleFunc("/updates", authenticatedWebsocket(getWebsocketConnection))
+	r.HandleFunc("/updates", authenticatedWebsocket(getWebsocketConnection_v2_8))
 
 	return r, "v2.8"
 }
@@ -84,12 +79,12 @@ func getProjects_v2_8(r *http.Request, context *Context) *ApiResponse {
 // @Success 200 {object} project.Project
 // @Router /v2.8/projects [POST]
 func addProject_v2_8(r *http.Request, context *Context) *ApiResponse {
-	bodyBytes, err := ioutil.ReadAll(r.Body)
+	bodyBytes, err := io.ReadAll(r.Body)
 	if err != nil {
 		return BadRequestError(errors.Wrap(err, "error reading request body"))
 	}
 
-	var dto ProjectAddDto
+	var dto project.ProjectAddDto
 	err = json.Unmarshal(bodyBytes, &dto)
 	if err != nil {
 		return InternalServerError(errors.Wrap(err, "error unmarshalling project draft"))
@@ -100,7 +95,7 @@ func addProject_v2_8(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(errors.Wrap(err, "error adding project with tasks"))
 	}
 
-	sendAdd(context.WebsocketSender, addedProject)
+	sendAdd_v2_8(context.WebsocketSender, addedProject)
 
 	context.Log("Successfully added project %s with %d tasks", addedProject.Id, len(dto.Tasks))
 
@@ -152,7 +147,7 @@ func leaveProject_v2_8(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(err)
 	}
 
-	sendUserRemoved(context.WebsocketSender, updatedProject, context.Token.UID)
+	sendUserRemoved_v2_8(context.WebsocketSender, updatedProject, context.Token.UID)
 
 	context.Log("Successfully removed user '%s' from project %s (user left)", context.Token.UID, projectId)
 
@@ -186,7 +181,7 @@ func removeUser_v2_8(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(err)
 	}
 
-	sendUserRemoved(context.WebsocketSender, updatedProject, userToRemove)
+	sendUserRemoved_v2_8(context.WebsocketSender, updatedProject, userToRemove)
 
 	context.Log("Successfully removed user '%s' from project %s", userToRemove, projectId)
 
@@ -217,7 +212,7 @@ func deleteProjects_v2_8(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(err)
 	}
 
-	sendDelete(context.WebsocketSender, projectToDelete)
+	sendDelete_v2_8(context.WebsocketSender, projectToDelete)
 
 	context.Log("Successfully removed project %s", projectId)
 
@@ -257,7 +252,7 @@ func exportProject_v2_8(r *http.Request, context *Context) *ApiResponse {
 // @Param projectExport body export.ProjectExport true "The project to import"
 // @Router /v2.8/projects/import [POST]
 func importProject_v2_8(r *http.Request, context *Context) *ApiResponse {
-	bodyBytes, err := ioutil.ReadAll(r.Body)
+	bodyBytes, err := io.ReadAll(r.Body)
 	if err != nil {
 		return BadRequestError(errors.Wrap(err, "error reading request body"))
 	}
@@ -273,7 +268,7 @@ func importProject_v2_8(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(errors.Wrap(err, "error importing project with tasks"))
 	}
 
-	sendAdd(context.WebsocketSender, addedProject)
+	sendAdd_v2_8(context.WebsocketSender, addedProject)
 
 	context.Log("Successfully imported project %s with %d tasks", addedProject.Id, len(dto.Tasks))
 
@@ -297,7 +292,7 @@ func updateProjectName_v2_8(r *http.Request, context *Context) *ApiResponse {
 		return BadRequestError(errors.New("url segment 'id' not set"))
 	}
 
-	bodyBytes, err := ioutil.ReadAll(r.Body)
+	bodyBytes, err := io.ReadAll(r.Body)
 	if err != nil {
 		return InternalServerError(errors.Wrap(err, "error reading request body"))
 	}
@@ -307,7 +302,7 @@ func updateProjectName_v2_8(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(err)
 	}
 
-	sendUpdate(context.WebsocketSender, updatedProject)
+	sendUpdate_v2_8(context.WebsocketSender, updatedProject)
 
 	context.Log("Successfully updated name of project %s", projectId)
 
@@ -331,7 +326,7 @@ func updateProjectDescription_v2_8(r *http.Request, context *Context) *ApiRespon
 		return BadRequestError(errors.New("url segment 'id' not set"))
 	}
 
-	bodyBytes, err := ioutil.ReadAll(r.Body)
+	bodyBytes, err := io.ReadAll(r.Body)
 	if err != nil {
 		return InternalServerError(errors.Wrap(err, "error reading request body"))
 	}
@@ -341,7 +336,7 @@ func updateProjectDescription_v2_8(r *http.Request, context *Context) *ApiRespon
 		return InternalServerError(err)
 	}
 
-	sendUpdate(context.WebsocketSender, updatedProject)
+	sendUpdate_v2_8(context.WebsocketSender, updatedProject)
 
 	context.Log("Successfully updated description of project %s", projectId)
 
@@ -375,7 +370,7 @@ func addUserToProject_v2_8(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(err)
 	}
 
-	sendUpdate(context.WebsocketSender, updatedProject)
+	sendUpdate_v2_8(context.WebsocketSender, updatedProject)
 
 	context.Log("Successfully added user '%s' to project %s", userToAdd, projectId)
 
@@ -406,7 +401,7 @@ func assignUser_v2_8(r *http.Request, context *Context) *ApiResponse {
 	}
 
 	// Send via websockets
-	err = sendTaskUpdate(context.WebsocketSender, task, context)
+	err = sendTaskUpdate_v2_8(context.WebsocketSender, task, context)
 	if err != nil {
 		return InternalServerError(err)
 	}
@@ -440,7 +435,7 @@ func unassignUser_v2_8(r *http.Request, context *Context) *ApiResponse {
 	}
 
 	// Send via websockets
-	err = sendTaskUpdate(context.WebsocketSender, task, context)
+	err = sendTaskUpdate_v2_8(context.WebsocketSender, task, context)
 	if err != nil {
 		return InternalServerError(err)
 	}
@@ -478,7 +473,7 @@ func setProcessPoints_v2_8(r *http.Request, context *Context) *ApiResponse {
 	}
 
 	// Send via websockets
-	err = sendTaskUpdate(context.WebsocketSender, task, context)
+	err = sendTaskUpdate_v2_8(context.WebsocketSender, task, context)
 	if err != nil {
 		return InternalServerError(err)
 	}
@@ -495,25 +490,25 @@ func setProcessPoints_v2_8(r *http.Request, context *Context) *ApiResponse {
 // @Tags websocket
 // @Success 200 {object} []project.Project
 // @Router /v2.8/updates [GET]
-func getWebsocketConnection(w http.ResponseWriter, r *http.Request, token *oauth2.Token, websocketSender *websocket.WebsocketSender) {
+func getWebsocketConnection_v2_8(w http.ResponseWriter, r *http.Request, token *oauth2.Token, websocketSender *websocket.WebsocketSender) {
 	websocketSender.GetWebsocketConnection(w, r, token.UID)
 }
 
-func sendAdd(sender *websocket.WebsocketSender, addedProject *project.Project) {
+func sendAdd_v2_8(sender *websocket.WebsocketSender, addedProject *project.Project) {
 	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectAdded,
 		Id:   addedProject.Id,
 	}, addedProject.Users...)
 }
 
-func sendUpdate(sender *websocket.WebsocketSender, updatedProject *project.Project) {
+func sendUpdate_v2_8(sender *websocket.WebsocketSender, updatedProject *project.Project) {
 	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectUpdated,
 		Id:   updatedProject.Id,
 	}, updatedProject.Users...)
 }
 
-func sendUserRemoved(sender *websocket.WebsocketSender, updatedProject *project.Project, removedUser string) {
+func sendUserRemoved_v2_8(sender *websocket.WebsocketSender, updatedProject *project.Project, removedUser string) {
 	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectUpdated,
 		Id:   updatedProject.Id,
@@ -524,14 +519,14 @@ func sendUserRemoved(sender *websocket.WebsocketSender, updatedProject *project.
 	}, removedUser)
 }
 
-func sendDelete(sender *websocket.WebsocketSender, removedProject *project.Project) {
+func sendDelete_v2_8(sender *websocket.WebsocketSender, removedProject *project.Project) {
 	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectDeleted,
 		Id:   removedProject.Id,
 	}, removedProject.Users...)
 }
 
-func sendTaskUpdate(sender *websocket.WebsocketSender, task *task.Task, context *Context) error {
+func sendTaskUpdate_v2_8(sender *websocket.WebsocketSender, task *task.Task, context *Context) error {
 	project, err := context.ProjectService.GetProjectByTask(task.Id)
 	if err != nil {
 		return err

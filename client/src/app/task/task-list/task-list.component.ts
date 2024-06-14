@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, Output } from '@angular/core';
 import { Task } from '../task.material';
 import { TaskService } from '../task.service';
 import { CurrentUserService } from '../../user/current-user.service';
@@ -10,8 +10,10 @@ import { Unsubscriber } from '../../common/unsubscriber';
   styleUrls: ['./task-list.component.scss']
 })
 export class TaskListComponent extends Unsubscriber implements AfterViewInit {
-  // tslint:disable-next-line:variable-name
-  private _tasks: Task[];
+  @Output()
+  public taskCommentSelected = new EventEmitter<Task>();
+
+  private currentTasks: Task[];
 
   constructor(
     private taskService: TaskService,
@@ -24,9 +26,9 @@ export class TaskListComponent extends Unsubscriber implements AfterViewInit {
     this.unsubscribeLater(
       this.taskService.tasksUpdated.subscribe((updatedTasks: Task[]) => {
         updatedTasks.forEach(u => {
-          const index = this._tasks.map(t => t.id).indexOf(u.id);
+          const index = this.currentTasks.map(t => t.id).indexOf(u.id);
           if (index !== -1) { // when "u" exists in the current tasks -> update it
-            this._tasks[index] = u;
+            this.currentTasks[index] = u;
           }
           // No else case because tasks can't be added after project creation
         });
@@ -36,7 +38,7 @@ export class TaskListComponent extends Unsubscriber implements AfterViewInit {
 
   @Input()
   set tasks(values: Task[]) {
-    this._tasks = values
+    this.currentTasks = values
       .sort((a: Task, b: Task) => {
         if (a.isDone && !b.isDone) {
           return 1;
@@ -50,7 +52,7 @@ export class TaskListComponent extends Unsubscriber implements AfterViewInit {
   }
 
   get tasks(): Task[] {
-    return this._tasks;
+    return this.currentTasks;
   }
 
   public get selectedTaskId(): string {
@@ -62,11 +64,15 @@ export class TaskListComponent extends Unsubscriber implements AfterViewInit {
   }
 
   public onListItemClicked(id: string): void {
-    const clickedTask = this._tasks.find(t => t.id === id);
+    const clickedTask = this.currentTasks.find(t => t.id === id);
     if (!clickedTask) {
       return;
     }
 
     this.taskService.selectTask(clickedTask);
+  }
+
+  public onListItemCommentClicked(task: Task): void {
+    this.taskCommentSelected.emit(task);
   }
 }
