@@ -21,7 +21,7 @@ import { TaskDraft } from '../../task/task.material';
 import { FeatureLike } from 'ol/Feature';
 import { ConfigProvider } from '../../config/config.provider';
 import { ProjectImportService } from '../project-import.service';
-import { Project } from '../../project/project.material';
+import { JosmDataSource, Project } from '../../project/project.material';
 import { Unsubscriber } from '../../common/unsubscriber';
 import { Coordinate } from 'ol/coordinate';
 import { MapLayerService } from '../../common/services/map-layer.service';
@@ -42,7 +42,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
   private static readonly baseLightColor = '#80cbc4';
   private static readonly baseTransparentColor = ProjectCreationComponent.baseColor + '90';
 
-  public projectProperties: ProjectProperties = new ProjectProperties('', 100, '');
+  public projectProperties: ProjectProperties = new ProjectProperties('', 100, '', 'OSM');
   public existingProjects: Observable<Project[]>;
   public loadingProjects: boolean;
   public resetToolbarSelectionSubject: Subject<void> = new Subject<void>();
@@ -328,18 +328,23 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
       this.projectProperties.projectName,
       this.projectProperties.maxProcessPoints,
       this.projectProperties.projectDescription,
+      this.projectProperties.josmDataSource,
       features
     );
   }
 
-  public createProject(name: string, maxProcessPoints: number, projectDescription: string, features: Feature<Geometry>[]): void {
+  public createProject(name: string,
+                       maxProcessPoints: number,
+                       projectDescription: string,
+                       josmDataSource: JosmDataSource,
+                       features: Feature<Geometry>[]): void {
     const owner = this.currentUserService.getUserId();
     if (!owner) {
       // TODO Show error notification
       return;
     }
 
-    this.projectService.createNewProject(name, maxProcessPoints, projectDescription, features, [owner], owner)
+    this.projectService.createNewProject(name, maxProcessPoints, projectDescription, features, [owner], owner, josmDataSource)
       .subscribe({
         next: () => {
           void this.router.navigate(['/dashboard']);

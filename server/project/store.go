@@ -15,13 +15,14 @@ import (
 // Helper struct to read raw data from database. The "Project" struct has higher-level structure (e.g. arrays), which we
 // don't have in the database columns.
 type projectRow struct {
-	id            int
-	name          string
-	users         []string
-	owner         string
-	description   string
-	creationDate  *time.Time
-	commentListId string
+	id             int
+	name           string
+	users          []string
+	owner          string
+	description    string
+	creationDate   *time.Time
+	commentListId  string
+	josmDataSource JosmDataSource
 }
 
 type storePg struct {
@@ -236,7 +237,7 @@ func (s *storePg) execQuery(query string, params ...interface{}) (*Project, erro
 // rowToProject turns the current row into a Project object. This does not close the row.
 func (s *storePg) rowToProject(rows *sql.Rows) (*Project, *projectRow, error) {
 	var row projectRow
-	err := rows.Scan(&row.id, &row.name, &row.owner, &row.description, pq.Array(&row.users), &row.creationDate, &row.commentListId)
+	err := rows.Scan(&row.id, &row.name, &row.owner, &row.description, pq.Array(&row.users), &row.creationDate, &row.commentListId, &row.josmDataSource)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "could not scan rows")
 	}
@@ -248,6 +249,7 @@ func (s *storePg) rowToProject(rows *sql.Rows) (*Project, *projectRow, error) {
 	result.Users = row.users
 	result.Owner = row.owner
 	result.Description = row.description
+	result.JosmDataSource = row.josmDataSource
 
 	if row.creationDate != nil {
 		t := row.creationDate.UTC()

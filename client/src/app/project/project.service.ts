@@ -1,7 +1,7 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, mergeMap, tap } from 'rxjs/operators';
-import { Project, ProjectAddDto, ProjectDraftDto, ProjectDto, ProjectExport } from './project.material';
+import { JosmDataSource, Project, ProjectAddDto, ProjectDraftDto, ProjectDto, ProjectExport } from './project.material';
 import { Task, TaskDraftDto, TaskDto } from './../task/task.material';
 import { TaskService } from './../task/task.service';
 import { HttpClient } from '@angular/common/http';
@@ -98,7 +98,8 @@ export class ProjectService {
     projectDescription: string,
     features: Feature<Geometry>[],
     users: string[],
-    owner: string
+    owner: string,
+    josmDataSource: JosmDataSource
   ): Observable<Project> {
     const format = new GeoJSON();
     // We want features to attach attributes and to not be bound to one single Polygon.
@@ -109,7 +110,7 @@ export class ProjectService {
     }
 
     const p = new ProjectAddDto(
-      new ProjectDraftDto(name, projectDescription, users, owner),
+      new ProjectDraftDto(name, projectDescription, users, owner, josmDataSource),
       geometries.map(g => new TaskDraftDto(maxProcessPoints, 0, g))
     );
 
@@ -219,6 +220,7 @@ export class ProjectService {
       p.needsAssignment,
       p.creationDate,
       this.commentService.toCommentsWithUserMap(p.comments, userMap),
+      p.josmDataSource,
       p.totalProcessPoints ?? 0,
       p.doneProcessPoints ?? 0
     ));

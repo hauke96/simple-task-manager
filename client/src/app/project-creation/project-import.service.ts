@@ -9,6 +9,7 @@ import GeoJSON from 'ol/format/GeoJSON';
 import { ProjectService } from '../project/project.service';
 import { NotificationService } from '../common/services/notification.service';
 import { Geometry } from 'ol/geom';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +33,7 @@ export class ProjectImportService {
     // TODO Handle this correctly when there are task specific max-point amounts (s. #139).
     // Until #139 is not implemented, we can assume here that all maxProcessPoints values are the same, so just pick the first one.
     const maxProcessPoints = project.tasks[0].maxProcessPoints;
-    const projectProperties = new ProjectProperties(project.name, maxProcessPoints, project.description);
+    const projectProperties = new ProjectProperties(project.name, maxProcessPoints, project.description, project.josmDataSource);
     this.projectPropertiesImported.next(projectProperties);
 
     const tasksWithGeometries = project.tasks.filter(t => !!t.geometry);
@@ -53,7 +54,7 @@ export class ProjectImportService {
     this.projectService.importProject(project)
       .subscribe({
         next: () => this.notificationService.addInfo('Project imported'),
-        error: (e) => {
+        error: (e: HttpErrorResponse) => {
           console.error(e);
           this.notificationService.addError('Project import failed: ' + e.error);
         }

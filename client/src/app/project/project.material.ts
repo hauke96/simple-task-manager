@@ -2,6 +2,8 @@ import { User } from '../user/user.material';
 import { Task, TaskDraftDto, TaskDto, TaskExport } from '../task/task.material';
 import { Comment, CommentDto } from '../comments/comment.material';
 
+export type JosmDataSource = 'OSM' | 'OVERPASS';
+
 export class ProjectAddDto {
   constructor(public project: ProjectDraftDto,
               public tasks: TaskDraftDto[]) {
@@ -12,7 +14,8 @@ export class ProjectDraftDto {
   constructor(public name: string,
               public description: string,
               public users: string[],
-              public owner: string
+              public owner: string,
+              public josmDataSource: JosmDataSource
   ) {
   }
 }
@@ -27,6 +30,7 @@ export class ProjectDto {
               public needsAssignment: boolean = true,
               public creationDate: Date,
               public comments: CommentDto[],
+              public josmDataSource: JosmDataSource,
               public totalProcessPoints?: number,
               public doneProcessPoints?: number
   ) {
@@ -43,6 +47,7 @@ export class Project {
               public needsAssignment: boolean,
               public creationDate: Date,
               public comments: Comment[],
+              public josmDataSource: JosmDataSource,
               public totalProcessPoints: number,
               public doneProcessPoints: number
   ) {
@@ -55,6 +60,7 @@ export class ProjectExport {
               public tasks: TaskExport[],
               public users: string[],
               public owner: string,
+              public josmDataSource: JosmDataSource,
               public creationDate: Date) {
   }
 }

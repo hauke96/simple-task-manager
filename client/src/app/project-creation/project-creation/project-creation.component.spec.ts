@@ -194,13 +194,14 @@ describe(ProjectCreationComponent.name, () => {
     component.projectProperties.projectDescription = description;
     component.projectProperties.maxProcessPoints = maxProcessPoints;
     component.projectProperties.projectName = name;
+    component.projectProperties.josmDataSource = 'OVERPASS';
     // @ts-ignore
     component.vectorSource.getFeatures = jest.fn().mockReturnValue([feature]);
 
     component.onSaveButtonClicked();
 
     expect(projectService.createNewProject)
-      .toHaveBeenCalledWith(name, maxProcessPoints, description, jestExpect.anything(), [userId], userId);
+      .toHaveBeenCalledWith(name, maxProcessPoints, description, jestExpect.anything(), [userId], userId, 'OVERPASS');
   });
 
   it('should deactivate interactions on tab selection', () => {
@@ -435,7 +436,7 @@ describe(ProjectCreationComponent.name, () => {
     const u1 = new User('test-user', '123');
     const u2 = new User('test-user2', '234');
     const u3 = new User('test-user3', '345');
-    return new Project('1', 'test project', 'lorem ipsum', [t], [u1, u2, u3], u1, true, new Date(), [], 0, 0);
+    return new Project('1', 'test project', 'lorem ipsum', [t], [u1, u2, u3], u1, true, new Date(), [], 'OSM', 0, 0);
   }
 
   function getDummyFeatures(): Feature<Geometry>[] {
