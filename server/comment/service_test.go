@@ -28,7 +28,7 @@ func setup() {
 
 	logger := util.NewLogger()
 
-	s = Init(tx, logger, GetStore(tx, logger))
+	s = Init(logger, GetStore(tx, logger))
 }
 
 //

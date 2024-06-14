@@ -38,7 +38,7 @@ func setup() {
 
 	permissionStore := permission.Init(tx, logger)
 	commentStore := comment.GetStore(tx, logger)
-	commentService := comment.Init(tx, logger, commentStore)
+	commentService := comment.Init(logger, commentStore)
 	taskService = task.Init(tx, logger, permissionStore, commentService, commentStore)
 	s = Init(tx, logger, taskService, permissionStore, commentService, commentStore)
 }

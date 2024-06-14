@@ -1,7 +1,6 @@
 package comment
 
 import (
-	"database/sql"
 	"fmt"
 	"github.com/pkg/errors"
 	"stm/config"
@@ -14,7 +13,7 @@ type Service struct {
 	store *Store
 }
 
-func Init(tx *sql.Tx, logger *util.Logger, store *Store) *Service {
+func Init(logger *util.Logger, store *Store) *Service {
 	return &Service{
 		Logger: logger,
 		store:  store,
