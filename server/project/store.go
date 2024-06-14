@@ -103,8 +103,8 @@ func (s *storePg) addProject(draft *ProjectDraftDto, creationDate time.Time) (*P
 		return nil, err
 	}
 
-	query := fmt.Sprintf("INSERT INTO %s (name, description, users, owner, creation_date, comment_list_id) VALUES($1, $2, $3, $4, $5, $6) RETURNING *", s.table)
-	params := []interface{}{draft.Name, draft.Description, pq.Array(draft.Users), draft.Owner, creationDate, commentListId}
+	query := fmt.Sprintf("INSERT INTO %s (name, description, users, owner, creation_date, comment_list_id, josm_data_source) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *", s.table)
+	params := []interface{}{draft.Name, draft.Description, pq.Array(draft.Users), draft.Owner, creationDate, commentListId, draft.JosmDataSource}
 
 	s.LogQuery(query, params...)
 	project, _, err := s.execQueryWithoutTasks(query, params...)

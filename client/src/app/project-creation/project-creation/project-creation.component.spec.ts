@@ -122,7 +122,7 @@ describe(ProjectCreationComponent.name, () => {
     projectService.createNewProject = jest.fn().mockReturnValue(of(createProject()));
     router.navigate = jest.fn();
 
-    component.createProject(name, 100, 'lorem ipsum', feature);
+    component.createProject(name, 100, 'lorem ipsum', 'OSM', feature);
 
     expect(projectService.createNewProject).toHaveBeenCalled();
     expect(router.navigate).toHaveBeenCalledWith(['/dashboard']);
@@ -137,7 +137,7 @@ describe(ProjectCreationComponent.name, () => {
 
     const feature = getDummyFeatures();
 
-    component.createProject(name, 100, 'lorem ipsum', feature);
+    component.createProject(name, 100, 'lorem ipsum', 'OSM', feature);
 
     expect(projectService.createNewProject).toHaveBeenCalled();
     expect(router.navigate).not.toHaveBeenCalled();
@@ -152,7 +152,7 @@ describe(ProjectCreationComponent.name, () => {
 
     const feature = getDummyFeatures();
 
-    component.createProject(name, 100, 'lorem ipsum', feature);
+    component.createProject(name, 100, 'lorem ipsum', 'OSM', feature);
 
     expect(projectService.createNewProject).not.toHaveBeenCalled();
     expect(router.navigate).not.toHaveBeenCalled();

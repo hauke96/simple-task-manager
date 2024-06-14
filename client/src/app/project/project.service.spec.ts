@@ -65,7 +65,7 @@ describe(ProjectService.name, () => {
     ];
     const tasks = taskDtoToTask(taskDtos);
     const format = new GeoJSON();
-    const projectDto = new ProjectDto('124', 'Project 124', 'bar', ['2'], taskDtos, '2', false, new Date(), []);
+    const projectDto = new ProjectDto('124', 'Project 124', 'bar', ['2'], taskDtos, '2', false, new Date(), [], 'OSM');
 
     httpClient.post = jest.fn().mockReturnValue(of(projectDto));
     userService.getUsersByIds = jest.fn().mockReturnValue(of([new User('U1', '1'), new User('U2', '2')]));
@@ -78,7 +78,7 @@ describe(ProjectService.name, () => {
         format.readFeature(TestTaskGeometry),
         format.readFeature(TestTaskGeometry),
         format.readFeature(TestTaskGeometry)
-      ], ['user'], 'user')
+      ], ['user'], 'user', 'OSM')
       .subscribe({
         next: p => {
           // Only these properties can be checked. All others (like 'owner') are set by the server, which we don't use here
@@ -103,8 +103,8 @@ describe(ProjectService.name, () => {
 
     taskService.toTaskWithUsers = jest.fn().mockImplementation((dto: TaskDto) => taskDtoToTask([dto])[0]);
 
-    const dto1 = new ProjectDto('123', 'Project 123', 'foo', ['1'], [taskDtos[0]], '1', false, date, []);
-    const dto2 = new ProjectDto('124', 'Project 124', 'bar', ['2'], [taskDtos[1]], '2', false, date, []);
+    const dto1 = new ProjectDto('123', 'Project 123', 'foo', ['1'], [taskDtos[0]], '1', false, date, [], 'OSM');
+    const dto2 = new ProjectDto('124', 'Project 124', 'bar', ['2'], [taskDtos[1]], '2', false, date, [], 'OSM');
     httpClient.get = jest.fn().mockReturnValue(of([dto1, dto2]));
 
     service.getProjects().subscribe({
@@ -138,7 +138,7 @@ describe(ProjectService.name, () => {
 
     taskService.toTaskWithUsers = jest.fn().mockImplementation((d: TaskDto) => taskDtoToTask([d])[0]);
 
-    const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '3'], [taskDtos[0]], '1', false, date, []);
+    const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '3'], [taskDtos[0]], '1', false, date, [], 'OSM');
     httpClient.get = jest.fn().mockReturnValue(of(dto));
 
     service.getProject('123').subscribe({
@@ -168,7 +168,7 @@ describe(ProjectService.name, () => {
     const {taskDtos} = setUpUserAndTasks();
     const date = new Date();
 
-    const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2'], [taskDtos[0]], '2', true, date, []);
+    const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2'], [taskDtos[0]], '2', true, date, [], 'OSM');
     httpClient.get = jest.fn().mockReturnValue(of(dto));
 
     // TODO finish test
@@ -182,7 +182,7 @@ describe(ProjectService.name, () => {
 
     taskService.toTaskWithUsers = jest.fn().mockImplementation((d: TaskDto) => taskDtoToTask([d])[0]);
 
-    const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2'], taskDtos, '2', true, date, []);
+    const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2'], taskDtos, '2', true, date, [], 'OSM');
     httpClient.delete = jest.fn().mockReturnValue(of(dto));
     service.projectChanged.subscribe(changeSpy);
 
@@ -216,11 +216,12 @@ describe(ProjectService.name, () => {
     const {users, taskDtos} = setUpUserAndTasks();
     const tasks = taskDtoToTask(taskDtos);
     const date = new Date();
+    const josmDataSource = 'OSM';
 
     userService.getUsersByIds = jest.fn().mockImplementation((ids: string[]) => of(users.filter(u => ids.includes(u.uid))));
     taskService.toTaskWithUsers = jest.fn().mockImplementation((d: TaskDto) => taskDtoToTask([d])[0]);
 
-    const dto: ProjectDto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2', '3'], taskDtos, '2', true, date, []);
+    const dto: ProjectDto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2', '3'], taskDtos, '2', true, date, [], josmDataSource);
 
     // Execute
     service.toProject(dto).subscribe({
@@ -247,6 +248,8 @@ describe(ProjectService.name, () => {
         expect(project.users).toContain(users[2]);
 
         expect(project.creationDate).toEqual(date);
+
+        expect(project.josmDataSource).toEqual(josmDataSource);
 
         done();
       },
