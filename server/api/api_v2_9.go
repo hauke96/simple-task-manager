@@ -232,6 +232,10 @@ func addProjectComments_v2_9(r *http.Request, context *Context) *ApiResponse {
 		return InternalServerError(err)
 	}
 
+	sendUpdate_v2_9(context.WebsocketSender, projectWithComment)
+
+	context.Log("Successfully added comment to project %s", projectId)
+
 	return JsonResponse(projectWithComment)
 }
 
