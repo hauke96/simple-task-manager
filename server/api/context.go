@@ -18,10 +18,10 @@ type Context struct {
 	*util.Logger
 	Token           *oauth2.Token
 	Transaction     *sql.Tx
-	ProjectService  *project.ProjectService
-	TaskService     *task.TaskService
-	ExportService   *export.ExportService
-	WebsocketSender *websocket.WebsocketSender
+	ProjectService  *project.Service
+	TaskService     *task.Service
+	ExportService   *export.Service
+	WebsocketSender *websocket.Sender
 }
 
 // createContext starts a new Transaction and creates new service instances which use this new Transaction so that all

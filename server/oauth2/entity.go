@@ -1,6 +1,6 @@
 package oauth2
 
-// Structs when requesting user information
+// Osm is a struct used when requesting user information
 type Osm struct {
 	User OsmUser `xml:"user"`
 }

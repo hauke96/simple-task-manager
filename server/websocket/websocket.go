@@ -33,17 +33,17 @@ var (
 	connections = make(map[string][]*websocket.Conn, 0)
 )
 
-type WebsocketSender struct {
+type Sender struct {
 	*util.Logger
 }
 
-func Init(logger *util.Logger) *WebsocketSender {
-	return &WebsocketSender{
+func Init(logger *util.Logger) *Sender {
+	return &Sender{
 		Logger: logger,
 	}
 }
 
-func (s *WebsocketSender) GetWebsocketConnection(w http.ResponseWriter, r *http.Request, uid string) {
+func (s *Sender) GetWebsocketConnection(w http.ResponseWriter, r *http.Request, uid string) {
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		//sigolo.Error("Could not upgrade response writer and request to websocket connection")
@@ -60,11 +60,11 @@ func (s *WebsocketSender) GetWebsocketConnection(w http.ResponseWriter, r *http.
 	connections[uid] = append(connections[uid], ws)
 }
 
-func (s *WebsocketSender) Send(message Message, uids ...string) {
+func (s *Sender) Send(message Message, uids ...string) {
 	s.SendAll([]Message{message}, uids...)
 }
 
-func (s *WebsocketSender) SendAll(messages []Message, uids ...string) {
+func (s *Sender) SendAll(messages []Message, uids ...string) {
 	for _, uid := range uids {
 		userConnections := connections[uid]
 

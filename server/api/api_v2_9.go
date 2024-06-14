@@ -87,7 +87,7 @@ func addProject_v2_9(r *http.Request, context *Context) *ApiResponse {
 		return BadRequestError(errors.Wrap(err, "error reading request body"))
 	}
 
-	var dto project.ProjectAddDto
+	var dto project.AddDto
 	err = json.Unmarshal(bodyBytes, &dto)
 	if err != nil {
 		return InternalServerError(errors.Wrap(err, "error unmarshalling project draft"))
@@ -213,7 +213,7 @@ func addProjectComments_v2_9(r *http.Request, context *Context) *ApiResponse {
 		return BadRequestError(errors.Wrap(err, "error reading request body"))
 	}
 
-	var dto comment.CommentDraftDto
+	var dto comment.DraftDto
 	err = json.Unmarshal(bodyBytes, &dto)
 	if err != nil {
 		return InternalServerError(errors.Wrap(err, "error unmarshalling comment draft"))
@@ -347,7 +347,7 @@ func updateProject_v2_9(r *http.Request, context *Context) *ApiResponse {
 		return BadRequestError(errors.Wrap(err, "error reading request body"))
 	}
 
-	var dto project.ProjectUpdateDto
+	var dto project.UpdateDto
 	err = json.Unmarshal(bodyBytes, &dto)
 	if err != nil {
 		return InternalServerError(errors.Wrap(err, "error unmarshalling project update"))
@@ -551,7 +551,7 @@ func addTaskComments_v2_9(r *http.Request, context *Context) *ApiResponse {
 		return BadRequestError(errors.Wrap(err, "error reading request body"))
 	}
 
-	var dto comment.CommentDraftDto
+	var dto comment.DraftDto
 	err = json.Unmarshal(bodyBytes, &dto)
 	if err != nil {
 		return InternalServerError(errors.Wrap(err, "error unmarshalling comment draft"))
@@ -586,25 +586,25 @@ func addTaskComments_v2_9(r *http.Request, context *Context) *ApiResponse {
 // @Tags websocket
 // @Success 200 {object} []project.Project
 // @Router /v2.9/updates [GET]
-func getWebsocketConnection_v2_9(w http.ResponseWriter, r *http.Request, token *oauth2.Token, websocketSender *websocket.WebsocketSender) {
+func getWebsocketConnection_v2_9(w http.ResponseWriter, r *http.Request, token *oauth2.Token, websocketSender *websocket.Sender) {
 	websocketSender.GetWebsocketConnection(w, r, token.UID)
 }
 
-func sendAdd_v2_9(sender *websocket.WebsocketSender, addedProject *project.Project) {
+func sendAdd_v2_9(sender *websocket.Sender, addedProject *project.Project) {
 	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectAdded,
 		Id:   addedProject.Id,
 	}, addedProject.Users...)
 }
 
-func sendUpdate_v2_9(sender *websocket.WebsocketSender, updatedProject *project.Project) {
+func sendUpdate_v2_9(sender *websocket.Sender, updatedProject *project.Project) {
 	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectUpdated,
 		Id:   updatedProject.Id,
 	}, updatedProject.Users...)
 }
 
-func sendUserRemoved_v2_9(sender *websocket.WebsocketSender, updatedProject *project.Project, removedUser string) {
+func sendUserRemoved_v2_9(sender *websocket.Sender, updatedProject *project.Project, removedUser string) {
 	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectUpdated,
 		Id:   updatedProject.Id,
@@ -615,14 +615,14 @@ func sendUserRemoved_v2_9(sender *websocket.WebsocketSender, updatedProject *pro
 	}, removedUser)
 }
 
-func sendDelete_v2_9(sender *websocket.WebsocketSender, removedProject *project.Project) {
+func sendDelete_v2_9(sender *websocket.Sender, removedProject *project.Project) {
 	sender.Send(websocket.Message{
 		Type: websocket.MessageType_ProjectDeleted,
 		Id:   removedProject.Id,
 	}, removedProject.Users...)
 }
 
-func sendTaskUpdate_v2_9(sender *websocket.WebsocketSender, task *task.Task, context *Context) error {
+func sendTaskUpdate_v2_9(sender *websocket.Sender, task *task.Task, context *Context) error {
 	project, err := context.ProjectService.GetProjectByTask(task.Id)
 	if err != nil {
 		return err

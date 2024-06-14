@@ -1,6 +1,6 @@
 package config
 
-type ConfigDto struct {
+type Dto struct {
 	SourceRepoURL        string `json:"sourceRepoUrl"`        // URL to the source code repository.
 	MaxTasksPerProject   int    `json:"maxTasksPerProject"`   // Maximum amount of tasks allowed for a project.
 	MaxDescriptionLength int    `json:"maxDescriptionLength"` // Maximum length for the project description in characters. Default: 1000.
@@ -8,8 +8,8 @@ type ConfigDto struct {
 	OsmApiUrl            string `json:"osmApiUrl"`            // The base-URL to the OSM server.
 }
 
-func GetConfigDto() *ConfigDto {
-	return &ConfigDto{
+func GetConfigDto() *Dto {
+	return &Dto{
 		SourceRepoURL:        Conf.SourceRepoURL,
 		MaxTasksPerProject:   Conf.MaxTasksPerProject,
 		MaxDescriptionLength: Conf.MaxDescriptionLength,

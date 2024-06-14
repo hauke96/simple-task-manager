@@ -9,10 +9,6 @@ import (
 	"time"
 )
 
-type commentListRow struct {
-	Id int // Id of the comment list (referenced by other entities, e.g. tasks).
-}
-
 type commentRow struct {
 	id            int // Id of the comment itself.
 	commentListId int // Id of the comment list this comment belongs to.
@@ -21,15 +17,15 @@ type commentRow struct {
 	creationDate  *time.Time
 }
 
-type CommentStore struct {
+type Store struct {
 	*util.Logger
 	tx               *sql.Tx
 	commentListTable string
 	commentTable     string
 }
 
-func GetStore(tx *sql.Tx, logger *util.Logger) *CommentStore {
-	return &CommentStore{
+func GetStore(tx *sql.Tx, logger *util.Logger) *Store {
+	return &Store{
 		Logger:           logger,
 		tx:               tx,
 		commentListTable: "comment_lists",
@@ -37,7 +33,7 @@ func GetStore(tx *sql.Tx, logger *util.Logger) *CommentStore {
 	}
 }
 
-func (s *CommentStore) GetComments(listId string) ([]Comment, error) {
+func (s *Store) GetComments(listId string) ([]Comment, error) {
 	rawQueryString := `
 SELECT comment.*
 FROM %s comment_list, %s comment
@@ -69,7 +65,7 @@ WHERE
 	return comments, nil
 }
 
-func (s *CommentStore) NewCommentList() (string, error) {
+func (s *Store) NewCommentList() (string, error) {
 	query := fmt.Sprintf("INSERT INTO %s DEFAULT VALUES RETURNING id", s.commentListTable)
 	s.LogQuery(query)
 
@@ -96,14 +92,14 @@ func (s *CommentStore) NewCommentList() (string, error) {
 	return commentListId, nil
 }
 
-func (s *CommentStore) addComment(listId string, text string, authorId string, creationDate time.Time) error {
+func (s *Store) addComment(listId string, text string, authorId string, creationDate time.Time) error {
 	query := fmt.Sprintf("INSERT INTO %s (comment_list_id, text, author_id, creation_date) VALUES($1, $2, $3, $4) RETURNING *", s.commentTable)
 	_, err := s.execQuery(query, listId, text, authorId, creationDate)
 	return err
 }
 
 // execQuery executed the given query, turns the result into a Comment object and closes the query.
-func (s *CommentStore) execQuery(query string, params ...interface{}) (*Comment, error) {
+func (s *Store) execQuery(query string, params ...interface{}) (*Comment, error) {
 	s.LogQuery(query, params...)
 	rows, err := s.tx.Query(query, params...)
 	if err != nil {

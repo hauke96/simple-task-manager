@@ -13,16 +13,16 @@ import (
 	"time"
 )
 
-type ProjectService struct {
+type Service struct {
 	*util.Logger
-	store           *storePg
-	permissionStore *permission.PermissionStore
-	taskService     *task.TaskService
-	commentService  *comment.CommentService
+	store           *store
+	permissionStore *permission.Store
+	taskService     *task.Service
+	commentService  *comment.Service
 }
 
-func Init(tx *sql.Tx, logger *util.Logger, taskService *task.TaskService, permissionStore *permission.PermissionStore, commentService *comment.CommentService, commentStore *comment.CommentStore) *ProjectService {
-	return &ProjectService{
+func Init(tx *sql.Tx, logger *util.Logger, taskService *task.Service, permissionStore *permission.Store, commentService *comment.Service, commentStore *comment.Store) *Service {
+	return &Service{
 		Logger:          logger,
 		store:           getStore(tx, logger, task.GetStore(tx, logger, commentStore), commentStore),
 		permissionStore: permissionStore,
@@ -31,7 +31,7 @@ func Init(tx *sql.Tx, logger *util.Logger, taskService *task.TaskService, permis
 	}
 }
 
-func (s *ProjectService) GetProjects(userId string) ([]*Project, error) {
+func (s *Service) GetProjects(userId string) ([]*Project, error) {
 	projects, err := s.store.getAllProjectsOfUser(userId)
 	if err != nil {
 		s.Err(fmt.Sprintf("Error getting projects for user %s", userId))
@@ -49,7 +49,7 @@ func (s *ProjectService) GetProjects(userId string) ([]*Project, error) {
 	return projects, nil
 }
 
-func (s *ProjectService) GetProjectByTask(taskId string) (*Project, error) {
+func (s *Service) GetProjectByTask(taskId string) (*Project, error) {
 	project, err := s.store.getProjectOfTask(taskId)
 	if err != nil {
 		s.Err("Error getting project with task %s", taskId)
@@ -67,7 +67,7 @@ func (s *ProjectService) GetProjectByTask(taskId string) (*Project, error) {
 
 // AddProjectWithTasks takes the project and the tasks and adds them to the database. This also adds the process-point
 // metadata to the returned project.
-func (s *ProjectService) AddProjectWithTasks(projectDraft *ProjectDraftDto, taskDrafts []task.TaskDraftDto) (*Project, error) {
+func (s *Service) AddProjectWithTasks(projectDraft *DraftDto, taskDrafts []task.DraftDto) (*Project, error) {
 	if len(taskDrafts) > config.Conf.MaxTasksPerProject {
 		return nil, errors.New(fmt.Sprintf("Maximum %d tasks allowed", config.Conf.MaxTasksPerProject))
 	}
@@ -98,7 +98,7 @@ func (s *ProjectService) AddProjectWithTasks(projectDraft *ProjectDraftDto, task
 
 // AddProject adds the project, as requested by user "userId". This does NOT fill the metadata information because
 // there're not necessarily tasks yet.
-func (s *ProjectService) AddProject(projectDraft *ProjectDraftDto) (*Project, error) {
+func (s *Service) AddProject(projectDraft *DraftDto) (*Project, error) {
 	if projectDraft.Owner == "" {
 		return nil, errors.New("Owner must be set")
 	}
@@ -130,7 +130,7 @@ func (s *ProjectService) AddProject(projectDraft *ProjectDraftDto) (*Project, er
 	return project, nil
 }
 
-func (s *ProjectService) GetProject(projectId string, potentialMemberId string) (*Project, error) {
+func (s *Service) GetProject(projectId string, potentialMemberId string) (*Project, error) {
 	err := s.permissionStore.VerifyMembershipProject(projectId, potentialMemberId)
 	if err != nil {
 		return nil, err
@@ -151,7 +151,7 @@ func (s *ProjectService) GetProject(projectId string, potentialMemberId string) 
 }
 
 // addTasksAndMetadata adds additional metadata for convenience. This includes information about process points as well as permissions.
-func (s *ProjectService) addTasksAndMetadata(project *Project) error {
+func (s *Service) addTasksAndMetadata(project *Project) error {
 	// Collect the overall finish-state of the project
 	for _, t := range project.Tasks {
 		project.DoneProcessPoints += t.ProcessPoints
@@ -170,7 +170,7 @@ func (s *ProjectService) addTasksAndMetadata(project *Project) error {
 	return nil
 }
 
-func (s *ProjectService) AddUser(projectId, userId, potentialOwnerId string) (*Project, error) {
+func (s *Service) AddUser(projectId, userId, potentialOwnerId string) (*Project, error) {
 	err := s.permissionStore.VerifyOwnership(projectId, potentialOwnerId)
 	if err != nil {
 		return nil, err
@@ -203,7 +203,7 @@ func (s *ProjectService) AddUser(projectId, userId, potentialOwnerId string) (*P
 	return project, nil
 }
 
-func (s *ProjectService) RemoveUser(projectId, requestingUserId, userIdToRemove string) (*Project, error) {
+func (s *Service) RemoveUser(projectId, requestingUserId, userIdToRemove string) (*Project, error) {
 	// Both users have to be member of the project
 	// TODO I think this is unnecessary: First check whether requestingUserId == userIdToRemove
 	err := s.permissionStore.VerifyMembershipProject(projectId, requestingUserId)
@@ -269,7 +269,7 @@ func (s *ProjectService) RemoveUser(projectId, requestingUserId, userIdToRemove 
 	return project, nil
 }
 
-func (s *ProjectService) DeleteProject(projectId, potentialOwnerId string) error {
+func (s *Service) DeleteProject(projectId, potentialOwnerId string) error {
 	err := s.permissionStore.VerifyOwnership(projectId, potentialOwnerId)
 	if err != nil {
 		return err
@@ -285,7 +285,7 @@ func (s *ProjectService) DeleteProject(projectId, potentialOwnerId string) error
 	return nil
 }
 
-func (s *ProjectService) Update(projectId string, newName string, newDescription string, newJosmDataSource JosmDataSource, requestingUserId string) (*Project, error) {
+func (s *Service) Update(projectId string, newName string, newDescription string, newJosmDataSource JosmDataSource, requestingUserId string) (*Project, error) {
 	err := s.permissionStore.VerifyOwnership(projectId, requestingUserId)
 	if err != nil {
 		return nil, err
@@ -319,7 +319,7 @@ func (s *ProjectService) Update(projectId string, newName string, newDescription
 	return project, nil
 }
 
-func (s *ProjectService) AddComment(projectId string, draftDto *comment.CommentDraftDto, authorId string) error {
+func (s *Service) AddComment(projectId string, draftDto *comment.DraftDto, authorId string) error {
 	commentListId, err := s.store.getCommentListId(projectId)
 	if err != nil {
 		return err

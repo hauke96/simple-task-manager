@@ -20,19 +20,19 @@ type taskRow struct {
 	commentListId    string
 }
 
-type StorePg struct {
+type Store struct {
 	*util.Logger
 	tx           *sql.Tx
 	Table        string
-	commentStore *comment.CommentStore
+	commentStore *comment.Store
 }
 
 var (
 	returnValues = "id, process_points, max_process_points, geometry, assigned_user, comment_list_id"
 )
 
-func GetStore(tx *sql.Tx, logger *util.Logger, commentStore *comment.CommentStore) *StorePg {
-	return &StorePg{
+func GetStore(tx *sql.Tx, logger *util.Logger, commentStore *comment.Store) *Store {
+	return &Store{
 		Logger:       logger,
 		tx:           tx,
 		Table:        "tasks",
@@ -40,7 +40,7 @@ func GetStore(tx *sql.Tx, logger *util.Logger, commentStore *comment.CommentStor
 	}
 }
 
-func (s *StorePg) GetAllTasksOfProject(projectId string) ([]*Task, error) {
+func (s *Store) GetAllTasksOfProject(projectId string) ([]*Task, error) {
 	query := fmt.Sprintf("SELECT id,process_points,max_process_points,geometry,assigned_user,comment_list_id FROM %s WHERE project_id = $1;", s.Table)
 	s.LogQuery(query, projectId)
 
@@ -82,7 +82,7 @@ func (s *StorePg) GetAllTasksOfProject(projectId string) ([]*Task, error) {
 	return tasks, nil
 }
 
-func (s *StorePg) getTask(taskId string) (*Task, error) {
+func (s *Store) getTask(taskId string) (*Task, error) {
 	query := fmt.Sprintf("SELECT id,process_points,max_process_points,geometry,assigned_user,comment_list_id FROM %s WHERE id = $1;", s.Table)
 	s.LogQuery(query, taskId)
 
@@ -95,7 +95,7 @@ func (s *StorePg) getTask(taskId string) (*Task, error) {
 	return task, nil
 }
 
-func (s *StorePg) addTasks(newTasks []TaskDraftDto, projectId string) ([]*Task, error) {
+func (s *Store) addTasks(newTasks []DraftDto, projectId string) ([]*Task, error) {
 	taskIds := make([]string, 0)
 
 	commentListId, err := s.commentStore.NewCommentList()
@@ -117,7 +117,7 @@ func (s *StorePg) addTasks(newTasks []TaskDraftDto, projectId string) ([]*Task, 
 	return s.GetAllTasksOfProject(projectId)
 }
 
-func (s *StorePg) addTask(task *TaskDraftDto, projectId string, commentListId string) (string, error) {
+func (s *Store) addTask(task *DraftDto, projectId string, commentListId string) (string, error) {
 	query := fmt.Sprintf("INSERT INTO %s(process_points, max_process_points, geometry, assigned_user, project_id, comment_list_id) VALUES($1, $2, $3, $4, $5, $6) RETURNING %s;", s.Table, returnValues)
 	t, err := s.execQuery(query, task.ProcessPoints, task.MaxProcessPoints, task.Geometry, "", projectId, commentListId)
 
@@ -128,22 +128,22 @@ func (s *StorePg) addTask(task *TaskDraftDto, projectId string, commentListId st
 	return t.Id, nil
 }
 
-func (s *StorePg) assignUser(taskId, userId string) (*Task, error) {
+func (s *Store) assignUser(taskId, userId string) (*Task, error) {
 	query := fmt.Sprintf("UPDATE %s SET assigned_user=$1 WHERE id=$2 RETURNING %s;", s.Table, returnValues)
 	return s.execQuery(query, userId, taskId)
 }
 
-func (s *StorePg) unassignUser(taskId string) (*Task, error) {
+func (s *Store) unassignUser(taskId string) (*Task, error) {
 	query := fmt.Sprintf("UPDATE %s SET assigned_user='' WHERE id=$1 RETURNING %s;", s.Table, returnValues)
 	return s.execQuery(query, taskId)
 }
 
-func (s *StorePg) setProcessPoints(taskId string, newPoints int) (*Task, error) {
+func (s *Store) setProcessPoints(taskId string, newPoints int) (*Task, error) {
 	query := fmt.Sprintf("UPDATE %s SET process_points=$1 WHERE id=$2 RETURNING %s;", s.Table, returnValues)
 	return s.execQuery(query, newPoints, taskId)
 }
 
-func (s *StorePg) delete(taskIds []string) error {
+func (s *Store) delete(taskIds []string) error {
 	query := fmt.Sprintf("DELETE FROM %s WHERE id=ANY($1)", s.Table)
 
 	s.LogQuery(query, taskIds)
@@ -155,7 +155,7 @@ func (s *StorePg) delete(taskIds []string) error {
 	return nil
 }
 
-func (s *StorePg) getCommentListId(taskId string) (string, error) {
+func (s *Store) getCommentListId(taskId string) (string, error) {
 	query := fmt.Sprintf("SELECT comment_list_id FROM %s WHERE id = $1;", s.Table)
 	s.LogQuery(query, taskId)
 
@@ -179,7 +179,7 @@ func (s *StorePg) getCommentListId(taskId string) (string, error) {
 }
 
 // execQuery executed the given query, turns the result into a Task object and closes the query.
-func (s *StorePg) execQuery(query string, params ...interface{}) (*Task, error) {
+func (s *Store) execQuery(query string, params ...interface{}) (*Task, error) {
 	s.LogQuery(query, params...)
 	rows, err := s.tx.Query(query, params...)
 	if err != nil {
@@ -194,7 +194,7 @@ func (s *StorePg) execQuery(query string, params ...interface{}) (*Task, error) 
 		return nil, errors.Wrap(err, "error closing rows")
 	}
 
-	if task == nil && err == nil {
+	if task == nil {
 		return nil, errors.New(fmt.Sprintf("Task does not exist"))
 	}
 
@@ -208,7 +208,7 @@ func (s *StorePg) execQuery(query string, params ...interface{}) (*Task, error) 
 }
 
 // rowToTask turns the current row into a Task object. This does not close the row.
-func (s *StorePg) rowToTask(rows *sql.Rows) (*Task, *taskRow, error) {
+func (s *Store) rowToTask(rows *sql.Rows) (*Task, *taskRow, error) {
 	var task taskRow
 	err := rows.Scan(&task.id, &task.processPoints, &task.maxProcessPoints, &task.geometry, &task.assignedUser, &task.commentListId)
 	if err != nil {
@@ -224,6 +224,9 @@ func (s *StorePg) rowToTask(rows *sql.Rows) (*Task, *taskRow, error) {
 	result.Geometry = task.geometry
 
 	feature, err := geojson.UnmarshalFeature([]byte(result.Geometry))
+	if feature == nil || err != nil {
+		return nil, nil, errors.Wrapf(err, "could not unmarshal task geometry '%s' from row", result.Geometry)
+	}
 	name, err := feature.PropertyString("name")
 	if err == nil {
 		result.Name = name

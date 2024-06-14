@@ -17,8 +17,8 @@ import (
 
 var (
 	tx *sql.Tx
-	s  *ExportService
-	h  *test.TestHelper
+	s  *Service
+	h  *test.Helper
 )
 
 func TestMain(m *testing.M) {

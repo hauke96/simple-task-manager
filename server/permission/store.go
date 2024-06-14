@@ -8,7 +8,7 @@ import (
 	"stm/util"
 )
 
-type PermissionStore struct {
+type Store struct {
 	*util.Logger
 	tx *sql.Tx
 }
@@ -19,15 +19,15 @@ var (
 )
 
 // Init the permission store for the project and task table.
-func Init(tx *sql.Tx, logger *util.Logger) *PermissionStore {
-	return &PermissionStore{
+func Init(tx *sql.Tx, logger *util.Logger) *Store {
+	return &Store{
 		Logger: logger,
 		tx:     tx,
 	}
 }
 
 // VerifyOwnership check if the given user is the owner of the given project.
-func (s *PermissionStore) VerifyOwnership(projectId string, user string) error {
+func (s *Store) VerifyOwnership(projectId string, user string) error {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE id=$1 AND owner=$2", projectTable)
 
 	s.LogQuery(query, projectId, user)
@@ -46,7 +46,7 @@ func (s *PermissionStore) VerifyOwnership(projectId string, user string) error {
 }
 
 // VerifyMembershipProject checks if "user" is a member of the project "id".
-func (s *PermissionStore) VerifyMembershipProject(projectId string, user string) error {
+func (s *Store) VerifyMembershipProject(projectId string, user string) error {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE id=$1 AND $2=ANY(users)", projectTable)
 
 	s.LogQuery(query, projectId, user)
@@ -65,7 +65,7 @@ func (s *PermissionStore) VerifyMembershipProject(projectId string, user string)
 }
 
 // VerifyMembershipTask checks if "user" is a member of the project, where the given task with "id" is in.
-func (s *PermissionStore) VerifyMembershipTask(taskId string, user string) error {
+func (s *Store) VerifyMembershipTask(taskId string, user string) error {
 	query := fmt.Sprintf("SELECT * FROM %s p, %s t WHERE t.project_id = p.id AND t.id = $1 AND $2=ANY(p.users);", projectTable, taskTable)
 
 	s.LogQuery(query, taskId, user)
@@ -84,7 +84,7 @@ func (s *PermissionStore) VerifyMembershipTask(taskId string, user string) error
 }
 
 // VerifyMembershipTask checks if "user" is a member of the projects, where the given tasks are in.
-func (s *PermissionStore) VerifyMembershipTasks(taskIds []string, user string) error {
+func (s *Store) VerifyMembershipTasks(taskIds []string, user string) error {
 	query := fmt.Sprintf("SELECT COUNT(*) FROM %s p, %s t WHERE t.project_id = p.id AND t.id = ANY($1) AND $2=ANY(p.users);", projectTable, taskTable)
 
 	s.LogQuery(query, pq.Array(taskIds), user)
@@ -113,7 +113,7 @@ func (s *PermissionStore) VerifyMembershipTasks(taskIds []string, user string) e
 }
 
 // VerifyCanUnassign returns an error when the given user is not allowed to unassign the current user of the given task.
-func (s *PermissionStore) VerifyCanUnassign(taskId string, user string) error {
+func (s *Store) VerifyCanUnassign(taskId string, user string) error {
 	// Get task only if the given user is assigned OR the given user is the owner of the project.
 	query := fmt.Sprintf("SELECT * FROM %s t WHERE t.id=$1 AND (t.assigned_user=$2 OR (SELECT p.owner FROM projects p WHERE p.id = t.project_id)=$2);", taskTable)
 
@@ -133,7 +133,7 @@ func (s *PermissionStore) VerifyCanUnassign(taskId string, user string) error {
 }
 
 // AssignmentInProjectNeeded determines whether a user needs to be assigned to tasks in this project.
-func (s *PermissionStore) AssignmentInProjectNeeded(projectId string) (bool, error) {
+func (s *Store) AssignmentInProjectNeeded(projectId string) (bool, error) {
 	query := fmt.Sprintf("SELECT ARRAY_LENGTH(users, 1) FROM %s WHERE id=$1;", projectTable)
 
 	s.LogQuery(query, projectId)
@@ -158,7 +158,7 @@ func (s *PermissionStore) AssignmentInProjectNeeded(projectId string) (bool, err
 }
 
 // AssignmentInTaskNeeded determines whether a user needs to be assigned to this task.
-func (s *PermissionStore) AssignmentInTaskNeeded(taskId string) (bool, error) {
+func (s *Store) AssignmentInTaskNeeded(taskId string) (bool, error) {
 	query := fmt.Sprintf("SELECT ARRAY_LENGTH(p.users, 1) FROM %s p, %s t WHERE $1 = t.id AND t.project_id = p.id;", projectTable, taskTable)
 
 	s.LogQuery(query, taskId)

@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-// Struct for authentication
+// Token is used for authentication
 type Token struct {
 	ValidUntil int64  `json:"valid_until"`
 	User       string `json:"user"`

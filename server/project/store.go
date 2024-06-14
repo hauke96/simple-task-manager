@@ -25,16 +25,16 @@ type projectRow struct {
 	josmDataSource JosmDataSource
 }
 
-type storePg struct {
+type store struct {
 	*util.Logger
 	tx           *sql.Tx
 	table        string
-	taskStore    *task.StorePg
-	commentStore *comment.CommentStore
+	taskStore    *task.Store
+	commentStore *comment.Store
 }
 
-func getStore(tx *sql.Tx, logger *util.Logger, taskStore *task.StorePg, commentStore *comment.CommentStore) *storePg {
-	return &storePg{
+func getStore(tx *sql.Tx, logger *util.Logger, taskStore *task.Store, commentStore *comment.Store) *store {
+	return &store{
 		Logger:       logger,
 		tx:           tx,
 		table:        "projects",
@@ -43,7 +43,7 @@ func getStore(tx *sql.Tx, logger *util.Logger, taskStore *task.StorePg, commentS
 	}
 }
 
-func (s *storePg) getAllProjectsOfUser(userId string) ([]*Project, error) {
+func (s *store) getAllProjectsOfUser(userId string) ([]*Project, error) {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE $1 = ANY(users)", s.table)
 
 	s.LogQuery(query, userId)
@@ -86,18 +86,18 @@ func (s *storePg) getAllProjectsOfUser(userId string) ([]*Project, error) {
 	return projects, nil
 }
 
-func (s *storePg) getProject(projectId string) (*Project, error) {
+func (s *store) getProject(projectId string) (*Project, error) {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE id=$1", s.table)
 	return s.execQuery(query, projectId)
 }
 
-func (s *storePg) getProjectOfTask(taskId string) (*Project, error) {
+func (s *store) getProjectOfTask(taskId string) (*Project, error) {
 	query := fmt.Sprintf("SELECT p.* FROM %s p, %s t WHERE $1 = t.id AND t.project_id = p.id", s.table, s.taskStore.Table)
 	return s.execQuery(query, taskId)
 }
 
 // addProject adds the given project draft and assigns an ID to the project.
-func (s *storePg) addProject(draft *ProjectDraftDto, creationDate time.Time) (*Project, error) {
+func (s *store) addProject(draft *DraftDto, creationDate time.Time) (*Project, error) {
 	commentListId, err := s.commentStore.NewCommentList()
 	if err != nil {
 		return nil, err
@@ -118,7 +118,7 @@ func (s *storePg) addProject(draft *ProjectDraftDto, creationDate time.Time) (*P
 	return project, nil
 }
 
-func (s *storePg) addUser(projectId string, userIdToAdd string) (*Project, error) {
+func (s *store) addUser(projectId string, userIdToAdd string) (*Project, error) {
 	originalProject, err := s.getProject(projectId)
 	if err != nil {
 		s.Err("error getting project with ID '%s'", projectId)
@@ -131,7 +131,7 @@ func (s *storePg) addUser(projectId string, userIdToAdd string) (*Project, error
 	return s.execQuery(query, pq.Array(newUsers), projectId)
 }
 
-func (s *storePg) removeUser(projectId string, userIdToRemove string) (*Project, error) {
+func (s *store) removeUser(projectId string, userIdToRemove string) (*Project, error) {
 	originalProject, err := s.getProject(projectId)
 	if err != nil {
 		s.Err("error getting project with ID '%s'", projectId)
@@ -149,19 +149,19 @@ func (s *storePg) removeUser(projectId string, userIdToRemove string) (*Project,
 	return s.execQuery(query, pq.Array(remainingUsers), projectId)
 }
 
-func (s *storePg) delete(projectId string) error {
+func (s *store) delete(projectId string) error {
 	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", s.table)
 
 	_, err := s.tx.Exec(query, projectId)
 	return err
 }
 
-func (s *storePg) update(projectId string, newName string, newDescription string, newJosmDataSource JosmDataSource) (*Project, error) {
+func (s *store) update(projectId string, newName string, newDescription string, newJosmDataSource JosmDataSource) (*Project, error) {
 	query := fmt.Sprintf("UPDATE %s SET name=$2, description=$3, josm_data_source=$4 WHERE id=$1 RETURNING *", s.table)
 	return s.execQuery(query, projectId, newName, newDescription, newJosmDataSource)
 }
 
-func (s *storePg) getCommentListId(projectId string) (string, error) {
+func (s *store) getCommentListId(projectId string) (string, error) {
 	query := fmt.Sprintf("SELECT comment_list_id FROM %s WHERE id = $1;", s.table)
 	s.LogQuery(query, projectId)
 
@@ -184,7 +184,7 @@ func (s *storePg) getCommentListId(projectId string) (string, error) {
 	return commentListId, nil
 }
 
-func (s *storePg) execQueryWithoutTasks(query string, params ...interface{}) (*Project, *projectRow, error) {
+func (s *store) execQueryWithoutTasks(query string, params ...interface{}) (*Project, *projectRow, error) {
 	rows, err := s.tx.Query(query, params...)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "could not run query")
@@ -208,7 +208,7 @@ func (s *storePg) execQueryWithoutTasks(query string, params ...interface{}) (*P
 }
 
 // execQuery executed the given query, turns the result into a Project object and closes the query.
-func (s *storePg) execQuery(query string, params ...interface{}) (*Project, error) {
+func (s *store) execQuery(query string, params ...interface{}) (*Project, error) {
 	s.LogQuery(query, params...)
 
 	project, projectRow, err := s.execQueryWithoutTasks(query, params...)
@@ -230,7 +230,7 @@ func (s *storePg) execQuery(query string, params ...interface{}) (*Project, erro
 }
 
 // rowToProject turns the current row into a Project object. This does not close the row.
-func (s *storePg) rowToProject(rows *sql.Rows) (*Project, *projectRow, error) {
+func (s *store) rowToProject(rows *sql.Rows) (*Project, *projectRow, error) {
 	var row projectRow
 	err := rows.Scan(&row.id, &row.name, &row.owner, &row.description, pq.Array(&row.users), &row.creationDate, &row.commentListId, &row.josmDataSource)
 	if err != nil {
@@ -254,7 +254,7 @@ func (s *storePg) rowToProject(rows *sql.Rows) (*Project, *projectRow, error) {
 	return &result, &row, nil
 }
 
-func (s *storePg) addTasksToProject(project *Project) error {
+func (s *store) addTasksToProject(project *Project) error {
 	tasks, err := s.taskStore.GetAllTasksOfProject(project.Id)
 	if err != nil {
 		return err
@@ -266,7 +266,7 @@ func (s *storePg) addTasksToProject(project *Project) error {
 	return nil
 }
 
-func (s *storePg) addCommentsToProject(project *Project, projectRow *projectRow) error {
+func (s *store) addCommentsToProject(project *Project, projectRow *projectRow) error {
 	comments, err := s.commentStore.GetComments(projectRow.commentListId)
 	if err != nil {
 		return err

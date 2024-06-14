@@ -70,7 +70,7 @@ func authenticatedTransactionHandler(handler func(r *http.Request, context *Cont
 	}
 }
 
-func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request, token *oauth2.Token, websocketSender *websocket.WebsocketSender)) func(http.ResponseWriter, *http.Request) {
+func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request, token *oauth2.Token, websocketSender *websocket.Sender)) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		logger := util.NewLogger()
 

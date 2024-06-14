@@ -11,15 +11,15 @@ import (
 	"strings"
 )
 
-type TaskService struct {
+type Service struct {
 	*util.Logger
-	store           *StorePg
-	permissionStore *permission.PermissionStore
-	commentService  *comment.CommentService
+	store           *Store
+	permissionStore *permission.Store
+	commentService  *comment.Service
 }
 
-func Init(tx *sql.Tx, logger *util.Logger, permissionStore *permission.PermissionStore, commentService *comment.CommentService, commentStore *comment.CommentStore) *TaskService {
-	return &TaskService{
+func Init(tx *sql.Tx, logger *util.Logger, permissionStore *permission.Store, commentService *comment.Service, commentStore *comment.Store) *Service {
+	return &Service{
 		Logger:          logger,
 		store:           GetStore(tx, logger, commentStore),
 		permissionStore: permissionStore,
@@ -27,7 +27,7 @@ func Init(tx *sql.Tx, logger *util.Logger, permissionStore *permission.Permissio
 	}
 }
 
-func (s *TaskService) GetTask(taskId string) (*Task, error) {
+func (s *Service) GetTask(taskId string) (*Task, error) {
 	task, err := s.store.getTask(taskId)
 	if err != nil {
 		return nil, err
@@ -37,7 +37,7 @@ func (s *TaskService) GetTask(taskId string) (*Task, error) {
 }
 
 // Simply gets the tasks for the given project
-func (s *TaskService) GetTasks(projectId string) ([]*Task, error) {
+func (s *Service) GetTasks(projectId string) ([]*Task, error) {
 	tasks, err := s.store.GetAllTasksOfProject(projectId)
 	if err != nil {
 		return nil, err
@@ -47,7 +47,7 @@ func (s *TaskService) GetTasks(projectId string) ([]*Task, error) {
 }
 
 // AddTasks sets the ID of the tasks and adds them to the storage.
-func (s *TaskService) AddTasks(newTasks []TaskDraftDto, projectId string) ([]*Task, error) {
+func (s *Service) AddTasks(newTasks []DraftDto, projectId string) ([]*Task, error) {
 	for _, t := range newTasks {
 		if t.MaxProcessPoints < 1 {
 			return nil, errors.New(fmt.Sprintf("Maximum process points must be at least 1 (%d)", t.MaxProcessPoints))
@@ -83,7 +83,7 @@ func (s *TaskService) AddTasks(newTasks []TaskDraftDto, projectId string) ([]*Ta
 	return tasks, nil
 }
 
-func (s *TaskService) AssignUser(taskId, userId string) (*Task, error) {
+func (s *Service) AssignUser(taskId, userId string) (*Task, error) {
 	task, err := s.store.getTask(taskId)
 	if err != nil {
 		return nil, err
@@ -103,7 +103,7 @@ func (s *TaskService) AssignUser(taskId, userId string) (*Task, error) {
 	return task, nil
 }
 
-func (s *TaskService) UnassignUser(taskId, requestingUserId string) (*Task, error) {
+func (s *Service) UnassignUser(taskId, requestingUserId string) (*Task, error) {
 	err := s.permissionStore.VerifyCanUnassign(taskId, requestingUserId)
 	if err != nil {
 		return nil, err
@@ -120,7 +120,7 @@ func (s *TaskService) UnassignUser(taskId, requestingUserId string) (*Task, erro
 
 // SetProcessPoints updates the process points on task "id". When "needsAssignedUser" is true on the project, this
 // function also checks, whether the assigned user is equal to the requesting User.
-func (s *TaskService) SetProcessPoints(taskId string, newPoints int, requestingUserId string) (*Task, error) {
+func (s *Service) SetProcessPoints(taskId string, newPoints int, requestingUserId string) (*Task, error) {
 	needsAssignment, err := s.permissionStore.AssignmentInTaskNeeded(taskId)
 	if err != nil {
 		return nil, err
@@ -161,7 +161,7 @@ func (s *TaskService) SetProcessPoints(taskId string, newPoints int, requestingU
 // WARNING: This method, unfortunately, doesn't check the task relation to project, so there might be broken references
 // left (from a project to a not existing task). So: USE WITH CARE!!!
 // This relates to the github issue https://github.com/hauke96/simple-task-manager/issues/33
-func (s *TaskService) Delete(taskIds []string, requestingUserId string) error {
+func (s *Service) Delete(taskIds []string, requestingUserId string) error {
 	err := s.permissionStore.VerifyMembershipTasks(taskIds, requestingUserId)
 	if err != nil {
 		return err
@@ -176,7 +176,7 @@ func (s *TaskService) Delete(taskIds []string, requestingUserId string) error {
 	return nil
 }
 
-func (s *TaskService) AddComment(taskId string, draftDto *comment.CommentDraftDto, authorId string) error {
+func (s *Service) AddComment(taskId string, draftDto *comment.DraftDto, authorId string) error {
 	commentListId, err := s.store.getCommentListId(taskId)
 	if err != nil {
 		return err

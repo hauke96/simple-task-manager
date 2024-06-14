@@ -18,9 +18,9 @@ import (
 
 var (
 	tx          *sql.Tx
-	s           *ProjectService
-	taskService *task.TaskService
-	h           *test.TestHelper
+	s           *Service
+	taskService *task.Service
+	h           *test.Helper
 )
 
 func TestMain(m *testing.M) {
@@ -157,18 +157,18 @@ func TestGetProjectByTask(t *testing.T) {
 func TestAddWithTasks(t *testing.T) {
 	h.Run(t, func() error {
 		user := "Jack"
-		p := ProjectDraftDto{
+		p := DraftDto{
 			Name:  "Test name",
 			Users: []string{user, "user2"},
 			Owner: user,
 		}
 
-		t := task.TaskDraftDto{
+		t := task.DraftDto{
 			MaxProcessPoints: 100,
 			Geometry:         "{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[0,0],[1,0]]]},\"properties\":null}",
 		}
 
-		newProject, err := s.AddProjectWithTasks(&p, []task.TaskDraftDto{t})
+		newProject, err := s.AddProjectWithTasks(&p, []task.DraftDto{t})
 		if err != nil {
 			return errors.New(fmt.Sprintf("Adding should work: %s", err.Error()))
 		}
@@ -213,7 +213,7 @@ func TestAddWithTasks(t *testing.T) {
 func TestAddAndGetProject(t *testing.T) {
 	h.Run(t, func() error {
 		user := "Jack"
-		p := ProjectDraftDto{
+		p := DraftDto{
 			Name:  "Test name",
 			Users: []string{user, "user2"},
 			Owner: user,
@@ -246,7 +246,7 @@ func TestAddAndGetProject(t *testing.T) {
 func TestAddProjectWithInvalidParameters(t *testing.T) {
 	h.Run(t, func() error {
 		// Owner must be set
-		p := ProjectDraftDto{
+		p := DraftDto{
 			Owner: "",
 		}
 		_, err := s.AddProject(&p)
@@ -255,7 +255,7 @@ func TestAddProjectWithInvalidParameters(t *testing.T) {
 		}
 
 		// Owner must be in users array
-		p = ProjectDraftDto{
+		p = DraftDto{
 			Owner: "foo",
 			Users: []string{"bar"},
 		}
@@ -265,7 +265,7 @@ func TestAddProjectWithInvalidParameters(t *testing.T) {
 		}
 
 		// Name must be set
-		p = ProjectDraftDto{
+		p = DraftDto{
 			Owner: "foo",
 			Users: []string{"foo"},
 			Name:  "",
@@ -277,7 +277,7 @@ func TestAddProjectWithInvalidParameters(t *testing.T) {
 
 		// Too long description not allowed
 		config.Conf.MaxDescriptionLength = 10 // lower the border for test purposes
-		p = ProjectDraftDto{
+		p = DraftDto{
 			Owner:       "foo",
 			Users:       []string{"foo"},
 			Name:        "some name",
