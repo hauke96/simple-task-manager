@@ -25,10 +25,9 @@ func Init_v2_9(router *mux.Router) (*mux.Router, string) {
 	r.HandleFunc("/projects", authenticatedTransactionHandler(addProject_v2_9)).Methods(http.MethodPost)
 	r.HandleFunc("/projects/{id}", authenticatedTransactionHandler(getProject_v2_9)).Methods(http.MethodGet)
 	r.HandleFunc("/projects/{id}", authenticatedTransactionHandler(deleteProjects_v2_9)).Methods(http.MethodDelete)
+	r.HandleFunc("/projects/{id}", authenticatedTransactionHandler(updateProject_v2_9)).Methods(http.MethodPut)
 	r.HandleFunc("/projects/{id}/export", authenticatedTransactionHandler(exportProject_v2_9)).Methods(http.MethodGet)
 	r.HandleFunc("/projects/import", authenticatedTransactionHandler(importProject_v2_9)).Methods(http.MethodPost)
-	r.HandleFunc("/projects/{id}/name", authenticatedTransactionHandler(updateProjectName_v2_9)).Methods(http.MethodPut)
-	r.HandleFunc("/projects/{id}/description", authenticatedTransactionHandler(updateProjectDescription_v2_9)).Methods(http.MethodPut)
 	r.HandleFunc("/projects/{id}/users", authenticatedTransactionHandler(addUserToProject_v2_9)).Methods(http.MethodPost)
 	r.HandleFunc("/projects/{id}/users", authenticatedTransactionHandler(leaveProject_v2_9)).Methods(http.MethodDelete)
 	r.HandleFunc("/projects/{id}/users/{uid}", authenticatedTransactionHandler(removeUser_v2_9)).Methods(http.MethodDelete)
@@ -326,17 +325,17 @@ func importProject_v2_9(r *http.Request, context *Context) *ApiResponse {
 	return JsonResponse(addedProject)
 }
 
-// Update project name
-// @Summary Update project name.
-// @Description Updates the projects name/title. The requesting user must be the owner of the project.
+// Update project name, description and JOSM data source.
+// @Summary Update project name, description and JOSM data source.
+// @Description Updates the projects name/title, description and the JOSM data source. The requesting user must be the owner of the project.
 // @Version 2.9
 // @Tags projects
 // @Produce json
 // @Param id path string true "ID of the project"
-// @Param new_name body string true "The new name of the project"
+// @Param project body api.ProjectUpdateDto true "Update project object"
 // @Success 200 {object} project.Project
-// @Router /v2.9/projects/{id}/name [PUT]
-func updateProjectName_v2_9(r *http.Request, context *Context) *ApiResponse {
+// @Router /v2.9/projects/{id} [PUT]
+func updateProject_v2_9(r *http.Request, context *Context) *ApiResponse {
 	vars := mux.Vars(r)
 	projectId, ok := vars["id"]
 	if !ok {
@@ -345,51 +344,23 @@ func updateProjectName_v2_9(r *http.Request, context *Context) *ApiResponse {
 
 	bodyBytes, err := io.ReadAll(r.Body)
 	if err != nil {
-		return InternalServerError(errors.Wrap(err, "error reading request body"))
+		return BadRequestError(errors.Wrap(err, "error reading request body"))
 	}
 
-	updatedProject, err := context.ProjectService.UpdateName(projectId, string(bodyBytes), context.Token.UID)
+	var dto project.ProjectUpdateDto
+	err = json.Unmarshal(bodyBytes, &dto)
+	if err != nil {
+		return InternalServerError(errors.Wrap(err, "error unmarshalling project update"))
+	}
+
+	updatedProject, err := context.ProjectService.Update(projectId, dto.Name, dto.Description, dto.JosmDataSource, context.Token.UID)
 	if err != nil {
 		return InternalServerError(err)
 	}
 
 	sendUpdate_v2_9(context.WebsocketSender, updatedProject)
 
-	context.Log("Successfully updated name of project %s", projectId)
-
-	return JsonResponse(updatedProject)
-}
-
-// Update project description
-// @Summary Update project description.
-// @Description Update the projects description. The requesting user must be the owner of the project.
-// @Version 2.9
-// @Tags projects
-// @Produce json
-// @Param id path string true "ID of the project"
-// @Param new_desc body string true "The new description of the project"
-// @Success 200 {object} project.Project
-// @Router /v2.9/projects/{id}/description [PUT]
-func updateProjectDescription_v2_9(r *http.Request, context *Context) *ApiResponse {
-	vars := mux.Vars(r)
-	projectId, ok := vars["id"]
-	if !ok {
-		return BadRequestError(errors.New("url segment 'id' not set"))
-	}
-
-	bodyBytes, err := io.ReadAll(r.Body)
-	if err != nil {
-		return InternalServerError(errors.Wrap(err, "error reading request body"))
-	}
-
-	updatedProject, err := context.ProjectService.UpdateDescription(projectId, string(bodyBytes), context.Token.UID)
-	if err != nil {
-		return InternalServerError(err)
-	}
-
-	sendUpdate_v2_9(context.WebsocketSender, updatedProject)
-
-	context.Log("Successfully updated description of project %s", projectId)
+	context.Log("Successfully updated project %s", projectId)
 
 	return JsonResponse(updatedProject)
 }

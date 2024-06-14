@@ -156,14 +156,9 @@ func (s *storePg) delete(projectId string) error {
 	return err
 }
 
-func (s *storePg) updateName(projectId string, newName string) (*Project, error) {
-	query := fmt.Sprintf("UPDATE %s SET name=$1 WHERE id=$2 RETURNING *", s.table)
-	return s.execQuery(query, newName, projectId)
-}
-
-func (s *storePg) updateDescription(projectId string, newDescription string) (*Project, error) {
-	query := fmt.Sprintf("UPDATE %s SET description=$1 WHERE id=$2 RETURNING *", s.table)
-	return s.execQuery(query, newDescription, projectId)
+func (s *storePg) update(projectId string, newName string, newDescription string, newJosmDataSource JosmDataSource) (*Project, error) {
+	query := fmt.Sprintf("UPDATE %s SET name=$2, description=$3, josm_data_source=$4 WHERE id=$1 RETURNING *", s.table)
+	return s.execQuery(query, projectId, newName, newDescription, newJosmDataSource)
 }
 
 func (s *storePg) getCommentListId(projectId string) (string, error) {

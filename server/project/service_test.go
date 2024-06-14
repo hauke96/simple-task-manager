@@ -562,7 +562,7 @@ func TestUpdateName(t *testing.T) {
 		}
 
 		newName := "flubby dubby"
-		project, err := s.UpdateName("1", newName, "Peter")
+		project, err := s.Update("1", newName, "Peter")
 		if err != nil {
 			return errors.New(fmt.Sprintf("Error updating name wasn't expected: %s", err))
 		}
@@ -576,7 +576,7 @@ func TestUpdateName(t *testing.T) {
 		// With newline
 
 		newNewlineName := "foo\nbar\nwhatever"
-		project, err = s.UpdateName("1", newNewlineName, "Peter")
+		project, err = s.Update("1", newNewlineName, "Peter")
 		if err != nil {
 			return errors.New(fmt.Sprintf("Error updating name wasn't expected: %s", err))
 		}
@@ -586,14 +586,14 @@ func TestUpdateName(t *testing.T) {
 
 		// With non-owner (Maria)
 
-		_, err = s.UpdateName("1", "skfgkf", "Maria")
+		_, err = s.Update("1", "skfgkf", "Maria")
 		if err == nil {
 			return errors.New("Updating name should not be possible for non-owner user Maria")
 		}
 
 		// Empty name
 
-		_, err = s.UpdateName("1", "  ", "Peter")
+		_, err = s.Update("1", "  ", "Peter")
 		if err == nil {
 			return errors.New("Updating name should not be possible with empty name")
 		}

@@ -1,7 +1,7 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, mergeMap, tap } from 'rxjs/operators';
-import { Project, ProjectAddDto, ProjectDraftDto, ProjectDto, ProjectExport } from './project.material';
+import { Project, ProjectAddDto, ProjectDraftDto, ProjectDto, ProjectExport, ProjectUpdateDto } from './project.material';
 import { Task, TaskDraftDto, TaskDto } from './../task/task.material';
 import { TaskService } from './../task/task.service';
 import { HttpClient } from '@angular/common/http';
@@ -135,26 +135,20 @@ export class ProjectService {
       );
   }
 
-  public updateName(projectId: string, newName: string): Observable<Project> {
-    return this.http.put<ProjectDto>(environment.url_projects_name.replace('{id}', projectId), newName)
+  public update(projectId: string, newName: string, newDescription: string, newJosmDataSource: JosmDataSource): Observable<Project> {
+    const dto = new ProjectUpdateDto(newName, newDescription, newJosmDataSource);
+    return this.http.put<ProjectDto>(environment.url_projects_update.replace('{id}', projectId), JSON.stringify(dto))
       .pipe(
-        mergeMap(dto => this.toProject(dto)),
-        tap(p => this.projectChanged.emit(p))
-      );
-  }
-
-  public updateDescription(projectId: string, newDescription: string): Observable<Project> {
-    return this.http.put<ProjectDto>(environment.url_projects_description.replace('{id}', projectId), newDescription)
-      .pipe(
-        mergeMap(dto => this.toProject(dto)),
+        mergeMap(projectDto => this.toProject(projectDto)),
         tap(p => this.projectChanged.emit(p))
       );
   }
 
   public addComment(projectId: string, comment: string): Observable<Project> {
-    return this.http.post<ProjectDto>(environment.url_projects_comments.replace('{id}', projectId), JSON.stringify(new CommentDraftDto(comment)))
+    const dto = new CommentDraftDto(comment);
+    return this.http.post<ProjectDto>(environment.url_projects_comments.replace('{id}', projectId), JSON.stringify(dto))
       .pipe(
-        mergeMap(dto => this.toProject(dto)),
+        mergeMap(projectDto => this.toProject(projectDto)),
         tap(p => this.projectChanged.emit(p))
       );
   }

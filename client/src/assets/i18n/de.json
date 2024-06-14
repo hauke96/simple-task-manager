@@ -66,7 +66,7 @@
     "successfully-updated": "Projekt wurde erfolgreich aktualisiert",
     "could-not-remove-project": "Projekt konnte nicht gelöscht werden",
     "could-not-leave-project": "Projekt konnte nicht verlassen werden",
-    "could-not-update-project": "Titel/Beschreibung konnte nicht aksualisiert werden",
+    "could-not-update-project": "Projekt konnte nicht aktualisiert werden",
     "could-not-export-project": "Projekt konnte nicht exportiert werden"
   },
   "project-creation": {

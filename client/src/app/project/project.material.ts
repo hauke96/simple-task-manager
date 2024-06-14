@@ -19,6 +19,14 @@ export class ProjectDraftDto {
   }
 }
 
+export class ProjectUpdateDto {
+  constructor(public name: string,
+              public description: string,
+              public josmDataSource: JosmDataSource
+  ) {
+  }
+}
+
 export class ProjectDto {
   constructor(public id: string,
               public name: string,

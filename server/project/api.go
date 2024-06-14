@@ -14,3 +14,9 @@ type ProjectDraftDto struct {
 	Owner          string         `json:"owner"`          // The user-ID who created this project. Must not be NULL or empty.
 	JosmDataSource JosmDataSource `json:"josmDataSource"` // The source JOSM should load the data from when opening a task in JOSM.
 }
+
+type ProjectUpdateDto struct {
+	Name           string         `json:"name"`           // Name of the project. Must not be NULL or empty.
+	Description    string         `json:"description"`    // Description of the project. Must not be NULL but cam be empty.
+	JosmDataSource JosmDataSource `json:"josmDataSource"` // The source JOSM should load the data from when opening a task in JOSM.
+}

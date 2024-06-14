@@ -4,9 +4,8 @@ import { Router } from '@angular/router';
 import { CurrentUserService } from '../../user/current-user.service';
 import { NotificationService } from '../../common/services/notification.service';
 import { User } from '../../user/user.material';
-import { forkJoin, Observable } from 'rxjs';
-import { Project } from '../project.material';
 import { TranslateService } from '@ngx-translate/core';
+import { JosmDataSource } from '../../common/entities/josm-data-source';
 
 @Component({
   selector: 'app-project-settings',
@@ -18,10 +17,10 @@ export class ProjectSettingsComponent implements OnInit {
   @Input() projectOwner: User;
   @Input() projectName: string;
   @Input() projectDescription: string;
-  @Input() projectJosmDataSource: string;
+  @Input() projectJosmDataSource: JosmDataSource;
 
   public newProjectName: string;
-  public newJosmDataSource: string;
+  public newJosmDataSource: JosmDataSource;
   public newProjectDescription: string;
 
   public requestConfirmation: boolean;
@@ -72,57 +71,49 @@ export class ProjectSettingsComponent implements OnInit {
 
   private deleteProject(): void {
     this.projectService.deleteProject(this.projectId)
-      .subscribe(() => {
-        this.requestConfirmation = false;
-        this.notificationService.addInfo(this.translationService.instant('project-settings.successfully-removed'));
-        this.router.navigate(['/dashboard']);
-      }, err => {
-        console.error(err);
-        this.notificationService.addError(this.translationService.instant('project-settings.could-not-remove-project'));
-        this.requestConfirmation = false;
+      .subscribe({
+        next: () => {
+          this.requestConfirmation = false;
+          this.notificationService.addInfo(this.translationService.instant('project-settings.successfully-removed'));
+          void this.router.navigate(['/dashboard']);
+        },
+        error: err => {
+          console.error(err);
+          this.notificationService.addError(this.translationService.instant('project-settings.could-not-remove-project'));
+          this.requestConfirmation = false;
+        }
       });
   }
 
   private leaveProject(): void {
     this.projectService.leaveProject(this.projectId)
-      .subscribe(() => {
-        this.requestConfirmation = false;
-        this.router.navigate(['/dashboard']);
-      }, err => {
-        console.error(err);
-        this.notificationService.addError(this.translationService.instant('project-settings.could-not-leave-project'));
-        this.requestConfirmation = false;
+      .subscribe({
+        next: () => {
+          this.requestConfirmation = false;
+          void this.router.navigate(['/dashboard']);
+        }, error: err => {
+          console.error(err);
+          this.notificationService.addError(this.translationService.instant('project-settings.could-not-leave-project'));
+          this.requestConfirmation = false;
+        }
       });
   }
 
   onSaveButtonClicked(): void {
-    const calls: Observable<Project>[] = [];
-
-    // TODO merge these calls into one
-    if (this.projectName !== this.newProjectName) {
-      calls.push(this.projectService.updateName(this.projectId, this.newProjectName));
-    }
-    if (this.projectDescription !== this.newProjectDescription) {
-      calls.push(this.projectService.updateDescription(this.projectId, this.newProjectDescription));
-    }
-    if (this.projectJosmDataSource !== this.newJosmDataSource) {
-      // calls.push(this.projectService.updateJosmDataSource(this.projectId, this.newProjectDescription));
-    }
-
-    forkJoin(calls).subscribe(
-      () => {
+    this.projectService.update(this.projectId, this.newProjectName, this.newProjectDescription, this.newJosmDataSource).subscribe({
+      next: () => {
         this.notificationService.addInfo(this.translationService.instant('project-settings.successfully-updated'));
       },
-      e => {
+      error: e => {
         console.error(e);
         this.notificationService.addError(this.translationService.instant('project-settings.could-not-update-project'));
       }
-    );
+    });
   }
 
   onExportButtonClicked(): void {
-    this.projectService.getProjectExport(this.projectId).subscribe(
-      projectExport => {
+    this.projectService.getProjectExport(this.projectId).subscribe({
+      next: projectExport => {
         const element = document.createElement('a');
         element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(projectExport)));
         element.setAttribute('download', 'stm-project-export.json');
@@ -134,10 +125,10 @@ export class ProjectSettingsComponent implements OnInit {
 
         document.body.removeChild(element);
       },
-      e => {
+      error: e => {
         console.error(e);
         this.notificationService.addError(this.translationService.instant('project-settings.could-not-export-project'));
       }
-    );
+    });
   }
 }

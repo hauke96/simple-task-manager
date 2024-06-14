@@ -285,12 +285,13 @@ func (s *ProjectService) DeleteProject(projectId, potentialOwnerId string) error
 	return nil
 }
 
-func (s *ProjectService) UpdateName(projectId string, newName string, requestingUserId string) (*Project, error) {
+func (s *ProjectService) Update(projectId string, newName string, newDescription string, newJosmDataSource JosmDataSource, requestingUserId string) (*Project, error) {
 	err := s.permissionStore.VerifyOwnership(projectId, requestingUserId)
 	if err != nil {
 		return nil, err
 	}
 
+	// Check name
 	lines := strings.Split(newName, "\n")
 	newName = lines[0]
 
@@ -298,40 +299,16 @@ func (s *ProjectService) UpdateName(projectId string, newName string, requesting
 		return nil, errors.New("No name specified")
 	}
 
-	project, err := s.store.updateName(projectId, newName)
-	if err != nil {
-		return nil, err
-	}
-	s.Log("Updated name of project %s to '%s'", project.Id, newName)
-
-	err = s.addTasksAndMetadata(project)
-	if err != nil {
-		s.Err("Unable to add process point data to project %s", project.Id)
-		return nil, err
-	}
-
-	return project, nil
-}
-
-func (s *ProjectService) UpdateDescription(projectId string, newDescription string, requestingUserId string) (*Project, error) {
-	err := s.permissionStore.VerifyOwnership(projectId, requestingUserId)
-	if err != nil {
-		return nil, err
-	}
-
-	if len(strings.TrimSpace(newDescription)) == 0 {
-		return nil, errors.New("No description specified")
-	}
-
+	// Check Description
 	if len(newDescription) > config.Conf.MaxDescriptionLength {
 		return nil, errors.New(fmt.Sprintf("Description too long. Allowed are %d characters but found %d.", config.Conf.MaxDescriptionLength, len(newDescription)))
 	}
 
-	project, err := s.store.updateDescription(projectId, newDescription)
+	project, err := s.store.update(projectId, newName, newDescription, newJosmDataSource)
 	if err != nil {
 		return nil, err
 	}
-	s.Log("Updated description of project %s", project.Id)
+	s.Log("Updated name of project %s to '%s'", project.Id, newName)
 
 	err = s.addTasksAndMetadata(project)
 	if err != nil {
