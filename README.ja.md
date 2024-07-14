@@ -10,7 +10,7 @@
 タスキングマネージャは、複数の人が同じ地域で互いに干渉することなく作業できるようにするアプリケーションです。
 通常、そのような領域は正方形に分割され、一度に1つのマッパーだけが、その範囲を作業します。
 
-<img align="center" style="width: 100%; max-width: 1128px;" src="https://raw.githubusercontent.com/hauke96/simple-task-manager/master/screenshot.png">
+<img align="center" style="width: 100%; max-width: 1128px;" src="https://raw.githubusercontent.com/hauke96/simple-task-manager/master/screenshot.webp">
 
 # どのように動作しますか?
 
