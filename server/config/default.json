@@ -2,5 +2,5 @@
 	"server-url": "http://127.0.0.1",
 	"client-auth-redirect-url": "http://localhost:4200/oauth-landing",
 	"debug-logging": true,
-	"max-task-per-project": 10
+	"max-task-per-project": 100
 }

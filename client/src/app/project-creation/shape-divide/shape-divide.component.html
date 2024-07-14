@@ -1,7 +1,7 @@
 <form #divisionForm="ngForm">
 	<span>{{'project-creation.subdivide-notice' | translate}}</span>
 
-	<div class="hline"></div>
+	<div class="hline-with-mb"></div>
 
 	<div class="form-entry flex-line space-between">
 		<span class="input-field-label">{{'project-creation.shape-size' | translate}}</span>
@@ -22,9 +22,9 @@
 		</select>
 	</div>
 
-	<!-- TODO make this preview button a toggle button -->
 	<button (click)="onPreviewWanted()"
-			[disabled]="!divisionForm.form?.valid">{{'project-creation.preview-button' | translate}}</button>
+			[disabled]="!divisionForm.form?.valid"
+			[class.selected]="previewModeActive">{{'project-creation.preview-button' | translate}}</button>
 	<button (click)="onDivideButtonClicked()" [disabled]="!divisionForm.form?.valid || !canDivideTasks"
 			class="divide-button">{{'project-creation.divide-button' | translate}}</button>
 

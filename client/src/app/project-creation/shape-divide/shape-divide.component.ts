@@ -21,6 +21,7 @@ export class ShapeDivideComponent implements OnInit {
   public gridCellShape: string;
   public previewTasks: TaskDraft[] = [];
   public estimatedResultTooLarge: boolean;
+  public previewModeActive: boolean;
 
   @Input() public selectedTask: TaskDraft;
 
@@ -53,7 +54,16 @@ export class ShapeDivideComponent implements OnInit {
   }
 
   public onPreviewWanted(): void {
-    this.previewClicked.emit(this.previewTasks);
+    this.previewModeActive = !this.previewModeActive;
+    this.notifyPreview();
+  }
+
+  private notifyPreview(): void {
+    if (this.previewModeActive) {
+      this.previewClicked.emit(this.previewTasks);
+    } else {
+      this.previewClicked.emit([]);
+    }
   }
 
   public onDivideButtonClicked(): void {
@@ -184,6 +194,6 @@ export class ShapeDivideComponent implements OnInit {
   public taskDividePropertyChanged(): void {
     this.previewTasks = this.createTaskDrafts() ?? [];
     this.previewTasks.forEach(t => t.geometry.transform('EPSG:4326', 'EPSG:3857'));
-    this.onPreviewWanted();
+    this.notifyPreview();
   }
 }

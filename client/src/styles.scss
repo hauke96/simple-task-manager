@@ -200,6 +200,11 @@ textarea.ng-invalid:not(form) {
 	margin-top: $space-large;
 }
 
+.hline-with-mb {
+	@extend .hline;
+	margin-bottom: $space-large;
+}
+
 // ===========
 // UI elements
 // ===========
