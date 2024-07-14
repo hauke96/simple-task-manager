@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectService } from '../project.service';
 import { TaskService } from '../../task/task.service';
@@ -29,7 +29,8 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
     private taskService: TaskService,
     private currentUserService: CurrentUserService,
     private notificationService: NotificationService,
-    private translationService: TranslateService
+    private translationService: TranslateService,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
     super();
 
@@ -42,6 +43,10 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
     this.unsubscribeLater(
       this.projectService.projectChanged.subscribe(p => {
         this.project = p;
+        // Force change detection for the case that the comments of the current selected task are visible. In this case, changes in the
+        // comments of the selected task are not registered (probably) because changes only happened in the comment component and task
+        // service but not within this component or any above this.
+        this.changeDetectorRef.detectChanges();
       }),
       this.projectService.projectDeleted.subscribe(removedProjectId => {
         if (this.project.id !== removedProjectId) {
