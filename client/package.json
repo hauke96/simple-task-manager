@@ -1,6 +1,6 @@
 {
   "name": "simple-task-manager",
-  "version": "1.6.0-SNAPSHOT.1",
+  "version": "1.6.0-SNAPSHOT.2",
   "scripts": {
     "ng": "ng",
     "dev": "ng serve --watch",
