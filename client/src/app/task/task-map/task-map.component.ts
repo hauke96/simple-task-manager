@@ -25,7 +25,7 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit, OnD
   selectedTask: Task | undefined;
 
   private vectorSource: VectorSource<Feature<Geometry>>;
-  private vectorLayer: VectorLayer<VectorSource<Feature<Geometry>>>;
+  private vectorLayer: VectorLayer<Feature<Geometry>>;
 
   constructor(
     private taskService: TaskService,
