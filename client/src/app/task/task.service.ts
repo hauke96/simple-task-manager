@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
 import { from, Observable, throwError } from 'rxjs';
 import { concatMap, map, mergeMap, tap } from 'rxjs/operators';
-import { Geometry, Polygon } from 'ol/geom';
+import { Geometry, MultiPolygon, Polygon } from 'ol/geom';
 import { Extent } from 'ol/extent';
 import { User } from '../user/user.material';
 import { UserService } from '../user/user.service';
@@ -135,10 +135,12 @@ export class TaskService {
     let coordinateString;
     switch (geometry.getType()) {
       case 'Polygon':
-        const polygon = geometry as Polygon;
-        coordinateString = polygon.getCoordinates()[0].map(c => c[1] + ' ' + c[0]).join(' ');
+        coordinateString = (geometry as Polygon).getCoordinates()[0].map(c => c[1] + ' ' + c[0]).join(' ');
         break;
       case 'MultiPolygon':
+        const multiPolygon = geometry as MultiPolygon;
+        const polygon = multiPolygon.getPolygon(0) as Polygon;
+        coordinateString = polygon.getCoordinates()[0].map(c => c[1] + ' ' + c[0]).join(' ');
         break;
       default:
         return throwError(() => new Error(`Unsupported task geometry type '${geometry.getType()}'`));
@@ -159,7 +161,7 @@ export class TaskService {
       dataUrl = 'http://localhost:8111/import?new_layer=true&url=' + overpassUrl;
     } else {
       // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-      return throwError(() => new Error('Unknown JosmDataSource "' + josmDataSource + '"'));
+      return throwError(() => new Error('Unknown JosmDataSource "' + josmDataSource + '". Please set a valid data source in the project settings.'));
     }
 
     const taskGeometryString = encodeURIComponent(this.getGeometryAsOsm(task));
@@ -265,8 +267,21 @@ export class TaskService {
 
   public getGeometryAsOsm(task: Task): string {
     const taskFeature = task.geometry;
-    const taskPolygon = taskFeature.getGeometry() as Polygon;
-    const coordinates: Coordinate[] = taskPolygon.getCoordinates()[0];
+
+    let coordinates: Coordinate[] = [];
+    let taskGeometry = taskFeature.getGeometry();
+    switch (taskGeometry?.getType()) {
+      case 'Polygon':
+        coordinates = (taskGeometry as Polygon).getCoordinates()[0];
+        break;
+      case 'MultiPolygon':
+        const multiPolygon = taskGeometry as MultiPolygon;
+        const polygon = multiPolygon.getPolygon(0) as Polygon;
+        coordinates = polygon.getCoordinates()[0];
+        break;
+      default:
+        throw new Error(`Unsupported task geometry type '${taskGeometry?.getType()}'`);
+    }
 
     let osm = '<osm version="0.6" generator="simple-task-dashboard">';
 
