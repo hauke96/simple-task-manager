@@ -155,8 +155,9 @@
   "user": {
     "invite-button": "Einladen",
     "remove-button": "Entfernen",
+    "input-placeholder": "Nutzername",
     "already-member": "Nutzer {{user}} ist bereits Mitglied dieses Projektes.",
-    "unable-load-user": "Benutzer-ID für Nutzer {{user}} konnte nicht geladen werden. Der Nutzer muss mindestens einen Changeset oder Hinweis erstellt haben."
+    "unable-load-user": "Benutzer-ID für Nutzer {{user}} konnte nicht geladen werden. Der Nutzer muss mindestens einen Changeset oder Hinweis erstellt oder bearbeitet haben."
   },
   "task-map": {
     "task-done": "FERTIG",

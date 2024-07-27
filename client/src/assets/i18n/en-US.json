@@ -152,8 +152,9 @@
   "user": {
     "invite-button": "Invite",
     "remove-button": "Remove",
+    "input-placeholder": "User name",
     "already-member": "User {{user}} is already a member of this project",
-    "unable-load-user": "Could not load user ID for user {{user}}. The user must have at least one changeset or note."
+    "unable-load-user": "Could not load user ID for user {{user}}. The user must have created at least one changeset or created/edited at least one note."
   },
   "task-map": {
     "task-done": "DONE",

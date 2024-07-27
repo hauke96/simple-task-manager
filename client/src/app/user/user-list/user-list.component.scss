@@ -1,7 +1,13 @@
 @import "../../../styles";
+@import "../../../colors";
 
 .list-item {
 	padding-right: 0px;
+}
+
+.user-without-name {
+	font-style: italic;
+	color: $color-gray-light;
 }
 
 .item-content {

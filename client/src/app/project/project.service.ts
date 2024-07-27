@@ -210,7 +210,13 @@ export class ProjectService {
       p.name,
       p.description,
       p.tasks.map(dto => this.taskService.toTaskWithUsers(dto, userMap)),
-      p.users.map(u => userMap.get(u) as User),
+      p.users.map(u => {
+        let rawUser = userMap.get(u);
+        if (!rawUser) {
+          return new User('???', u, false);
+        }
+        return rawUser as User;
+      }),
       userMap.get(p.owner) as User,
       p.needsAssignment,
       p.creationDate,

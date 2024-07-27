@@ -152,6 +152,7 @@
   "user": {
     "invite-button": "Invitar",
     "remove-button": "Eliminar",
+    "input-placeholder": "User name",
     "already-member": "El usuario {{user}} ya es miembro de este proyecto",
     "unable-load-user": "No se pudo cargar el ID de usuario para el usuario {{user}}. El usuario debe tener al menos un conjunto de cambios o una nota."
   },
