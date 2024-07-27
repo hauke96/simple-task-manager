@@ -59,7 +59,7 @@ export class ShapeDivideComponent implements OnInit {
   }
 
   private notifyPreview(): void {
-    if (this.previewModeActive) {
+    if (this.previewModeActive && this.canDivideTasks) {
       this.previewClicked.emit(this.previewTasks);
     } else {
       this.previewClicked.emit([]);
@@ -146,19 +146,23 @@ export class ShapeDivideComponent implements OnInit {
   }
 
   private estimateCellCount(): number {
-    let scale = 1;
-
+    let areaPerTargetTask = 0;
     switch (this.gridCellShape) {
+      case 'squareGrid':
+        areaPerTargetTask = Math.pow(this.gridCellSize, 2);
+        break;
       case 'hexGrid':
-        // The cell size specified the "radius" of the hexagon
-        scale = 4;
+        areaPerTargetTask = Math.sqrt(3/2) * Math.pow(this.gridCellSize, 2);
         break;
       case 'triangleGrid':
-        scale = 0.5;
+        areaPerTargetTask = 0.5 * Math.pow(this.gridCellSize, 2);
         break;
     }
 
-    console.log('Get area');
+    return this.getAreaOfSelectedTask() / areaPerTargetTask;
+  }
+
+  private getAreaOfSelectedTask() {
     let area = 0;
     switch (this.selectedTask.geometry.getType()) {
       case 'Polygon':
@@ -170,9 +174,7 @@ export class ShapeDivideComponent implements OnInit {
       default:
         throw new Error(`Unsupported task geometry type '${this.selectedTask.geometry.getType()}'`);
     }
-    console.log('Got area', area, area / (Math.pow(this.gridCellSize, 2) * scale));
-
-    return area / (Math.pow(this.gridCellSize, 2) * scale);
+    return area;
   }
 
   private createGrid(extent: BBox.BBox, cellSize: number, options: any): BBox.FeatureCollection | undefined {

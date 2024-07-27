@@ -23,7 +23,7 @@
 	</div>
 
 	<button (click)="onPreviewWanted()"
-			[disabled]="!divisionForm.form?.valid"
+			[disabled]="!divisionForm.form?.valid || !canDivideTasks"
 			[class.selected]="previewModeActive">{{'project-creation.preview-button' | translate}}</button>
 	<button (click)="onDivideButtonClicked()" [disabled]="!divisionForm.form?.valid || !canDivideTasks"
 			class="divide-button">{{'project-creation.divide-button' | translate}}</button>
