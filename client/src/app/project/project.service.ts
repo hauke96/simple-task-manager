@@ -1,8 +1,8 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, mergeMap, tap } from 'rxjs/operators';
-import { Project, ProjectAddDto, ProjectDraftDto, ProjectDto, ProjectExport } from './project.material';
-import { TaskDraftDto } from './../task/task.material';
+import { Project, ProjectAddDto, ProjectDraftDto, ProjectDto, ProjectExport, ProjectUpdateDto } from './project.material';
+import { Task, TaskDraftDto, TaskDto } from './../task/task.material';
 import { TaskService } from './../task/task.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
@@ -15,23 +15,27 @@ import { Feature } from 'ol';
 import GeoJSON from 'ol/format/GeoJSON';
 import { Geometry } from 'ol/geom';
 import { TranslateService } from '@ngx-translate/core';
+import { CommentService } from '../comments/comment.service';
+import { CommentDraftDto } from '../comments/comment.material';
+import { JosmDataSource } from '../common/entities/josm-data-source';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProjectService {
-  public projectAdded: EventEmitter<Project> = new EventEmitter();
-  public projectChanged: EventEmitter<Project> = new EventEmitter();
-  public projectDeleted: EventEmitter<string> = new EventEmitter();
-  public projectUserRemoved: EventEmitter<string> = new EventEmitter();
+  public projectAdded: EventEmitter<Project> = new EventEmitter<Project>();
+  public projectChanged: EventEmitter<Project> = new EventEmitter<Project>();
+  public projectDeleted: EventEmitter<string> = new EventEmitter<string>();
+  public projectUserRemoved: EventEmitter<string> = new EventEmitter<string>();
 
   constructor(
     private taskService: TaskService,
     private userService: UserService,
     private http: HttpClient,
-    private websocketClient: WebsocketClientService,
     private notificationService: NotificationService,
-    private translationService: TranslateService
+    private translationService: TranslateService,
+    private commentService: CommentService,
+    websocketClient: WebsocketClientService
   ) {
     websocketClient.messageReceived.subscribe((m: WebsocketMessage) => {
       this.handleReceivedMessage(m);
@@ -44,28 +48,28 @@ export class ProjectService {
   private handleReceivedMessage(m: WebsocketMessage): void {
     switch (m.type) {
       case WebsocketMessageType.MessageType_ProjectAdded:
-        this.getProject(m.id).subscribe(
-          p => {
+        this.getProject(m.id).subscribe({
+          next: p => {
             this.projectAdded.emit(p);
           },
-          e => {
+          error: e => {
             console.error('Unable to process ' + m.type + ' event for project ' + m.id);
             console.error(e);
           }
-        );
+        });
         break;
       case WebsocketMessageType.MessageType_ProjectUpdated:
-        this.getProject(m.id).subscribe(
-          p => {
+        this.getProject(m.id).subscribe({
+          next: p => {
             // Also call the task service to send task-updates to the components.
             this.taskService.updateTasks(p.tasks);
             this.projectChanged.emit(p);
           },
-          e => {
+          error: e => {
             console.error('Unable to process ' + m.type + ' event for project ' + m.id);
             console.error(e);
           }
-        );
+        });
         break;
       case WebsocketMessageType.MessageType_ProjectUserRemoved:
         this.projectUserRemoved.emit(m.id);
@@ -95,7 +99,8 @@ export class ProjectService {
     projectDescription: string,
     features: Feature<Geometry>[],
     users: string[],
-    owner: string
+    owner: string,
+    josmDataSource: JosmDataSource
   ): Observable<Project> {
     const format = new GeoJSON();
     // We want features to attach attributes and to not be bound to one single Polygon.
@@ -106,7 +111,7 @@ export class ProjectService {
     }
 
     const p = new ProjectAddDto(
-      new ProjectDraftDto(name, projectDescription, users, owner),
+      new ProjectDraftDto(name, projectDescription, users, owner, josmDataSource),
       geometries.map(g => new TaskDraftDto(maxProcessPoints, 0, g))
     );
 
@@ -130,18 +135,20 @@ export class ProjectService {
       );
   }
 
-  public updateName(projectId: string, newName: string): Observable<Project> {
-    return this.http.put<ProjectDto>(environment.url_projects_name.replace('{id}', projectId), newName)
+  public update(projectId: string, newName: string, newDescription: string, newJosmDataSource: JosmDataSource): Observable<Project> {
+    const dto = new ProjectUpdateDto(newName, newDescription, newJosmDataSource);
+    return this.http.put<ProjectDto>(environment.url_projects_update.replace('{id}', projectId), JSON.stringify(dto))
       .pipe(
-        mergeMap(dto => this.toProject(dto)),
+        mergeMap(projectDto => this.toProject(projectDto)),
         tap(p => this.projectChanged.emit(p))
       );
   }
 
-  public updateDescription(projectId: string, newDescription: string): Observable<Project> {
-    return this.http.put<ProjectDto>(environment.url_projects_description.replace('{id}', projectId), newDescription)
+  public addComment(projectId: string, comment: string): Observable<Project> {
+    const dto = new CommentDraftDto(comment);
+    return this.http.post<ProjectDto>(environment.url_projects_comments.replace('{id}', projectId), JSON.stringify(dto))
       .pipe(
-        mergeMap(dto => this.toProject(dto)),
+        mergeMap(projectDto => this.toProject(projectDto)),
         tap(p => this.projectChanged.emit(p))
       );
   }
@@ -170,8 +177,13 @@ export class ProjectService {
     }
 
     const projectUserIDs = dtos.map(p => [p.owner, ...p.users]); // array of arrays
-    let userIDs = ([] as string[]).concat(...projectUserIDs); // array of strings
-    userIDs = [...new Set(userIDs)]; // array of strings without duplicates
+    const commentUserIDs = [
+      ...dtos.flatMap(p => p.comments.map(c => c.authorId)),
+      ...dtos.map(p => p.tasks.flatMap(t => t.comments.map(c => c.authorId))),
+    ];
+    let userIDs = ([] as string[]).concat(...projectUserIDs, ...commentUserIDs)
+      .filter(id => !!id);
+    userIDs = [...new Set(userIDs)]; // Remove duplicates
 
     return this.userService.getUsersByIds(userIDs)
       .pipe(
@@ -179,11 +191,9 @@ export class ProjectService {
           const projects: Observable<Project>[] = [];
 
           for (const p of dtos) {
-            const owner = allUsers.find(u => p.owner === u.uid);
-            const users = allUsers.filter(u => p.users.includes(u.uid));
+            const userMap = new Map(allUsers.map(obj => [obj.uid, obj]));
 
-            // @ts-ignore As we assume that getUsersByIds returns users for all given user IDs
-            projects.push(this.toProjectWithTasks(p, users, owner));
+            projects.push(this.toProjectWithTasks(p, userMap));
           }
 
           return projects;
@@ -194,16 +204,24 @@ export class ProjectService {
   }
 
   // Takes the given project dto, the owner, users, gets the tasks from the server and build an Project object
-  private toProjectWithTasks(p: ProjectDto, users: User[], owner: User): Observable<Project> {
+  private toProjectWithTasks(p: ProjectDto, userMap: Map<string, User>): Observable<Project> {
     return of(new Project(
       p.id,
       p.name,
       p.description,
-      p.tasks.map(dto => this.taskService.toTaskWithUsers(dto, users)),
-      users,
-      owner,
+      p.tasks.map(dto => this.taskService.toTaskWithUsers(dto, userMap)),
+      p.users.map(u => {
+        let rawUser = userMap.get(u);
+        if (!rawUser) {
+          return new User('???', u, false);
+        }
+        return rawUser as User;
+      }),
+      userMap.get(p.owner) as User,
       p.needsAssignment,
       p.creationDate,
+      this.commentService.toCommentsWithUserMap(p.comments, userMap),
+      p.josmDataSource,
       p.totalProcessPoints ?? 0,
       p.doneProcessPoints ?? 0
     ));

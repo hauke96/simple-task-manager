@@ -21,9 +21,9 @@ describe(TaskTitlePipe.name, () => {
   });
 
   it('should return correct title', () => {
-    expect(pipe.transform(new Task('123', '', 0, 0, new Feature()))).toEqual('123');
+    expect(pipe.transform(new Task('123', '', 0, 0, new Feature(), []))).toEqual('123');
     // @ts-ignore
-    expect(pipe.transform(new Task(undefined, 'bar', 0, 0, new Feature()))).toEqual('bar');
-    expect(pipe.transform(new Task('234', 'foo', 0, 0, new Feature()))).toEqual('foo');
+    expect(pipe.transform(new Task(undefined, 'bar', 0, 0, new Feature(), []))).toEqual('bar');
+    expect(pipe.transform(new Task('234', 'foo', 0, 0, new Feature(), []))).toEqual('foo');
   });
 });

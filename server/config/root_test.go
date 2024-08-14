@@ -8,10 +8,10 @@ import (
 )
 
 var (
-	h *test.TestHelper
+	h *test.Helper
 )
 
 func TestMain(m *testing.M) {
-	h = &test.TestHelper{}
+	h = &test.Helper{}
 	m.Run()
 }

@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CurrentUserService } from '../../user/current-user.service';
 import { User } from '../../user/user.material';
 import { EventEmitter } from '@angular/core';
-import { Project } from '../project.material';
+import { Project, ProjectUpdateDto } from '../project.material';
 import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
 import { AppModule } from '../../app.module';
 import { TranslateService } from '@ngx-translate/core';
@@ -177,18 +177,20 @@ describe(ProjectSettingsComponent.name, () => {
   //
 
   it('should call service on update', () => {
-    projectService.updateName = jest.fn().mockReturnValue(of());
-    projectService.updateDescription = jest.fn().mockReturnValue(of());
+    projectService.update = jest.fn().mockReturnValue(of());
 
     component.projectId = '1';
     component.projectName = 'old name';
-    component.newProjectName = 'foo';
     component.projectDescription = 'old description';
+    component.projectJosmDataSource = 'OSM';
+
+    component.newProjectName = 'foo';
     component.newProjectDescription = 'bar';
+    component.newJosmDataSource = 'OVERPASS';
 
     component.onSaveButtonClicked();
 
-    expect(projectService.updateName).toHaveBeenCalledWith('1', 'foo');
-    expect(projectService.updateDescription).toHaveBeenCalledWith('1', 'bar');
+    expect(projectService.update)
+      .toHaveBeenCalledWith('1', component.newProjectName, component.newProjectDescription, component.newJosmDataSource);
   });
 });

@@ -3,17 +3,26 @@
 	<input [(ngModel)]="projectProperties.projectName" required name="nameField">
 </div>
 <div class="form-entry flex-line">
-	<span class="input-field-label">{{'project-creation.max-points-notice' | translate}}</span>
+	<span class="input-field-label">{{'project-creation.max-points-label' | translate}}</span>
 	<input type="number"
 		   [(ngModel)]="projectProperties.maxProcessPoints"
 		   required
 		   name="maxProcessPointsField"
 		   appMinValidator="1">
 </div>
+<div class="form-entry flex-line">
+	<span class="input-field-label">{{'project-creation.josm-data-source-label' | translate}}</span>
+	<select [(ngModel)]="projectProperties.josmDataSource"
+		   required
+		   name="josmDataSourceField">
+		<option value="OSM">OSM</option>
+		<option value="OVERPASS">Overpass</option>
+	</select>
+</div>
 <div class="form-entry">
 	<div class="description-text-area-head">
 		<p>{{'description' | translate}}</p>
-		<span class="font-small">{{descriptionInput.textLength}} / {{config.maxDescriptionLength}}</span>
+		<span>{{descriptionInput.textLength}} / {{config.maxDescriptionLength}}</span>
 	</div>
 	<textarea name="description-text-area" class="description-text-area"
               #descriptionInput

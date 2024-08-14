@@ -3,11 +3,9 @@ import { CurrentUserService } from '../../user/current-user.service';
 import { TaskService } from '../task.service';
 import { Task, TestTaskFeature } from '../task.material';
 import { of, Subject } from 'rxjs';
-import { WebsocketClientService } from '../../common/services/websocket-client.service';
 import { UserService } from '../../user/user.service';
 import { User } from '../../user/user.material';
 import { ShortcutService } from '../../common/services/shortcut.service';
-import { HttpClient } from '@angular/common/http';
 import { MockBuilder, MockedComponentFixture, MockRender } from 'ng-mocks';
 import { AppModule } from '../../app.module';
 import { NotificationService } from '../../common/services/notification.service';
@@ -19,10 +17,8 @@ describe(TaskDetailsComponent.name, () => {
   let fixture: MockedComponentFixture<TaskDetailsComponent>;
   let taskService: TaskService;
   let currentUserService: CurrentUserService;
-  let websocketService: WebsocketClientService;
   let userService: UserService;
   let shortcutService: ShortcutService;
-  let httpClient: HttpClient;
   let notificationService: NotificationService;
   let translationService: TranslateService;
 
@@ -40,9 +36,6 @@ describe(TaskDetailsComponent.name, () => {
 
     userService = {} as UserService;
     userService.getUsersByIds = jest.fn().mockReturnValue(of([new User('Foo', testUserId)]));
-
-    websocketService = {} as WebsocketClientService;
-    httpClient = {} as HttpClient;
 
     taskService = {} as TaskService;
     taskService.getSelectedTask = jest.fn().mockReturnValue(undefined);
@@ -317,6 +310,7 @@ describe(TaskDetailsComponent.name, () => {
     describe('open in JOSM shortcut', () => {
       beforeEach(() => {
         component.projectId = '42';
+        component.josmDataSource = 'OVERPASS'
       });
 
       it('should open task in JOSM on shortcut', () => {
@@ -325,7 +319,7 @@ describe(TaskDetailsComponent.name, () => {
         shortcutJosmSubject.next();
 
         // @ts-ignore
-        expect(taskService.openInJosm).toHaveBeenCalledWith(component.task);
+        expect(taskService.openInJosm).toHaveBeenCalledWith(component.task, 'OVERPASS');
       });
     });
 
@@ -346,6 +340,6 @@ describe(TaskDetailsComponent.name, () => {
   });
 
   function createTask(processPoints: number, id: string = '123'): Task {
-    return new Task(id, '', processPoints, 789, TestTaskFeature);
+    return new Task(id, '', processPoints, 789, TestTaskFeature, []);
   }
 });

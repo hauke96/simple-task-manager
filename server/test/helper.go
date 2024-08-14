@@ -10,21 +10,21 @@ import (
 	"testing"
 )
 
-type TestHelper struct {
+type Helper struct {
 	Tx    *sql.Tx // Transaction for the test run. Will be rolled back at the end.
 	Setup func()
 
 	db *sql.DB // DB connection for the test run
 }
 
-func NewTestHelper(setupFunc func()) *TestHelper {
-	return &TestHelper{
+func NewTestHelper(setupFunc func()) *Helper {
+	return &Helper{
 		Setup: setupFunc,
 	}
 }
 
 // Load dummy data into the database.
-func (h *TestHelper) InitWithDummyData(dbUsername, dbPassword, dbDatabase string) {
+func (h *Helper) InitWithDummyData(dbUsername, dbPassword, dbDatabase string) {
 	sigolo.Info("Add database dummy data")
 
 	var err error
@@ -47,7 +47,7 @@ func (h *TestHelper) InitWithDummyData(dbUsername, dbPassword, dbDatabase string
 	sigolo.Info("Adding dummy data completed")
 }
 
-func (h *TestHelper) NewTransaction() *sql.Tx {
+func (h *Helper) NewTransaction() *sql.Tx {
 	var err error
 	h.Tx, err = h.db.Begin()
 	if err != nil {
@@ -56,7 +56,7 @@ func (h *TestHelper) NewTransaction() *sql.Tx {
 	return h.Tx
 }
 
-func (h *TestHelper) Run(t *testing.T, testFunc func() error) {
+func (h *Helper) Run(t *testing.T, testFunc func() error) {
 	if h.Setup != nil {
 		h.Setup()
 	}
@@ -70,7 +70,7 @@ func (h *TestHelper) Run(t *testing.T, testFunc func() error) {
 	h.tearDown()
 }
 
-func (h *TestHelper) RunFail(t *testing.T, testFunc func() error) {
+func (h *Helper) RunFail(t *testing.T, testFunc func() error) {
 	h.Setup()
 
 	err := testFunc()
@@ -82,7 +82,7 @@ func (h *TestHelper) RunFail(t *testing.T, testFunc func() error) {
 	h.tearDownFail()
 }
 
-func (h *TestHelper) tearDown() {
+func (h *Helper) tearDown() {
 	if h.Tx == nil {
 		return
 	}
@@ -98,7 +98,7 @@ func (h *TestHelper) tearDown() {
 	}
 }
 
-func (h *TestHelper) tearDownFail() {
+func (h *Helper) tearDownFail() {
 	if h.Tx == nil {
 		return
 	}

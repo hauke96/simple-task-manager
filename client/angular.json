@@ -20,7 +20,7 @@
             "outputPath": "dist/simple-task-manager",
             "index": "src/index.html",
             "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
+            "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "localize": false,
             "aot": true,
@@ -39,6 +39,7 @@
               "@turf/square-grid",
               "@turf/hex-grid",
               "@turf/triangle-grid",
+              "color-name",
               "geojson-rbush",
               "pbf",
               "polygon-clipping",
@@ -109,29 +110,26 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "simple-task-manager:build"
+            "buildTarget": "simple-task-manager:build"
           },
           "configurations": {
             "local": {
-              "browserTarget": "simple-task-manager:build:local"
+              "buildTarget": "simple-task-manager:build:local"
             },
             "production": {
-              "browserTarget": "simple-task-manager:build:production"
+              "buildTarget": "simple-task-manager:build:production"
             },
             "dev": {
-              "browserTarget": "simple-task-manager:build:dev"
+              "buildTarget": "simple-task-manager:build:dev"
             }
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "tsconfig.app.json",
-              "tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
             ]
           }
         }
@@ -139,6 +137,7 @@
     }
   },
   "cli": {
-    "analytics": false
+    "analytics": false,
+    "defaultCollection": "@angular-eslint/schematics"
   }
 }

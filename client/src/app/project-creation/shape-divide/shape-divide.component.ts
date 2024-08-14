@@ -21,6 +21,7 @@ export class ShapeDivideComponent implements OnInit {
   public gridCellShape: string;
   public previewTasks: TaskDraft[] = [];
   public estimatedResultTooLarge: boolean;
+  public previewModeActive: boolean;
 
   @Input() public selectedTask: TaskDraft;
 
@@ -53,7 +54,16 @@ export class ShapeDivideComponent implements OnInit {
   }
 
   public onPreviewWanted(): void {
-    this.previewClicked.emit(this.previewTasks);
+    this.previewModeActive = !this.previewModeActive;
+    this.notifyPreview();
+  }
+
+  private notifyPreview(): void {
+    if (this.previewModeActive && this.canDivideTasks) {
+      this.previewClicked.emit(this.previewTasks);
+    } else {
+      this.previewClicked.emit([]);
+    }
   }
 
   public onDivideButtonClicked(): void {
@@ -109,8 +119,10 @@ export class ShapeDivideComponent implements OnInit {
       return undefined;
     }
 
-    const grid = this.createGrid(extent, cellSize, options);
-    if (!grid) {
+    if (!(cellSize > 0)) {
+      const e = `Invalid cell size ${this.gridCellSize}`;
+      console.error(e);
+      this.notificationService.addError(e);
       return undefined;
     }
 
@@ -120,7 +132,10 @@ export class ShapeDivideComponent implements OnInit {
     }
     this.estimatedResultTooLarge = false;
 
-    console.log(grid);
+    const grid = this.createGrid(extent, cellSize, options);
+    if (!grid) {
+      return undefined;
+    }
 
     return grid.features.map((gridCell: any) => {
       // Turn geo GeoJSON polygon from turf.js into an openlayers polygon
@@ -131,19 +146,23 @@ export class ShapeDivideComponent implements OnInit {
   }
 
   private estimateCellCount(): number {
-    let scale = 1;
-
+    let areaPerTargetTask = 0;
     switch (this.gridCellShape) {
+      case 'squareGrid':
+        areaPerTargetTask = Math.pow(this.gridCellSize, 2);
+        break;
       case 'hexGrid':
-        // The cell size specified the "radius" of the hexagon
-        scale = 4;
+        areaPerTargetTask = Math.sqrt(3/2) * Math.pow(this.gridCellSize, 2);
         break;
       case 'triangleGrid':
-        scale = 0.5;
+        areaPerTargetTask = 0.5 * Math.pow(this.gridCellSize, 2);
         break;
     }
 
-    console.log('Get area');
+    return this.getAreaOfSelectedTask() / areaPerTargetTask;
+  }
+
+  private getAreaOfSelectedTask() {
     let area = 0;
     switch (this.selectedTask.geometry.getType()) {
       case 'Polygon':
@@ -155,12 +174,10 @@ export class ShapeDivideComponent implements OnInit {
       default:
         throw new Error(`Unsupported task geometry type '${this.selectedTask.geometry.getType()}'`);
     }
-    console.log('Got area', area, area / (Math.pow(this.gridCellSize, 2) * scale));
-
-    return area / (Math.pow(this.gridCellSize, 2) * scale);
+    return area;
   }
 
-  private createGrid(extent: BBox.BBox, cellSize: number, options: any): any {
+  private createGrid(extent: BBox.BBox, cellSize: number, options: any): BBox.FeatureCollection | undefined {
     switch (this.gridCellShape) {
       case 'squareGrid':
         return squareGrid(extent, cellSize, options);
@@ -179,6 +196,6 @@ export class ShapeDivideComponent implements OnInit {
   public taskDividePropertyChanged(): void {
     this.previewTasks = this.createTaskDrafts() ?? [];
     this.previewTasks.forEach(t => t.geometry.transform('EPSG:4326', 'EPSG:3857'));
-    this.onPreviewWanted();
+    this.notifyPreview();
   }
 }

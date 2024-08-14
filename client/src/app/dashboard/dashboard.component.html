@@ -8,7 +8,7 @@
 				<app-language-selection></app-language-selection>
 			</div>
 			<div class="separator"></div>
-			<app-icon-button (click)="onLogoutClicked()" icon="lnr-exit" textKey="dashboard.logout-button"></app-icon-button>
+			<app-icon-button (clicked)="onLogoutClicked()" icon="lnr-exit" textKey="dashboard.logout-button"></app-icon-button>
 		</div>
 	</app-toolbar>
 	<div class="root-container">
@@ -16,7 +16,7 @@
 		<div class="new-project-buttons-container">
 			<app-icon-button [routerLink]="['/new-project']" icon="lnr-plus-circle" textKey="dashboard.create-project"></app-icon-button>
 			<input id="projectInput" type="file" content="Upload" accept=".json" (change)="onImportProjectClicked($event)" style="display:none;">
-			<app-icon-button (click)="onUploadClicked()" class="import-button" icon="lnr-upload" textKey="dashboard.import-project"></app-icon-button>
+			<app-icon-button (clicked)="onUploadClicked()" class="import-button" icon="lnr-upload" textKey="dashboard.import-project"></app-icon-button>
 		</div>
 	</div>
 </div>

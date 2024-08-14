@@ -7,12 +7,10 @@ describe(ProjectPropertiesComponent.name, () => {
   let component: ProjectPropertiesComponent;
   let fixture: MockedComponentFixture<ProjectPropertiesComponent, any>;
 
-  beforeEach(() => {
-    return MockBuilder(ProjectPropertiesComponent, AppModule);
-  });
+  beforeEach(() => MockBuilder(ProjectPropertiesComponent, AppModule));
 
   beforeEach(() => {
-    fixture = MockRender(ProjectPropertiesComponent, {projectProperties: new ProjectProperties('', 100, '')});
+    fixture = MockRender(ProjectPropertiesComponent, {projectProperties: new ProjectProperties('', 100, '', 'OSM')});
     component = fixture.point.componentInstance;
     fixture.detectChanges();
   });

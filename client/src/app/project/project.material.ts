@@ -1,5 +1,7 @@
 import { User } from '../user/user.material';
 import { Task, TaskDraftDto, TaskDto, TaskExport } from '../task/task.material';
+import { Comment, CommentDto } from '../comments/comment.material';
+import { JosmDataSource } from '../common/entities/josm-data-source';
 
 export class ProjectAddDto {
   constructor(public project: ProjectDraftDto,
@@ -11,7 +13,16 @@ export class ProjectDraftDto {
   constructor(public name: string,
               public description: string,
               public users: string[],
-              public owner: string
+              public owner: string,
+              public josmDataSource: JosmDataSource
+  ) {
+  }
+}
+
+export class ProjectUpdateDto {
+  constructor(public name: string,
+              public description: string,
+              public josmDataSource: JosmDataSource
   ) {
   }
 }
@@ -25,6 +36,8 @@ export class ProjectDto {
               public owner: string,
               public needsAssignment: boolean = true,
               public creationDate: Date,
+              public comments: CommentDto[],
+              public josmDataSource: JosmDataSource,
               public totalProcessPoints?: number,
               public doneProcessPoints?: number
   ) {
@@ -40,6 +53,8 @@ export class Project {
               public owner: User,
               public needsAssignment: boolean,
               public creationDate: Date,
+              public comments: Comment[],
+              public josmDataSource: JosmDataSource,
               public totalProcessPoints: number,
               public doneProcessPoints: number
   ) {
@@ -52,6 +67,7 @@ export class ProjectExport {
               public tasks: TaskExport[],
               public users: string[],
               public owner: string,
+              public josmDataSource: JosmDataSource,
               public creationDate: Date) {
   }
 }

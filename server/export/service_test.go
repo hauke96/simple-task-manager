@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"github.com/hauke96/sigolo"
 	"github.com/pkg/errors"
+	"stm/comment"
 	"stm/config"
 	"stm/permission"
 	"stm/project"
@@ -16,9 +17,8 @@ import (
 
 var (
 	tx *sql.Tx
-	s  *ExportService
-	p  *project.ProjectService
-	h  *test.TestHelper
+	s  *Service
+	h  *test.Helper
 )
 
 func TestMain(m *testing.M) {
@@ -35,8 +35,10 @@ func setup() {
 	logger := util.NewLogger()
 
 	permissionStore := permission.Init(tx, logger)
-	taskService := task.Init(tx, logger, permissionStore)
-	projectService := project.Init(tx, logger, taskService, permissionStore)
+	commentStore := comment.GetStore(tx, logger)
+	commentService := comment.Init(logger, commentStore)
+	taskService := task.Init(tx, logger, permissionStore, commentService, commentStore)
+	projectService := project.Init(tx, logger, taskService, permissionStore, commentService, commentStore)
 
 	s = Init(logger, projectService)
 }

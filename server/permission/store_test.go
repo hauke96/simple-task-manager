@@ -14,8 +14,8 @@ import (
 
 var (
 	tx *sql.Tx
-	s  *PermissionStore
-	h  *test.TestHelper
+	s  *Store
+	h  *test.Helper
 )
 
 func TestMain(m *testing.M) {

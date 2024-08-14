@@ -2,5 +2,7 @@
 	"server-url": "https://stm.hauke-stieler.de",
 	"client-auth-redirect-url": "https://stm.hauke-stieler.de/oauth-landing",
 	"ssl-cert-file": "/etc/letsencrypt/live/stm.hauke-stieler.de/fullchain.pem",
-	"ssl-key-file": "/etc/letsencrypt/live/stm.hauke-stieler.de/privkey.pem"
+	"ssl-key-file": "/etc/letsencrypt/live/stm.hauke-stieler.de/privkey.pem",
+	"debug-logging": false,
+	"max-task-per-project": 2000
 }

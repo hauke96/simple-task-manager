@@ -1,0 +1,31 @@
+<h2 *ngIf="title" class="comment-list-title">{{ title }}</h2>
+
+<div class="comment-list-container">
+	<div *ngFor="let c of currentComments" class="comment" [class.own-comment]="isFromCurrentUser(c)">
+		<div>{{ c.text }}</div>
+		<div class="comment-metadata">
+			<div class="metadata">
+				<div *ngIf="!isFromCurrentUser(c)">
+					{{ c.author.name }}
+				</div>
+			</div>
+			<div class="metadata">{{ c.creationDate | date:'short' : '' : currentLocale }}</div>
+		</div>
+	</div>
+	<div *ngIf="currentComments.length === 0" class="no-comment-container">
+		<div class="no-comment-marker-container">
+			<div class="no-comment-marker-line"></div>
+			<div></div>
+		</div>
+		<div class="no-comment-notice" [innerHTML]="'comment.no-comments-yet' | translate "></div>
+		<div class="no-comment-marker-container">
+			<div class="no-comment-marker-line"></div>
+			<div></div>
+		</div>
+	</div>
+</div>
+<div class="input-container">
+	<textarea rows="5" [(ngModel)]="enteredComment" (keydown.control.enter)="onSendButtonClicked()"></textarea>
+	<div class="lnr lnr-chevron-right send-button" (click)="onSendButtonClicked()"
+		 [title]="'comment.send' | translate"></div>
+</div>

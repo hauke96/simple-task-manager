@@ -48,7 +48,7 @@ The formatting is always correct because the compiler will fail if there are for
 
 For **errors** use `err`.
 
-For **receivers** use simple letters like `s` in `func (s *storePg) delete(...`.
+For **receivers** use simple letters like `s` in `func (s *store) delete(...`.
 
 ## Client
 

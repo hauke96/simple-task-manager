@@ -1,10 +1,10 @@
 <div class="background-images">
 	<div class="fadeout-image fadeout-to-right">
-		<img src="./assets/login-background-right.png">
+		<img src="./assets/login-background-right.webp">
 	</div>
 	<div class="image-buffer"></div>
 	<div class="fadeout-image fadeout-to-left">
-		<img src="./assets/login-background-left.png">
+		<img src="./assets/login-background-left.webp">
 	</div>
 </div>
 <div class="white-transparent language-selection">
@@ -19,7 +19,7 @@
 	<div class="heading" [innerHTML]="'login.welcome' | translate"></div>
 	<div class="sub-heading" [innerHTML]="'login.welcome-subtitle' | translate"></div>
 	<div class="white-transparent login-button-container">
-		<app-icon-button (click)="onLoginButtonClick()" icon="lnr-enter" textKey="login.login-button"></app-icon-button>
+		<app-icon-button (clicked)="onLoginButtonClick()" icon="lnr-enter" textKey="login.login-button"></app-icon-button>
 	</div>
 	<div class="notice-container white-transparent">
 		<div class="warning-centered" *ngIf="noticeTemplate">

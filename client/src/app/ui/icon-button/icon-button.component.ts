@@ -16,5 +16,5 @@ export class IconButtonComponent {
   public disabled = false;
 
   @Output()
-  public click = new EventEmitter<MouseEvent>();
+  public clicked = new EventEmitter<MouseEvent>();
 }

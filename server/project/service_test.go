@@ -6,6 +6,7 @@ import (
 	"github.com/hauke96/sigolo"
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 	"github.com/pkg/errors"
+	"stm/comment"
 	"stm/config"
 	"stm/permission"
 	"stm/task"
@@ -17,9 +18,9 @@ import (
 
 var (
 	tx          *sql.Tx
-	s           *ProjectService
-	taskService *task.TaskService
-	h           *test.TestHelper
+	s           *Service
+	taskService *task.Service
+	h           *test.Helper
 )
 
 func TestMain(m *testing.M) {
@@ -36,8 +37,10 @@ func setup() {
 	logger := util.NewLogger()
 
 	permissionStore := permission.Init(tx, logger)
-	taskService = task.Init(tx, logger, permissionStore)
-	s = Init(tx, logger, taskService, permissionStore)
+	commentStore := comment.GetStore(tx, logger)
+	commentService := comment.Init(logger, commentStore)
+	taskService = task.Init(tx, logger, permissionStore, commentService, commentStore)
+	s = Init(tx, logger, taskService, permissionStore, commentService, commentStore)
 }
 
 func TestGetProjects(t *testing.T) {
@@ -154,18 +157,18 @@ func TestGetProjectByTask(t *testing.T) {
 func TestAddWithTasks(t *testing.T) {
 	h.Run(t, func() error {
 		user := "Jack"
-		p := ProjectDraftDto{
+		p := DraftDto{
 			Name:  "Test name",
 			Users: []string{user, "user2"},
 			Owner: user,
 		}
 
-		t := task.TaskDraftDto{
+		t := task.DraftDto{
 			MaxProcessPoints: 100,
 			Geometry:         "{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[0,0],[1,0]]]},\"properties\":null}",
 		}
 
-		newProject, err := s.AddProjectWithTasks(&p, []task.TaskDraftDto{t})
+		newProject, err := s.AddProjectWithTasks(&p, []task.DraftDto{t})
 		if err != nil {
 			return errors.New(fmt.Sprintf("Adding should work: %s", err.Error()))
 		}
@@ -210,7 +213,7 @@ func TestAddWithTasks(t *testing.T) {
 func TestAddAndGetProject(t *testing.T) {
 	h.Run(t, func() error {
 		user := "Jack"
-		p := ProjectDraftDto{
+		p := DraftDto{
 			Name:  "Test name",
 			Users: []string{user, "user2"},
 			Owner: user,
@@ -243,7 +246,7 @@ func TestAddAndGetProject(t *testing.T) {
 func TestAddProjectWithInvalidParameters(t *testing.T) {
 	h.Run(t, func() error {
 		// Owner must be set
-		p := ProjectDraftDto{
+		p := DraftDto{
 			Owner: "",
 		}
 		_, err := s.AddProject(&p)
@@ -252,7 +255,7 @@ func TestAddProjectWithInvalidParameters(t *testing.T) {
 		}
 
 		// Owner must be in users array
-		p = ProjectDraftDto{
+		p = DraftDto{
 			Owner: "foo",
 			Users: []string{"bar"},
 		}
@@ -262,7 +265,7 @@ func TestAddProjectWithInvalidParameters(t *testing.T) {
 		}
 
 		// Name must be set
-		p = ProjectDraftDto{
+		p = DraftDto{
 			Owner: "foo",
 			Users: []string{"foo"},
 			Name:  "",
@@ -274,7 +277,7 @@ func TestAddProjectWithInvalidParameters(t *testing.T) {
 
 		// Too long description not allowed
 		config.Conf.MaxDescriptionLength = 10 // lower the border for test purposes
-		p = ProjectDraftDto{
+		p = DraftDto{
 			Owner:       "foo",
 			Users:       []string{"foo"},
 			Name:        "some name",
@@ -551,7 +554,7 @@ func TestDeleteProject(t *testing.T) {
 	})
 }
 
-func TestUpdateName(t *testing.T) {
+func TestUpdate(t *testing.T) {
 	h.Run(t, func() error {
 		oldProject, err := s.GetProject("1", "Peter")
 		if err != nil {
@@ -559,9 +562,11 @@ func TestUpdateName(t *testing.T) {
 		}
 
 		newName := "flubby dubby"
-		project, err := s.UpdateName("1", newName, "Peter")
+		newDescription := "flubby dubby\n foo bar"
+		newJosmDataSource := Overpass
+		project, err := s.Update("1", newName, newDescription, newJosmDataSource, "Peter")
 		if err != nil {
-			return errors.New(fmt.Sprintf("Error updating name wasn't expected: %s", err))
+			return errors.New(fmt.Sprintf("Error updating project wasn't expected: %s", err))
 		}
 		if project.Name != newName {
 			return errors.New(fmt.Sprintf("New name doesn't match with expected one: %s != %s", oldProject.Name, newName))
@@ -569,43 +574,24 @@ func TestUpdateName(t *testing.T) {
 		if project.TotalProcessPoints != 10 || project.DoneProcessPoints != 0 {
 			return errors.New(fmt.Sprintf("Process points on project not set correctly"))
 		}
+		if project.Description != newDescription {
+			return errors.New(fmt.Sprintf("New description doesn't match with expected one: %s != %s", oldProject.Name, newDescription))
+		}
+		if project.TotalProcessPoints != 10 || project.DoneProcessPoints != 0 {
+			return errors.New(fmt.Sprintf("Process points on project not set correctly"))
+		}
+		if project.JosmDataSource != newJosmDataSource {
+			return errors.New(fmt.Sprintf("New JOSM data source doesn't match with expected one: %s != %s", oldProject.JosmDataSource, newJosmDataSource))
+		}
 
 		// With newline
-
 		newNewlineName := "foo\nbar\nwhatever"
-		project, err = s.UpdateName("1", newNewlineName, "Peter")
+		project, err = s.Update("1", newNewlineName, newDescription, newJosmDataSource, "Peter")
 		if err != nil {
 			return errors.New(fmt.Sprintf("Error updating name wasn't expected: %s", err))
 		}
 		if project.Name != "foo" {
 			return errors.New(fmt.Sprintf("New name doesn't match with expected one: %s != foo", oldProject.Name))
-		}
-
-		// With non-owner (Maria)
-
-		_, err = s.UpdateName("1", "skfgkf", "Maria")
-		if err == nil {
-			return errors.New("Updating name should not be possible for non-owner user Maria")
-		}
-
-		// Empty name
-
-		_, err = s.UpdateName("1", "  ", "Peter")
-		if err == nil {
-			return errors.New("Updating name should not be possible with empty name")
-		}
-		return nil
-	})
-}
-
-func TestUpdateDescription(t *testing.T) {
-	h.Run(t, func() error {
-		oldProject, _ := s.GetProject("1", "Peter")
-
-		newDescription := "flubby dubby\n foo bar"
-		project, err := s.UpdateDescription("1", newDescription, "Peter")
-		if err != nil {
-			return errors.New(fmt.Sprintf("Error updating description wasn't expected: %s", err))
 		}
 		if project.Description != newDescription {
 			return errors.New(fmt.Sprintf("New description doesn't match with expected one: %s != %s", oldProject.Name, newDescription))
@@ -613,39 +599,27 @@ func TestUpdateDescription(t *testing.T) {
 		if project.TotalProcessPoints != 10 || project.DoneProcessPoints != 0 {
 			return errors.New(fmt.Sprintf("Process points on project not set correctly"))
 		}
-
-		return nil
-	})
-}
-
-func TestUpdateDescriptionWithNonOwnerUser(t *testing.T) {
-	h.Run(t, func() error {
-		_, err := s.UpdateDescription("1", "skfgkf", "Maria")
-		if err == nil {
-			return errors.New("Updating description should not be possible for non-owner user Maria")
+		if project.JosmDataSource != newJosmDataSource {
+			return errors.New(fmt.Sprintf("New JOSM data source doesn't match with expected one: %s != %s", oldProject.JosmDataSource, newJosmDataSource))
 		}
 
-		return nil
-	})
-}
-
-func TestUpdateDescriptionWithEmptyText(t *testing.T) {
-	h.Run(t, func() error {
-		_, err := s.UpdateDescription("1", "  ", "Peter")
+		// With non-owner (Maria)
+		_, err = s.Update("1", "skfgkf", "sadkfzh", OSM, "Maria")
 		if err == nil {
-			return errors.New("Updating description should not be possible with empty description")
+			return errors.New("Updating name should not be possible for non-owner user Maria")
 		}
 
-		return nil
-	})
-}
+		// Empty name
+		_, err = s.Update("1", "  ", "adsfkjg", OSM, "Peter")
+		if err == nil {
+			return errors.New("Updating name should not be possible with empty name")
+		}
 
-func TestUpdateDescriptionWithTooLargeText(t *testing.T) {
-	h.Run(t, func() error {
+		// Too long description
 		config.Conf.MaxDescriptionLength = 10 // lower the border for test purposes
-		newDescription := "This is some too long description"
+		newDescription = "This is some too long description"
 
-		_, err := s.UpdateDescription("1", newDescription, "Peter")
+		_, err = s.Update("1", "name", newDescription, OSM, "Peter")
 		if err == nil {
 			return errors.New(fmt.Sprintf("Updating project description should not work. Allowed description length %d but was %d", config.Conf.MaxDescriptionLength, len(newDescription)))
 		}

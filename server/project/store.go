@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/lib/pq"
 	"github.com/pkg/errors"
+	"stm/comment"
 	"stm/task"
 	"stm/util"
 	"strconv"
@@ -14,31 +15,35 @@ import (
 // Helper struct to read raw data from database. The "Project" struct has higher-level structure (e.g. arrays), which we
 // don't have in the database columns.
 type projectRow struct {
-	id           int
-	name         string
-	users        []string
-	owner        string
-	description  string
-	creationDate *time.Time
+	id             int
+	name           string
+	users          []string
+	owner          string
+	description    string
+	creationDate   *time.Time
+	commentListId  string
+	josmDataSource JosmDataSource
 }
 
-type storePg struct {
+type store struct {
 	*util.Logger
-	tx        *sql.Tx
-	table     string
-	taskStore *task.StorePg
+	tx           *sql.Tx
+	table        string
+	taskStore    *task.Store
+	commentStore *comment.Store
 }
 
-func getStore(tx *sql.Tx, taskStore *task.StorePg, logger *util.Logger) *storePg {
-	return &storePg{
-		Logger:    logger,
-		tx:        tx,
-		table:     "projects",
-		taskStore: taskStore,
+func getStore(tx *sql.Tx, logger *util.Logger, taskStore *task.Store, commentStore *comment.Store) *store {
+	return &store{
+		Logger:       logger,
+		tx:           tx,
+		table:        "projects",
+		taskStore:    taskStore,
+		commentStore: commentStore,
 	}
 }
 
-func (s *storePg) getAllProjectsOfUser(userId string) ([]*Project, error) {
+func (s *store) getAllProjectsOfUser(userId string) ([]*Project, error) {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE $1 = ANY(users)", s.table)
 
 	s.LogQuery(query, userId)
@@ -47,23 +52,32 @@ func (s *storePg) getAllProjectsOfUser(userId string) ([]*Project, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "error executing query")
 	}
-	defer rows.Close()
 
 	projects := make([]*Project, 0)
+	projectRows := make([]*projectRow, 0)
 	for rows.Next() {
-		project, err := s.rowToProject(rows)
+		project, projectRow, err := s.rowToProject(rows)
 		if err != nil {
 			return nil, errors.Wrap(err, "error converting row into project")
 		}
 
 		projects = append(projects, project)
+		projectRows = append(projectRows, projectRow)
 	}
 
-	rows.Close()
+	err = rows.Close()
+	if err != nil {
+		return nil, err
+	}
 
-	// Add task-IDs to projects
-	for _, project := range projects {
+	// Add task-IDs and comments to projects
+	for i, project := range projects {
 		err = s.addTasksToProject(project)
+		if err != nil {
+			return nil, err
+		}
+
+		err = s.addCommentsToProject(project, projectRows[i])
 		if err != nil {
 			return nil, err
 		}
@@ -72,31 +86,39 @@ func (s *storePg) getAllProjectsOfUser(userId string) ([]*Project, error) {
 	return projects, nil
 }
 
-func (s *storePg) getProject(projectId string) (*Project, error) {
+func (s *store) getProject(projectId string) (*Project, error) {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE id=$1", s.table)
 	return s.execQuery(query, projectId)
 }
 
-func (s *storePg) getProjectOfTask(taskId string) (*Project, error) {
+func (s *store) getProjectOfTask(taskId string) (*Project, error) {
 	query := fmt.Sprintf("SELECT p.* FROM %s p, %s t WHERE $1 = t.id AND t.project_id = p.id", s.table, s.taskStore.Table)
 	return s.execQuery(query, taskId)
 }
 
 // addProject adds the given project draft and assigns an ID to the project.
-func (s *storePg) addProject(draft *ProjectDraftDto, creationDate time.Time) (*Project, error) {
-	query := fmt.Sprintf("INSERT INTO %s (name, description, users, owner, creation_date) VALUES($1, $2, $3, $4, $5) RETURNING *", s.table)
-	params := []interface{}{draft.Name, draft.Description, pq.Array(draft.Users), draft.Owner, creationDate}
-
-	s.LogQuery(query, params...)
-	project, err := s.execQueryWithoutTasks(query, params...)
+func (s *store) addProject(draft *DraftDto, creationDate time.Time) (*Project, error) {
+	commentListId, err := s.commentStore.NewCommentList()
 	if err != nil {
 		return nil, err
 	}
 
+	query := fmt.Sprintf("INSERT INTO %s (name, description, users, owner, creation_date, comment_list_id, josm_data_source) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *", s.table)
+	params := []interface{}{draft.Name, draft.Description, pq.Array(draft.Users), draft.Owner, creationDate, commentListId, draft.JosmDataSource}
+
+	s.LogQuery(query, params...)
+	project, _, err := s.execQueryWithoutTasks(query, params...)
+	if err != nil {
+		return nil, err
+	}
+
+	// No need to fetch anything, a new project always has an empty comment list
+	project.Comments = []comment.Comment{}
+
 	return project, nil
 }
 
-func (s *storePg) addUser(projectId string, userIdToAdd string) (*Project, error) {
+func (s *store) addUser(projectId string, userIdToAdd string) (*Project, error) {
 	originalProject, err := s.getProject(projectId)
 	if err != nil {
 		s.Err("error getting project with ID '%s'", projectId)
@@ -109,7 +131,7 @@ func (s *storePg) addUser(projectId string, userIdToAdd string) (*Project, error
 	return s.execQuery(query, pq.Array(newUsers), projectId)
 }
 
-func (s *storePg) removeUser(projectId string, userIdToRemove string) (*Project, error) {
+func (s *store) removeUser(projectId string, userIdToRemove string) (*Project, error) {
 	originalProject, err := s.getProject(projectId)
 	if err != nil {
 		s.Err("error getting project with ID '%s'", projectId)
@@ -127,84 +149,112 @@ func (s *storePg) removeUser(projectId string, userIdToRemove string) (*Project,
 	return s.execQuery(query, pq.Array(remainingUsers), projectId)
 }
 
-func (s *storePg) delete(projectId string) error {
+func (s *store) delete(projectId string) error {
 	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", s.table)
 
 	_, err := s.tx.Exec(query, projectId)
 	return err
 }
 
-func (s *storePg) updateName(projectId string, newName string) (*Project, error) {
-	query := fmt.Sprintf("UPDATE %s SET name=$1 WHERE id=$2 RETURNING *", s.table)
-	return s.execQuery(query, newName, projectId)
+func (s *store) update(projectId string, newName string, newDescription string, newJosmDataSource JosmDataSource) (*Project, error) {
+	query := fmt.Sprintf("UPDATE %s SET name=$2, description=$3, josm_data_source=$4 WHERE id=$1 RETURNING *", s.table)
+	return s.execQuery(query, projectId, newName, newDescription, newJosmDataSource)
 }
 
-func (s *storePg) updateDescription(projectId string, newDescription string) (*Project, error) {
-	query := fmt.Sprintf("UPDATE %s SET description=$1 WHERE id=$2 RETURNING *", s.table)
-	return s.execQuery(query, newDescription, projectId)
-}
+func (s *store) getCommentListId(projectId string) (string, error) {
+	query := fmt.Sprintf("SELECT comment_list_id FROM %s WHERE id = $1;", s.table)
+	s.LogQuery(query, projectId)
 
-func (s *storePg) execQueryWithoutTasks(query string, params ...interface{}) (*Project, error) {
-	rows, err := s.tx.Query(query, params...)
+	rows, err := s.tx.Query(query, projectId)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not run query")
+		return "", errors.Wrapf(err, "error executing query to get comment list id for project %s", projectId)
 	}
 	defer rows.Close()
 
 	if !rows.Next() {
-		return nil, errors.New("there is no next row or an error happened")
+		return "", errors.New("there is no next row or an error happened")
 	}
 
-	p, err := s.rowToProject(rows)
-	if p == nil && err == nil {
-		return nil, errors.New("Project does not exist")
+	commentListId := ""
+	err = rows.Scan(&commentListId)
+	if err != nil {
+		return "", errors.Wrap(err, "could not scan row for comment list id")
 	}
 
-	return p, err
+	return commentListId, nil
+}
+
+func (s *store) execQueryWithoutTasks(query string, params ...interface{}) (*Project, *projectRow, error) {
+	rows, err := s.tx.Query(query, params...)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "could not run query")
+	}
+
+	if !rows.Next() {
+		return nil, nil, errors.New("there is no next row or an error happened")
+	}
+
+	project, projectRow, err := s.rowToProject(rows)
+	if project == nil && err == nil {
+		return nil, nil, errors.New("Project does not exist")
+	}
+
+	err = rows.Close()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return project, projectRow, err
 }
 
 // execQuery executed the given query, turns the result into a Project object and closes the query.
-func (s *storePg) execQuery(query string, params ...interface{}) (*Project, error) {
+func (s *store) execQuery(query string, params ...interface{}) (*Project, error) {
 	s.LogQuery(query, params...)
 
-	p, err := s.execQueryWithoutTasks(query, params...)
+	project, projectRow, err := s.execQueryWithoutTasks(query, params...)
 	if err != nil {
 		return nil, err
 	}
 
-	err = s.addTasksToProject(p)
+	err = s.addTasksToProject(project)
 	if err != nil {
 		return nil, err
 	}
 
-	return p, err
+	err = s.addCommentsToProject(project, projectRow)
+	if err != nil {
+		return nil, err
+	}
+
+	return project, err
 }
 
 // rowToProject turns the current row into a Project object. This does not close the row.
-func (s *storePg) rowToProject(rows *sql.Rows) (*Project, error) {
-	var p projectRow
-	err := rows.Scan(&p.id, &p.name, &p.owner, &p.description, pq.Array(&p.users), &p.creationDate)
+func (s *store) rowToProject(rows *sql.Rows) (*Project, *projectRow, error) {
+	var row projectRow
+	err := rows.Scan(&row.id, &row.name, &row.owner, &row.description, pq.Array(&row.users), &row.creationDate, &row.commentListId, &row.josmDataSource)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not scan rows")
+		return nil, nil, errors.Wrap(err, "could not scan rows")
 	}
 
 	result := Project{}
 
-	result.Id = strconv.Itoa(p.id)
-	result.Name = p.name
-	result.Users = p.users
-	result.Owner = p.owner
-	result.Description = p.description
+	result.Id = strconv.Itoa(row.id)
+	result.Name = row.name
+	result.Users = row.users
+	result.Owner = row.owner
+	result.Description = row.description
+	result.JosmDataSource = row.josmDataSource
 
-	if p.creationDate != nil {
-		t := p.creationDate.UTC()
+	if row.creationDate != nil {
+		t := row.creationDate.UTC()
 		result.CreationDate = &t
 	}
 
-	return &result, nil
+	return &result, &row, nil
 }
 
-func (s *storePg) addTasksToProject(project *Project) error {
+func (s *store) addTasksToProject(project *Project) error {
 	tasks, err := s.taskStore.GetAllTasksOfProject(project.Id)
 	if err != nil {
 		return err
@@ -213,5 +263,14 @@ func (s *storePg) addTasksToProject(project *Project) error {
 	project.Tasks = tasks
 	s.Log("Added tasks to project %s", project.Id)
 
+	return nil
+}
+
+func (s *store) addCommentsToProject(project *Project, projectRow *projectRow) error {
+	comments, err := s.commentStore.GetComments(projectRow.commentListId)
+	if err != nil {
+		return err
+	}
+	project.Comments = comments
 	return nil
 }

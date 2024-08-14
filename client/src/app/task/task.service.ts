@@ -2,9 +2,9 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { Task, TaskDto } from './task.material';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../environments/environment';
-import { from, Observable, of, throwError } from 'rxjs';
+import { from, Observable, throwError } from 'rxjs';
 import { concatMap, map, mergeMap, tap } from 'rxjs/operators';
-import { Geometry, Polygon } from 'ol/geom';
+import { Geometry, MultiPolygon, Polygon } from 'ol/geom';
 import { Extent } from 'ol/extent';
 import { User } from '../user/user.material';
 import { UserService } from '../user/user.service';
@@ -12,6 +12,10 @@ import GeoJSON from 'ol/format/GeoJSON';
 import { Coordinate } from 'ol/coordinate';
 import FeatureFormat from 'ol/format/Feature';
 import { Feature } from 'ol';
+import { CommentService } from '../comments/comment.service';
+import { CommentDraftDto } from '../comments/comment.material';
+
+import { JosmDataSource } from '../common/entities/josm-data-source';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +29,8 @@ export class TaskService {
 
   constructor(
     private http: HttpClient,
-    private userService: UserService
+    private userService: UserService,
+    private commentService: CommentService
   ) {
   }
 
@@ -36,7 +41,8 @@ export class TaskService {
     if (this.selectedTask) {
       const updatedSelectedTask = tasks.filter(t => t.id === this.selectedTask?.id);
       if (updatedSelectedTask.length !== 0) {
-        this.selectedTaskChanged.emit(updatedSelectedTask[0]);
+        this.selectedTask = updatedSelectedTask[0];
+        this.selectedTaskChanged.emit(this.selectedTask);
       }
     }
   }
@@ -50,14 +56,23 @@ export class TaskService {
     return this.selectedTask;
   }
 
+  public getTask(taskId: string): Observable<Task> {
+    return this.http.get<TaskDto>(environment.url_task.replace('{id}', taskId))
+      .pipe(
+        mergeMap(dto => this.getUserNameMapFromDtos([dto]).pipe(map(userMap => this.toTaskWithUsers(dto, userMap)))),
+        tap(task => this.selectedTaskChanged.emit(task)),
+      );
+  }
+
   public createNewTasks(geometries: string[], maxProcessPoints: number): Observable<Task[]> {
-    const draftTasks = geometries.map(g => {
-      return new TaskDto('', 0, maxProcessPoints, g);
-    });
+    const draftTasks = geometries.map(g => new TaskDto('', 0, maxProcessPoints, g, []));
     return this.http.post<TaskDto[]>(environment.url_tasks, JSON.stringify(draftTasks))
       .pipe(
-        mergeMap((tasks: TaskDto[]) => this.addUserNames(tasks)),
-        map(dtos => dtos.map(dto => this.toTask(dto))),
+        mergeMap(dtos => this.getUserNameMapFromDtos(dtos)
+          .pipe(
+            map(userMap => dtos.map(dto => this.toTaskWithUsers(dto, userMap)))
+          )
+        ),
         tap(tasks => tasks.forEach(t => this.selectedTaskChanged.emit(t)))
       );
   }
@@ -69,38 +84,44 @@ export class TaskService {
 
     return this.http.post<TaskDto>(environment.url_task_processPoints.replace('{id}', taskId) + '?process_points=' + newProcessPoints, '')
       .pipe(
-        mergeMap(task => this.addUserName(task)),
-        map(dto => this.toTask(dto)),
+        mergeMap(dto => this.getUserNameMapFromDtos([dto]).pipe(map(userMap => this.toTaskWithUsers(dto, userMap)))),
         tap(t => this.selectedTaskChanged.emit(t))
       );
   }
 
   public assign(taskId: string): Observable<Task> {
     if (taskId !== this.selectedTask?.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
-      return throwError('Task with id \'' + taskId + '\' not selected');
+      return throwError(() => new Error('Task with id \'' + taskId + '\' not selected'));
     }
 
     return this.http.post<TaskDto>(environment.url_task_assignedUser.replace('{id}', taskId), '')
       .pipe(
-        mergeMap(task => this.addUserName(task)),
-        map(dto => this.toTask(dto)),
+        mergeMap(dto => this.getUserNameMapFromDtos([dto]).pipe(map(userMap => this.toTaskWithUsers(dto, userMap)))),
         tap(t => this.selectedTaskChanged.emit(t))
       );
   }
 
   public unassign(taskId: string): Observable<Task> {
     if (taskId !== this.selectedTask?.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
-      return throwError('Task with id \'' + taskId + '\' not selected');
+      return throwError(() => new Error('Task with id \'' + taskId + '\' not selected'));
     }
 
     return this.http.delete<TaskDto>(environment.url_task_assignedUser.replace('{id}', taskId))
       .pipe(
-        map(dto => this.toTask(dto)),
+        mergeMap(dto => this.getUserNameMapFromDtos([dto]).pipe(map(userMap => this.toTaskWithUsers(dto, userMap)))),
         tap(t => this.selectedTaskChanged.emit(t))
       );
   }
 
-  public openInJosm(task: Task): Observable<any> {
+  public addComment(taskId: string, comment: string): Observable<Task> {
+    return this.http.post<TaskDto>(environment.url_task_comments.replace('{id}', taskId), JSON.stringify(new CommentDraftDto(comment)))
+      .pipe(
+        mergeMap(dto => this.getUserNameMapFromDtos([dto]).pipe(map(userMap => this.toTaskWithUsers(dto, userMap)))),
+        tap(t => this.selectedTaskChanged.emit(t))
+      );
+  }
+
+  public openInJosm(task: Task, josmDataSource: JosmDataSource): Observable<any> {
     if (!task) {
       return throwError(() => new Error('Task is undefined'));
     }
@@ -114,10 +135,12 @@ export class TaskService {
     let coordinateString;
     switch (geometry.getType()) {
       case 'Polygon':
-        const polygon = geometry as Polygon;
-        coordinateString = polygon.getCoordinates()[0].map(c => c[1] + ' ' + c[0]).join(' ');
+        coordinateString = (geometry as Polygon).getCoordinates()[0].map(c => c[1] + ' ' + c[0]).join(' ');
         break;
       case 'MultiPolygon':
+        const multiPolygon = geometry as MultiPolygon;
+        const polygon = multiPolygon.getPolygon(0) as Polygon;
+        coordinateString = polygon.getCoordinates()[0].map(c => c[1] + ' ' + c[0]).join(' ');
         break;
       default:
         return throwError(() => new Error(`Unsupported task geometry type '${geometry.getType()}'`));
@@ -127,20 +150,30 @@ export class TaskService {
       return throwError(() => new Error('Empty coordinates'));
     }
 
-    const overpassUrl = 'https://overpass-api.de/api/interpreter?data=[out:json];nwr(poly:"' + coordinateString + '");out meta;(<; - rel._;);(._;>;); out meta;';
+    let dataUrl = '';
+    if (josmDataSource === 'OSM') {
+      const e = this.getExtent(task);
+      // TODO Add (default) comment with issue #161: '&changeset_comment=' + encodeURIComponent('#stm #stm-project-' + projectId + ' ')
+      dataUrl = 'http://localhost:8111/load_and_zoom?new_layer=true&left=' + e[0] + '&right=' + e[2] + '&top=' + e[3] + '&bottom=' + e[1];
+    } else if (josmDataSource === 'OVERPASS') {
+      // eslint-disable-next-line max-len
+      const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];nwr(poly:"${coordinateString}");out meta;(<; - rel._;);(._;>;); out meta;`;
+      dataUrl = 'http://localhost:8111/import?new_layer=true&url=' + overpassUrl;
+    } else {
+      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+      return throwError(() => new Error('Unknown JosmDataSource "' + josmDataSource + '". Please set a valid data source in the project settings.'));
+    }
+
     const taskGeometryString = encodeURIComponent(this.getGeometryAsOsm(task));
 
     return from([
       // The task-polygon
       'http://localhost:8111/load_data?new_layer=true&layer_name=task ' + task.name + '&upload_policy=never&data=' + taskGeometryString,
       // Load data for the extent of the task
-      // 'http://localhost:8111/load_and_zoom?new_layer=true&left=' + e[0] + '&right=' + e[2] + '&top=' + e[3] + '&bottom=' + e[1] + '&changeset_comment=' + encodeURIComponent('#stm #stm-project-' + projectId + ' ')
-      'http://localhost:8111/import?new_layer=true&url=' + overpassUrl
+      dataUrl
     ])
       .pipe(
-        concatMap(url => {
-          return this.http.get(url, {responseType: 'text'});
-        })
+        concatMap(url => this.http.get(url, {responseType: 'text'}))
       );
   }
 
@@ -155,7 +188,9 @@ export class TaskService {
     const comment = encodeURIComponent('#stm #stm-project-' + projectId + ' ');
     const hashtags = encodeURIComponent('#stm,#stm-project-' + projectId);
 
-    window.open('https://openstreetmap.org/edit?editor=id#map=' + mapView.zoom + '/' + mapView.centerLat + '/' + mapView.centerLon + '&comment=' + comment + '&hashtags=' + hashtags);
+    const url = 'https://openstreetmap.org/edit?editor=id#map=' +
+      `${mapView.zoom}/${mapView.centerLat}/${mapView.centerLon}&comment=${comment}&hashtags=${hashtags}`;
+    window.open(url);
   }
 
   /**
@@ -166,7 +201,7 @@ export class TaskService {
    * @param mapWidth The width of the screen/map.
    * @param mapHeight The height of the screen/map.
    */
-  public fitExtentToScreen(bounds: Extent, mapWidth: number, mapHeight: number): { centerLat: number, centerLon: number, zoom: number } {
+  public fitExtentToScreen(bounds: Extent, mapWidth: number, mapHeight: number): { centerLat: number; centerLon: number; zoom: number } {
     if (bounds == null || bounds.length < 4) {
       return {
         centerLat: 0,
@@ -182,7 +217,6 @@ export class TaskService {
     const tileSize = 256;
 
     let boundsDeltaX: number;
-    let centerLat: number;
     let centerLon: number;
 
     // Check if east value is greater than west value which would indicate that bounding box crosses the antimeridian.
@@ -198,7 +232,7 @@ export class TaskService {
     const ry2 = Math.log((Math.sin(bounds[3] * Math.PI / 180) + 1) / Math.cos(bounds[3] * Math.PI / 180));
     const ryc = (ry1 + ry2) / 2;
 
-    centerLat = Math.atan(Math.sinh(ryc)) * 180 / Math.PI;
+    const centerLat = Math.atan(Math.sinh(ryc)) * 180 / Math.PI;
 
     const resolutionHorizontal = boundsDeltaX / (mapWidth - padding * 2);
 
@@ -233,8 +267,21 @@ export class TaskService {
 
   public getGeometryAsOsm(task: Task): string {
     const taskFeature = task.geometry;
-    const taskPolygon = taskFeature.getGeometry() as Polygon;
-    const coordinates: Coordinate[] = taskPolygon.getCoordinates()[0];
+
+    let coordinates: Coordinate[] = [];
+    let taskGeometry = taskFeature.getGeometry();
+    switch (taskGeometry?.getType()) {
+      case 'Polygon':
+        coordinates = (taskGeometry as Polygon).getCoordinates()[0];
+        break;
+      case 'MultiPolygon':
+        const multiPolygon = taskGeometry as MultiPolygon;
+        const polygon = multiPolygon.getPolygon(0) as Polygon;
+        coordinates = polygon.getCoordinates()[0];
+        break;
+      default:
+        throw new Error(`Unsupported task geometry type '${taskGeometry?.getType()}'`);
+    }
 
     let osm = '<osm version="0.6" generator="simple-task-dashboard">';
 
@@ -258,62 +305,31 @@ export class TaskService {
     return osm;
   }
 
-  // Fills the "assignedUserName" of the task with the actual user name.
-  public addUserNames(tasks: TaskDto[]): Observable<TaskDto[]> {
-    const userIDs = tasks.filter(t => !!t.assignedUser).map(t => t.assignedUser);
+  private getUserNameMapFromDtos(dtos: TaskDto[]): Observable<Map<string, User>> {
+    const userIDs = dtos.flatMap(dto => dto.comments.map(c => c.authorId));
+    userIDs.push(...dtos.filter(dto => !!dto.assignedUser).map(dto => dto.assignedUser as string));
 
-    if (!userIDs || userIDs.length === 0) {
-      return of(tasks);
-    }
-
-    // @ts-ignore
     return this.userService.getUsersByIds(userIDs)
       .pipe(
-        map((users: User[]) => {
-          for (const t of tasks) {
-            const user = users.find(u => t.assignedUser === u.uid);
-            if (!!user) {
-              t.assignedUserName = user.name;
-            }
-          }
-          return tasks;
-        })
+        map((users: User[]) => new Map(users.map(obj => [obj.uid, obj])))
       );
   }
 
-  public addUserName(task: TaskDto): Observable<TaskDto> {
-    return this.addUserNames([task]).pipe(map(t => t[0]));
-  }
-
-  public toTask(dto: TaskDto): Task {
-    const feature = (this.format.readFeature(dto.geometry) as Feature<Geometry>);
-
-    const assignedUser = dto.assignedUser && dto.assignedUserName ? new User(dto.assignedUserName, dto.assignedUser) : undefined;
-
-    return new Task(
-      dto.id,
-      feature.get('name'),
-      dto.processPoints,
-      dto.maxProcessPoints,
-      feature,
-      assignedUser
-    );
-  }
-
-  public toTaskWithUsers(dto: TaskDto, users: User[]): Task {
+  public toTaskWithUsers(dto: TaskDto, userMap: Map<string, User>): Task {
     const feature = (this.format.readFeature(dto.geometry) as Feature<Geometry>);
     let assignedUser: User | undefined;
 
     if (dto.assignedUser) {
-      assignedUser = users.find(u => u.uid === dto.assignedUser);
+      assignedUser = userMap.get(dto.assignedUser) as User;
     }
 
     return new Task(
       dto.id,
-      feature.get('name'),
+      feature.get('name') as string,
       dto.processPoints,
       dto.maxProcessPoints,
       feature,
+      this.commentService.toCommentsWithUserMap(dto.comments, userMap),
       assignedUser
     );
   }

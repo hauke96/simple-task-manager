@@ -36,8 +36,8 @@ export class NotificationService {
     this.errorMessages.shift();
   }
 
-  public addError(message: string): void {
-    this.errorMessages.push(message);
+  public addError(message: any): void {
+    this.errorMessages.push('' + message);
   }
 
   //
@@ -62,7 +62,7 @@ export class NotificationService {
     this.infoMessages.shift();
   }
 
-  public addInfo(message: string): void {
+  public addInfo(message: any): void {
     this.infoMessages.push(message);
   }
 
@@ -88,7 +88,7 @@ export class NotificationService {
     this.warningMessages.shift();
   }
 
-  public addWarning(message: string): void {
+  public addWarning(message: any): void {
     this.warningMessages.push(message);
   }
 }

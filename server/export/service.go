@@ -6,19 +6,19 @@ import (
 	"stm/util"
 )
 
-type ExportService struct {
+type Service struct {
 	*util.Logger
-	projectService *project.ProjectService
+	projectService *project.Service
 }
 
-func Init(logger *util.Logger, projectService *project.ProjectService) *ExportService {
-	return &ExportService{
+func Init(logger *util.Logger, projectService *project.Service) *Service {
+	return &Service{
 		Logger:         logger,
 		projectService: projectService,
 	}
 }
 
-func (s *ExportService) ExportProject(projectId string, potentialMemberId string) (*ProjectExport, error) {
+func (s *Service) ExportProject(projectId string, potentialMemberId string) (*ProjectExport, error) {
 	project, err := s.projectService.GetProject(projectId, potentialMemberId)
 	if err != nil {
 		return nil, err
@@ -27,7 +27,7 @@ func (s *ExportService) ExportProject(projectId string, potentialMemberId string
 	return toProjectExport(project), nil
 }
 
-func (s *ExportService) ImportProject(projectExport *ProjectExport, requestingUserId string) (*project.Project, error) {
+func (s *Service) ImportProject(projectExport *ProjectExport, requestingUserId string) (*project.Project, error) {
 	// Determine if the requesting user is part of this project. If not, then add him/her. It wouldn't make much sense
 	//if the requesting user won't be part of the project
 	alreadyContainsUser := false
@@ -41,17 +41,17 @@ func (s *ExportService) ImportProject(projectExport *ProjectExport, requestingUs
 		projectExport.Users = append(projectExport.Users, requestingUserId)
 	}
 
-	projectDraftDto := &project.ProjectDraftDto{
+	projectDraftDto := &project.DraftDto{
 		Name:        projectExport.Name,
 		Description: projectExport.Description,
 		Users:       projectExport.Users,
 		Owner:       requestingUserId,
 	}
 
-	taskDraftDtos := make([]task.TaskDraftDto, len(projectExport.Tasks))
+	taskDraftDtos := make([]task.DraftDto, len(projectExport.Tasks))
 	for i := 0; i < len(projectExport.Tasks); i++ {
 		t := projectExport.Tasks[i]
-		taskDraftDtos[i] = task.TaskDraftDto{
+		taskDraftDtos[i] = task.DraftDto{
 			MaxProcessPoints: t.MaxProcessPoints,
 			ProcessPoints:    t.ProcessPoints,
 			Geometry:         t.Geometry,

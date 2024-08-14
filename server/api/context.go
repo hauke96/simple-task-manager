@@ -3,6 +3,7 @@ package api
 import (
 	"database/sql"
 	"github.com/pkg/errors"
+	"stm/comment"
 	"stm/database"
 	"stm/export"
 	"stm/oauth2"
@@ -17,10 +18,10 @@ type Context struct {
 	*util.Logger
 	Token           *oauth2.Token
 	Transaction     *sql.Tx
-	ProjectService  *project.ProjectService
-	TaskService     *task.TaskService
-	ExportService   *export.ExportService
-	WebsocketSender *websocket.WebsocketSender
+	ProjectService  *project.Service
+	TaskService     *task.Service
+	ExportService   *export.Service
+	WebsocketSender *websocket.Sender
 }
 
 // createContext starts a new Transaction and creates new service instances which use this new Transaction so that all
@@ -37,8 +38,11 @@ func createContext(token *oauth2.Token, logger *util.Logger) (*Context, error) {
 	ctx.Transaction = tx
 
 	permissionStore := permission.Init(tx, ctx.Logger)
-	ctx.TaskService = task.Init(tx, ctx.Logger, permissionStore)
-	ctx.ProjectService = project.Init(tx, ctx.Logger, ctx.TaskService, permissionStore)
+	commentStore := comment.GetStore(tx, ctx.Logger)
+	commentService := comment.Init(ctx.Logger, commentStore)
+
+	ctx.TaskService = task.Init(tx, ctx.Logger, permissionStore, commentService, commentStore)
+	ctx.ProjectService = project.Init(tx, ctx.Logger, ctx.TaskService, permissionStore, commentService, commentStore)
 	ctx.ExportService = export.Init(logger, ctx.ProjectService)
 	ctx.WebsocketSender = websocket.Init(ctx.Logger)
 

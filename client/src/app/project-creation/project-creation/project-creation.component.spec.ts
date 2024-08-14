@@ -18,6 +18,7 @@ import { NotificationService } from '../../common/services/notification.service'
 import { ProjectImportService } from '../project-import.service';
 import { ConfigProvider } from '../../config/config.provider';
 import { EventEmitter } from '@angular/core';
+import { expect as jestExpect } from '@jest/globals';
 
 describe(ProjectCreationComponent.name, () => {
   let component: ProjectCreationComponent;
@@ -121,7 +122,7 @@ describe(ProjectCreationComponent.name, () => {
     projectService.createNewProject = jest.fn().mockReturnValue(of(createProject()));
     router.navigate = jest.fn();
 
-    component.createProject(name, 100, 'lorem ipsum', feature);
+    component.createProject(name, 100, 'lorem ipsum', 'OSM', feature);
 
     expect(projectService.createNewProject).toHaveBeenCalled();
     expect(router.navigate).toHaveBeenCalledWith(['/dashboard']);
@@ -136,7 +137,7 @@ describe(ProjectCreationComponent.name, () => {
 
     const feature = getDummyFeatures();
 
-    component.createProject(name, 100, 'lorem ipsum', feature);
+    component.createProject(name, 100, 'lorem ipsum', 'OSM', feature);
 
     expect(projectService.createNewProject).toHaveBeenCalled();
     expect(router.navigate).not.toHaveBeenCalled();
@@ -151,7 +152,7 @@ describe(ProjectCreationComponent.name, () => {
 
     const feature = getDummyFeatures();
 
-    component.createProject(name, 100, 'lorem ipsum', feature);
+    component.createProject(name, 100, 'lorem ipsum', 'OSM', feature);
 
     expect(projectService.createNewProject).not.toHaveBeenCalled();
     expect(router.navigate).not.toHaveBeenCalled();
@@ -172,6 +173,7 @@ describe(ProjectCreationComponent.name, () => {
     // @ts-ignore
     expect(component.vectorSource.clear).not.toHaveBeenCalled();
     // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     const featuresArg = (component.vectorSource.addFeatures as jest.Mock).mock.calls[0][0] as Feature<Geometry>[];
     expect(featuresArg[0].getGeometry()).toEqual(tasks[0].geometry);
     expect(featuresArg[1].getGeometry()).toEqual(tasks[1].geometry);
@@ -192,13 +194,14 @@ describe(ProjectCreationComponent.name, () => {
     component.projectProperties.projectDescription = description;
     component.projectProperties.maxProcessPoints = maxProcessPoints;
     component.projectProperties.projectName = name;
+    component.projectProperties.josmDataSource = 'OVERPASS';
     // @ts-ignore
     component.vectorSource.getFeatures = jest.fn().mockReturnValue([feature]);
 
     component.onSaveButtonClicked();
 
-    // @ts-ignore
-    expect(projectService.createNewProject).toHaveBeenCalledWith(name, maxProcessPoints, description, expect.anything(), [userId], userId);
+    expect(projectService.createNewProject)
+      .toHaveBeenCalledWith(name, maxProcessPoints, description, jestExpect.anything(), [userId], userId, 'OVERPASS');
   });
 
   it('should deactivate interactions on tab selection', () => {
@@ -349,6 +352,7 @@ describe(ProjectCreationComponent.name, () => {
     taskDraftService.tasksAdded.next(drafts);
 
     expect(vectorSource.addFeatures).toHaveBeenCalledTimes(1);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     const addedFeature = (vectorSource.addFeatures as jest.Mock).mock.calls[0][0] as Feature<Geometry>[];
     expect(addedFeature.length).toEqual(2);
     expect(addedFeature[0].get('id')).toEqual(drafts[0].id);
@@ -408,6 +412,7 @@ describe(ProjectCreationComponent.name, () => {
 
     expect(mapLayerService.fitToFeatures).toHaveBeenCalled();
     expect(vectorSource.addFeatures).toHaveBeenCalledTimes(1);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     const addedFeature = (vectorSource.addFeatures as jest.Mock).mock.calls[0][0] as Feature<Geometry>[];
     expect(addedFeature.length).toEqual(1);
     expect(addedFeature[0].get('id')).toEqual(oldFeatures[1].get('id'));
@@ -427,11 +432,11 @@ describe(ProjectCreationComponent.name, () => {
   }
 
   function createProject(): Project {
-    const t = new Task('567', '', 10, 100, TestTaskFeature);
+    const t = new Task('567', '', 10, 100, TestTaskFeature, []);
     const u1 = new User('test-user', '123');
     const u2 = new User('test-user2', '234');
     const u3 = new User('test-user3', '345');
-    return new Project('1', 'test project', 'lorem ipsum', [t], [u1, u2, u3], u1, true, new Date(), 0, 0);
+    return new Project('1', 'test project', 'lorem ipsum', [t], [u1, u2, u3], u1, true, new Date(), [], 'OSM', 0, 0);
   }
 
   function getDummyFeatures(): Feature<Geometry>[] {

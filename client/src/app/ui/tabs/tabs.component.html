@@ -1,8 +1,8 @@
 <div class="tab-list">
 	<div *ngFor="let t of tabs">
-		<button (click)="onTabClicked(t)" [ngClass]="{selected: t == tabTitle}">{{t}}</button>
+		<button (click)="selectTab(t.index)" [class.selected]="t.index == selectedTabIndex">{{ t.title }}</button>
 	</div>
 </div>
-<div class="tab-content" [ngClass]="{'tab-content-border': !borderless}">
+<div class="tab-content" [class.tab-content-border]="!borderless">
 	<ng-content></ng-content>
 </div>

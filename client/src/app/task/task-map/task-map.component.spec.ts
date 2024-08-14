@@ -45,10 +45,10 @@ describe(TaskMapComponent.name, () => {
   beforeEach(() => {
     fixture = MockRender(TaskMapComponent, {
       tasks: [
-        new Task('1', '', 0, 100, getFeature()),
-        new Task('2', '', 10, 100, getFeature()),
-        new Task('3', '', 50, 100, getFeature()),
-        new Task('4', '', 100, 100, getFeature()),
+        new Task('1', '', 0, 100, getFeature(), []),
+        new Task('2', '', 10, 100, getFeature(), []),
+        new Task('3', '', 50, 100, getFeature(), []),
+        new Task('4', '', 100, 100, getFeature(), []),
       ]
     });
     component = fixture.point.componentInstance;
@@ -139,9 +139,9 @@ describe(TaskMapComponent.name, () => {
     }
     const f = new Feature({task_id: component.tasks[taskIndex].id});
     const s = component.getStyle(f);
-    expect(s.getFill().getColor()).toEqual(expectedColor);
-    expect(s.getStroke().getColor()).toEqual('#009688');
-    expect(s.getStroke().getWidth()).toEqual(expectedBorderWidth);
+    expect(s.getFill()?.getColor()).toEqual(expectedColor);
+    expect(s.getStroke()?.getColor()).toEqual('#009688');
+    expect(s.getStroke()?.getWidth()).toEqual(expectedBorderWidth);
   }
 
   function getFeature(): Feature<Polygon> {

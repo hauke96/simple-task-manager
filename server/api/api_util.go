@@ -7,6 +7,7 @@ import (
 	"github.com/hauke96/sigolo"
 	"github.com/pkg/errors"
 	"net/http"
+	"runtime/debug"
 	"stm/oauth2"
 	"stm/util"
 	"stm/websocket"
@@ -70,7 +71,7 @@ func authenticatedTransactionHandler(handler func(r *http.Request, context *Cont
 	}
 }
 
-func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request, token *oauth2.Token, websocketSender *websocket.WebsocketSender)) func(http.ResponseWriter, *http.Request) {
+func authenticatedWebsocket(handler func(w http.ResponseWriter, r *http.Request, token *oauth2.Token, websocketSender *websocket.Sender)) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		logger := util.NewLogger()
 
@@ -126,6 +127,7 @@ func handleRequest(w http.ResponseWriter, r *http.Request, handler func(r *http.
 
 			logger.Err(fmt.Sprintf("!! PANIC !! Recover from panic:"))
 			logger.Stack(err)
+			logger.Log("%s", debug.Stack())
 
 			util.ResponseInternalError(w, logger, err)
 		}
@@ -187,6 +189,7 @@ func handleAuthenticatedRequest(w http.ResponseWriter, r *http.Request, handler 
 
 			context.Err(fmt.Sprintf("!! PANIC !! Recover from panic:"))
 			context.Stack(err)
+			context.Log("%s", debug.Stack())
 
 			util.ResponseInternalError(w, context.Logger, err)
 

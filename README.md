@@ -10,12 +10,12 @@ The idea behind this project is to create a simple and general purpose tasking m
 A tasking manager is an application which helps multiple people to work in the same region without interfering with each other.
 Usually such region is divided into squares and only one mapper at a time works on one square.
 
-<img align="center" style="width: 100%; max-width: 1128px;" src="https://raw.githubusercontent.com/hauke96/simple-task-manager/master/screenshot.png">
+<img align="center" style="width: 100%; max-width: 1128px;" src="https://raw.githubusercontent.com/hauke96/simple-task-manager/master/screenshot.webp">
 
 # How does it work?
 
 A user can create a **project** with consists of a large region on the map (e.g. a city district).
-This region is divided into smaller areas (e.g. 1x1km large squares) the so called **tasks**.
+This region is divided into smaller areas (e.g. 1x1km large squares) the so-called **tasks**.
 It is also possible to create tasks by **importing geometries** from a file (e.g. a GeoJSON file).
 
 One user at a time can now work on such task and this user is able to update the **process** of the task by setting the **process points**.
@@ -28,10 +28,9 @@ When one user works on a task, no other user is able to also update the process 
 *(aka: What's wrong with the HOT Tasking Manager?)*
 
 I personally don't like the HOT Tasking Manager that much for several reasons (not that intuitive UI, iD integration, automatically getting unassigned from a task after some time, etc.).
+Things might have changed since I last used it, but that were my thoughts some time ago.
 
-Alternatives are e.g. the MapCraft tasking manager, which is very old and doesn't even compile anymore when you clone the repo.
-Setting up MapCraft is therefore not possible anymore (if you don't want to spend hours and hours on old PHP code with broken dependencies).
-
+Alternatives are e.g. the MapCraft or the damn project, but neither worked for me personally.
 So yes, basically this is another tasking manager, however, this is not a clone of an existing one.
 
 # Documentation
@@ -46,4 +45,4 @@ Feel free to create an **issue** or **pull request**.
 
 For further information, take a look at the [CONTRIBUTING.md](./CONTRIBUTING.md).
 
-**Wanna start coding?** Read the [doc/development/README.md](doc/development/README.md) to learn how to get started.
+**Want to start coding?** Read the [doc/development/README.md](doc/development/README.md) to learn how to get started.

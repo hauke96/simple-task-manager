@@ -11,9 +11,9 @@ import { WebsocketClientService } from '../common/services/websocket-client.serv
 import { NotificationService } from '../common/services/notification.service';
 import { EventEmitter } from '@angular/core';
 import { WebsocketMessage } from '../common/entities/websocket-message';
-import { Feature } from 'ol';
-import { Geometry } from 'ol/geom';
 import { TranslateService } from '@ngx-translate/core';
+import { CommentService } from '../comments/comment.service';
+import { Comment, CommentDto } from '../comments/comment.material';
 
 describe(ProjectService.name, () => {
   let service: ProjectService;
@@ -23,6 +23,7 @@ describe(ProjectService.name, () => {
   let websocketClient: WebsocketClientService;
   let notificationService: NotificationService;
   let translationService: TranslateService;
+  let commentService: CommentService;
 
   beforeEach(() => {
     taskService = {} as TaskService;
@@ -33,8 +34,22 @@ describe(ProjectService.name, () => {
     } as WebsocketClientService;
     notificationService = {} as NotificationService;
     translationService = {} as TranslateService;
+    commentService = {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      toCommentsWithUserMap(dtos: CommentDto[], userMap: Map<string, User>): Comment[] {
+        return [] as Comment[];
+      }
+    } as CommentService;
 
-    service = new ProjectService(taskService, userService, httpClient, websocketClient, notificationService, translationService);
+    service = new ProjectService(
+      taskService,
+      userService,
+      httpClient,
+      notificationService,
+      translationService,
+      commentService,
+      websocketClient
+    );
   });
 
   it('should be created', () => {
@@ -44,20 +59,18 @@ describe(ProjectService.name, () => {
   it('should create tasks when creating project', done => {
     // Arrange
     const taskDtos = [
-      new TaskDto('1', 0, 100, TestTaskGeometry, '1'),
-      new TaskDto('2', 0, 100, TestTaskGeometry, '2'),
-      new TaskDto('3', 0, 100, TestTaskGeometry)
+      new TaskDto('1', 0, 100, TestTaskGeometry, [], '1'),
+      new TaskDto('2', 0, 100, TestTaskGeometry, [], '2'),
+      new TaskDto('3', 0, 100, TestTaskGeometry, [])
     ];
     const tasks = taskDtoToTask(taskDtos);
     const format = new GeoJSON();
-    const projectDto = new ProjectDto('124', 'Project 124', 'bar', ['2'], taskDtos, '2', false, new Date());
+    const projectDto = new ProjectDto('124', 'Project 124', 'bar', ['2'], taskDtos, '2', false, new Date(), [], 'OSM');
 
     httpClient.post = jest.fn().mockReturnValue(of(projectDto));
     userService.getUsersByIds = jest.fn().mockReturnValue(of([new User('U1', '1'), new User('U2', '2')]));
-    taskService.toTaskWithUsers = jest.fn().mockImplementation((dto: TaskDto, users: User[]) => taskDtoToTask([dto])[0]);
-    taskService.createNewTasks = jest.fn().mockImplementation((geom: string[], maxProcessPoints: number) => {
-      return of(tasks);
-    });
+    taskService.toTaskWithUsers = jest.fn().mockImplementation((dto: TaskDto) => taskDtoToTask([dto])[0]);
+    taskService.createNewTasks = jest.fn().mockImplementation(() => of(tasks));
 
     // Act & Assert
     service.createNewProject('project name', 100, 'lorem ipsum',
@@ -65,7 +78,7 @@ describe(ProjectService.name, () => {
         format.readFeature(TestTaskGeometry),
         format.readFeature(TestTaskGeometry),
         format.readFeature(TestTaskGeometry)
-      ], ['user'], 'user')
+      ], ['user'], 'user', 'OSM')
       .subscribe({
         next: p => {
           // Only these properties can be checked. All others (like 'owner') are set by the server, which we don't use here
@@ -88,10 +101,10 @@ describe(ProjectService.name, () => {
     const tasks = taskDtoToTask(taskDtos);
     const date = new Date();
 
-    taskService.toTaskWithUsers = jest.fn().mockImplementation((dto: TaskDto, _: User[]) => taskDtoToTask([dto])[0]);
+    taskService.toTaskWithUsers = jest.fn().mockImplementation((dto: TaskDto) => taskDtoToTask([dto])[0]);
 
-    const dto1 = new ProjectDto('123', 'Project 123', 'foo', ['1'], [taskDtos[0]], '1', false, date);
-    const dto2 = new ProjectDto('124', 'Project 124', 'bar', ['2'], [taskDtos[1]], '2', false, date);
+    const dto1 = new ProjectDto('123', 'Project 123', 'foo', ['1'], [taskDtos[0]], '1', false, date, [], 'OSM');
+    const dto2 = new ProjectDto('124', 'Project 124', 'bar', ['2'], [taskDtos[1]], '2', false, date, [], 'OSM');
     httpClient.get = jest.fn().mockReturnValue(of([dto1, dto2]));
 
     service.getProjects().subscribe({
@@ -123,9 +136,9 @@ describe(ProjectService.name, () => {
     const tasks = taskDtoToTask(taskDtos);
     const date = new Date();
 
-    taskService.toTaskWithUsers = jest.fn().mockImplementation((d: TaskDto, _: User[]) => taskDtoToTask([d])[0]);
+    taskService.toTaskWithUsers = jest.fn().mockImplementation((d: TaskDto) => taskDtoToTask([d])[0]);
 
-    const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '3'], [taskDtos[0]], '1', false, date);
+    const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '3'], [taskDtos[0]], '1', false, date, [], 'OSM');
     httpClient.get = jest.fn().mockReturnValue(of(dto));
 
     service.getProject('123').subscribe({
@@ -152,10 +165,10 @@ describe(ProjectService.name, () => {
   });
 
   it('should return project after invitation', () => {
-    const {users, taskDtos} = setUpUserAndTasks();
+    const {taskDtos} = setUpUserAndTasks();
     const date = new Date();
 
-    const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2'], [taskDtos[0]], '2', true, date);
+    const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2'], [taskDtos[0]], '2', true, date, [], 'OSM');
     httpClient.get = jest.fn().mockReturnValue(of(dto));
 
     // TODO finish test
@@ -167,9 +180,9 @@ describe(ProjectService.name, () => {
     const date = new Date();
     const changeSpy = jest.fn();
 
-    taskService.toTaskWithUsers = jest.fn().mockImplementation((d: TaskDto, _: User[]) => taskDtoToTask([d])[0]);
+    taskService.toTaskWithUsers = jest.fn().mockImplementation((d: TaskDto) => taskDtoToTask([d])[0]);
 
-    const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2'], taskDtos, '2', true, date);
+    const dto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2'], taskDtos, '2', true, date, [], 'OSM');
     httpClient.delete = jest.fn().mockReturnValue(of(dto));
     service.projectChanged.subscribe(changeSpy);
 
@@ -203,11 +216,12 @@ describe(ProjectService.name, () => {
     const {users, taskDtos} = setUpUserAndTasks();
     const tasks = taskDtoToTask(taskDtos);
     const date = new Date();
+    const josmDataSource = 'OSM';
 
     userService.getUsersByIds = jest.fn().mockImplementation((ids: string[]) => of(users.filter(u => ids.includes(u.uid))));
-    taskService.toTaskWithUsers = jest.fn().mockImplementation((d: TaskDto, _: User[]) => taskDtoToTask([d])[0]);
+    taskService.toTaskWithUsers = jest.fn().mockImplementation((d: TaskDto) => taskDtoToTask([d])[0]);
 
-    const dto: ProjectDto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2', '3'], taskDtos, '2', true, date);
+    const dto: ProjectDto = new ProjectDto('123', 'Project 123', 'foo', ['1', '2', '3'], taskDtos, '2', true, date, [], josmDataSource);
 
     // Execute
     service.toProject(dto).subscribe({
@@ -235,6 +249,8 @@ describe(ProjectService.name, () => {
 
         expect(project.creationDate).toEqual(date);
 
+        expect(project.josmDataSource).toEqual(josmDataSource);
+
         done();
       },
       error: e => fail(e)
@@ -258,35 +274,34 @@ describe(ProjectService.name, () => {
   function taskDtoToTask(tasks: TaskDto[]): Task[] {
     return tasks.map(dto => {
       // TODO This is a re-implementation of the TaskService.toTask function. Extract this into own utility class?
-      const feature = (new GeoJSON().readFeature(dto.geometry) as Feature<Geometry>);
+      const feature = new GeoJSON().readFeature(dto.geometry);
 
       const assignedUser = dto.assignedUser && dto.assignedUserName ? new User(dto.assignedUserName, dto.assignedUser) : undefined;
 
       return new Task(
         dto.id,
-        feature.get('name'),
+        feature.get('name') as string,
         dto.processPoints,
         dto.maxProcessPoints,
         feature,
+        [],
         assignedUser
       );
     });
   }
 
-  function setUpUserAndTasks(): { users: User[], taskDtos: TaskDto[] } {
+  function setUpUserAndTasks(): { users: User[]; taskDtos: TaskDto[] } {
     const users = [
       new User('test user 1', '1'),
       new User('test user 2', '2'),
       new User('test user 3', '3'),
     ];
-    userService.getUsersByIds = jest.fn().mockImplementation((ids: string[]) => {
-      return of(users.filter(u => ids.includes(u.uid)));
-    });
+    userService.getUsersByIds = jest.fn().mockImplementation((ids: string[]) => of(users.filter(u => ids.includes(u.uid))));
 
     const taskDtos = [
-      new TaskDto('7', 0, 100, TestTaskGeometry, users[0].uid, users[0].name),
-      new TaskDto('8', 10, 100, TestTaskGeometry, users[1].uid, users[1].name),
-      new TaskDto('9', 100, 100, TestTaskGeometry)
+      new TaskDto('7', 0, 100, TestTaskGeometry, [], users[0].uid, users[0].name),
+      new TaskDto('8', 10, 100, TestTaskGeometry, [], users[1].uid, users[1].name),
+      new TaskDto('9', 100, 100, TestTaskGeometry, [])
     ];
 
     return {users, taskDtos};

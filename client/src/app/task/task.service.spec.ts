@@ -6,17 +6,26 @@ import { of } from 'rxjs';
 import { Polygon } from 'ol/geom';
 import { User } from '../user/user.material';
 import { UserService } from '../user/user.service';
+import { CommentService } from '../comments/comment.service';
+import { Comment, CommentDto } from '../comments/comment.material';
 
 describe(TaskService.name, () => {
   let service: TaskService;
   let httpClient: HttpClient;
   let userService: UserService;
+  let commentService: CommentService;
 
   beforeEach(() => {
     httpClient = {} as HttpClient;
     userService = {} as UserService;
+    commentService = {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      toCommentsWithUserMap(dtos: CommentDto[], userMap: Map<string, User>): Comment[] {
+        return [] as Comment[];
+      }
+    } as CommentService;
 
-    service = new TaskService(httpClient, userService);
+    service = new TaskService(httpClient, userService, commentService);
   });
 
   it('should be created', () => {
@@ -27,7 +36,7 @@ describe(TaskService.name, () => {
     // Arrange
     const taskChangedSpy = jest.fn();
     service.selectedTaskChanged.subscribe(taskChangedSpy);
-    const task = new Task('id123', '', 10, 100, TestTaskFeature);
+    const task = new Task('id123', '', 10, 100, TestTaskFeature, []);
 
     expect(service.getSelectedTask()).toBeFalsy();
 
@@ -39,141 +48,147 @@ describe(TaskService.name, () => {
     expect(taskChangedSpy).toHaveBeenCalledWith(task);
   });
 
-  it('should call server on create new task', done => {
+  it('should call server on create new task', () => {
     const maxProcessPoints = 100;
 
-    httpClient.post = jest.fn().mockReturnValue(of([new TaskDto('id123', 0, 100, TestTaskGeometry)]));
+    httpClient.post = jest.fn().mockReturnValue(of([new TaskDto('id123', 0, 100, TestTaskGeometry, [])]));
+    userService.getUsersByIds = jest.fn().mockReturnValue(of([]));
 
+    let receivedTasks: Task[] = [];
     service.createNewTasks([TestTaskGeometry], maxProcessPoints)
       .subscribe({
-        next: (newTasks: Task[]) => {
-          expect(newTasks.length).toEqual(1);
-
-          const expectedCoordinated = (TestTaskFeature.getGeometry() as Polygon).getCoordinates();
-
-          const t = newTasks[0];
-          expect(t).toBeTruthy();
-          expect(t.id).toEqual('id123');
-          expect((t.geometry.getGeometry() as Polygon).getCoordinates()).toEqual(expectedCoordinated);
-          expect(t.maxProcessPoints).toEqual(maxProcessPoints);
-          expect(t.processPoints).toEqual(0);
-          expect(t.assignedUser).toBeFalsy();
-
-          done();
-        },
+        next: (newTasks: Task[]) => receivedTasks = newTasks,
         error: e => fail(e)
       });
+
+    expect(receivedTasks.length).toEqual(1);
+
+    const expectedCoordinated = (TestTaskFeature.getGeometry() as Polygon).getCoordinates();
+    const t = receivedTasks[0];
+    expect(t).toBeTruthy();
+    expect(t.id).toEqual('id123');
+    expect((t.geometry.getGeometry() as Polygon).getCoordinates()).toEqual(expectedCoordinated);
+    expect(t.maxProcessPoints).toEqual(maxProcessPoints);
+    expect(t.processPoints).toEqual(0);
+    expect(t.assignedUser).toBeFalsy();
   });
 
-  it('should call server to set process points', done => {
+  it('should call server to set process points', () => {
     const newProcessPoints = 50;
-    const task = new Task('id123', '', 10, 100, TestTaskFeature);
+    const task = new Task('id123', '', 10, 100, TestTaskFeature, []);
     service.selectTask(task);
 
-    httpClient.post = jest.fn().mockReturnValue(of(new TaskDto('id123', newProcessPoints, 100, TestTaskGeometry)));
+    httpClient.post = jest.fn().mockReturnValue(of(new TaskDto('id123', newProcessPoints, 100, TestTaskGeometry, [])));
+    userService.getUsersByIds = jest.fn().mockReturnValue(of([]));
 
+    let receivedTask: Task | undefined;
     service.setProcessPoints('id123', newProcessPoints)
       .subscribe({
-        next: t => {
-          expect(t).toBeTruthy();
-          expect(t.processPoints).toEqual(newProcessPoints);
-          done();
-        },
+        next: t => receivedTask = t,
         error: e => fail(e)
       });
+
+    expect(receivedTask).toBeTruthy();
+    expect(receivedTask?.processPoints).toEqual(newProcessPoints);
   });
 
-  it('should cancel setting process points when other task selected', done => {
+  it('should cancel setting process points when other task selected', () => {
     const newProcessPoints = 50;
-    const task = new Task('different-task', '', 10, 100, TestTaskFeature);
+    const task = new Task('different-task', '', 10, 100, TestTaskFeature, []);
     service.selectTask(task);
 
     httpClient.post = jest.fn();
 
+    let hadError = false;
     service.setProcessPoints('id123', newProcessPoints)
-      .subscribe({
-        next: t => fail('Other task was selected'),
-        error: () => {
-          expect(httpClient.post).not.toHaveBeenCalled();
-          done();
-        }
-      });
-  });
-
-  it('should call server on assign', done => {
-    const task = new Task('id123', '', 10, 100, TestTaskFeature);
-    const userToAssign = 'mapper-dave';
-    service.selectTask(task);
-
-    httpClient.post = jest.fn().mockReturnValue(of(new TaskDto('id123', 10, 100, TestTaskGeometry, '1')));
-    userService.getUsersByIds = jest.fn().mockReturnValue(of([new User(userToAssign, '1')]));
-
-    service.assign('id123')
-      .subscribe({
-        next: (t: Task | undefined) => {
-          expect(t).not.toEqual(undefined);
-          expect(t?.assignedUser).toBeTruthy();
-          expect(t?.assignedUser?.uid).toEqual('1');
-          expect(t?.assignedUser?.name).toEqual(userToAssign);
-          done();
-        },
-        error: e => fail(e)
-      });
-  });
-
-  it('should abort assign when other task selected', done => {
-    const task = new Task('different-id', '', 10, 100, TestTaskFeature);
-    httpClient.post = jest.fn();
-
-    service.selectTask(task);
-
-    service.assign('id123')
       .subscribe({
         next: () => fail('Other task was selected'),
         error: () => {
-          expect(httpClient.post).not.toHaveBeenCalled();
-          done();
+          hadError = true;
         }
       });
+
+    expect(httpClient.post).not.toHaveBeenCalled();
+    expect(hadError).toBeTruthy();
   });
 
-  it('should call server on unassign', done => {
-    const userToUnassign = 'mapper-dave';
-    const task = new Task('id123', '', 10, 100, TestTaskFeature, new User(userToUnassign, '2'));
+  it('should call server on assign', () => {
+    const task = new Task('id123', '', 10, 100, TestTaskFeature, []);
+    const userToAssign = 'mapper-dave';
     service.selectTask(task);
 
-    httpClient.delete = jest.fn().mockReturnValue(of(new TaskDto('id123', 10, 100, TestTaskGeometry)));
+    httpClient.post = jest.fn().mockReturnValue(of(new TaskDto('id123', 10, 100, TestTaskGeometry, [], '1')));
+    userService.getUsersByIds = jest.fn().mockReturnValue(of([new User(userToAssign, '1')]));
 
-    service.unassign('id123')
+    let receivedTask: Task | undefined;
+    service.assign('id123')
       .subscribe({
-        next: t => {
-          expect(t).toBeTruthy();
-          expect(t.assignedUser).toEqual(undefined);
-          done();
-        },
+        next: (t: Task | undefined) => receivedTask = t,
         error: e => fail(e)
       });
+
+    expect(receivedTask).not.toBeUndefined();
+    expect(receivedTask?.assignedUser).toBeTruthy();
+    expect(receivedTask?.assignedUser?.uid).toEqual('1');
+    expect(receivedTask?.assignedUser?.name).toEqual(userToAssign);
   });
 
-  it('should abort unassign when other task selected', done => {
-    const userToUnassign = 'mapper-dave';
-    const task = new Task('different-id', '', 10, 100, TestTaskFeature, new User(userToUnassign, '2'));
+  it('should abort assign when other task selected', () => {
+    const task = new Task('different-id', '', 10, 100, TestTaskFeature, []);
     httpClient.post = jest.fn();
 
     service.selectTask(task);
 
+    let hadError = false;
+    service.assign('id123')
+      .subscribe({
+        next: () => fail('Other task was selected'),
+        error: () => hadError = true
+      });
+
+    expect(httpClient.post).not.toHaveBeenCalled();
+    expect(hadError).toBeTruthy();
+  });
+
+  it('should call server on unassign', () => {
+    const userToUnassign = 'mapper-dave';
+    const task = new Task('id123', '', 10, 100, TestTaskFeature, [], new User(userToUnassign, '2'));
+    service.selectTask(task);
+
+    httpClient.delete = jest.fn().mockReturnValue(of(new TaskDto('id123', 10, 100, TestTaskGeometry, [])));
+    userService.getUsersByIds = jest.fn().mockReturnValue(of([new User(userToUnassign, '2')]));
+
+    let receivedTask: Task | undefined;
     service.unassign('id123')
       .subscribe({
-        next: t => fail('Other task was selected'),
-        error: () => {
-          expect(httpClient.post).not.toHaveBeenCalled();
-          done();
-        }
+        next: t => receivedTask = t,
+        error: e => fail(e)
       });
+
+    expect(receivedTask).toBeTruthy();
+    expect(receivedTask?.assignedUser).toEqual(undefined);
+  });
+
+  it('should abort unassign when other task selected', () => {
+    const userToUnassign = 'mapper-dave';
+    const task = new Task('different-id', '', 10, 100, TestTaskFeature, [], new User(userToUnassign, '2'));
+    httpClient.post = jest.fn();
+
+    service.selectTask(task);
+
+    let hadError = false;
+    service.unassign('id123')
+      .subscribe({
+        next: () => fail('Other task was selected'),
+        error: () => hadError = true
+      });
+
+    expect(httpClient.post).not.toHaveBeenCalled();
+    expect(hadError).toBeTruthy();
   });
 
   it('should calculate the extent correctly', () => {
-    const task = new Task('id123', '', 10, 100, TestTaskFeature);
+    const task = new Task('id123', '', 10, 100, TestTaskFeature, []);
 
     const extent: Extent = service.getExtent(task);
 
@@ -195,7 +210,7 @@ describe(TaskService.name, () => {
       '<nd ref=\'-1\' />' +
       '</way></osm>';
 
-    const task = new Task('id123', '', 10, 100, TestTaskFeature);
+    const task = new Task('id123', '', 10, 100, TestTaskFeature, []);
 
     const osmString = service.getGeometryAsOsm(task);
 

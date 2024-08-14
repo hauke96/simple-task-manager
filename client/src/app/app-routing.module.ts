@@ -7,7 +7,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProjectComponent } from './project/project/project.component';
 import { ProjectCreationComponent } from './project-creation/project-creation/project-creation.component';
 import { AllProjectsResolver } from './project/all-projects.resolver';
-import { ProjectResolver } from './project/project.resolver';
+import { projectResolver } from './project/project.resolver';
 import { SelectedLanguageGuard } from './common/selected-language.guard';
 import { ConfigResolver } from './config/config.resolver';
 
@@ -32,7 +32,7 @@ const routes: Routes = [
     component: ProjectComponent,
     canActivate: [AuthGuard, SelectedLanguageGuard],
     resolve: {
-      project: ProjectResolver,
+      project: projectResolver,
       config: ConfigResolver
     }
   },

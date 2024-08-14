@@ -18,3 +18,9 @@
 .lnr-warning {
 	margin-right: $space-small;
 }
+
+button.selected:hover,
+.selected {
+	border-left: 2px solid $color-mid;
+	background-color: $color-lighter;
+}
