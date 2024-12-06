@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -47,74 +47,68 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { IconButtonComponent } from './ui/icon-button/icon-button.component';
 import { CommentComponent } from './comments/comment/comment.component';
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    DashboardComponent,
-    LoginComponent,
-    OauthLandingComponent,
-    ProjectListComponent,
-    ProjectComponent,
-    TaskListComponent,
-    TaskDetailsComponent,
-    TaskMapComponent,
-    FooterComponent,
-    ProjectCreationComponent,
-    TabsComponent,
-    UserListComponent,
-    UserInvitationComponent,
-    ProjectSettingsComponent,
-    NotificationComponent,
-    ToolbarComponent,
-    ShapeDivideComponent,
-    ShapeUploadComponent,
-    MaxValidatorDirective,
-    MinValidatorDirective,
-    ShapeRemoteComponent,
-    LanguageSelectionComponent,
-    DrawingToolbarComponent,
-    TaskDraftListComponent,
-    ProjectPropertiesComponent,
-    TaskEditComponent,
-    ZoomControlComponent,
-    ProgressBarComponent,
-    TaskTitlePipe,
-    ProjectImportComponent,
-    CopyProjectComponent,
-    MapComponent,
-    IconButtonComponent,
-    CommentComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    FormsModule,
-    HttpClientModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: (httpClient: HttpClient) => new TranslateHttpLoader(httpClient),
-        deps: [HttpClient],
-      },
-    })
-  ],
-  providers: [
-    SelectedLanguageGuard,
-    AuthGuard,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: LoggedInInterceptor,
-      multi: true
-    },
-    {
-      provide: ErrorHandler,
-      useClass: GlobalErrorHandler
-    }
-  ],
-  exports: [
-    IconButtonComponent
-  ],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        DashboardComponent,
+        LoginComponent,
+        OauthLandingComponent,
+        ProjectListComponent,
+        ProjectComponent,
+        TaskListComponent,
+        TaskDetailsComponent,
+        TaskMapComponent,
+        FooterComponent,
+        ProjectCreationComponent,
+        TabsComponent,
+        UserListComponent,
+        UserInvitationComponent,
+        ProjectSettingsComponent,
+        NotificationComponent,
+        ToolbarComponent,
+        ShapeDivideComponent,
+        ShapeUploadComponent,
+        MaxValidatorDirective,
+        MinValidatorDirective,
+        ShapeRemoteComponent,
+        LanguageSelectionComponent,
+        DrawingToolbarComponent,
+        TaskDraftListComponent,
+        ProjectPropertiesComponent,
+        TaskEditComponent,
+        ZoomControlComponent,
+        ProgressBarComponent,
+        TaskTitlePipe,
+        ProjectImportComponent,
+        CopyProjectComponent,
+        MapComponent,
+        IconButtonComponent,
+        CommentComponent
+    ],
+    exports: [
+        IconButtonComponent
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        AppRoutingModule,
+        FormsModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: (httpClient: HttpClient) => new TranslateHttpLoader(httpClient),
+                deps: [HttpClient],
+            },
+        })], providers: [
+        SelectedLanguageGuard,
+        AuthGuard,
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: LoggedInInterceptor,
+            multi: true
+        },
+        {
+            provide: ErrorHandler,
+            useClass: GlobalErrorHandler
+        },
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppModule {
 }
