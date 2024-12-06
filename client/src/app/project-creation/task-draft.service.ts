@@ -24,6 +24,11 @@ export class TaskDraftService {
   }
 
   public selectTask(id: string): void {
+    if (this.selectedTask?.id == id) {
+      this.deselectTask();
+      return;
+    }
+
     this.selectedTask = this.tasks.find(t => t.id === id);
 
     if (!!this.selectedTask) {
@@ -33,7 +38,7 @@ export class TaskDraftService {
 
   public deselectTask(): void {
     this.selectedTask = undefined;
-    this.taskSelected.next(undefined);
+    this.taskSelected.next();
   }
 
   public getSelectedTask(): TaskDraft | undefined {
