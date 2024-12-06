@@ -89,6 +89,7 @@
     "josm-data-source-label": "Fonte dei dati su JOSM:",
     "subdivide-notice": "Ciò suddivide il compito selezionato in compiti più piccoli della dimensione e forma selezionate.",
     "subdivide-result-too-large-notice": "Il risultato contiene {{amountTasksAfterDividing}} compiti che è un numero troppo grande, sono ammessi al massimo {{maxTasksPerProject}} compiti.",
+    "subdivide-result-empty-notice": "Il compito non può essere suddiviso, perché il risultato sarebbe vuoto.",
     "subdivide-result-way-too-large-notice": "Il risultato sarebbe troppo grande, sono ammessi al massimo {{maxTasksPerProject}} compiti.",
     "subdivide-result-notice": "Avrai in totale {{amountTasksAfterDividing}} compiti.",
     "shape-size": "Dimensione della figura:",
