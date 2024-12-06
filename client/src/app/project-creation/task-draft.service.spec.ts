@@ -35,7 +35,7 @@ describe(TaskDraftService.name, () => {
 
     service.addTasks(tasks);
 
-    const addedShapes = (taskAddedSpy as jest.Mock).mock.calls[0][0] as TaskDraft[];
+    const addedShapes = (taskAddedSpy ).mock.calls[0][0] as TaskDraft[];
     expect(addedShapes.length).toEqual(tasks.length);
     expect(addedShapes.map(f => f.id)).toContain('10');
     expect(addedShapes.map(f => f.id)).toContain('5');
@@ -66,7 +66,7 @@ describe(TaskDraftService.name, () => {
 
     service.addTasks(tasks);
 
-    const addedShapes = (taskAddedSpy as jest.Mock).mock.calls[0][0] as TaskDraft[];
+    const addedShapes = (taskAddedSpy ).mock.calls[0][0] as TaskDraft[];
     expect(addedShapes.length).toEqual(tasks.length);
     expect(addedShapes[0].name).toContain('0');
     expect(addedShapes[1].name).toContain('1');

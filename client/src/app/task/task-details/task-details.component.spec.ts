@@ -310,7 +310,7 @@ describe(TaskDetailsComponent.name, () => {
     describe('open in JOSM shortcut', () => {
       beforeEach(() => {
         component.projectId = '42';
-        component.josmDataSource = 'OVERPASS'
+        component.josmDataSource = 'OVERPASS';
       });
 
       it('should open task in JOSM on shortcut', () => {

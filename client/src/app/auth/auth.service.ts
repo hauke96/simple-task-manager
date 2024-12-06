@@ -40,9 +40,7 @@ export class AuthService {
       ['height', h],
       ['left', screen.width / 2 - w / 2],
       ['top', screen.height / 2 - h / 2]
-    ].map(x => {
-      return x.join('=');
-    }).join(',');
+    ].map(x => x.join('=')).join(',');
 
     window.open(environment.url_auth + '?t=' + new Date().getTime(), 'oauth_window', settings);
 

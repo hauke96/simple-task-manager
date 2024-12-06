@@ -151,12 +151,8 @@ export class TaskDraftService {
    */
   private sortTasksById(tasks: TaskDraft[]): TaskDraft[] {
     return tasks
-      .filter(f => {
-        return this.hasIntegerId(f);
-      })
-      .sort((f1: TaskDraft, f2: TaskDraft) => {
-        return +(f1?.id ?? 0) - +(f2?.id ?? 0);
-      });
+      .filter(f => this.hasIntegerId(f))
+      .sort((f1: TaskDraft, f2: TaskDraft) => +(f1?.id ?? 0) - +(f2?.id ?? 0));
   }
 
   /**

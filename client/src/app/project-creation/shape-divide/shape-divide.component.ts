@@ -76,19 +76,19 @@ export class ShapeDivideComponent implements OnInit {
 
   public onDivideButtonClicked(): void {
     if (!this.canDivideTasks) {
-      this.notificationService.addError("Dividing tasks is not possible (e.g. the number of resulting tasks is too low or too high).")
+      this.notificationService.addError('Dividing tasks is not possible (e.g. the number of resulting tasks is too low or too high).');
       return;
     }
 
     const taskDrafts = this.createTaskDrafts();
     if (!taskDrafts || taskDrafts.length === 0) {
-      this.notificationService.addWarning("Cannot subdivide task: The resulted subdivision was empty.")
+      this.notificationService.addWarning('Cannot subdivide task: The resulted subdivision was empty.');
       return;
     }
 
     const selectedTaskId = this.taskDraftService.getSelectedTask()?.id;
     if (!selectedTaskId) {
-      this.notificationService.addError("Cannot subdivide task: No tasks is currently selected.")
+      this.notificationService.addError('Cannot subdivide task: No tasks is currently selected.');
       return;
     }
 

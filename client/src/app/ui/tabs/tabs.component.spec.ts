@@ -6,9 +6,7 @@ describe(TabsComponent.name, () => {
   let component: TabsComponent;
   let fixture: MockedComponentFixture<TabsComponent, any>;
 
-  beforeEach(() => {
-    return MockBuilder(TabsComponent, AppModule);
-  });
+  beforeEach(() => MockBuilder(TabsComponent, AppModule));
 
   beforeEach(() => {
     fixture = MockRender(TabsComponent, {

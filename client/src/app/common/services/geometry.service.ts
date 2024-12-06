@@ -49,7 +49,7 @@ export class GeometryService {
 
   private dataToFeatures(format: FeatureFormat, data: string | ArrayBuffer): Feature<Geometry>[] {
     try {
-      const features = format.readFeatures(data) as Feature<Geometry>[];
+      const features = format.readFeatures(data) ;
 
       if (!features || features.length === 0) {
         return [];
