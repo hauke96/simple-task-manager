@@ -89,6 +89,7 @@
     "josm-data-source-label": "JOSM data source:",
     "subdivide-notice": "This divides the selected task into smaller tasks of the selected shape and size.",
     "subdivide-result-too-large-notice": "Result with {{amountTasksAfterDividing}} tasks is too large, only {{maxTasksPerProject}} tasks allowed.",
+    "subdivide-result-empty-notice": "The task cannot be divided, because the result would be empty.",
     "subdivide-result-way-too-large-notice": "Result would be way too large, only {{maxTasksPerProject}} tasks allowed.",
     "subdivide-result-notice": "You will have {{amountTasksAfterDividing}} tasks in total.",
     "shape-size": "Shape size:",

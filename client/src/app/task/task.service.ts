@@ -139,7 +139,7 @@ export class TaskService {
         break;
       case 'MultiPolygon':
         const multiPolygon = geometry as MultiPolygon;
-        const polygon = multiPolygon.getPolygon(0) as Polygon;
+        const polygon = multiPolygon.getPolygon(0) ;
         coordinateString = polygon.getCoordinates()[0].map(c => c[1] + ' ' + c[0]).join(' ');
         break;
       default:
@@ -269,14 +269,14 @@ export class TaskService {
     const taskFeature = task.geometry;
 
     let coordinates: Coordinate[] = [];
-    let taskGeometry = taskFeature.getGeometry();
+    const taskGeometry = taskFeature.getGeometry();
     switch (taskGeometry?.getType()) {
       case 'Polygon':
         coordinates = (taskGeometry as Polygon).getCoordinates()[0];
         break;
       case 'MultiPolygon':
         const multiPolygon = taskGeometry as MultiPolygon;
-        const polygon = multiPolygon.getPolygon(0) as Polygon;
+        const polygon = multiPolygon.getPolygon(0) ;
         coordinates = polygon.getCoordinates()[0];
         break;
       default:

@@ -6,9 +6,7 @@ describe(ToolbarComponent.name, () => {
   let component: ToolbarComponent;
   let fixture: MockedComponentFixture<ToolbarComponent>;
 
-  beforeEach(() => {
-    return MockBuilder(ToolbarComponent, AppModule);
-  });
+  beforeEach(() => MockBuilder(ToolbarComponent, AppModule));
 
   beforeEach(() => {
     fixture = MockRender(ToolbarComponent);

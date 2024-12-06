@@ -10,7 +10,7 @@ export class TaskTitlePipe implements PipeTransform {
       return '';
     }
 
-    const task = value as Task;
+    const task = value ;
     return !task.name ? task.id : task.name;
   }
 }

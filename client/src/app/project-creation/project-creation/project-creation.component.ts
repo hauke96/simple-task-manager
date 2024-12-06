@@ -294,7 +294,7 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
     // SELECT
     this.selectInteraction = new Select({
       layers: [this.vectorLayer],
-      style: undefined
+      style: null
     });
     this.selectInteraction.on('select', (e: SelectEvent) => {
       if (!!e.selected[0]) {

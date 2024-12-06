@@ -46,23 +46,31 @@ describe(ShapeDivideComponent.name, () => {
       expect(component).toBeTruthy();
     });
 
-    it('should emit event when clicked on divide button', () => {
-      // Execute the same test for all supported shapes
-      ['squareGrid', 'hexGrid', 'triangleGrid'].forEach(g => {
-        component.gridCellShape = g;
-        component.onDivideButtonClicked();
-      });
+    // Execute the same test for all supported shapes
+    ['squareGrid', 'hexGrid', 'triangleGrid'].forEach(s => {
+      it(`should emit event when clicked on divide button for '${s}' shape`, () => {
+        // Arrange
+        notificationService.addError = jest.fn();
+        component.gridCellShape = s;
+        component.gridCellSize = 100;
+        component.taskDividePropertyChanged();
 
-      expect(taskDraftService.removeTask).toHaveBeenCalledWith('123');
-      expect(taskDraftService.addTasks).toHaveBeenCalled();
+        // Act
+        component.onDivideButtonClicked();
+
+        // Assert
+        expect(taskDraftService.removeTask).toHaveBeenCalledWith('123');
+        expect(taskDraftService.addTasks).toHaveBeenCalled();
+        expect(notificationService.addError).not.toHaveBeenCalled();
+      });
     });
 
     // Execute the same test for these NOT supported shapes
-    ['', 'fooGrid', 'null', 'undefined', null, undefined].forEach(g => {
-      it(`should not divide anything on shape type '${g}'`, () => {
+    ['', 'fooGrid', 'null', 'undefined', null, undefined].forEach(s => {
+      it(`should not divide anything on shape type '${s}'`, () => {
         // Arrange
         notificationService.addError = jest.fn();
-        component.gridCellShape = g as string;
+        component.gridCellShape = s as string;
 
         // Act
         component.onDivideButtonClicked();
@@ -75,11 +83,11 @@ describe(ShapeDivideComponent.name, () => {
     });
 
     // Execute the same test for these NOT supported sizes
-    [null, undefined, -1, -100].forEach(g => {
-      it(`should not divide anything on invalid shape size '${g}'`, () => {
+    [null, undefined, -1, -100].forEach(s => {
+      it(`should not divide anything on invalid shape size '${s}'`, () => {
         // Arrange
         notificationService.addError = jest.fn();
-        component.gridCellSize = g as number;
+        component.gridCellSize = s as number;
 
         // Act
         component.onDivideButtonClicked();

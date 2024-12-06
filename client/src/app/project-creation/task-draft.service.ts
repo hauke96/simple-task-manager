@@ -24,6 +24,11 @@ export class TaskDraftService {
   }
 
   public selectTask(id: string): void {
+    if (this.selectedTask?.id == id) {
+      this.deselectTask();
+      return;
+    }
+
     this.selectedTask = this.tasks.find(t => t.id === id);
 
     if (!!this.selectedTask) {
@@ -33,7 +38,7 @@ export class TaskDraftService {
 
   public deselectTask(): void {
     this.selectedTask = undefined;
-    this.taskSelected.next(undefined);
+    this.taskSelected.next();
   }
 
   public getSelectedTask(): TaskDraft | undefined {
@@ -146,12 +151,8 @@ export class TaskDraftService {
    */
   private sortTasksById(tasks: TaskDraft[]): TaskDraft[] {
     return tasks
-      .filter(f => {
-        return this.hasIntegerId(f);
-      })
-      .sort((f1: TaskDraft, f2: TaskDraft) => {
-        return +(f1?.id ?? 0) - +(f2?.id ?? 0);
-      });
+      .filter(f => this.hasIntegerId(f))
+      .sort((f1: TaskDraft, f2: TaskDraft) => +(f1?.id ?? 0) - +(f2?.id ?? 0));
   }
 
   /**

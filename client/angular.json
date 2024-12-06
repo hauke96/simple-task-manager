@@ -15,11 +15,12 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular/build:application",
           "options": {
-            "outputPath": "dist/simple-task-manager",
+            "outputPath": {
+              "base": "dist/simple-task-manager"
+            },
             "index": "src/index.html",
-            "main": "src/main.ts",
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "localize": false,
@@ -47,7 +48,8 @@
               "web-worker",
               "xml-utils/find-tags-by-name.js",
               "xml-utils/get-attribute.js"
-            ]
+            ],
+            "browser": "src/main.ts"
           },
           "configurations": {
             "local": {
@@ -59,13 +61,11 @@
               ]
             },
             "dev": {
-              "buildOptimizer": false,
               "optimization": {
                 "scripts": false,
                 "styles": false,
                 "fonts": false
               },
-              "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
@@ -89,8 +89,6 @@
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": false,
               "budgets": [
                 {
                   "type": "initial",
@@ -108,7 +106,7 @@
           "defaultConfiguration": "dev"
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular/build:dev-server",
           "options": {
             "buildTarget": "simple-task-manager:build"
           },

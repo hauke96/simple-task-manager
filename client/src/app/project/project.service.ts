@@ -211,11 +211,11 @@ export class ProjectService {
       p.description,
       p.tasks.map(dto => this.taskService.toTaskWithUsers(dto, userMap)),
       p.users.map(u => {
-        let rawUser = userMap.get(u);
+        const rawUser = userMap.get(u);
         if (!rawUser) {
           return new User('???', u, false);
         }
-        return rawUser as User;
+        return rawUser ;
       }),
       userMap.get(p.owner) as User,
       p.needsAssignment,

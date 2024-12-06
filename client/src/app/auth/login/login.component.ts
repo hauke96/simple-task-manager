@@ -32,7 +32,7 @@ export class LoginComponent {
     const changelogTemplateUrl = 'assets/i18n/changelog.' + this.translationService.currentLang + '.html';
     this.httpClient.get(changelogTemplateUrl, {responseType: 'text'})
       .subscribe({
-        next: response => this.changelogTemplate = response as string,
+        next: response => this.changelogTemplate = response,
         error: () => void 0 // Do nothing in case of error, the user would not be able to do anything here
       });
 
@@ -40,7 +40,7 @@ export class LoginComponent {
     const noticeTemplateUrl = 'assets/i18n/notice.' + this.translationService.currentLang + '.html';
     this.httpClient.get(noticeTemplateUrl, {responseType: 'text'})
       .subscribe({
-        next: response => this.noticeTemplate = response as string,
+        next: response => this.noticeTemplate = response,
         error: () => void 0 // Do nothing in case of error, the user would not be able to do anything here
       });
   }

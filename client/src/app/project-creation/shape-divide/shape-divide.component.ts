@@ -41,7 +41,15 @@ export class ShapeDivideComponent implements OnInit {
   }
 
   public get canDivideTasks(): boolean {
-    return !this.estimatedResultTooLarge && this.amountTasksAfterDividing <= this.maxTasksPerProject;
+    return !this.isResultTooLarge && !this.isPreviewEmpty;
+  }
+
+  public get isResultTooLarge(): boolean {
+    return this.estimatedResultTooLarge || this.amountTasksAfterDividing > this.maxTasksPerProject;
+  }
+
+  public get isPreviewEmpty(): boolean {
+    return !this.previewTasks || this.previewTasks.length === 0;
   }
 
   public get maxTasksPerProject(): number {
@@ -68,16 +76,19 @@ export class ShapeDivideComponent implements OnInit {
 
   public onDivideButtonClicked(): void {
     if (!this.canDivideTasks) {
-      throw new Error('Dividing tasks should not be able');
+      this.notificationService.addError('Dividing tasks is not possible (e.g. the number of resulting tasks is too low or too high).');
+      return;
     }
 
     const taskDrafts = this.createTaskDrafts();
-    if (!taskDrafts) {
+    if (!taskDrafts || taskDrafts.length === 0) {
+      this.notificationService.addWarning('Cannot subdivide task: The resulted subdivision was empty.');
       return;
     }
 
     const selectedTaskId = this.taskDraftService.getSelectedTask()?.id;
     if (!selectedTaskId) {
+      this.notificationService.addError('Cannot subdivide task: No tasks is currently selected.');
       return;
     }
 
@@ -113,16 +124,12 @@ export class ShapeDivideComponent implements OnInit {
 
     const cellSize = this.gridCellSize;
     if (!(cellSize > 0)) {
-      const e = `Invalid cell size ${this.gridCellSize}`;
-      console.error(e);
-      this.notificationService.addError(e);
+      console.error(`Invalid cell size ${this.gridCellSize}`);
       return undefined;
     }
 
     if (!(cellSize > 0)) {
-      const e = `Invalid cell size ${this.gridCellSize}`;
-      console.error(e);
-      this.notificationService.addError(e);
+      console.error(`Invalid cell size ${this.gridCellSize}`);
       return undefined;
     }
 
