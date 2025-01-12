@@ -764,7 +764,7 @@ type swaggerInfo struct {
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
-	Version:     "1.6.1-SNAPSHOT.3",
+	Version:     "1.6.1",
 	Host:        "",
 	BasePath:    "",
 	Schemes:     []string{},
