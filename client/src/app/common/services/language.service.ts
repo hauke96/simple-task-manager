@@ -32,6 +32,7 @@ export class LanguageService {
       new Language('en-US', 'English'),
       new Language('de', 'Deutsch'),
       new Language('es', 'Español'),
+      new Language('it', 'Italiano'),
     ];
   }
 
