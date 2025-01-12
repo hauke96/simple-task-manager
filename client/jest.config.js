@@ -9,7 +9,7 @@ module.exports = {
     "<rootDir>/jest/",
   ],
   transformIgnorePatterns: [
-    "<rootDir>/node_modules/(?!ol|@angular|@ngx-translate|geotiff|observable-fns|quick-lru|color-space|color-rgba|color-parse).+\.(mjs|js)$"
+    "<rootDir>/node_modules/(?!ol|@angular|@ngx-translate|geotiff|observable-fns|quick-lru|color-space|color-rgba|color-parse|rbush|quickselect|pbf).+\.(mjs|js)$"
   ],
   transform: {
     "^.+\\.{ts}$": [

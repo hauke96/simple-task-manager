@@ -1,4 +1,4 @@
-import 'jest-preset-angular/setup-jest';
+import { setupZoneTestEnv } from 'jest-preset-angular/setup-env/zone/index';
 
 window.URL.createObjectURL = () => '';
 
@@ -6,7 +6,7 @@ window.URL.createObjectURL = () => '';
 jest.mock('ol/structs/RBush');
 
 window.fail = (reason: any) => {
-  throw new Error(reason);
+  throw new Error(reason + '');
 };
 
 window.ResizeObserver = jest.fn().mockImplementation(() => ({
@@ -14,3 +14,5 @@ window.ResizeObserver = jest.fn().mockImplementation(() => ({
   unobserve: jest.fn(),
   disconnect: jest.fn(),
 }));
+
+setupZoneTestEnv();

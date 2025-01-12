@@ -14,6 +14,7 @@ import { WebsocketMessage } from '../common/entities/websocket-message';
 import { TranslateService } from '@ngx-translate/core';
 import { CommentService } from '../comments/comment.service';
 import { Comment, CommentDto } from '../comments/comment.material';
+import { Feature } from 'ol';
 
 describe(ProjectService.name, () => {
   let service: ProjectService;
@@ -56,7 +57,7 @@ describe(ProjectService.name, () => {
     expect(service).toBeTruthy();
   });
 
-  it('should create tasks when creating project', done => {
+  it('should create tasks when creating project', (done: jest.DoneCallback) => {
     // Arrange
     const taskDtos = [
       new TaskDto('1', 0, 100, TestTaskGeometry, [], '1'),
@@ -75,9 +76,9 @@ describe(ProjectService.name, () => {
     // Act & Assert
     service.createNewProject('project name', 100, 'lorem ipsum',
       [
-        format.readFeature(TestTaskGeometry),
-        format.readFeature(TestTaskGeometry),
-        format.readFeature(TestTaskGeometry)
+        format.readFeature(TestTaskGeometry) as Feature,
+        format.readFeature(TestTaskGeometry) as Feature,
+        format.readFeature(TestTaskGeometry) as Feature
       ], ['user'], 'user', 'OSM')
       .subscribe({
         next: p => {
@@ -96,7 +97,7 @@ describe(ProjectService.name, () => {
       });
   });
 
-  it('should add users when getting all projects', done => {
+  it('should add users when getting all projects', (done: jest.DoneCallback) => {
     const {users, taskDtos} = setUpUserAndTasks();
     const tasks = taskDtoToTask(taskDtos);
     const date = new Date();
@@ -131,7 +132,7 @@ describe(ProjectService.name, () => {
     });
   });
 
-  it('should add users when getting a specific project', done => {
+  it('should add users when getting a specific project', (done: jest.DoneCallback) => {
     const {users, taskDtos} = setUpUserAndTasks();
     const tasks = taskDtoToTask(taskDtos);
     const date = new Date();
@@ -174,7 +175,7 @@ describe(ProjectService.name, () => {
     // TODO finish test
   });
 
-  it('should remove user correctly and return updated project', done => {
+  it('should remove user correctly and return updated project', (done: jest.DoneCallback) => {
     const {users, taskDtos} = setUpUserAndTasks();
     const tasks = taskDtoToTask(taskDtos);
     const date = new Date();
@@ -212,7 +213,7 @@ describe(ProjectService.name, () => {
     });
   });
 
-  it('should convert DTOs into Projects', done => {
+  it('should convert DTOs into Projects', (done: jest.DoneCallback) => {
     const {users, taskDtos} = setUpUserAndTasks();
     const tasks = taskDtoToTask(taskDtos);
     const date = new Date();
@@ -257,7 +258,7 @@ describe(ProjectService.name, () => {
     });
   });
 
-  it('should return no project for no dto', done => {
+  it('should return no project for no dto', (done: jest.DoneCallback) => {
     service.toProjects([]).subscribe({
       next: (projects: Project[]) => {
         expect(projects).toBeTruthy();
@@ -274,7 +275,7 @@ describe(ProjectService.name, () => {
   function taskDtoToTask(tasks: TaskDto[]): Task[] {
     return tasks.map(dto => {
       // TODO This is a re-implementation of the TaskService.toTask function. Extract this into own utility class?
-      const feature = new GeoJSON().readFeature(dto.geometry);
+      const feature = new GeoJSON().readFeature(dto.geometry) as Feature;
 
       const assignedUser = dto.assignedUser && dto.assignedUserName ? new User(dto.assignedUserName, dto.assignedUser) : undefined;
 
