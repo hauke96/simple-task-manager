@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM golang:1.21-alpine AS builder
+FROM golang:1.23-alpine AS builder
 
 COPY . /stm-server/
 WORKDIR /stm-server/
@@ -7,7 +7,7 @@ WORKDIR /stm-server/
 RUN go build -o ./server .
 
 # Stage 2: Run
-FROM alpine:3.18
+FROM alpine:3.21
 
 RUN mkdir /stm-server
 WORKDIR /stm-server/
