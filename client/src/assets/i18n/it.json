@@ -1,0 +1,168 @@
+{
+  "title": "SimpleTaskManager",
+  "users": "Utenti:",
+  "settings": "Impostazioni:",
+  "description": "Descrizione:",
+  "properties": "Proprietà:",
+  "tasks": "Compiti:",
+  "name": "Nome:",
+  "save-button": "Salva",
+  "done-button": "Completato",
+  "cancel-button": "Annulla",
+  "ok-button": "OK",
+  "meters": "metri",
+  "yes": "Sì",
+  "no": "No",
+  "test-instance-notice": "Questa è una <b>istanza di prova</b> di SimpleTaskManager.",
+  "footer": "Versione: <a href=\"https://github.com/hauke96/simple-task-manager/releases/tag/v{{version}}\" target=\"_blank\">{{version}}</a><span class=\"sep\"></span>Codice sorgente: <a href=\"https://github.com/hauke96/simple-task-manager\" target=\"_blank\">GitHub</a><span class=\"sep\"></span>Licenza: <a href=\"https://github.com/hauke96/simple-task-manager/blob/master/LICENSE\" target=\"_blank\">GPLv3</a><span class=\"sep\"></span>Icone: <a href=\"https://linearicons.com\" target=\"_blank\">Linearicons</a>",
+  "project-has-been-removed": "Il progetto '{{projectName}}' è stato rimosso",
+  "you-have-been-removed": "Sei stato rimosso dal progetto '{{projectName}}'",
+  "feature-upload-error": "Poligoni non esistenti o dati in un formato sconosciuto. I formati supportati sono: GeoJson, OSM-XML, GPX, KML, EsriJson e WKT.",
+  "file-upload-error": "Impossibile caricare sul server il file '{{fileName}}'",
+  "login-failed": "Siete usciti perché l’autorizzazione non ha avuto successo",
+  "language-selection": "Selezione della lingua:",
+  "login": {
+    "welcome": "Benvenuti su <br><b>SimpleTaskManager</b>",
+    "welcome-subtitle": "Il modo semplice e gratuito di usare un tasking manager per lavorare in maniera collaborativa su <a href=\"https://openstreetmap.org\" target=\"_blank\">OpenStreetMap</a>. Per saperne di più su STM consulta la <a href=\"https://wiki.openstreetmap.org/wiki/SimpleTaskManager\" target=\"_blank\">wiki OSM</a>.",
+    "login-button": "Accedi"
+  },
+  "dashboard": {
+    "welcome": "Benvenuto {{userName}} :)",
+    "logout-button": "Esci",
+    "create-project": "Crea progetto",
+    "import-project": "Importa progetto"
+  },
+  "project": {
+    "back-button": "Indietro",
+    "title": "Progetto:",
+    "creation-date": "Creato il:",
+    "description": "Descrizione:",
+    "could-not-remove-user": "Impossibile rimuovere utente",
+    "could-not-invite-user": "Impossibile rimuovere l’utente {{userName}}",
+    "tab-titles": {
+      "tasks": "Compiti",
+      "users": "Utente",
+      "settings": "Impostazioni",
+      "list": "Lista",
+      "comments": "Commenti"
+    },
+    "live-updates-init-error": "Impossibile inizializzare gli aggiornamenti in tempo reale",
+    "could-not-load-project": "Impossibile caricare il progetto '{{projectId}}'",
+    "could-not-load-projects": "Impossibile caricare i progetti",
+    "could-not-add-task-comment": "Impossibile aggiungere il commento"
+  },
+  "project-list": {
+    "projects": "Progetti:",
+    "no-project-notice": "Non hai alcun progetto.",
+    "you-own-this-project-notice": "* sei il proprietario di questo progetto"
+  },
+  "project-settings": {
+    "delete-button": "Cancella progetto",
+    "really-delete-notice": "Vuoi veramente eliminare il progetto?",
+    "leave-button": "Lascia il progetto",
+    "really-leave-notice": "Vuoi veramente lasciare il progetto?",
+    "export-button": "Esporta",
+    "successfully-removed": "Progetto rimosso con successo",
+    "successfully-updated": "Progetto aggiornato con successo",
+    "could-not-remove-project": "Impossibile eliminare il progetto",
+    "could-not-leave-project": "Impossibile lasciare il progetto",
+    "could-not-update-project": "Impossibile aggiornare il progetto",
+    "could-not-export-project": "L’esportazione del progetto è fallita"
+  },
+  "project-creation": {
+    "title": "Importa da fonti esterne",
+    "description": "I compiti vengono creati da dei poligoni. Tali geometrie possono essere importate da diverse fonti esterne.",
+    "copy": "Copia dal progetto:",
+    "copy-notice": "Copia e importa da un progetto esistente di cui fai parte.",
+    "no-project-notice": "Nessun progetto disponibile!",
+    "loading-projects": "Caricamento dei progetti…",
+    "available-projects": "Progetti disponibili:",
+    "import-button": "Importa",
+    "import-heading": "Importa progetto:",
+    "import-notice": "Importa un progetto esistente dal tuo computer. I valori esisntenti nella scheda delle \"Proprietà\" verranno sovrascritti.",
+    "new-polygon": "Disegna un nuovo poligono",
+    "edit-polygon": "Modifica poligono",
+    "remove-polygon": "Rimuovi poligono",
+    "subdivide": "Suddividi:",
+    "upload-project-button": "Carica il progetto sul server",
+    "max-points-label": "Numero max di punti per compito:",
+    "josm-data-source-label": "Fonte dei dati su JOSM:",
+    "subdivide-notice": "Ciò suddivide il compito selezionato in compiti più piccoli della dimensione e forma selezionate.",
+    "subdivide-result-too-large-notice": "Il risultato contiene {{amountTasksAfterDividing}} compiti che è un numero troppo grande, sono ammessi al massimo {{maxTasksPerProject}} compiti.",
+    "subdivide-result-empty-notice": "Il compito non può essere suddiviso, perché il risultato sarebbe vuoto.",
+    "subdivide-result-way-too-large-notice": "Il risultato sarebbe troppo grande, sono ammessi al massimo {{maxTasksPerProject}} compiti.",
+    "subdivide-result-notice": "Avrai in totale {{amountTasksAfterDividing}} compiti.",
+    "shape-size": "Dimensione della figura:",
+    "shape": "Forma:",
+    "square": "quadrato",
+    "hexagon": "esagono",
+    "triangle": "triangolo",
+    "preview-button": "Anteprima",
+    "divide-button": "Dividi",
+    "url-file-format-notice": "URL di dati GeoJSON, OSM-XML, GPX, EsriJson, KML oppure WKT:",
+    "load-button": "Carica",
+    "loading-title": "Caricamento di dati da Overpass:",
+    "load-li-1": "Crea la tua richiesta",
+    "load-li-2": "Clicca su \"Esporta\"",
+    "load-li-3": "Copia il link dopo \"dati grezzi direttamente da\" (clicca col tasto destro e poi scegli \"copia link\")",
+    "load-li-4": "Incolla l’indirizzo URL qui",
+    "upload": "Geometrie da file:",
+    "upload-notice": "Carica un file GeoJSON, OSM-XML, GPX, EsriJson, KML oppure WKT, che contenga i poligoni. Ogni poligono produrrà un compito diverso.",
+    "remote-url-error": "Impossibile caricare i dati dall’indirizzo URL remoto",
+    "upload-file-button": "Carica file",
+    "no-task-yet-notice": "Non sono ancora presenti dei compiti qua. Usa la matita per disegnare i compiti oppure importali attraverso le schede \"Carica \" o \"Remoto\".",
+    "could-not-import-project": "Impossibile importare il progetto '{{projectName}}'",
+    "tab-titles": {
+      "properties": "Proprietà",
+      "tasks": "Compiti",
+      "import": "Importa"
+    },
+    "could-not-create-project": "Impossibile creare il progetto",
+    "remote-heading": "Geometrie da URL:",
+    "overpass-heading": "Geometrie da Overpass:"
+  },
+  "task-details": {
+    "title": "Compito",
+    "assign-to-me": "Assegnalo a me",
+    "assigned-to": "Assegnato a:",
+    "unassign": "Annulla l’assegnazione",
+    "points": "Punti:",
+    "open-in-josm-button": "Apri in JOSM",
+    "open-in-id-button": "Apri in iD",
+    "unable-load-assigned-user": "Impossibile caricare l’utente assegnato",
+    "unable-assign-user": "Impossibile assegnare a utente",
+    "unable-unassign-user": "Impossibile annullare l’assegnazione a utente",
+    "unable-set-process-points": "Impossibile impostare i punti del processo",
+    "unable-load-josm": "Impossibile aprire JOSM. È in esecuzione?"
+  },
+  "task-list": {
+    "you": "(tu)"
+  },
+  "notification": {
+    "loading": "Caricamento…",
+    "error": "ERRORE:",
+    "errors-left": "errori rimanenti",
+    "warning": "AVVISO:",
+    "warnings-left": "avvisi rimanenti",
+    "notifications-left": "notifiche rimanenti"
+  },
+  "zoom-controls": {
+    "zoom-in": "Ingrandisci",
+    "zoom-out": "Rimpicciolisci"
+  },
+  "user": {
+    "invite-button": "Invita",
+    "remove-button": "Rimuovi",
+    "input-placeholder": "Nome utente",
+    "already-member": "L’utente {{user}} è già membro di questo progetto",
+    "unable-load-user": "Impossibile caricare l’ID utente per l’utente {{user}}. L’utente deve aver creato almeno un gruppo di modifiche oppure aver creato/modificato almeno una nota."
+  },
+  "task-map": {
+    "task-done": "COMPLETATO",
+    "you": "tu"
+  },
+  "comment": {
+    "send": "Invia commento (Ctrl+Invio)",
+    "no-comments-yet": "Non c’è ancora niente qua."
+  }
+}

@@ -35,7 +35,7 @@ describe(TaskDraftService.name, () => {
 
     service.addTasks(tasks);
 
-    const addedShapes = (taskAddedSpy as jest.Mock).mock.calls[0][0] as TaskDraft[];
+    const addedShapes = (taskAddedSpy ).mock.calls[0][0] as TaskDraft[];
     expect(addedShapes.length).toEqual(tasks.length);
     expect(addedShapes.map(f => f.id)).toContain('10');
     expect(addedShapes.map(f => f.id)).toContain('5');
@@ -66,7 +66,7 @@ describe(TaskDraftService.name, () => {
 
     service.addTasks(tasks);
 
-    const addedShapes = (taskAddedSpy as jest.Mock).mock.calls[0][0] as TaskDraft[];
+    const addedShapes = (taskAddedSpy ).mock.calls[0][0] as TaskDraft[];
     expect(addedShapes.length).toEqual(tasks.length);
     expect(addedShapes[0].name).toContain('0');
     expect(addedShapes[1].name).toContain('1');
@@ -125,9 +125,10 @@ describe(TaskDraftService.name, () => {
     expect(service.getTasks()).toEqual(tasks);
   });
 
-  it('should select task correctly and fire event', () => {
-    expect(service.getSelectedTask()).toEqual(undefined);
+  it('should select and deselect task correctly and fire event', () => {
+    expect(service.getSelectedTask()).toBeUndefined();
 
+    // Arrange
     const spyEvent = jest.fn();
     service.taskSelected.subscribe(spyEvent);
     const tasks = [
@@ -137,9 +138,18 @@ describe(TaskDraftService.name, () => {
     ];
     // @ts-ignore
     service.tasks = tasks;
+
+    // Act & assert (first select)
     service.selectTask('123');
 
     expect(service.getSelectedTask()?.id).toEqual('123');
+    expect(spyEvent).toHaveBeenCalled();
+    spyEvent.mockReset();
+
+    // Act & assert (second select -> should deselect task)
+    service.selectTask('123');
+
+    expect(service.getSelectedTask()).toBeUndefined();
     expect(spyEvent).toHaveBeenCalled();
   });
 

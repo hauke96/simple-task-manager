@@ -1,47 +1,54 @@
 <form #divisionForm="ngForm">
-	<span>{{'project-creation.subdivide-notice' | translate}}</span>
+	<span>{{ 'project-creation.subdivide-notice' | translate }}</span>
 
 	<div class="hline-with-mb"></div>
 
 	<div class="form-entry flex-line space-between">
-		<span class="input-field-label">{{'project-creation.shape-size' | translate}}</span>
+		<span class="input-field-label">{{ 'project-creation.shape-size' | translate }}</span>
 		<div class="flex-line">
-			<input class="meter-input" type="number" [(ngModel)]="gridCellSize"
+			<input class="meter-input" type="number" min="1" [(ngModel)]="gridCellSize"
 				   (ngModelChange)="taskDividePropertyChanged()" required name="shapeSizeField">
-			<span class="meter-label">{{'meters' | translate}}</span>
+			<span class="meter-label">{{ 'meters' | translate }}</span>
 		</div>
 	</div>
 
 	<div class="form-entry flex-line space-between">
-		<span class="input-field-label">{{'project-creation.shape' | translate}}</span>
+		<span class="input-field-label">{{ 'project-creation.shape' | translate }}</span>
 		<select [(ngModel)]="gridCellShape" (ngModelChange)="taskDividePropertyChanged()" required
 				name="shapeSelection">
-			<option value="squareGrid">{{'project-creation.square' | translate}}</option>
-			<option value="hexGrid">{{'project-creation.hexagon' | translate}}</option>
-			<option value="triangleGrid">{{'project-creation.triangle' | translate}}</option>
+			<option value="squareGrid">{{ 'project-creation.square' | translate }}</option>
+			<option value="hexGrid">{{ 'project-creation.hexagon' | translate }}</option>
+			<option value="triangleGrid">{{ 'project-creation.triangle' | translate }}</option>
 		</select>
 	</div>
 
 	<button (click)="onPreviewWanted()"
 			[disabled]="!divisionForm.form?.valid || !canDivideTasks"
-			[class.selected]="previewModeActive">{{'project-creation.preview-button' | translate}}</button>
+			[class.selected]="previewModeActive">{{ 'project-creation.preview-button' | translate }}
+	</button>
 	<button (click)="onDivideButtonClicked()" [disabled]="!divisionForm.form?.valid || !canDivideTasks"
-			class="divide-button">{{'project-creation.divide-button' | translate}}</button>
+			class="divide-button">{{ 'project-creation.divide-button' | translate }}
+	</button>
 
-	<p class="color-error" *ngIf="!canDivideTasks && !estimatedResultTooLarge">
+	<p class="color-error" *ngIf="isResultTooLarge && !estimatedResultTooLarge">
 		<span class="lnr lnr-warning color-error"></span>
-		{{'project-creation.subdivide-result-too-large-notice' | translate:
-			{
-				amountTasksAfterDividing: amountTasksAfterDividing,
-				maxTasksPerProject: maxTasksPerProject
-        	}
+		{{
+        'project-creation.subdivide-result-too-large-notice' | translate:
+          {
+            amountTasksAfterDividing: amountTasksAfterDividing,
+            maxTasksPerProject: maxTasksPerProject
+          }
 		}}
+	</p>
+	<p class="color-error" *ngIf="isPreviewEmpty && !estimatedResultTooLarge">
+		<span class="lnr lnr-warning color-error"></span>
+		{{ 'project-creation.subdivide-result-empty-notice' | translate:{amountTasksAfterDividing: amountTasksAfterDividing} }}
 	</p>
 	<p class="color-error" *ngIf="estimatedResultTooLarge">
 		<span class="lnr lnr-warning color-error"></span>
-		{{'project-creation.subdivide-result-way-too-large-notice' | translate:{ maxTasksPerProject: maxTasksPerProject } }}
+		{{ 'project-creation.subdivide-result-way-too-large-notice' | translate:{maxTasksPerProject: maxTasksPerProject} }}
 	</p>
 	<p *ngIf="canDivideTasks && !estimatedResultTooLarge"><span class="lnr lnr-checkmark-circle color-okay"></span>
-		{{'project-creation.subdivide-result-notice' | translate:{ amountTasksAfterDividing: amountTasksAfterDividing } }}
+		{{ 'project-creation.subdivide-result-notice' | translate:{amountTasksAfterDividing: amountTasksAfterDividing} }}
 	</p>
 </form>

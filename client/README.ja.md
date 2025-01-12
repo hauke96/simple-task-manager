@@ -1,3 +1,7 @@
+> このページは古くなっています！最新のドキュメントはREADME.mdをご覧ください。
+> 
+> This page is out of date! See README.md for the latest documentation.
+
 # クライアント
 
 これは単純なタスクマネージャのWebアプリケーションです。

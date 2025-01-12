@@ -6,9 +6,7 @@ describe(ZoomControlComponent.name, () => {
   let component: ZoomControlComponent;
   let fixture: MockedComponentFixture<ZoomControlComponent>;
 
-  beforeEach(() => {
-    return MockBuilder(ZoomControlComponent, AppModule);
-  });
+  beforeEach(() => MockBuilder(ZoomControlComponent, AppModule));
 
   beforeEach(() => {
     fixture = MockRender(ZoomControlComponent);
