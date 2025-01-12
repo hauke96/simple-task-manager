@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import BBox, { Feature as TurfFeature, multiPolygon as turfMultiPolygon, polygon as turfPolygon, Units } from '@turf/helpers';
+import { multiPolygon as turfMultiPolygon, polygon as turfPolygon, Units } from '@turf/helpers';
 import squareGrid from '@turf/square-grid';
 import hexGrid from '@turf/hex-grid';
 import triangleGrid from '@turf/triangle-grid';
@@ -8,6 +8,8 @@ import { NotificationService } from '../../common/services/notification.service'
 import { TaskDraft } from '../../task/task.material';
 import { TaskDraftService } from '../task-draft.service';
 import { ConfigProvider } from '../../config/config.provider';
+import GeoJSON, { GeoJSONFeatureCollection } from 'ol/format/GeoJSON';
+import { Feature } from 'geojson';
 
 @Component({
   selector: 'app-shape-divide',
@@ -102,9 +104,9 @@ export class ShapeDivideComponent implements OnInit {
   private createTaskDrafts(): TaskDraft[] | undefined {
     const selectedTaskGeometry = this.selectedTask.geometry.clone();
     selectedTaskGeometry.transform('EPSG:3857', 'EPSG:4326');
-    const extent = selectedTaskGeometry.getExtent() as BBox.BBox;
+    const extent = selectedTaskGeometry.getExtent() as GeoJSON.BBox;
 
-    let feature: TurfFeature<any>;
+    let feature: Feature<any>;
     switch (this.selectedTask.geometry.getType()) {
       case 'Polygon':
         feature = turfPolygon((selectedTaskGeometry as Polygon).getCoordinates());
@@ -144,9 +146,9 @@ export class ShapeDivideComponent implements OnInit {
       return undefined;
     }
 
-    return grid.features.map((gridCell: any) => {
+    return grid.features.map((gridCell: Feature) => {
       // Turn geo GeoJSON polygon from turf.js into an openlayers polygon
-      const geometry = new Polygon(gridCell.geometry.coordinates);
+      const geometry = new Polygon((gridCell.geometry as GeoJSON.Polygon).coordinates);
 
       return new TaskDraft('', '', geometry, 0);
     });
@@ -169,7 +171,7 @@ export class ShapeDivideComponent implements OnInit {
     return this.getAreaOfSelectedTask() / areaPerTargetTask;
   }
 
-  private getAreaOfSelectedTask() {
+  private getAreaOfSelectedTask(): number {
     let area = 0;
     switch (this.selectedTask.geometry.getType()) {
       case 'Polygon':
@@ -184,13 +186,19 @@ export class ShapeDivideComponent implements OnInit {
     return area;
   }
 
-  private createGrid(extent: BBox.BBox, cellSize: number, options: any): BBox.FeatureCollection | undefined {
+  private createGrid(extent: GeoJSON.BBox, cellSize: number, options: {
+    units?: Units;
+    mask?: Feature;
+  }): GeoJSONFeatureCollection | undefined {
     switch (this.gridCellShape) {
       case 'squareGrid':
+        // @ts-ignore
         return squareGrid(extent, cellSize, options);
       case 'hexGrid':
+        // @ts-ignore
         return hexGrid(extent, cellSize, options);
       case 'triangleGrid':
+        // @ts-ignore
         return triangleGrid(extent, cellSize, options);
     }
 

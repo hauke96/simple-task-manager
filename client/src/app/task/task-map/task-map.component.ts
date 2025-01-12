@@ -25,7 +25,7 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit, OnD
   selectedTask: Task | undefined;
 
   private vectorSource: VectorSource<Feature<Geometry>>;
-  private vectorLayer: VectorLayer<Feature<Geometry>>;
+  private vectorLayer: VectorLayer<VectorSource<Feature<Geometry>>>;
 
   constructor(
     private taskService: TaskService,
@@ -75,7 +75,7 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit, OnD
     // the source-refresh below in the handler. This will then update the map
     // style and highlights the correct geometry on the map.
 
-    const featureTaskIds = clickedFeatures.map(f => f.get('task_id'));
+    const featureTaskIds = clickedFeatures.map((f: Feature<any> | RenderFeature) => f.get('task_id')+'');
     const clickedTasks = this.tasks.filter(task => featureTaskIds.includes(task.id));
     if (clickedTasks.length > 0) {
       this.taskService.selectTask(clickedTasks[0]);
@@ -110,7 +110,7 @@ export class TaskMapComponent extends Unsubscriber implements AfterViewInit, OnD
   public getStyle(feature: FeatureLike): Style {
     const task = this.tasks.find(t => t.id === feature.get('task_id'));
     if (!task) {
-      throw new Error(`Task with task_id ${feature.get('task_id')} not found`);
+      throw new Error(`Task with task_id ${feature.get('task_id') + ''} not found`);
     }
 
     const hasAssignedUser = !!task.assignedUser && task.assignedUser.uid !== '';

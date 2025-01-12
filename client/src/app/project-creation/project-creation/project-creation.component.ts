@@ -54,9 +54,9 @@ export class ProjectCreationComponent extends Unsubscriber implements OnInit, On
   private selectInteraction: Select;
 
   private vectorSource: VectorSource<Feature<Geometry>>;
-  private vectorLayer: VectorLayer<Feature<Geometry>>;
+  private vectorLayer: VectorLayer<VectorSource<Feature<Geometry>>>;
   private previewVectorSource: VectorSource<Feature<Geometry>>;
-  private previewVectorLayer: VectorLayer<Feature<Geometry>>;
+  private previewVectorLayer: VectorLayer<VectorSource<Feature<Geometry>>>;
 
   constructor(
     private projectService: ProjectService,
