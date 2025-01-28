@@ -5,6 +5,7 @@ import { registerLocaleData } from '@angular/common';
 import localeEn from '@angular/common/locales/en';
 import localeDe from '@angular/common/locales/de';
 import localeEs from '@angular/common/locales/es';
+import localeFr from '@angular/common/locales/fr';
 
 @Component({
   selector: 'app-root',
@@ -13,13 +14,14 @@ import localeEs from '@angular/common/locales/es';
 })
 export class AppComponent {
   constructor(private config: ConfigProvider, private translate: TranslateService) {
-    translate.addLangs(['de', 'en-US', 'es']);
+    translate.addLangs(['de', 'en-US', 'es', 'fr']);
     translate.setDefaultLang('en-US');
 
     // To make locale usages (e.g. in date pipe) work
     registerLocaleData(localeEn, 'en-US');
     registerLocaleData(localeDe, 'de');
     registerLocaleData(localeEs, 'es');
+    registerLocaleData(localeFr, 'fr');
   }
 
   get isInTestMode(): boolean {
