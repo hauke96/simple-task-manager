@@ -9,8 +9,7 @@ This file focuses on ubuntu-based systems.
 I assume some things:
 
 * You have root-access via an initial root-login provided by the hoster (or someone else)
-* You run an Ubuntu 20.04 (or something compatible, I think 18.04 or latest debian should be fine as well). Of course
-  other distributions will also do the job, I only tried Ubuntu so far.
+* You run an up-to-date Ubuntu/debian. Of course other distributions will also do the job, I only tried Ubuntu so far.
 * You use a different domain than `stm.hauke-stieler.de`, just replace it where ever you see it ;)
 
 First steps before we start:
@@ -74,7 +73,9 @@ Follow the steps in [ssl-cert.md](./ssl-cert.md) so set up letsencrypt.
 
 # 5 Firewall
 
-_Maybe optional, because your server provider might do that for you. Check if this is necessary for you!_
+_**Notice 1:** Maybe optional, because your server provider might do that for you. Check if this is necessary for you!_
+
+_**Notice 2:** Since the hosted version of STM uses ufw, this configuration is probably outdated._
 
 Not that some systems use `ufw` and not `iptables` by default.
 I'm not a firewall and networking expert at all but this `iptables` configuration should give you some basic protection:

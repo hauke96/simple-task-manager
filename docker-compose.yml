@@ -1,5 +1,13 @@
 version: '3.4'
 
+#
+# ==== THIS FILE IS NOT ACTIVELY USED OR MAINTAINED! ====
+#
+# This config is an example when using STM without a reverse proxy. All hosted versions of STM use a reverse proxy,
+# which handles path rewrites and SSL certificates. See the hosting documentation for further information on the usage
+# of a reverse proxy.
+#
+
 services:
   stm-server:
     image: simpletaskmanager/stm-server:1.6.1
