@@ -27,7 +27,7 @@ func Init() {
 	sigolo.FatalCheck(err)
 
 	oauth2Config = &oauth2.Config{
-		RedirectURL:  fmt.Sprintf("%s:%d/oauth2/callback", config.Conf.ServerUrl, config.Conf.Port),
+		RedirectURL:  fmt.Sprintf("%s/oauth2/callback", config.Conf.ServerUrl),
 		ClientID:     config.Conf.Oauth2ClientId,
 		ClientSecret: config.Conf.Oauth2Secret,
 		Scopes:       []string{"read_prefs"},

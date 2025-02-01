@@ -57,16 +57,11 @@ func Init() error {
 	})
 
 	var err error
-	isHttps := strings.HasPrefix(config.Conf.ServerUrl, "https")
-	isBehindProxy := config.Conf.IsBehindProxy
-	if isHttps && !isBehindProxy {
+	if config.Conf.IsHttps() {
 		sigolo.Info("Use HTTPS? yes")
 		err = http.ListenAndServeTLS(":"+strconv.Itoa(config.Conf.Port), config.Conf.SslCertFile, config.Conf.SslKeyFile, router)
 	} else {
 		sigolo.Info("Use HTTPS? no")
-		if isHttps && isBehindProxy {
-			sigolo.Info("The server URL is HTTPS but the server is behind a proxy. I'll therefore use HTTP as protocol. You might need to set up a reverse proxy so make this work.")
-		}
 		err = http.ListenAndServe(":"+strconv.Itoa(config.Conf.Port), router)
 	}
 
@@ -134,5 +129,5 @@ func getInfo(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, fmtStr, fmtColWidth, "Version", util.VERSION)
 	fmt.Fprintf(w, fmtStr, fmtColWidth, "Code", config.Conf.SourceRepoURL)
 	fmt.Fprintf(w, fmtStr, fmtColWidth, "Supported API versions", strings.Join(supportedApiVersions, ", "))
-	fmt.Fprintf(w, fmtStr, fmtColWidth, "API doc (swagger)", fmt.Sprintf("%s:%d/doc/index.html", config.Conf.ServerUrl, config.Conf.Port))
+	fmt.Fprintf(w, fmtStr, fmtColWidth, "API doc (swagger)", fmt.Sprintf("%s/doc/index.html", config.Conf.ServerUrl))
 }

@@ -18,7 +18,6 @@ var (
 const (
 	EnvVarServerUrl             = "STM_SERVER_URL"
 	EnvVarPort                  = "STM_PORT"
-	EnvVarIsBehindProxy         = "STM_IS_BEHIND_PROXY"
 	EnvVarClientAuthRedirectUrl = "STM_CLIENT_AUTH_REDIRECT_URL"
 	EnvVarOsmBaseUrl            = "STM_OSM_BASE_URL"
 	EnvVarOsmApiUrl             = "STM_OSM_API_URL"
@@ -45,7 +44,6 @@ const (
 
 const (
 	DefaultPort                    = 8080
-	DefaultIsBehindProxy           = false
 	DefaultSourceRepoUrl           = "https://github.com/hauke96/simple-task-manager"
 	DefaultOsmBaseUrl              = "https://www.openstreetmap.org"
 	DefaultOsmApiUrl               = "https://api.openstreetmap.org/api/0.6"
@@ -66,7 +64,6 @@ const (
 type Config struct {
 	ServerUrl             string `json:"server-url"`
 	Port                  int    `json:"port"`
-	IsBehindProxy         bool   `json:"is-behind-proxy"`
 	ClientAuthRedirectUrl string `json:"client-auth-redirect-url"`
 	OsmBaseUrl            string `json:"osm-base-url"`
 	OsmApiUrl             string `json:"osm-api-url"`
@@ -107,9 +104,8 @@ func LoadConfig(file string) {
 	}
 
 	// General configs
-	Conf.ServerUrl = getConfigEntry(EnvVarServerUrl, Conf.ServerUrl)
+	Conf.ServerUrl = strings.TrimRight(getConfigEntry(EnvVarServerUrl, Conf.ServerUrl), "/")
 	Conf.Port = getConfigEntryInt(EnvVarPort, Conf.Port)
-	Conf.IsBehindProxy = getConfigEntryBool(EnvVarIsBehindProxy, Conf.IsBehindProxy)
 	Conf.ClientAuthRedirectUrl = getConfigEntry(EnvVarClientAuthRedirectUrl, Conf.ClientAuthRedirectUrl)
 	Conf.OsmBaseUrl = getConfigEntry(EnvVarOsmBaseUrl, Conf.OsmBaseUrl)
 	Conf.OsmApiUrl = getConfigEntry(EnvVarOsmApiUrl, Conf.OsmApiUrl)
@@ -145,7 +141,6 @@ func initDefaultConfig() {
 	Conf = &Config{}
 
 	Conf.Port = DefaultPort
-	Conf.IsBehindProxy = DefaultIsBehindProxy
 	Conf.OsmBaseUrl = DefaultOsmBaseUrl
 	Conf.OsmApiUrl = DefaultOsmApiUrl
 	Conf.TokenValidityDuration = DefaultTokenInvalidityDuration
@@ -269,6 +264,10 @@ func getTagValue(fieldName string) string {
 		return "-"
 	}
 	return field.Tag.Get("json")
+}
+
+func (c Config) IsHttps() bool {
+	return c.SslCertFile != "" && c.SslKeyFile != ""
 }
 
 func PrintConfig() {
