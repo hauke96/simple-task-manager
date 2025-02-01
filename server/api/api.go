@@ -57,11 +57,16 @@ func Init() error {
 	})
 
 	var err error
-	if strings.HasPrefix(config.Conf.ServerUrl, "https") {
+	isHttps := strings.HasPrefix(config.Conf.ServerUrl, "https")
+	isBehindProxy := config.Conf.IsBehindProxy
+	if isHttps && !isBehindProxy {
 		sigolo.Info("Use HTTPS? yes")
 		err = http.ListenAndServeTLS(":"+strconv.Itoa(config.Conf.Port), config.Conf.SslCertFile, config.Conf.SslKeyFile, router)
 	} else {
 		sigolo.Info("Use HTTPS? no")
+		if isHttps && isBehindProxy {
+			sigolo.Info("The server URL is HTTPS but the server is behind a proxy. I'll therefore use HTTP as protocol. You might need to set up a reverse proxy so make this work.")
+		}
 		err = http.ListenAndServe(":"+strconv.Itoa(config.Conf.Port), router)
 	}
 

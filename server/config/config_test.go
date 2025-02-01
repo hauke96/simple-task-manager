@@ -36,6 +36,9 @@ func TestInitConfig(t *testing.T) {
 		if Conf.Port != DefaultPort {
 			return errors.New(fmt.Sprintf("Default value of 'Port' wrong: Wanted %d but was %d", DefaultPort, Conf.Port))
 		}
+		if Conf.IsBehindProxy != DefaultIsBehindProxy {
+			return errors.New(fmt.Sprintf("Default value of 'IsBehindProxy' wrong: Wanted %d but was %d", DefaultIsBehindProxy, Conf.IsBehindProxy))
+		}
 		if Conf.OsmBaseUrl != DefaultOsmBaseUrl {
 			return errors.New(fmt.Sprintf("Default value of 'OsmBaseUrl' wrong: Wanted %s but was %s", DefaultOsmBaseUrl, Conf.OsmBaseUrl))
 		}
