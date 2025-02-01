@@ -7,15 +7,15 @@ This guide assumes some basic things:
 
 * You have (SSH) access to a linux machine
 * Your machine has access to at least docker.com and osm.org.
-* Your machine is able to start docker container
+* Your machine is able to start docker containers
 
 Optional but recommended:
 
 * Your machine is able to run systemd-services and -timer (for automatic backups and certificate renewal)
 
-# 1 Recommended file structure
+# 1 Possible file structure
 
-I recommend the following structure and I assume your users home folder is `/home/stm`:
+The following structure (I assume your users home folder is `/home/stm`) is easy to maintain and keeps everything together:
 
 * Create `/home/stm/simple-task-manager/` with following sub-folders:
     * `backups`: for (automated) backups (s. section below)
@@ -163,11 +163,20 @@ this: `- ./path/to/notice.<lang-code>.html:/usr/share/nginx/html/assets/i18n/not
 The `<lang-code>` must be replaced by the language code used for the changelog-files as well (so e.g. `de` for German
 or `en-US` for english).
 
-# 4 Automatic backups
+# 4 Reverse proxy
+
+Currently the client and backend containers are running but not accessible through port 80/443 of your machine.
+You have to create a reverse proxy (e.g. a simple nginx container) that handles HTTPS and directs traffic to your containers.
+
+Example configuration:
+
+TODO
+
+# 5 Automatic backups
 
 This step is optional but recommended and described in the [automatic-backups.md](automatic-backups.md) file.
 
-# 5 Deployment
+# 6 Deployment
 
 _This section only describes the docker hub based deployment!_
 
@@ -179,7 +188,7 @@ described in section 8.
 
 Now let us deploy everything:
 
-* Go to `/home/stm/simple-task-manager/` (the folder described in section 6)
+* Go to `/home/stm/simple-task-manager/` (the folder described in section 2)
 * Make sure a symlink to your `docker-compose.yml` exists
 * `docker-compose up -d`
 
@@ -203,8 +212,7 @@ Manual checks (of course use your own domain/ip):
 * `ping stm.hauke-stieler.de`: Should work. Checks whether firewall accepts ping-requests and if server is on.
 * `ssh root@stm.hauke-stieler.de`: Should not work. Login with `stm` should not require password but valid SSH key.
 * `psql -h stm.hauke-stieler.de`: Should not work. If you get asked for a password, then the firewall isn't blocking
-  incoming traffic in ports other than ssh, `8080` and `433`.
-* Open `https://stm.hauke-stieler.de:8080/info`: Should work, so the firewall accepts port 8080 requests.
+  incoming traffic in ports other than your ssh port and `433`.
 * Open `https://stm.hauke-stieler.de`: Should work, this is the normal front page.
     * Login should work. This would mean that the firewall allows traffic *from* the server *to* the internet and also
       that the server-communication works.

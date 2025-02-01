@@ -76,11 +76,12 @@ Follow the steps in [ssl-cert.md](./ssl-cert.md) so set up letsencrypt.
 
 _Maybe optional, because your server provider might do that for you. Check if this is necessary for you!_
 
-I'm not a firewall and networking expert at all but this gives us some kind of basic protection:
+Not that some systems use `ufw` and not `iptables` by default.
+I'm not a firewall and networking expert at all but this `iptables` configuration should give you some basic protection:
 
 * Install tool to persist firewall configs: `apt install iptables-persistent`
     * Set setup will ask to store current iptable configs, just select "No"
-* Add the following rules:
+* Add the following rules (when using `iptables`):
     * `iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT`
         * Allows responses to come back to the server e.g. when `stm-server` makes requests to the OSM-Servers.
     * `iptables -A INPUT -i lo -j ACCEPT`
@@ -89,7 +90,6 @@ I'm not a firewall and networking expert at all but this gives us some kind of b
         * Optional: Allows ping-requests. Not necessary but nice to check whether server is online or what latency there
           is.
     * `iptables -A INPUT -p tcp --dport <your ssh port> -j ACCEPT`
-    * `iptables -A INPUT -p tcp --dport 8080 -j ACCEPT`
     * `iptables -A INPUT -p tcp --dport 443 -j ACCEPT`
     * `iptables -A INPUT -p tcp --dport 80 -j ACCEPT`
     * `iptables -P INPUT DROP`
