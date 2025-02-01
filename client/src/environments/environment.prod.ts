@@ -1,24 +1,24 @@
 const baseUrl = document.location.protocol + '//' + document.location.hostname;
-const usedApi = 'api/v2.9';
+const usedApi = 'v2.9';
 
 export const environment = {
   production: true,
   oauth_landing: document.location.origin + '/oauth-landing',
 
   base_url: baseUrl,
-  url_auth: baseUrl + '/oauth2/login',
-  url_config: baseUrl + '/' + usedApi + '/config',
-  url_projects: baseUrl + '/' + usedApi + '/projects',
-  url_projects_by_id: baseUrl + '/' + usedApi + '/projects/{id}',
-  url_projects_update: baseUrl + '/' + usedApi + '/projects/{id}',
-  url_projects_users: baseUrl + '/' + usedApi + '/projects/{id}/users',
-  url_projects_export: baseUrl + '/' + usedApi + '/projects/{id}/export',
-  url_projects_import: baseUrl + '/' + usedApi + '/projects/import',
-  url_projects_comments: baseUrl + '/' + usedApi + '/projects/{id}/comments',
-  url_tasks: baseUrl + '/' + usedApi + '/tasks',
-  url_task: baseUrl + '/' + usedApi + '/tasks/{id}',
-  url_task_assignedUser: baseUrl + '/' + usedApi + '/tasks/{id}/assignedUser',
-  url_task_processPoints: baseUrl + '/' + usedApi + '/tasks/{id}/processPoints',
-  url_task_comments: baseUrl + '/' + usedApi + '/tasks/{id}/comments',
-  url_updates: 'wss://' + document.location.hostname + '/' + usedApi + '/updates'
+  url_auth: baseUrl + '/api/oauth2/login',
+  url_config: baseUrl + '/api/' + usedApi + '/config',
+  url_projects: baseUrl + '/api/' + usedApi + '/projects',
+  url_projects_by_id: baseUrl + '/api/' + usedApi + '/projects/{id}',
+  url_projects_update: baseUrl + '/api/' + usedApi + '/projects/{id}',
+  url_projects_users: baseUrl + '/api/' + usedApi + '/projects/{id}/users',
+  url_projects_export: baseUrl + '/api/' + usedApi + '/projects/{id}/export',
+  url_projects_import: baseUrl + '/api/' + usedApi + '/projects/import',
+  url_projects_comments: baseUrl + '/api/' + usedApi + '/projects/{id}/comments',
+  url_tasks: baseUrl + '/api/' + usedApi + '/tasks',
+  url_task: baseUrl + '/api/' + usedApi + '/tasks/{id}',
+  url_task_assignedUser: baseUrl + '/api/' + usedApi + '/tasks/{id}/assignedUser',
+  url_task_processPoints: baseUrl + '/api/' + usedApi + '/tasks/{id}/processPoints',
+  url_task_comments: baseUrl + '/api/' + usedApi + '/tasks/{id}/comments',
+  url_updates: 'wss://' + document.location.hostname + '/api/' + usedApi + '/updates'
 };
