@@ -79,7 +79,7 @@ export class TaskService {
 
   public setProcessPoints(taskId: string, newProcessPoints: number): Observable<Task> {
     if (taskId !== this.selectedTask?.id) { // otherwise the "selectedTaskChanged" event doesn't seems right here
-      return throwError('Task with id \'' + taskId + '\' not selected');
+      return throwError(() => new Error('Task with id \'' + taskId + '\' not selected'));
     }
 
     return this.http.post<TaskDto>(environment.url_task_processPoints.replace('{id}', taskId) + '?process_points=' + newProcessPoints, '')
@@ -160,8 +160,9 @@ export class TaskService {
       const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];nwr(poly:"${coordinateString}");out meta;(<; - rel._;);(._;>;); out meta;`;
       dataUrl = 'http://localhost:8111/import?new_layer=true&url=' + overpassUrl;
     } else {
-      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-      return throwError(() => new Error('Unknown JosmDataSource "' + josmDataSource + '". Please set a valid data source in the project settings.'));
+      return throwError(
+        () => new Error(`Unknown JosmDataSource '${(josmDataSource + '')}'. Please set a valid data source in the project settings.`)
+      );
     }
 
     const taskGeometryString = encodeURIComponent(this.getGeometryAsOsm(task));
@@ -280,7 +281,7 @@ export class TaskService {
         coordinates = polygon.getCoordinates()[0];
         break;
       default:
-        throw new Error(`Unsupported task geometry type '${taskGeometry?.getType()}'`);
+        throw new Error(`Unsupported task geometry type '${taskGeometry?.getType() ?? 'unknown'}'`);
     }
 
     let osm = '<osm version="0.6" generator="simple-task-dashboard">';
