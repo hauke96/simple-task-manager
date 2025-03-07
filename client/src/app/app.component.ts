@@ -22,6 +22,7 @@ export class AppComponent {
     registerLocaleData(localeDe, 'de');
     registerLocaleData(localeEs, 'es');
     registerLocaleData(localeFr, 'fr');
+    registerLocaleData(localeFr, 'it');
   }
 
   get isInTestMode(): boolean {
