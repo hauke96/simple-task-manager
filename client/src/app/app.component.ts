@@ -8,9 +8,10 @@ import localeEs from '@angular/common/locales/es';
 import localeFr from '@angular/common/locales/fr';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    standalone: false
 })
 export class AppComponent {
   constructor(private config: ConfigProvider, private translate: TranslateService) {

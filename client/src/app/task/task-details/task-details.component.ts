@@ -12,9 +12,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { JosmDataSource } from '../../common/entities/josm-data-source';
 
 @Component({
-  selector: 'app-task-details',
-  templateUrl: './task-details.component.html',
-  styleUrls: ['./task-details.component.scss']
+    selector: 'app-task-details',
+    templateUrl: './task-details.component.html',
+    styleUrls: ['./task-details.component.scss'],
+    standalone: false
 })
 export class TaskDetailsComponent extends Unsubscriber implements OnInit {
   @Input() public projectId: string;

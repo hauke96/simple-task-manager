@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-  selector: 'app-icon-button',
-  templateUrl: './icon-button.component.html',
-  styleUrls: ['./icon-button.component.scss']
+    selector: 'app-icon-button',
+    templateUrl: './icon-button.component.html',
+    styleUrls: ['./icon-button.component.scss'],
+    standalone: false
 })
 export class IconButtonComponent {
   @Input()

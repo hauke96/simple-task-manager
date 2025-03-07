@@ -1,4 +1,5 @@
-@import "../../../styles";
+@use "../../../styles";
+@use "../../../colors";
 
 :host {
 	display: flex;
@@ -14,8 +15,8 @@ button {
 }
 button.selected:hover,
 .selected {
-	border-bottom: 2px solid $color-mid;
-	background-color: $color-very-light;
+	border-bottom: 2px solid colors.$color-mid;
+	background-color: colors.$color-very-light;
 }
 button:hover {
 	z-index: 1;
@@ -24,12 +25,12 @@ button:hover {
 .tab-list {
 	display: flex;
 	flex-direction: row;
-	padding-left: $space-small;
+	padding-left: styles.$space-small;
 }
 
 .tab-content {
 	margin-top: -1px;
-	border-top: 1px solid $color-light;
+	border-top: 1px solid colors.$color-light;
 	min-height: 0px;
 	display: flex;
 	flex-direction: column;
@@ -39,7 +40,7 @@ button:hover {
 }
 
 .tab-content-border {
-	border-right: 1px solid $color-light;
-	border-left: 1px solid $color-light;
-	border-bottom: 1px solid $color-light;
+	border-right: 1px solid colors.$color-light;
+	border-left: 1px solid colors.$color-light;
+	border-bottom: 1px solid colors.$color-light;
 }

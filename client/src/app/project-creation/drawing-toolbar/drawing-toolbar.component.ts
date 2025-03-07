@@ -4,9 +4,10 @@ import { ShortcutService } from '../../common/services/shortcut.service';
 import { Unsubscriber } from '../../common/unsubscriber';
 
 @Component({
-  selector: 'app-drawing-toolbar',
-  templateUrl: './drawing-toolbar.component.html',
-  styleUrls: ['./drawing-toolbar.component.scss']
+    selector: 'app-drawing-toolbar',
+    templateUrl: './drawing-toolbar.component.html',
+    styleUrls: ['./drawing-toolbar.component.scss'],
+    standalone: false
 })
 export class DrawingToolbarComponent extends Unsubscriber implements OnInit {
   public readonly SELECTION_DRAW: string = 'draw';

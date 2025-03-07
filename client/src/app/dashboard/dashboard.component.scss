@@ -1,5 +1,6 @@
-@import "../../styles.scss";
-@import "../../icons.scss";
+@use "../../styles";
+@use "../../colors";
+@use "../../icons";
 
 :host {
 	height: 100%;
@@ -12,8 +13,8 @@
 	max-width: 600px;
 	margin-left: auto;
 	margin-right: auto;
-	margin-top: $space-large;
-	margin-bottom: $space-large;
+	margin-top: styles.$space-large;
+	margin-bottom: styles.$space-large;
 }
 
 .toolbar-left {
@@ -28,19 +29,19 @@
 }
 
 .language-selection-label {
-	margin-right: $space-base;
+	margin-right: styles.$space-base;
 }
 
 .separator {
-	margin-right: $space-large;
-	margin-left: $space-large;
-	border-left: solid 1px $color-gray-very-light;
+	margin-right: styles.$space-large;
+	margin-left: styles.$space-large;
+	border-left: solid 1px colors.$color-gray-very-light;
 }
 
 .new-project-buttons-container {
 	display: flex;
 
 	.import-button {
-		margin-left: $space-base;
+		margin-left: styles.$space-base;
 	}
 }

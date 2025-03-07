@@ -1,11 +1,12 @@
-@import "../../../styles";
+@use "../../../styles";
+@use "../../../colors";
 
 .version-label {
-	margin: $space-large;
+	margin: styles.$space-large;
 }
 
 .sep {
-	margin-left: $space-large;
-	margin-right: $space-large;
-	border-right: 1px solid $color-gray-mid;
+	margin-left: styles.$space-large;
+	margin-right: styles.$space-large;
+	border-right: 1px solid colors.$color-gray-mid;
 }

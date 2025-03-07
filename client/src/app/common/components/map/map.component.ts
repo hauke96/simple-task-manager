@@ -13,9 +13,10 @@ import { Interaction } from 'ol/interaction';
 import { Geometry } from 'ol/geom';
 
 @Component({
-  selector: 'app-map',
-  templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss']
+    selector: 'app-map',
+    templateUrl: './map.component.html',
+    styleUrls: ['./map.component.scss'],
+    standalone: false
 })
 export class MapComponent extends Unsubscriber implements OnInit {
   @Output()

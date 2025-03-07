@@ -1,5 +1,5 @@
 @use "sass:math";
-@import "colors.scss";
+@use "colors";
 
 // =====================
 // Global distances etc.
@@ -40,7 +40,7 @@ h2 {
 // ==============
 
 body {
-	color: $color-gray-very-dark;
+	color: colors.$color-gray-very-dark;
 	margin: 0px;
 	height: 100vh;
 }
@@ -70,13 +70,13 @@ button {
 	height: $space-huge;
 	padding-left: $space-base;
 	padding-right: $space-base;
-	background-color: $color-very-light;
-	border: 1px solid $color-light;
+	background-color: colors.$color-very-light;
+	border: 1px solid colors.$color-light;
 	font-size: $font-base;
 }
 
 button:hover {
-	border: 1px solid $color-mid;
+	border: 1px solid colors.$color-mid;
 	cursor: pointer;
 }
 
@@ -85,16 +85,16 @@ button::-moz-focus-inner { // remove dotted line in Firefox
 }
 
 button:disabled {
-	background-color: $color-gray-very-light;
-	border-color: $color-gray-light;
+	background-color: colors.$color-gray-very-light;
+	border-color: colors.$color-gray-light;
 }
 
 a {
-	color: $color-very-dark;
+	color: colors.$color-very-dark;
 }
 
 a:hover {
-	color: $color-dark;
+	color: colors.$color-dark;
 }
 
 // Use the SVG as down-arrow instead of the default
@@ -103,7 +103,7 @@ select {
 	flex-grow: 1;
 	padding: 5px;
 	background-color: white;
-	border: 1px solid $color-light;
+	border: 1px solid colors.$color-light;
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	appearance: none;
@@ -119,19 +119,19 @@ select {
 .list-item {
 	height: $space-huge;
 	line-height: $space-huge;
-	border-left: 1px solid $color-light;
-	border-right: 1px solid $color-light;
-	border-top: 1px solid $color-light;
+	border-left: 1px solid colors.$color-light;
+	border-right: 1px solid colors.$color-light;
+	border-top: 1px solid colors.$color-light;
 	padding-left: $space-base;
 	padding-right: $space-base;
 }
 
 .list-item:last-child {
-	border-bottom: 1px solid $color-light;
+	border-bottom: 1px solid colors.$color-light;
 }
 
 .list-item:hover {
-	border: 1px solid $color-mid;
+	border: 1px solid colors.$color-mid;
 	cursor: pointer;
 }
 
@@ -140,7 +140,7 @@ select {
 }
 
 .list-item-selected {
-	background-color: $color-very-light;
+	background-color: colors.$color-very-light;
 }
 
 
@@ -155,7 +155,7 @@ ul > li:before {
 	display: block;
 	float: left;
 	width: $space-large;
-	color: $color-gray-mid;
+	color: colors.$color-gray-mid;
 }
 
 li {
@@ -168,7 +168,7 @@ textarea {
 	// would be set. When then using "width:100px" we would actually have a width of 122px
 	// (100px + 2 * 10px padding + 2 * 1px border). The "border-box" value prevents this strange behavior.
 	box-sizing: border-box;
-	border: 1px solid $color-light;
+	border: 1px solid colors.$color-light;
 	padding: $space-small;
 	margin: 0;
 	flex-grow: 1;
@@ -182,13 +182,13 @@ input {
 
 input:focus,
 textarea:focus {
-	border: 1px solid $color-mid;
+	border: 1px solid colors.$color-mid;
 }
 
 input.ng-invalid:not(form),
 select.ng-invalid:not(form),
 textarea.ng-invalid:not(form) {
-	border: 1px solid $color-error;
+	border: 1px solid colors.$color-error;
 }
 
 .input-field-label {
@@ -197,7 +197,7 @@ textarea.ng-invalid:not(form) {
 }
 
 .hline {
-	border-bottom: 1px solid $color-gray-light;
+	border-bottom: 1px solid colors.$color-gray-light;
 	margin-top: $space-large;
 }
 
@@ -211,15 +211,15 @@ textarea.ng-invalid:not(form) {
 // ===========
 
 .color-error {
-	color: $color-error-dark;
+	color: colors.$color-error-dark;
 }
 
 .color-okay {
-	color: $color-dark;
+	color: colors.$color-dark;
 }
 
 .color-gray {
-	color: $color-gray-mid;
+	color: colors.$color-gray-mid;
 }
 
 .wrap-label {

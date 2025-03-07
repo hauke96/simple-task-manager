@@ -32,11 +32,12 @@ import CircleStyle from 'ol/style/Circle';
 import { JosmDataSource } from '../../common/entities/josm-data-source';
 
 @Component({
-  selector: 'app-project-creation',
-  templateUrl: './project-creation.component.html',
-  styleUrls: ['./project-creation.component.scss'],
-  // Provide services here to automatically reset the services when the project has been created.
-  providers: [TaskDraftService, ProjectImportService]
+    selector: 'app-project-creation',
+    templateUrl: './project-creation.component.html',
+    styleUrls: ['./project-creation.component.scss'],
+    // Provide services here to automatically reset the services when the project has been created.
+    providers: [TaskDraftService, ProjectImportService],
+    standalone: false
 })
 export class ProjectCreationComponent extends Unsubscriber implements OnInit, OnDestroy, AfterViewInit {
   private static readonly baseColor = '#009688';

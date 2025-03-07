@@ -15,9 +15,10 @@ import RenderFeature from 'ol/render/Feature';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-task-map',
-  templateUrl: './task-map.component.html',
-  styleUrls: ['./task-map.component.scss']
+    selector: 'app-task-map',
+    templateUrl: './task-map.component.html',
+    styleUrls: ['./task-map.component.scss'],
+    standalone: false
 })
 export class TaskMapComponent extends Unsubscriber implements AfterViewInit, OnDestroy {
   @Input() tasks: Task[];

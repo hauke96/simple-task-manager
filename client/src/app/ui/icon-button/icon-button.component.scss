@@ -1,7 +1,7 @@
 @use "sass:math";
-@import "../../../styles";
-@import "../../../colors";
-@import "../../../icons";
+@use "../../../styles";
+@use "../../../colors";
+@use "../../../icons";
 
 :host {
 	display: inline-block;
@@ -12,6 +12,6 @@
 	align-items: center;
 
 	.lnr {
-		margin-right: $space-base;
+		margin-right: styles.$space-base;
 	}
 }

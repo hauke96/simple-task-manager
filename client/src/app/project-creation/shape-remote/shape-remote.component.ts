@@ -7,9 +7,10 @@ import { TaskDraftService } from '../task-draft.service';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-shape-remote',
-  templateUrl: './shape-remote.component.html',
-  styleUrls: ['./shape-remote.component.scss']
+    selector: 'app-shape-remote',
+    templateUrl: './shape-remote.component.html',
+    styleUrls: ['./shape-remote.component.scss'],
+    standalone: false
 })
 export class ShapeRemoteComponent {
   public queryUrl: string;

@@ -6,9 +6,10 @@ import { ProjectImportService } from '../project-import.service';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-copy-project',
-  templateUrl: './copy-project.component.html',
-  styleUrls: ['./copy-project.component.scss']
+    selector: 'app-copy-project',
+    templateUrl: './copy-project.component.html',
+    styleUrls: ['./copy-project.component.scss'],
+    standalone: false
 })
 export class CopyProjectComponent {
   @Input() projects: Project[];

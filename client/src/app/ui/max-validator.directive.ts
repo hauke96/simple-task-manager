@@ -2,8 +2,9 @@ import { Directive, Input } from '@angular/core';
 import { UntypedFormControl, NG_VALIDATORS, Validator } from '@angular/forms';
 
 @Directive({
-  selector: '[appMaxValidator][ngModel]',
-  providers: [{provide: NG_VALIDATORS, useExisting: MaxValidatorDirective, multi: true}]
+    selector: '[appMaxValidator][ngModel]',
+    providers: [{ provide: NG_VALIDATORS, useExisting: MaxValidatorDirective, multi: true }],
+    standalone: false
 })
 export class MaxValidatorDirective implements Validator {
   private appMaxValidatorNumber: number;

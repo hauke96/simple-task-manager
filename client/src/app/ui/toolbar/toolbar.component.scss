@@ -1,19 +1,20 @@
-@import "../../../styles";
+@use "../../../styles";
+@use "../../../colors";
 
 .toolbar {
 	left: 0px;
-	padding-left: $space-large;
-	padding-right: $space-large;
-	padding-top: $space-base;
-	padding-bottom: $space-base;
-	color: $color-white;
-	background-color: $color-mid;
-	height: $space-huge;
+	padding-left: styles.$space-large;
+	padding-right: styles.$space-large;
+	padding-top: styles.$space-base;
+	padding-bottom: styles.$space-base;
+	color: colors.$color-white;
+	background-color: colors.$color-mid;
+	height: styles.$space-huge;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 }
 
 .toolbar > p {
-	color: $color-gray-light;
+	color: colors.$color-gray-light;
 }

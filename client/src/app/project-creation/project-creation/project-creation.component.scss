@@ -1,5 +1,6 @@
-@import '../../../styles';
-@import '../../../icons';
+@use '../../../styles';
+@use '../../../colors';
+@use '../../../icons';
 
 :host {
 	height: 100%;
@@ -24,24 +25,24 @@
 }
 
 .tab-content {
-	padding: $space-base;
+	padding: styles.$space-base;
 }
 
 .cancel-button-icon {
-	margin-right: $space-small;
+	margin-right: styles.$space-small;
 }
 
 .project-properties-container {
-	padding-top: $space-base;
+	padding-top: styles.$space-base;
 	min-width: 350px;
 	max-width: 450px;
 	width: 50%;
-	border-right: 1px solid $color-light;
+	border-right: 1px solid colors.$color-light;
 }
 
 // Also apply style to divs in child components using ::ng-deep
 .project-properties-container ::ng-deep .form-entry {
-	margin-bottom: $space-base
+	margin-bottom: styles.$space-base
 }
 
 .properties-label {
@@ -60,12 +61,12 @@
 	z-index: 5; // Because of OpenLayers claiming some z-indices
 	left: 0px;
 	top: 0px;
-	margin: $space-base;
+	margin: styles.$space-base;
 	margin-top: 100px; // TODO move whole button menu into map
 }
 
 .zoom-control {
-	margin-bottom: $space-base;
+	margin-bottom: styles.$space-base;
 }
 
 .map {
@@ -74,7 +75,7 @@
 }
 
 .save-button {
-	margin-left: $space-base;
+	margin-left: styles.$space-base;
 }
 
 app-tabs {

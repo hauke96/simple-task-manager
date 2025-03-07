@@ -5,9 +5,10 @@ import { TaskDraftService } from '../task-draft.service';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-shape-upload',
-  templateUrl: './shape-upload.component.html',
-  styleUrls: ['./shape-upload.component.scss']
+    selector: 'app-shape-upload',
+    templateUrl: './shape-upload.component.html',
+    styleUrls: ['./shape-upload.component.scss'],
+    standalone: false
 })
 export class ShapeUploadComponent {
   constructor(

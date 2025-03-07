@@ -5,9 +5,10 @@ import { User } from '../user.material';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-user-invitation',
-  templateUrl: './user-invitation.component.html',
-  styleUrls: ['./user-invitation.component.scss']
+    selector: 'app-user-invitation',
+    templateUrl: './user-invitation.component.html',
+    styleUrls: ['./user-invitation.component.scss'],
+    standalone: false
 })
 export class UserInvitationComponent {
   @Input() public users: User[];

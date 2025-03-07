@@ -3,9 +3,10 @@ import { TaskDraft } from '../../task/task.material';
 import { TaskDraftService } from '../task-draft.service';
 
 @Component({
-  selector: 'app-task-draft-list',
-  templateUrl: './task-draft-list.component.html',
-  styleUrls: ['./task-draft-list.component.scss']
+    selector: 'app-task-draft-list',
+    templateUrl: './task-draft-list.component.html',
+    styleUrls: ['./task-draft-list.component.scss'],
+    standalone: false
 })
 export class TaskDraftListComponent {
   @Input() public tasks: TaskDraft[];

@@ -2,9 +2,10 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-oauth-landing',
-  templateUrl: './oauth-landing.component.html',
-  styleUrls: ['./oauth-landing.component.scss']
+    selector: 'app-oauth-landing',
+    templateUrl: './oauth-landing.component.html',
+    styleUrls: ['./oauth-landing.component.scss'],
+    standalone: false
 })
 export class OauthLandingComponent {
   constructor(private route: ActivatedRoute) {
