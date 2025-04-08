@@ -15,7 +15,7 @@ import localeFr from '@angular/common/locales/fr';
 })
 export class AppComponent {
   constructor(private config: ConfigProvider, private translate: TranslateService) {
-    translate.addLangs(['de', 'en-US', 'es', 'fr']);
+    translate.addLangs(['de', 'en-US', 'es', 'fr', 'it']);
     translate.setDefaultLang('en-US');
 
     // To make locale usages (e.g. in date pipe) work
