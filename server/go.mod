@@ -1,6 +1,6 @@
 module stm
 
-go 1.22.0
+go 1.23.0
 
 toolchain go1.23.4
 
@@ -14,7 +14,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/swaggo/http-swagger v1.3.4
 	github.com/swaggo/swag v1.16.4
-	golang.org/x/oauth2 v0.25.0
+	golang.org/x/oauth2 v0.27.0
 )
 
 require (
