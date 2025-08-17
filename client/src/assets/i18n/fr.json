@@ -13,7 +13,7 @@
   "meters": "mètres",
   "yes": "Oui",
   "no": "Non",
-  "test-instance-notice": "C'est la meilleure <b>instance de test</b> de SimpleTaskManager.",
+  "test-instance-notice": "Ceci est une <b>instance de test</b> de SimpleTaskManager.",
   "footer": "Version : <a href=\"https://github.com/hauke96/simple-task-manager/releases/tag/v{{version}}\" target=\"_blank\">{{version}}</a><span class=\"sep\"></span>Code : <a href=\"https://github.com/hauke96/simple-task-manager\" target=\"_blank\">GitHub</a><span class=\"sep\"></span>Licence : <a href=\"https://github.com/hauke96/simple-task-manager/blob/master/LICENSE\" target=\"_blank\">GPLv3</a><span class=\"sep\"></span>Icônes : <a href=\"https://linearicons.com\" target=\"_blank\">Linearicons</a>",
   "project-has-been-removed": "Le projet « {{projectName}} » a été supprimé",
   "you-have-been-removed": "Vous avez été retiré du projet « {{projectName}} »",
@@ -38,7 +38,7 @@
     "creation-date": "Créé le :",
     "description": "Description :",
     "could-not-remove-user": "Impossible de supprimer l'utilisateur",
-    "could-not-invite-user": "Impossible de supprimer l'utilisateur « {{userName}} »",
+    "could-not-invite-user": "Impossible d'inviter l'utilisateur « {{userName}} »",
     "tab-titles": {
       "tasks": "Tâches",
       "users": "Utilisateurs",
@@ -54,7 +54,7 @@
   "project-list": {
     "projects": "Projets :",
     "no-project-notice": "Vous n'avez aucun projet pour le moment.",
-    "you-own-this-project-notice": "* vous possédez ce projet"
+    "you-own-this-project-notice": "* vous possédez pas ce projet"
   },
   "project-settings": {
     "delete-button": "Supprimer le projet",
@@ -155,7 +155,7 @@
     "remove-button": "Supprimer",
     "input-placeholder": "Nom de l'utilisateur",
     "already-member": "L'utilisateur « {{user}} » est déjà membre de ce projet",
-    "unable-load-user": "Impossible de charger iD pour l'utilisateur « {{user}} ». L'utilisateur doit avoir créé au moins un jeu de modifications ou créé/modifié au moins une note."
+    "unable-load-user": "Impossible de charger iD pour l'utilisateur « {{user}} ». L'utilisateur doit avoir créé au moins un groupe de modifications ou créé/modifié au moins une note."
   },
   "task-map": {
     "task-done": "TERMINÉ",
