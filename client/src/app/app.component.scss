@@ -1,4 +1,5 @@
-@import "../styles";
+@use "../styles";
+@use '../colors';
 
 :host {
 	width: 100%;
@@ -7,7 +8,7 @@
 }
 
 .host-in-test-mode {
-	height: calc(100% - #{$space-large});
+	height: calc(100% - #{styles.$space-large});
 }
 .host-in-prod-mode {
 	height: 100%;
@@ -16,6 +17,6 @@
 .test-label {
 	display: flex;
 	justify-content: center;
-	background-color: $color-warn;
-	height: $space-large;
+	background-color: colors.$color-warn;
+	height: styles.$space-large;
 }

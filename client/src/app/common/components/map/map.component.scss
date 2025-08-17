@@ -1,4 +1,4 @@
-@import '../../../../styles';
+@use '../../../../styles';
 
 :host {
   position: relative;
@@ -9,7 +9,7 @@
   z-index: 5; // Because of OpenLayers claiming some z-indices
   left: 0px;
   top: 0px;
-  margin: $space-base;
+  margin: styles.$space-base;
 }
 
 #map {

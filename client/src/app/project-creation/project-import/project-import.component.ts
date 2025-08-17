@@ -5,9 +5,10 @@ import { NotificationService } from '../../common/services/notification.service'
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-project-import',
-  templateUrl: './project-import.component.html',
-  styleUrls: ['./project-import.component.scss']
+    selector: 'app-project-import',
+    templateUrl: './project-import.component.html',
+    styleUrls: ['./project-import.component.scss'],
+    standalone: false
 })
 export class ProjectImportComponent {
 

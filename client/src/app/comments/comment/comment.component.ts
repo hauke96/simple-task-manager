@@ -4,9 +4,10 @@ import { CurrentUserService } from '../../user/current-user.service';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-comment',
-  templateUrl: './comment.component.html',
-  styleUrl: './comment.component.scss'
+    selector: 'app-comment',
+    templateUrl: './comment.component.html',
+    styleUrl: './comment.component.scss',
+    standalone: false
 })
 export class CommentComponent {
 

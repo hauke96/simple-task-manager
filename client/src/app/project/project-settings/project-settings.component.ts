@@ -8,9 +8,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { JosmDataSource } from '../../common/entities/josm-data-source';
 
 @Component({
-  selector: 'app-project-settings',
-  templateUrl: './project-settings.component.html',
-  styleUrls: ['./project-settings.component.scss']
+    selector: 'app-project-settings',
+    templateUrl: './project-settings.component.html',
+    styleUrls: ['./project-settings.component.scss'],
+    standalone: false
 })
 export class ProjectSettingsComponent implements OnInit {
   @Input() projectId: string;

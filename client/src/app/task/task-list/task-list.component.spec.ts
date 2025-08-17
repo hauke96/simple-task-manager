@@ -52,16 +52,20 @@ describe(TaskListComponent.name, () => {
       tasks.push(new Task('3', 'z', 60, 100, TestTaskFeature, []));
       tasks.push(new Task('4', 'a', 100, 100, TestTaskFeature, []));
       tasks.push(new Task('5', 'g', 30, 100, TestTaskFeature, []));
+      tasks.push(new Task('6', '168', 30, 100, TestTaskFeature, []));
+      tasks.push(new Task('7', '68', 30, 100, TestTaskFeature, []));
       component.tasks = [...tasks];
     });
 
     it('should sort tasks', () => {
       // Actually update some tasks
-      expect(component.tasks[0]).toEqual(tasks[0]);
-      expect(component.tasks[1]).toEqual(tasks[4]);
-      expect(component.tasks[2]).toEqual(tasks[2]);
-      expect(component.tasks[3]).toEqual(tasks[3]);
-      expect(component.tasks[4]).toEqual(tasks[1]);
+      expect(component.tasks[0]).toEqual(tasks[5]);
+      expect(component.tasks[1]).toEqual(tasks[6]);
+      expect(component.tasks[2]).toEqual(tasks[0]);
+      expect(component.tasks[3]).toEqual(tasks[4]);
+      expect(component.tasks[4]).toEqual(tasks[2]);
+      expect(component.tasks[5]).toEqual(tasks[3]);
+      expect(component.tasks[6]).toEqual(tasks[1]);
     });
 
     describe('with selected task', () => {

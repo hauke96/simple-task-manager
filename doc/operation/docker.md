@@ -10,9 +10,11 @@ We have the overall `docker-compose.yml` which contains four service definitions
 * `stm-server`: The go-server application without the database
 * `stm-db`: The database
 
+See [stm.md](./stm.md) for a minimal example of a compose file when hosting STM yourself.
+
 ## Image versions
 
-The container use a specific version of an image (e.g. `postgres:12`) instead of general tags like `:latest`.
+The container use a specific version of an image (e.g. `postgres:17`) instead of general tags like `:latest`.
 This ensures that a specific version of the SimpleTaskManager still builds and runs in months or even years.
 
 # Docker hub

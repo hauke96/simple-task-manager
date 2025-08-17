@@ -1,7 +1,7 @@
 @use "sass:math";
-@import "../../../styles";
-@import "../../../colors";
-@import "../../../icons";
+@use "../../../styles";
+@use "../../../colors";
+@use "../../../icons";
 
 $content-width: 800px;
 $image-width: 800px;
@@ -84,7 +84,7 @@ $image-blur-size-mobile: 65px;
 }
 
 .language-selection-label {
-	margin-right: $space-base;
+	margin-right: styles.$space-base;
 }
 
 .language-selection {
@@ -96,9 +96,9 @@ $image-blur-size-mobile: 65px;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	padding: $space-base;
+	padding: styles.$space-base;
 	justify-content: flex-end;
-	border-bottom: 1px solid $color-gray-light;
+	border-bottom: 1px solid colors.$color-gray-light;
 }
 
 @media (max-width: $image-width) {
@@ -120,27 +120,27 @@ $image-blur-size-mobile: 65px;
 }
 
 .logo {
-	margin-top: $space-huge;
+	margin-top: styles.$space-huge;
 	opacity: 0.75;
 }
 
 @media (max-width: $image-width) {
 	.logo {
-		margin-top: $space-large;
+		margin-top: styles.$space-large;
 	}
 }
 
 .heading {
 	max-width: $content-width;
 	font-size: 20pt;
-	margin-top: $space-huge;
+	margin-top: styles.$space-huge;
 	line-height: 1.5;
 	text-align: center;
 }
 
 @media (max-width: $image-width) {
 	.heading {
-		margin-top: $space-large;
+		margin-top: styles.$space-large;
 	}
 }
 
@@ -148,9 +148,9 @@ $image-blur-size-mobile: 65px;
 	max-width: $content-width * 0.5;
 	text-align: center;
 	line-height: 1.5;
-	margin-top: $space-large;
-	margin-left: $space-large;
-	margin-right: $space-large;
+	margin-top: styles.$space-large;
+	margin-left: styles.$space-large;
+	margin-right: styles.$space-large;
 }
 
 @media (max-width: $image-width) {
@@ -164,19 +164,19 @@ $image-blur-size-mobile: 65px;
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
-	margin-top: $space-huge;
-	padding-top: $space-large;
-	padding-bottom: $space-large;
-	border-top: 1px solid $color-gray-light;
-	border-bottom: 1px solid $color-gray-light;
+	margin-top: styles.$space-huge;
+	padding-top: styles.$space-large;
+	padding-bottom: styles.$space-large;
+	border-top: 1px solid colors.$color-gray-light;
+	border-bottom: 1px solid colors.$color-gray-light;
 
 	.login-button {
 		display: flex;
 		align-items: center;
 
 		.lnr {
-			margin-right: $space-base;
-			margin-bottom: $space-base * 0.1;
+			margin-right: styles.$space-base;
+			margin-bottom: styles.$space-base * 0.1;
 			//color: #303030;
 			//font-size: 1.25em;
 		}
@@ -189,27 +189,27 @@ $image-blur-size-mobile: 65px;
 	justify-content: center;
 	flex-direction: column;
 	align-items: center;
-	padding-top: $space-large;
-	padding-bottom: $space-large;
+	padding-top: styles.$space-large;
+	padding-bottom: styles.$space-large;
 }
 
 .notice-centered {
-	margin-right: $space-large;
-	margin-left: $space-large;
+	margin-right: styles.$space-large;
+	margin-left: styles.$space-large;
 }
 
 .warning-centered {
-	background-color: $color-warn-very-light-transparent;
-	border: 1px solid $color-warn;
-	padding-left: $space-large;
-	padding-right: $space-large;
-	margin-bottom: $space-base;
-	margin-right: $space-large;
-	margin-left: $space-large;
+	background-color: colors.$color-warn-very-light-transparent;
+	border: 1px solid colors.$color-warn;
+	padding-left: styles.$space-large;
+	padding-right: styles.$space-large;
+	margin-bottom: styles.$space-base;
+	margin-right: styles.$space-large;
+	margin-left: styles.$space-large;
 }
 
 app-footer {
-	border-top: 1px solid $color-gray-light;
+	border-top: 1px solid colors.$color-gray-light;
 	margin-top: auto;
 	width: 100%;
 }

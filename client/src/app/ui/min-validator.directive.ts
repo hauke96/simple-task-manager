@@ -2,8 +2,9 @@ import { Directive, Input } from '@angular/core';
 import { UntypedFormControl, NG_VALIDATORS, Validator } from '@angular/forms';
 
 @Directive({
-  selector: '[appMinValidator][ngModel]',
-  providers: [{provide: NG_VALIDATORS, useExisting: MinValidatorDirective, multi: true}]
+    selector: '[appMinValidator][ngModel]',
+    providers: [{ provide: NG_VALIDATORS, useExisting: MinValidatorDirective, multi: true }],
+    standalone: false
 })
 export class MinValidatorDirective implements Validator {
   private appMinValidatorNumber: number;

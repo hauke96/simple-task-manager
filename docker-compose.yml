@@ -1,8 +1,14 @@
-version: '3.4'
+#
+# ==== THIS FILE IS NOT ACTIVELY USED OR MAINTAINED! ====
+#
+# This config is an example when using STM without a reverse proxy. All hosted versions of STM use a reverse proxy,
+# which handles path rewrites and SSL certificates. See the hosting documentation for further information on the usage
+# of a reverse proxy.
+#
 
 services:
   stm-server:
-    image: simpletaskmanager/stm-server:1.6.1
+    image: simpletaskmanager/stm-server:1.7.0
     container_name: stm-server
     environment:
       - STM_OAUTH2_CLIENT_ID
@@ -21,7 +27,7 @@ services:
     logging:
       driver: 'journald'
   stm-client:
-    image: simpletaskmanager/stm-client:1.6.1
+    image: simpletaskmanager/stm-client:1.7.0
     container_name: stm-client
     network_mode: host
     restart: unless-stopped
@@ -33,7 +39,7 @@ services:
     logging:
       driver: 'journald'
   stm-db:
-    image: postgres:12
+    image: postgres:17
     container_name: stm-db
     restart: unless-stopped
     network_mode: host

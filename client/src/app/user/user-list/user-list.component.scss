@@ -1,5 +1,5 @@
-@import "../../../styles";
-@import "../../../colors";
+@use "../../../styles";
+@use "../../../colors";
 
 .list-item {
 	padding-right: 0px;
@@ -7,7 +7,7 @@
 
 .user-without-name {
 	font-style: italic;
-	color: $color-gray-light;
+	color: colors.$color-gray-light;
 }
 
 .item-content {
@@ -17,7 +17,7 @@
 
 .remove-button {
 	border: none;
-	border-left: 1px solid $color-light;
+	border-left: 1px solid colors.$color-light;
 	width: 70px;
 	background: none;
 	display: flex;
@@ -26,6 +26,6 @@
 }
 .remove-button:hover {
 	border: none;
-	border-left: 1px solid $color-mid;
-	background-color: $color-very-light;
+	border-left: 1px solid colors.$color-mid;
+	background-color: colors.$color-very-light;
 }

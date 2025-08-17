@@ -1,5 +1,5 @@
-@import "../../../styles";
+@use "../../../styles";
 
 #userInput {
-	margin-right: $space-base;
+	margin-right: styles.$space-base;
 }

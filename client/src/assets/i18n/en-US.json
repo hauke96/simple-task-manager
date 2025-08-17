@@ -38,7 +38,7 @@
     "creation-date": "Created on:",
     "description": "Description:",
     "could-not-remove-user": "Could not remove user",
-    "could-not-invite-user": "Could not remove user {{userName}}",
+    "could-not-invite-user": "Could not invite user {{userName}}",
     "tab-titles": {
       "tasks": "Tasks",
       "users": "User",

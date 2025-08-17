@@ -1,4 +1,5 @@
-@import "../../../styles";
+@use "../../../styles";
+@use "../../../colors";
 
 :host {
 	display: flex;
@@ -14,7 +15,7 @@
 .notification-container {
 	display: flex;
 	flex-direction: column;
-	margin-bottom: $space-large;
+	margin-bottom: styles.$space-large;
 	pointer-events: auto;
 }
 
@@ -28,20 +29,20 @@
 }
 
 .border:first-child {
-	border-top: $color-light 1px solid;
+	border-top: colors.$color-light 1px solid;
 }
 .border {
-	border-bottom: $color-light 1px solid;
-	border-right: $color-light 1px solid;
-	border-left: $color-light 1px solid;
+	border-bottom: colors.$color-light 1px solid;
+	border-right: colors.$color-light 1px solid;
+	border-left: colors.$color-light 1px solid;
 }
 
 .text-box {
-	margin-right: $space-large;
+	margin-right: styles.$space-large;
 }
 
 .ok-button {
-	margin-left: $space-small;
+	margin-left: styles.$space-small;
 }
 
 .loading-container {
@@ -52,24 +53,24 @@
 }
 
 .info-container{
-	background-color: $color-very-light-transparent;
+	background-color: colors.$color-very-light-transparent;
 }
 
 .error-container{
-	background-color: $color-error-very-light-transparent;
+	background-color: colors.$color-error-very-light-transparent;
 }
 
 .warning-container{
-	background-color: $color-warn-very-light-transparent;
+	background-color: colors.$color-warn-very-light-transparent;
 }
 
 .notification-text-container {
 	display: flex;
 	flex-grow: 1;
-	padding: $space-small;
+	padding: styles.$space-small;
 	margin-top: auto;
 	margin-bottom: auto;
-	margin-left: $space-small;
+	margin-left: styles.$space-small;
 }
 
 .notification-text-wrapper {
@@ -88,15 +89,15 @@
 }
 
 .error-text {
-	color: $color-error-dark;
+	color: colors.$color-error-dark;
 }
 
 .warn-text {
-	color: $color-warn-dark;
+	color: colors.$color-warn-dark;
 }
 
 .remaining-notifications-label {
-	margin-right: $space-base;
+	margin-right: styles.$space-base;
 	white-space: nowrap;
 	align-content: center;
 }
@@ -113,10 +114,10 @@
 .loader {
 	transform-origin: center center;
 	border: 1px solid transparent;
-	border-right-color: $color-dark;
+	border-right-color: colors.$color-dark;
 	width: 16px;
 	height: 16px;
 	border-radius: 8px;
-	margin: $space-base;
+	margin: styles.$space-base;
 	animation: circle-loader 1s infinite;
 }

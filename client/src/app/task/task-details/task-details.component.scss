@@ -1,4 +1,4 @@
-@import "../../../styles";
+@use "../../../styles";
 
 .assign-container {
 	display: flex;
@@ -16,7 +16,7 @@
 	display: flex;
 	align-items: flex-start;
 	height: 40px; // To stay equally high, regardless of what the content is
-	margin-bottom: $space-base;
+	margin-bottom: styles.$space-base;
 }
 
 .task-metadata-container {
@@ -29,7 +29,7 @@
 }
 
 .of-process-point-label {
-	margin-left: $space-base;
+	margin-left: styles.$space-base;
 	white-space: nowrap;
 }
 
@@ -42,14 +42,14 @@
 
 .save-button,
 .assign-button-container > button {
-	margin-left: $space-large;
+	margin-left: styles.$space-large;
 }
 
 .open-button-row {
-	margin-top: $space-large;
+	margin-top: styles.$space-large;
 }
 
 .open-osm-button,
 .done-button {
-	margin-left: $space-base;
+	margin-left: styles.$space-base;
 }

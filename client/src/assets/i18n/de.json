@@ -138,9 +138,6 @@
   "task-list": {
     "you": "(du)"
   },
-  "task": {
-    "could-not-load-task": "Aufgabe '{{taskId}}' konnte nicht geladen werden"
-  },
   "notification": {
     "loading": "Lade ...",
     "error": "FEHLER:",

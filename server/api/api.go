@@ -57,7 +57,7 @@ func Init() error {
 	})
 
 	var err error
-	if strings.HasPrefix(config.Conf.ServerUrl, "https") {
+	if config.Conf.IsHttps() {
 		sigolo.Info("Use HTTPS? yes")
 		err = http.ListenAndServeTLS(":"+strconv.Itoa(config.Conf.Port), config.Conf.SslCertFile, config.Conf.SslKeyFile, router)
 	} else {
@@ -129,5 +129,5 @@ func getInfo(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, fmtStr, fmtColWidth, "Version", util.VERSION)
 	fmt.Fprintf(w, fmtStr, fmtColWidth, "Code", config.Conf.SourceRepoURL)
 	fmt.Fprintf(w, fmtStr, fmtColWidth, "Supported API versions", strings.Join(supportedApiVersions, ", "))
-	fmt.Fprintf(w, fmtStr, fmtColWidth, "API doc (swagger)", fmt.Sprintf("%s:%d/doc/index.html", config.Conf.ServerUrl, config.Conf.Port))
+	fmt.Fprintf(w, fmtStr, fmtColWidth, "API doc (swagger)", fmt.Sprintf("%s/doc/index.html", config.Conf.ServerUrl))
 }

@@ -104,7 +104,7 @@ func LoadConfig(file string) {
 	}
 
 	// General configs
-	Conf.ServerUrl = getConfigEntry(EnvVarServerUrl, Conf.ServerUrl)
+	Conf.ServerUrl = strings.TrimRight(getConfigEntry(EnvVarServerUrl, Conf.ServerUrl), "/")
 	Conf.Port = getConfigEntryInt(EnvVarPort, Conf.Port)
 	Conf.ClientAuthRedirectUrl = getConfigEntry(EnvVarClientAuthRedirectUrl, Conf.ClientAuthRedirectUrl)
 	Conf.OsmBaseUrl = getConfigEntry(EnvVarOsmBaseUrl, Conf.OsmBaseUrl)
@@ -264,6 +264,10 @@ func getTagValue(fieldName string) string {
 		return "-"
 	}
 	return field.Tag.Get("json")
+}
+
+func (c Config) IsHttps() bool {
+	return c.SslCertFile != "" && c.SslKeyFile != ""
 }
 
 func PrintConfig() {
