@@ -10,6 +10,8 @@ We have the overall `docker-compose.yml` which contains four service definitions
 * `stm-server`: The go-server application without the database
 * `stm-db`: The database
 
+See [stm.md](./stm.md) for a minimal example of a compose file when hosting STM yourself.
+
 ## Image versions
 
 The container use a specific version of an image (e.g. `postgres:17`) instead of general tags like `:latest`.
