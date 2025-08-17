@@ -6,7 +6,7 @@ The server is written in go (aka golang) so you need to install go and set up yo
 
 ## 1. Requirements
 
-* Installed and working go compiler (1.12 or newer to have module support)
+* Installed and working go compiler (s. `go.mod` for required minimum version)
 * For the database do **one** of the following: 
     * Install and setup docker daemon (for the PostgreSQL database; setup is described later)
     * Directly install and setup PostgreSQL server (9.6 and newer should work)
@@ -166,8 +166,13 @@ Peek into the [deployment README](../doc/operation/stm.md) for further details.
 
 # HTTPS
 
-I only tried it with *let's encrypt* certificates.
-At least for them, you only need to set the following properties in your configuration (next to the others of course):
+The recommended way for a hosted version is to use a reverse proxy (e.g. nginx) that handles the SSL certificates.
+Take a look at the operation documentation for further information.
+
+## Direct usage of certificates
+
+Even though it's not the recommended way (at least since 1.7.0), one can als directly use SSL certificates.
+At least for Let's Encrypt, you only need to set the following properties in your configuration (next to the others of course):
 
 ```json
 {

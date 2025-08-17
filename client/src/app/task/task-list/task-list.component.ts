@@ -5,9 +5,10 @@ import { CurrentUserService } from '../../user/current-user.service';
 import { Unsubscriber } from '../../common/unsubscriber';
 
 @Component({
-  selector: 'app-task-list',
-  templateUrl: './task-list.component.html',
-  styleUrls: ['./task-list.component.scss']
+    selector: 'app-task-list',
+    templateUrl: './task-list.component.html',
+    styleUrls: ['./task-list.component.scss'],
+    standalone: false
 })
 export class TaskListComponent extends Unsubscriber implements AfterViewInit {
   @Output()
@@ -47,7 +48,7 @@ export class TaskListComponent extends Unsubscriber implements AfterViewInit {
           return -1;
         }
 
-        return a.name > b.name ? 1 : -1;
+        return (a.name ?? a.id).localeCompare((b.name ?? b.id));
       });
   }
 

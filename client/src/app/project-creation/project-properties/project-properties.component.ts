@@ -4,10 +4,11 @@ import { ControlContainer, NgForm } from '@angular/forms';
 import { ConfigProvider } from '../../config/config.provider';
 
 @Component({
-  selector: 'app-project-properties',
-  templateUrl: './project-properties.component.html',
-  styleUrls: ['./project-properties.component.scss'],
-  viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
+    selector: 'app-project-properties',
+    templateUrl: './project-properties.component.html',
+    styleUrls: ['./project-properties.component.scss'],
+    viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
+    standalone: false
 })
 export class ProjectPropertiesComponent {
   @Input() projectProperties: ProjectProperties;

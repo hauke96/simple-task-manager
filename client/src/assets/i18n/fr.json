@@ -1,0 +1,168 @@
+{
+  "title": "SimpleTaskManager",
+  "users": "Utilisateurs :",
+  "settings": "Paramètres :",
+  "description": "Description :",
+  "properties": "Propriétés :",
+  "tasks": "Tâches :",
+  "name": "Nom :",
+  "save-button": "Enregistrer",
+  "done-button": "Terminé",
+  "cancel-button": "Annuler",
+  "ok-button": "OK",
+  "meters": "mètres",
+  "yes": "Oui",
+  "no": "Non",
+  "test-instance-notice": "C'est la meilleure <b>instance de test</b> de SimpleTaskManager.",
+  "footer": "Version : <a href=\"https://github.com/hauke96/simple-task-manager/releases/tag/v{{version}}\" target=\"_blank\">{{version}}</a><span class=\"sep\"></span>Code : <a href=\"https://github.com/hauke96/simple-task-manager\" target=\"_blank\">GitHub</a><span class=\"sep\"></span>Licence : <a href=\"https://github.com/hauke96/simple-task-manager/blob/master/LICENSE\" target=\"_blank\">GPLv3</a><span class=\"sep\"></span>Icônes : <a href=\"https://linearicons.com\" target=\"_blank\">Linearicons</a>",
+  "project-has-been-removed": "Le projet « {{projectName}} » a été supprimé",
+  "you-have-been-removed": "Vous avez été retiré du projet « {{projectName}} »",
+  "feature-upload-error": "Il n'existe pas de polygones ou les données sont dans un format inconnu. Les formats pris en charge sont les suivants : GeoJson, OSM-XML, GPX, KML, EsriJson et WKT.",
+  "file-upload-error": "Impossible d'importer le fichier « {{fileName}} »",
+  "login-failed": "Vous avez été déconnecté car l'authentification a échoué",
+  "language-selection": "Sélection de la langue :",
+  "login": {
+    "welcome": "Bienvenue sur<br><b>SimpleTaskManager</b>",
+    "welcome-subtitle": "Le gestionnaire de tâches gratuit et facile à utiliser pour le travail collaboratif sur <a href=\"https://openstreetmap.org\" target=\"_blank\">OpenStreetMap</a>. En savoir plus sur STM dans le <a href=\"https://wiki.openstreetmap.org/wiki/SimpleTaskManager\" target=\"_blank\">wiki OSM</a>.",
+    "login-button": "Se connecter"
+  },
+  "dashboard": {
+    "welcome": "Bienvenue {{userName}} :)",
+    "logout-button": "Se déconnecter",
+    "create-project": "Créer un projet",
+    "import-project": "Importer un projet"
+  },
+  "project": {
+    "back-button": "Retour",
+    "title": "Projet:",
+    "creation-date": "Créé le :",
+    "description": "Description :",
+    "could-not-remove-user": "Impossible de supprimer l'utilisateur",
+    "could-not-invite-user": "Impossible de supprimer l'utilisateur « {{userName}} »",
+    "tab-titles": {
+      "tasks": "Tâches",
+      "users": "Utilisateurs",
+      "settings": "Paramètres",
+      "list": "Liste",
+      "comments": "Commentaires"
+    },
+    "live-updates-init-error": "Impossible d'initialiser les mises à jour en temps réel",
+    "could-not-load-project": "Impossible de charger le projet « {{projectId}} »",
+    "could-not-load-projects": "Impossible de charger les projets",
+    "could-not-add-task-comment": "Impossible d'ajouter un commentaire"
+  },
+  "project-list": {
+    "projects": "Projets :",
+    "no-project-notice": "Vous n'avez aucun projet pour le moment.",
+    "you-own-this-project-notice": "* vous possédez ce projet"
+  },
+  "project-settings": {
+    "delete-button": "Supprimer le projet",
+    "really-delete-notice": "Voulez-vous vraiment supprimer le projet ?",
+    "leave-button": "Quitter le projet",
+    "really-leave-notice": "Voulez-vous vraiment quitter le projet ?",
+    "export-button": "Exporter",
+    "successfully-removed": "Le projet a bien été supprimé",
+    "successfully-updated": "Le projet a bien été mis à jour",
+    "could-not-remove-project": "Impossible de supprimer le projet",
+    "could-not-leave-project": "Impossible de quitter le projet",
+    "could-not-update-project": "Impossible de mettre à jour le projet",
+    "could-not-export-project": "Impossible d'exporter le projet"
+  },
+  "project-creation": {
+    "title": "Import depuis des sources externes",
+    "description": "Les tâches sont créées à partir de polygones. Ces géométries peuvent être importées à partir de différentes sources externes.",
+    "copy": "Copier à partir d'un projet :",
+    "copy-notice": "Copier et importer un projet existant dont vous êtes membre.",
+    "no-project-notice": "Aucun projet disponible !",
+    "loading-projects": "Chargement des projets…",
+    "available-projects": "Projets disponibles :",
+    "import-button": "Importer",
+    "import-heading": "Importer un projet :",
+    "import-notice": "Importer un projet existant à partir de votre ordinateur. Les entrées existantes dans l'onglet « Propriétés » seront écrasées.",
+    "new-polygon": "Dessiner un nouveau polygone",
+    "edit-polygon": "Modifier le polygone",
+    "remove-polygon": "Supprimer le polygone",
+    "subdivide": "Diviser :",
+    "upload-project-button": "Importer un projet",
+    "max-points-label": "Points max. par tâche :",
+    "josm-data-source-label": "Source de données de JOSM :",
+    "subdivide-notice": "La tâche sélectionnée est alors divisée en tâches plus petites de la forme et de la taille choisies.",
+    "subdivide-result-too-large-notice": "Le résultat avec {{amountTasksAfterDividing}} tâches est trop volumineux, seules {{maxTasksPerProject}} tâches sont autorisées.",
+    "subdivide-result-empty-notice": "La tâche ne peut pas être divisée, car le résultat serait vide.",
+    "subdivide-result-way-too-large-notice": "Le résultat serait beaucoup trop volumineux, seules {{maxTasksPerProject}} tâches sont autorisées.",
+    "subdivide-result-notice": "Vous aurez {{amountTasksAfterDividing}} tâches au total.",
+    "shape-size": "Taille de la forme :",
+    "shape": "Forme :",
+    "square": "carré",
+    "hexagon": "hexagone",
+    "triangle": "triangle",
+    "preview-button": "Aperçu",
+    "divide-button": "Diviser",
+    "url-file-format-notice": "URL de la source de données au format GeoJSON, OSM-XML, GPX, EsriJson, KML ou WKT :",
+    "load-button": "Importer",
+    "loading-title": "Importer des données à partir d'Overpass :",
+    "load-li-1": "Créez votre requête",
+    "load-li-2": "Cliquez sur « Exporter »",
+    "load-li-3": "Copiez le lien après « données brutes depuis » (clic droit puis « copier le lien »)",
+    "load-li-4": "Collez cette URL ici",
+    "upload": "Géométries à partir d'un fichier :",
+    "upload-notice": "Importez un fichier GeoJSON, OSM-XML, GPX, EsriJson, KML ou WKT contenant des polygones. Chaque polygone correspondra à une tâche.",
+    "remote-url-error": "Impossible d'importer les données depuis l'URL distante",
+    "upload-file-button": "Importer le fichier",
+    "no-task-yet-notice": "Il n'y a encore aucune tâche ici. Utilisez l'outil crayon pour dessiner des tâches ou importez des tâches via l'onglet « Import » ou « Distant ».",
+    "could-not-import-project": "Impossible d'importer le projet « {{projectName}} »",
+    "tab-titles": {
+      "properties": "Propriétés",
+      "tasks": "Tâches",
+      "import": "Importer"
+    },
+    "could-not-create-project": "Impossible de créer le projet",
+    "remote-heading": "Géométries à partir de l'URL :",
+    "overpass-heading": "Géométries à partir d'Overpass :"
+  },
+  "task-details": {
+    "title": "Tâche",
+    "assign-to-me": "Me l'assigner",
+    "assigned-to": "Assigné à :",
+    "unassign": "Non assigné",
+    "points": "Points :",
+    "open-in-josm-button": "Ouvrir dans JOSM",
+    "open-in-id-button": "Ouvrir dans iD",
+    "unable-load-assigned-user": "Impossible de charger l'utilisateur assigné",
+    "unable-assign-user": "Impossible d'assigner l'utilisateur",
+    "unable-unassign-user": "Impossible de désassigner l'utilisateur",
+    "unable-set-process-points": "Impossible de définir les points de traitement",
+    "unable-load-josm": "Impossible d'ouvrir JOSM. Est-il en cours d'exécution ?"
+  },
+  "task-list": {
+    "you": "(vous)"
+  },
+  "notification": {
+    "loading": "Chargement…",
+    "error": "ERREUR :",
+    "errors-left": "erreurs restantes",
+    "warning": "AVERTISSEMENT :",
+    "warnings-left": "avertissements restants",
+    "notifications-left": "notifications restantes"
+  },
+  "zoom-controls": {
+    "zoom-in": "Zoom avant",
+    "zoom-out": "Zoom arrière"
+  },
+  "user": {
+    "invite-button": "Inviter",
+    "remove-button": "Supprimer",
+    "input-placeholder": "Nom de l'utilisateur",
+    "already-member": "L'utilisateur « {{user}} » est déjà membre de ce projet",
+    "unable-load-user": "Impossible de charger iD pour l'utilisateur « {{user}} ». L'utilisateur doit avoir créé au moins un jeu de modifications ou créé/modifié au moins une note."
+  },
+  "task-map": {
+    "task-done": "TERMINÉ",
+    "you": "vous"
+  },
+  "comment": {
+    "send": "Envoyer le commentaire (Ctrl + Entrée)",
+    "no-comments-yet": "Il n'y a rien ici pour le moment."
+  }
+}

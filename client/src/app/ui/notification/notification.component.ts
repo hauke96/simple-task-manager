@@ -3,9 +3,10 @@ import { LoadingService } from '../../common/services/loading.service';
 import { NotificationService } from '../../common/services/notification.service';
 
 @Component({
-  selector: 'app-notification',
-  templateUrl: './notification.component.html',
-  styleUrls: ['./notification.component.scss']
+    selector: 'app-notification',
+    templateUrl: './notification.component.html',
+    styleUrls: ['./notification.component.scss'],
+    standalone: false
 })
 export class NotificationComponent {
   constructor(

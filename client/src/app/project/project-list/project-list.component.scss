@@ -1,4 +1,5 @@
-@import "../../../styles";
+@use "../../../styles";
+@use "../../../colors";
 
 :host {
 	display: flex;
@@ -20,13 +21,13 @@
 }
 
 .light-label {
-	color: $color-gray-mid;
+	color: colors.$color-gray-mid;
 }
 
 .progress-bar {
 	width: 180px;
 	justify-content: end;
-	margin-right: $space-small;
+	margin-right: styles.$space-small;
 }
 
 .admin-label {
@@ -34,6 +35,6 @@
 }
 
 .ownership-notice {
-	margin-top: $space-base;
+	margin-top: styles.$space-base;
 	align-self: end;
 }

@@ -7,15 +7,15 @@ This guide assumes some basic things:
 
 * You have (SSH) access to a linux machine
 * Your machine has access to at least docker.com and osm.org.
-* Your machine is able to start docker container
+* Your machine is able to start docker containers
 
 Optional but recommended:
 
 * Your machine is able to run systemd-services and -timer (for automatic backups and certificate renewal)
 
-# 1 Recommended file structure
+# 1 Possible file structure
 
-I recommend the following structure and I assume your users home folder is `/home/stm`:
+The following structure (I assume your users home folder is `/home/stm`) is easy to maintain and keeps everything together:
 
 * Create `/home/stm/simple-task-manager/` with following sub-folders:
     * `backups`: for (automated) backups (s. section below)
@@ -95,9 +95,9 @@ configuration.
 
 The following things can be configured:
 
-| Config entry               | Environment variable           | Default                                            | Mandatory | Must be given manually |                                                                                                                                                  | Description |
-|----------------------------|--------------------------------|----------------------------------------------------|-----------|------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|-------------|
-| `server-url`               | `STM_SERVER_URL`               | -                                                  | Yes       | Yes                    | The URL of the server. Is used for SSL, authentication and the info page (e.g. `https://stm.hauke-stieler.de`).                                  |
+| Config entry               | Environment variable           | Default                                            | Mandatory | Must be given manually | Description                                                                                                                                      |
+|----------------------------|--------------------------------|----------------------------------------------------|-----------|------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
+| `server-url`               | `STM_SERVER_URL`               | -                                                  | Yes       | Yes                    | The external URL of the server, e.g. "https://my-domain.com/api". May contain a port and a path under which this server can be accessed.         |
 | `port`                     | `STM_PORT`                     | `8080`                                             | Yes       |                        | The port that should be used by the server (e.g. `8080`).                                                                                        |
 | `client-auth-redirect-url` | `STM_CLIENT_AUTH_REDIRECT_URL` | -                                                  | Yes       | Yes                    | The URL to the STM client which is called after OAuth authorization.                                                                             |
 | `osm-base-url`             | `STM_OSM_BASE_URL`             | `"https://www.openstreetmap.org"`                  | Yes       |                        | URL to the OSM server (e.g. `https://www.openstreetmap.org`) as used by the end-user, which is used for login.                                   |
@@ -163,11 +163,123 @@ this: `- ./path/to/notice.<lang-code>.html:/usr/share/nginx/html/assets/i18n/not
 The `<lang-code>` must be replaced by the language code used for the changelog-files as well (so e.g. `de` for German
 or `en-US` for english).
 
-# 4 Automatic backups
+# 4 Reverse proxy
+
+Currently the client and backend containers are running but not accessible through port 80/443 of your machine.
+You have to create a reverse proxy (e.g. a simple nginx container) that handles HTTPS and directs traffic to your containers.
+
+## Example configurations
+
+These are excerpts of the configurations for the stm-test server.
+
+### Reverse proxy (nginx)
+
+Requires open ports 80 and 443. If no redirect from HTTP to HTTPS is wantes, then the port 80 configuration can be removed.
+This expects the backend server to be available unter the path `/api/` and also enables support for websockets.
+
+```json
+server {
+	listen 80;
+	listen [::]:80;
+	server_name stm-test.hauke-stieler.de;
+
+	return 301 https://$host$request_uri;
+}
+server {
+	listen 443 ssl;
+	server_name stm-test.hauke-stieler.de;
+
+	ssl_certificate /etc/letsencrypt/live/stm-test.hauke-stieler.de/cert.pem;
+	ssl_certificate_key /etc/letsencrypt/live/stm-test.hauke-stieler.de/privkey.pem;
+
+	location /api/ {
+		rewrite /api/(.*) /$1  break;
+		proxy_pass http://stm-test-server:8080;
+
+		# WebSocket support
+		proxy_http_version 1.1;
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection "upgrade";
+	}
+
+	location / {
+		proxy_pass http://stm-test-client;
+	}
+}
+```
+
+### Frontend config (nginx)
+
+This serves the frontend under port 80.
+HTTPS is handles by the reverse proxy.
+
+```json
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+
+	location / {
+		root   /usr/share/nginx/html;
+		index  index.html;
+		try_files $uri $uri/ /index.html;
+	}
+}
+
+```
+
+### Docker
+
+The `docker-compose.yml` looks like this and simply passes the SSL certificates to the reverse proxy and opens its ports.
+This is a super-minimal example (likely not working).
+Additional settings and passing environment variables might be needed depending on your setup.
+Also see the `docker-compose.yml` in the repository and the documentation above.
+
+```yaml
+services:
+  reverse-proxy:
+    image: nginx:1.27-alpine
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - ./path/to/reverse-proxy.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "80:80"
+      - "443:443"
+
+  stm-test-server:
+    image: simpletaskmanager/stm-server:1.7.0
+    volumes:
+      - ./path/to/server.conf:/stm-server/config.json
+
+  stm-test-client:
+    image: simpletaskmanager/stm-client:1.7.0
+    volumes:
+      - ./path/to/frontend.conf:/etc/nginx/conf.d/default.conf
+
+  stm-test-db:
+    ...
+```
+
+All containers are in the same network, can therefore communicate with each other, and only the reverse proxy actually publishes its ports to the host system.
+
+### Server config
+
+Because the reverse proxy must distinguish between HTTP requests to the frontent and requests to the backend, the backend hast to be available under a unique path such as `/api/`.
+Only one entry is needed to configure this for the backend, because the actual routing and path rewriting is handles by the reverse proxy.
+
+```json
+{
+  "server-url": "https://stm-test.hauke-stieler.de/api/",
+  ...
+}
+
+
+```
+
+# 5 Automatic backups
 
 This step is optional but recommended and described in the [automatic-backups.md](automatic-backups.md) file.
 
-# 5 Deployment
+# 6 Deployment
 
 _This section only describes the docker hub based deployment!_
 
@@ -179,7 +291,7 @@ described in section 8.
 
 Now let us deploy everything:
 
-* Go to `/home/stm/simple-task-manager/` (the folder described in section 6)
+* Go to `/home/stm/simple-task-manager/` (the folder described in section 2)
 * Make sure a symlink to your `docker-compose.yml` exists
 * `docker-compose up -d`
 
@@ -203,8 +315,7 @@ Manual checks (of course use your own domain/ip):
 * `ping stm.hauke-stieler.de`: Should work. Checks whether firewall accepts ping-requests and if server is on.
 * `ssh root@stm.hauke-stieler.de`: Should not work. Login with `stm` should not require password but valid SSH key.
 * `psql -h stm.hauke-stieler.de`: Should not work. If you get asked for a password, then the firewall isn't blocking
-  incoming traffic in ports other than ssh, `8080` and `433`.
-* Open `https://stm.hauke-stieler.de:8080/info`: Should work, so the firewall accepts port 8080 requests.
+  incoming traffic in ports other than your ssh port and `433`.
 * Open `https://stm.hauke-stieler.de`: Should work, this is the normal front page.
     * Login should work. This would mean that the firewall allows traffic *from* the server *to* the internet and also
       that the server-communication works.

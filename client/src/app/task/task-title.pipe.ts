@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { Task } from './task.material';
 
 @Pipe({
-  name: 'taskTitle'
+    name: 'taskTitle',
+    standalone: false
 })
 export class TaskTitlePipe implements PipeTransform {
   transform(value: Task | undefined, ...args: unknown[]): unknown {

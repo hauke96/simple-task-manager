@@ -1,5 +1,6 @@
-@import '../../../styles';
-@import '../../../icons';
+@use '../../../styles';
+@use '../../../colors';
+@use '../../../icons';
 
 .space-between {
 	justify-content: space-between;
@@ -12,15 +13,15 @@
 
 .meter-label,
 .divide-button {
-	margin-left: $space-base;
+	margin-left: styles.$space-base;
 }
 
 .lnr-warning {
-	margin-right: $space-small;
+	margin-right: styles.$space-small;
 }
 
 button.selected:hover,
 .selected {
-	border-left: 2px solid $color-mid;
-	background-color: $color-lighter;
+	border-left: 2px solid colors.$color-mid;
+	background-color: colors.$color-lighter;
 }

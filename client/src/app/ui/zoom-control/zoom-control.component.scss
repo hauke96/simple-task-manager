@@ -1,5 +1,6 @@
-@import '../../../styles';
-@import '../../../icons';
+@use '../../../styles';
+@use "../../../colors";
+@use '../../../icons';
 
 :host {
 	display: flex;
@@ -7,15 +8,15 @@
 }
 
 button {
-	background-color: $color-white-transparent;
-	width: $space-huge;
-	height: $space-huge;
+	background-color: colors.$color-white-transparent;
+	width: styles.$space-huge;
+	height: styles.$space-huge;
 	padding: unset;
 	margin-bottom: -1px; // Get rid of double border
 }
 
 button:hover {
-	background-color: $color-very-light-transparent;
+	background-color: colors.$color-very-light-transparent;
 }
 button:hover {
 	z-index: 1;

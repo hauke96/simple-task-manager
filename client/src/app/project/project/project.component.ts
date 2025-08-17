@@ -12,9 +12,10 @@ import { Task } from '../../task/task.material';
 import { TabsComponent } from '../../ui/tabs/tabs.component';
 
 @Component({
-  selector: 'app-project',
-  templateUrl: './project.component.html',
-  styleUrls: ['./project.component.scss']
+    selector: 'app-project',
+    templateUrl: './project.component.html',
+    styleUrls: ['./project.component.scss'],
+    standalone: false
 })
 export class ProjectComponent extends Unsubscriber implements OnInit {
   public project: Project;

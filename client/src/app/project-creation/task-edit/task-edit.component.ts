@@ -3,9 +3,10 @@ import { TaskDraft } from '../../task/task.material';
 import { TaskDraftService } from '../task-draft.service';
 
 @Component({
-  selector: 'app-task-edit',
-  templateUrl: './task-edit.component.html',
-  styleUrls: ['./task-edit.component.scss']
+    selector: 'app-task-edit',
+    templateUrl: './task-edit.component.html',
+    styleUrls: ['./task-edit.component.scss'],
+    standalone: false
 })
 export class TaskEditComponent implements OnInit {
   @Input() task: TaskDraft;

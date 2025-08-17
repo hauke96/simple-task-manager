@@ -1,4 +1,5 @@
-@import "../../../styles";
+@use "../../../styles";
+@use "../../../colors";
 
 :host {
 	display: flex;
@@ -6,21 +7,21 @@
 }
 
 .percentage-label {
-	color: $color-gray-mid;
+	color: colors.$color-gray-mid;
 	text-align: end;
 }
 
 .border-bar {
 	width: 100px;
 	padding: 2px;
-	margin-left: $space-base;
-	border: 1px solid $color-light;
+	margin-left: styles.$space-base;
+	border: 1px solid colors.$color-light;
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;
 }
 
 .color-bar {
-	height: $space-base - 4px;
+	height: styles.$space-base - 4px;
 	border: 1px solid;
 }

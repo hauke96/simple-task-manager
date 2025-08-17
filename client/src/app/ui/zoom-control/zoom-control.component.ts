@@ -1,9 +1,10 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 @Component({
-  selector: 'app-zoom-control',
-  templateUrl: './zoom-control.component.html',
-  styleUrls: ['./zoom-control.component.scss']
+    selector: 'app-zoom-control',
+    templateUrl: './zoom-control.component.html',
+    styleUrls: ['./zoom-control.component.scss'],
+    standalone: false
 })
 export class ZoomControlComponent implements OnInit {
 

@@ -12,7 +12,7 @@ We have the overall `docker-compose.yml` which contains four service definitions
 
 ## Image versions
 
-The container use a specific version of an image (e.g. `postgres:12`) instead of general tags like `:latest`.
+The container use a specific version of an image (e.g. `postgres:17`) instead of general tags like `:latest`.
 This ensures that a specific version of the SimpleTaskManager still builds and runs in months or even years.
 
 # Docker hub

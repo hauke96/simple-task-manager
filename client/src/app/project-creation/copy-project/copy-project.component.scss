@@ -1,4 +1,4 @@
-@import '../../../styles';
+@use '../../../styles';
 
 .project-list {
 	overflow-y: auto;
@@ -10,5 +10,5 @@
 }
 
 .import-button {
-	margin-top: $space-base;
+	margin-top: styles.$space-base;
 }

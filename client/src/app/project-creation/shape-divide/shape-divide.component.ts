@@ -12,9 +12,10 @@ import GeoJSON, { GeoJSONFeatureCollection } from 'ol/format/GeoJSON';
 import { Feature } from 'geojson';
 
 @Component({
-  selector: 'app-shape-divide',
-  templateUrl: './shape-divide.component.html',
-  styleUrls: ['./shape-divide.component.scss']
+    selector: 'app-shape-divide',
+    templateUrl: './shape-divide.component.html',
+    styleUrls: ['./shape-divide.component.scss'],
+    standalone: false
 })
 export class ShapeDivideComponent implements OnInit {
   private readonly TASK_ESTIMATION_TOLERANCE = 10;

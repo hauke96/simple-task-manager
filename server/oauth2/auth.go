@@ -26,8 +26,10 @@ func Init() {
 	err := tokenInit()
 	sigolo.FatalCheck(err)
 
+	oauthRedirectUrl := fmt.Sprintf("%s/oauth2/callback", config.Conf.ServerUrl)
+	sigolo.Debug("OAuth redirect URL: %s", oauthRedirectUrl)
 	oauth2Config = &oauth2.Config{
-		RedirectURL:  fmt.Sprintf("%s:%d/oauth2/callback", config.Conf.ServerUrl, config.Conf.Port),
+		RedirectURL:  oauthRedirectUrl,
 		ClientID:     config.Conf.Oauth2ClientId,
 		ClientSecret: config.Conf.Oauth2Secret,
 		Scopes:       []string{"read_prefs"},
@@ -87,8 +89,9 @@ func Callback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	logger.Debug("Perform exchange operation to obtain access token")
-	osmApiToken, err := oauth2Config.Exchange(context.Background(), r.FormValue("code"))
+	code := r.FormValue("code")
+	logger.Debug("Perform exchange operation with code=%s to obtain access token", code)
+	osmApiToken, err := oauth2Config.Exchange(context.Background(), code)
 	if err != nil {
 		logger.Err("Unable to perform OAuth2 Exchange: %s", err.Error())
 		return

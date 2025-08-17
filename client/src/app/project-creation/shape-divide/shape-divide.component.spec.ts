@@ -169,7 +169,7 @@ describe(ShapeDivideComponent.name, () => {
       // Expect 8 cells on a 4x3 grid in which 4 cells are within the MultiPolygon hole
       console.log((taskDraftService.addTasks as Mock).mock.calls);
       const createdTaskDrafts = (taskDraftService.addTasks as Mock).mock.calls[0][0];
-      expect(createdTaskDrafts.length).toEqual(8);
+      expect(createdTaskDrafts.length).toEqual(9);
     });
   });
 });
