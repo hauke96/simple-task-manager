@@ -1,13 +1,21 @@
+#
 # Stage 1: Build
-FROM golang:1.23-alpine AS builder
+#
+# https://hub.docker.com/_/golang
+#
+FROM golang:1.25-alpine AS builder
 
 COPY . /stm-server/
 WORKDIR /stm-server/
 
 RUN go build -o ./server .
 
+#
 # Stage 2: Run
-FROM alpine:3.21
+#
+# https://hub.docker.com/_/alpine
+#
+FROM alpine:3.22
 
 RUN mkdir /stm-server
 WORKDIR /stm-server/
