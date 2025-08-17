@@ -1,5 +1,3 @@
-version: '3.4'
-
 #
 # ==== THIS FILE IS NOT ACTIVELY USED OR MAINTAINED! ====
 #
@@ -41,7 +39,7 @@ services:
     logging:
       driver: 'journald'
   stm-db:
-    image: postgres:12
+    image: postgres:17
     container_name: stm-db
     restart: unless-stopped
     network_mode: host
