@@ -24,5 +24,6 @@ FROM nginx:1.29-alpine
 
 RUN rm -rf /usr/share/nginx/html/*
 COPY --from=builder /stm-client/dist/simple-task-manager/browser /usr/share/nginx/html
+COPY --from=builder /stm-client/nginx.conf /etc/nginx/conf.d/default.conf
 
-ENTRYPOINT nginx -g 'daemon off;'
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
