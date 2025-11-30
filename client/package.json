@@ -11,7 +11,7 @@
     "lint": "ng lint",
     "lint:fix": "ng lint --fix",
     "update": "npx npm-check-updates -u && npm install",
-    "generate-sbom": "npx @cyclonedx/cyclonedx-npm  --package-lock-only --output-file sbom.json --spec-version 1.6 --output-format json"
+    "generate-sbom": "npx @cyclonedx/cyclonedx-npm --package-lock-only --output-file sbom.json --spec-version 1.6 --output-format json"
   },
   "private": true,
   "dependencies": {
