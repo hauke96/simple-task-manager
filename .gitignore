@@ -23,5 +23,6 @@ postgres-data
 # Backups
 *.sql.gz
 
-# Example files
+# Misc
 example*
+sbom.json

@@ -10,7 +10,8 @@
     "test:coverage": "jest --coverage",
     "lint": "ng lint",
     "lint:fix": "ng lint --fix",
-    "update": "npx npm-check-updates -u && npm install"
+    "update": "npx npm-check-updates -u && npm install",
+    "generate-sbom": "npx @cyclonedx/cyclonedx-npm  --package-lock-only --output-file sbom.json --spec-version 1.6 --output-format json"
   },
   "private": true,
   "dependencies": {
@@ -43,6 +44,7 @@
     "@angular/build": "^19.2.1",
     "@angular/cli": "^19.2.1",
     "@angular/compiler-cli": "^19.2.1",
+    "@cyclonedx/cyclonedx-npm": "^4.1.1",
     "@types/jest": "^29.5.14",
     "@typescript-eslint/eslint-plugin": "^8.26.0",
     "@typescript-eslint/parser": "^8.26.0",
