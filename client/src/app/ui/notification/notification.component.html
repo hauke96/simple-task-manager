@@ -1,44 +1,58 @@
 <div class="notification-container">
-	<div *ngIf="isLoading" class="loading-container border">
-		<span class="text-box">{{'notification.loading' | translate}}</span>
-		<div class="loader"></div>
-	</div>
+	@if (isLoading) {
+		<div class="loading-container border">
+			<span class="text-box">{{ 'notification.loading' | translate }}</span>
+			<div class="loader"></div>
+		</div>
+	}
 
 	<!-- Error -->
-	<div *ngIf="hasError" class="error-container border">
-		<div class="notification-text-container">
-			<div class="notification-text-wrapper">
-				<div class="error-text">{{'notification.error' | translate}}</div>&nbsp;
-				<span class="notification-text">{{currentErrorText}}</span>
-				<span *ngIf="remainingErrors> 1"
-					  class="remaining-notifications-label">{{ remainingErrors }} {{'notification.errors-left' | translate}}</span>
+	@if (hasError) {
+		<div class="error-container border">
+			<div class="notification-text-container">
+				<div class="notification-text-wrapper">
+					<div class="error-text">{{ 'notification.error' | translate }}</div>&nbsp;
+					<span class="notification-text">{{ currentErrorText }}</span>
+					@if (remainingErrors > 1) {
+						<span
+								class="remaining-notifications-label">{{ remainingErrors }} {{ 'notification.errors-left' | translate }}</span>
+					}
+				</div>
+				<button class="ok-button" (click)="onCloseErrorButtonClicked()">{{ 'ok-button' | translate }}</button>
 			</div>
-			<button class="ok-button" (click)="onCloseErrorButtonClicked()">{{'ok-button' | translate}}</button>
 		</div>
-	</div>
+	}
 
 	<!-- Warning -->
-	<div *ngIf="hasWarning" class="warning-container border">
-		<div class="notification-text-container">
-			<div class="notification-text-wrapper">
-				<div class="warn-text">{{'notification.warning' | translate}}</div>&nbsp;
-				<span class="notification-text">{{currentWarningText}}</span>
-				<span *ngIf="remainingWarning > 1"
-					  class="remaining-notifications-label">{{ remainingWarning }} {{'notification.warnings-left' | translate}}</span>
+	@if (hasWarning) {
+		<div class="warning-container border">
+			<div class="notification-text-container">
+				<div class="notification-text-wrapper">
+					<div class="warn-text">{{ 'notification.warning' | translate }}</div>&nbsp;
+					<span class="notification-text">{{ currentWarningText }}</span>
+					@if (remainingWarning > 1) {
+						<span
+								class="remaining-notifications-label">{{ remainingWarning }} {{ 'notification.warnings-left' | translate }}</span>
+					}
+				</div>
+				<button class="ok-button" (click)="onCloseWarningButtonClicked()">{{ 'ok-button' | translate }}</button>
 			</div>
-			<button class="ok-button" (click)="onCloseWarningButtonClicked()">{{'ok-button' | translate}}</button>
 		</div>
-	</div>
+	}
 
 	<!-- Info -->
-	<div *ngIf="hasInfo" class="info-container border">
-		<div class="notification-text-container">
-			<div class="notification-text-wrapper">
-				<span class="notification-text">{{currentInfoText}}</span>
-				<span *ngIf="remainingInfo> 1"
-					  class="remaining-notifications-label">{{ remainingInfo }} {{'notification.notifications-left' | translate}}</span>
+	@if (hasInfo) {
+		<div class="info-container border">
+			<div class="notification-text-container">
+				<div class="notification-text-wrapper">
+					<span class="notification-text">{{ currentInfoText }}</span>
+					@if (remainingInfo > 1) {
+						<span
+								class="remaining-notifications-label">{{ remainingInfo }} {{ 'notification.notifications-left' | translate }}</span>
+					}
+				</div>
+				<button class="ok-button" (click)="onCloseInfoButtonClicked()">{{ 'ok-button' | translate }}</button>
 			</div>
-			<button class="ok-button" (click)="onCloseInfoButtonClicked()">{{'ok-button' | translate}}</button>
 		</div>
-	</div>
+	}
 </div>

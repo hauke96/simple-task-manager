@@ -1,3 +1,5 @@
 <select class="selection" [ngModel]="selectedLanguage?.code" (change)="onLanguageChange($event)">
-	<option *ngFor="let l of languages" [value]="l.code">{{l.name}}</option>
+	@for (l of languages; track l) {
+		<option [value]="l.code">{{ l.name }}</option>
+	}
 </select>
