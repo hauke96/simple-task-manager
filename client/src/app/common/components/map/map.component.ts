@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { Feature, Map, MapBrowserEvent, View } from 'ol';
+import { Feature, Map, View } from 'ol';
 import { Attribution, ScaleLine } from 'ol/control';
 import TileLayer from 'ol/layer/Tile';
 import { OSM } from 'ol/source';
@@ -13,10 +13,10 @@ import { Interaction } from 'ol/interaction';
 import { Geometry } from 'ol/geom';
 
 @Component({
-    selector: 'app-map',
-    templateUrl: './map.component.html',
-    styleUrls: ['./map.component.scss'],
-    standalone: false
+  selector: 'app-map',
+  templateUrl: './map.component.html',
+  styleUrls: ['./map.component.scss'],
+  standalone: false
 })
 export class MapComponent extends Unsubscriber implements OnInit {
   @Output()
@@ -51,7 +51,6 @@ export class MapComponent extends Unsubscriber implements OnInit {
       })
     });
 
-    this.map.on('click', (event: MapBrowserEvent<UIEvent>) => this.mapClicked.next(this.map.getFeaturesAtPixel(event.pixel)));
     this.map.on('moveend', () => this.moveEnd.next(this.map.getView().getCenter()));
 
     this.unsubscribeLater(this.layerService.onLayerAdded.subscribe((layer: BaseLayer) => this.addLayer(layer)));
@@ -81,6 +80,11 @@ export class MapComponent extends Unsubscriber implements OnInit {
     }
 
     this.map?.getView().animate({zoom: zoom - 0.5, duration: 250});
+  }
+
+  protected onMapClicked(event: MouseEvent): void {
+    const pixel = this.map.getEventPixel(event);
+    this.mapClicked.next(this.map.getFeaturesAtPixel(pixel));
   }
 
   private addLayer(layer: BaseLayer): void {
