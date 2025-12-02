@@ -2,8 +2,9 @@ package util
 
 import (
 	"fmt"
-	"github.com/hauke96/sigolo"
 	"strings"
+
+	"github.com/hauke96/sigolo"
 )
 
 var (
@@ -40,5 +41,5 @@ func (l *Logger) LogQuery(query string, args ...interface{}) {
 		query = strings.ReplaceAll(query, fmt.Sprintf("$%d", i+1), fmt.Sprintf("%v", a))
 	}
 
-	sigolo.Debugb(1, query)
+	sigolo.Debugb(1, "%s", query)
 }

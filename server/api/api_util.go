@@ -3,14 +3,15 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/mux"
-	"github.com/hauke96/sigolo"
-	"github.com/pkg/errors"
 	"net/http"
 	"runtime/debug"
 	"stm/oauth2"
 	"stm/util"
 	"stm/websocket"
+
+	"github.com/gorilla/mux"
+	"github.com/hauke96/sigolo"
+	"github.com/pkg/errors"
 )
 
 type ApiResponse struct {
@@ -125,7 +126,7 @@ func handleRequest(w http.ResponseWriter, r *http.Request, handler func(r *http.
 				err = fmt.Errorf("%v", r)
 			}
 
-			logger.Err(fmt.Sprintf("!! PANIC !! Recover from panic:"))
+			logger.Err("!! PANIC !! Recover from panic:")
 			logger.Stack(err)
 			logger.Log("%s", debug.Stack())
 
@@ -187,7 +188,7 @@ func handleAuthenticatedRequest(w http.ResponseWriter, r *http.Request, handler 
 				err = fmt.Errorf("%v", r)
 			}
 
-			context.Err(fmt.Sprintf("!! PANIC !! Recover from panic:"))
+			context.Err("!! PANIC !! Recover from panic:")
 			context.Stack(err)
 			context.Log("%s", debug.Stack())
 

@@ -3,7 +3,6 @@ package project
 import (
 	"database/sql"
 	"fmt"
-	"github.com/pkg/errors"
 	"stm/comment"
 	"stm/config"
 	"stm/permission"
@@ -11,6 +10,8 @@ import (
 	"stm/util"
 	"strings"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 type Service struct {
@@ -34,7 +35,7 @@ func Init(tx *sql.Tx, logger *util.Logger, taskService *task.Service, permission
 func (s *Service) GetProjects(userId string) ([]*Project, error) {
 	projects, err := s.store.getAllProjectsOfUser(userId)
 	if err != nil {
-		s.Err(fmt.Sprintf("Error getting projects for user %s", userId))
+		s.Err("%s", fmt.Sprintf("Error getting projects for user %s", userId))
 		return nil, err
 	}
 
