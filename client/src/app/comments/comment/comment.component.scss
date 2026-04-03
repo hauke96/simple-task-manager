@@ -97,6 +97,9 @@
 	display: flex;
 	flex-direction: row;
 	align-items: baseline;
+	margin-top: styles.$space-small;
+	margin-right: calc(#{styles.$space-base} * 2.5 + #{styles.$space-base} + 1px); // Button size + margin + border thickness
+	align-self: flex-end;
 }
 
 .send-button {

@@ -19,7 +19,7 @@
 		<option value="OVERPASS">Overpass</option>
 	</select>
 </div>
-<div class="form-entry">
+<div class="form-entry description-container">
 	<div class="description-text-area-head">
 		<p>{{'description' | translate}}</p>
 	</div>
@@ -27,7 +27,5 @@
               #descriptionInput
 			  [(ngModel)]="projectProperties.projectDescription"
 			  [maxLength]="config.maxDescriptionLength"></textarea>
-	<div class="description-text-area-head">
-		<p>{{'length' | translate}}: {{descriptionInput.textLength}} / {{config.maxDescriptionLength}}</p>
-	</div>
+	<span class="description-length-label">{{'length' | translate}}: {{descriptionInput.textLength}} / {{config.maxDescriptionLength}}</span>
 </div>

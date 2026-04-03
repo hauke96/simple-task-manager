@@ -6,27 +6,30 @@
 						class="space-right">{{ 'project-settings.delete-button' | translate }}
 				</button>
 			</div>
-		} @if (requestConfirmation) {
-		<div>
-			<span class="space-right">{{ 'project-settings.really-delete-notice' | translate }}</span>
-			<button (click)="onNoButtonClicked()" class="space-right">{{ 'no' | translate }}</button>
-			<button (click)="onYesButtonClicked()">{{ 'yes' | translate }}</button>
-		</div>
-	}
+		}
+		@if (requestConfirmation) {
+			<div>
+				<span class="space-right">{{ 'project-settings.really-delete-notice' | translate }}</span>
+				<button (click)="onNoButtonClicked()" class="space-right">{{ 'no' | translate }}</button>
+				<button (click)="onYesButtonClicked()">{{ 'yes' | translate }}</button>
+			</div>
+		}
 	</div>
-} @if (!isOwner) {
+}
+@if (!isOwner) {
 	<div>
 		@if (!requestConfirmation) {
 			<div>
 				<button (click)="onLeaveProjectClicked()">{{ 'project-settings.leave-button' | translate }}</button>
 			</div>
-		} @if (requestConfirmation) {
-		<div>
-			<span class="space-right">{{ 'project-settings.really-leave-notice' | translate }}</span>
-			<button (click)="onNoButtonClicked()" class="space-right">{{ 'no' | translate }}</button>
-			<button (click)="onYesButtonClicked()">{{ 'yes' | translate }}</button>
-		</div>
-	}
+		}
+		@if (requestConfirmation) {
+			<div>
+				<span class="space-right">{{ 'project-settings.really-leave-notice' | translate }}</span>
+				<button (click)="onNoButtonClicked()" class="space-right">{{ 'no' | translate }}</button>
+				<button (click)="onYesButtonClicked()">{{ 'yes' | translate }}</button>
+			</div>
+		}
 	</div>
 }
 
@@ -52,10 +55,15 @@
 					<option value="OVERPASS">Overpass</option>
 				</select>
 			</div>
-			<div class="form-entry">
-				<p class="input-field-label">{{ 'description' | translate }}</p>
+			<div class="form-entry description-container">
+				<div class="description-text-area-head">
+					<p>{{ 'description' | translate }}</p>
+				</div>
 				<textarea name="description-text-area" class="description-text-area"
-						  [(ngModel)]="newProjectDescription"></textarea>
+                          #descriptionInput
+						  [(ngModel)]="newProjectDescription"
+						  [maxLength]="config.maxDescriptionLength"></textarea>
+				<span class="description-length-label">{{ 'length' | translate }}: {{ descriptionInput.textLength }} / {{ config.maxDescriptionLength }}</span>
 			</div>
 		</form>
 		<app-icon-button (clicked)="onSaveButtonClicked()" class="save-button" icon="lnr-checkmark-circle"
