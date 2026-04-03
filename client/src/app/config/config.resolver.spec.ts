@@ -21,11 +21,12 @@ describe(ConfigResolver.name, () => {
     expect(service).toBeTruthy();
   });
 
-  it('should apply config to config provider', done => {
+  it('should apply config to config provider', (done: jest.DoneCallback) => {
     const configFromServer = {
       sourceRepoUrl: 'foo',
       maxTasksPerProject: 2,
-      maxDescriptionLength: 3
+      maxDescriptionLength: 3,
+      maxCommentLength: 3
     } as Config;
     httpClient.get = jest.fn().mockReturnValue(of(configFromServer));
     const configProviderSpy = configProvider.apply = jest.fn();

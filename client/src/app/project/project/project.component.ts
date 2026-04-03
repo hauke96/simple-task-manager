@@ -10,12 +10,13 @@ import { User } from '../../user/user.material';
 import { TranslateService } from '@ngx-translate/core';
 import { Task } from '../../task/task.material';
 import { TabsComponent } from '../../ui/tabs/tabs.component';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
-    selector: 'app-project',
-    templateUrl: './project.component.html',
-    styleUrls: ['./project.component.scss'],
-    standalone: false
+  selector: 'app-project',
+  templateUrl: './project.component.html',
+  styleUrls: ['./project.component.scss'],
+  standalone: false
 })
 export class ProjectComponent extends Unsubscriber implements OnInit {
   public project: Project;
@@ -127,9 +128,9 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
       .subscribe({
         next: () => {
         },
-        error: err => {
-          console.error(err);
-          const message = this.translationService.instant('project.could-not-add-task-comment');
+        error: (e: HttpErrorResponse) => {
+          console.error(e);
+          const message = this.translationService.instant('project.could-not-add-task-comment') + ': ' + e.error;
           this.notificationService.addError(message);
         }
       });
@@ -142,9 +143,9 @@ export class ProjectComponent extends Unsubscriber implements OnInit {
 
     this.taskService.addComment(taskId, comment)
       .subscribe({
-        error: e => {
+        error: (e: HttpErrorResponse) => {
           console.error(e);
-          const message = this.translationService.instant('project.could-not-add-task-comment');
+          const message = this.translationService.instant('project.could-not-add-task-comment') + ': ' + e.error;
           this.notificationService.addError(message);
         }
       });

@@ -81,10 +81,22 @@
 	text-align: center;
 }
 
-.input-container {
+.input-area {
+	display: flex;
+	flex-direction: column;
+	padding: styles.$space-base;
+	row-gap: styles.$space-small;
+}
+
+.input-field-row {
 	display: flex;
 	flex-direction: row;
-	padding: styles.$space-base;
+}
+
+.input-length-label-row {
+	display: flex;
+	flex-direction: row;
+	align-items: baseline;
 }
 
 .send-button {

@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Comment } from '../comment.material';
 import { CurrentUserService } from '../../user/current-user.service';
 import { TranslateService } from '@ngx-translate/core';
+import { ConfigProvider } from '../../config/config.provider';
 
 @Component({
     selector: 'app-comment',
@@ -21,7 +22,7 @@ export class CommentComponent {
 
   enteredComment: string;
 
-  constructor(private currentUserService: CurrentUserService, private translateService: TranslateService) {
+  constructor(private currentUserService: CurrentUserService, private translateService: TranslateService, public config: ConfigProvider) {
   }
 
   @Input()
@@ -31,7 +32,7 @@ export class CommentComponent {
   }
 
   public get currentLocale(): string {
-    return this.translateService.currentLang;
+    return this.translateService.getCurrentLang();
   }
 
   public isFromCurrentUser(comment: Comment): boolean {

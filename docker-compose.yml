@@ -17,7 +17,6 @@ services:
       - STM_DB_PASSWORD
       - STM_DB_HOST
     network_mode: host
-    restart: unless-stopped
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
       - $STM_SERVER_CONFIG:/stm-server/config.json
@@ -30,7 +29,6 @@ services:
     image: simpletaskmanager/stm-client:1.7.0
     container_name: stm-client
     network_mode: host
-    restart: unless-stopped
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
       - $STM_NGINX_CONFIG:/etc/nginx/conf.d/default.conf
@@ -41,7 +39,6 @@ services:
   stm-db:
     image: postgres:17
     container_name: stm-db
-    restart: unless-stopped
     network_mode: host
     environment:
       - POSTGRES_USER=${STM_DB_USERNAME}

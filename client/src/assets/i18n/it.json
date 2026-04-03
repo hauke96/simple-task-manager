@@ -13,6 +13,7 @@
   "meters": "metri",
   "yes": "Sì",
   "no": "No",
+  "length": "Lunghezza",
   "test-instance-notice": "Questa è una <b>istanza di prova</b> di SimpleTaskManager.",
   "footer": "Versione: <a href=\"https://github.com/hauke96/simple-task-manager/releases/tag/v{{version}}\" target=\"_blank\">{{version}}</a><span class=\"sep\"></span>Codice sorgente: <a href=\"https://github.com/hauke96/simple-task-manager\" target=\"_blank\">GitHub</a><span class=\"sep\"></span>Licenza: <a href=\"https://github.com/hauke96/simple-task-manager/blob/master/LICENSE\" target=\"_blank\">GPLv3</a><span class=\"sep\"></span>Icone: <a href=\"https://linearicons.com\" target=\"_blank\">Linearicons</a>",
   "project-has-been-removed": "Il progetto '{{projectName}}' è stato rimosso",

@@ -30,7 +30,7 @@ export class LoginComponent {
 
   private loadTemplates(): void {
     this.changelogTemplate = '';
-    const changelogTemplateUrl = 'assets/i18n/changelog.' + this.translationService.currentLang + '.html';
+    const changelogTemplateUrl = 'assets/i18n/changelog.' + this.translationService.getCurrentLang() + '.html';
     this.httpClient.get(changelogTemplateUrl, {responseType: 'text'})
       .subscribe({
         next: response => this.changelogTemplate = response,
@@ -38,7 +38,7 @@ export class LoginComponent {
       });
 
     this.noticeTemplate = '';
-    const noticeTemplateUrl = 'assets/i18n/notice.' + this.translationService.currentLang + '.html';
+    const noticeTemplateUrl = 'assets/i18n/notice.' + this.translationService.getCurrentLang() + '.html';
     this.httpClient.get(noticeTemplateUrl, {responseType: 'text'})
       .subscribe({
         next: response => this.noticeTemplate = response,

@@ -25,6 +25,7 @@ describe(LoginComponent.name, () => {
     authService = {} as AuthService;
     translationService = {
       onLangChange: of(),
+      getCurrentLang: jest.fn(),
     } as unknown as TranslateService;
 
     return MockBuilder(LoginComponent, AppModule)
