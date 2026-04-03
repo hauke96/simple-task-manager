@@ -30,25 +30,30 @@
 			class="divide-button">{{ 'project-creation.divide-button' | translate }}
 	</button>
 
-	<p class="color-error" *ngIf="isResultTooLarge && !estimatedResultTooLarge">
-		<span class="lnr lnr-warning color-error"></span>
-		{{
-        'project-creation.subdivide-result-too-large-notice' | translate:
-          {
-            amountTasksAfterDividing: amountTasksAfterDividing,
-            maxTasksPerProject: maxTasksPerProject
-          }
-		}}
-	</p>
-	<p class="color-error" *ngIf="isPreviewEmpty && !estimatedResultTooLarge">
+	@if (isResultTooLarge && !estimatedResultTooLarge) {
+		<p class="color-error">
+			<span class="lnr lnr-warning color-error"></span>
+			{{
+            'project-creation.subdivide-result-too-large-notice' | translate:
+              {
+                amountTasksAfterDividing: amountTasksAfterDividing,
+                maxTasksPerProject: maxTasksPerProject
+              }
+			}}
+		</p>
+	} @if (isPreviewEmpty && !estimatedResultTooLarge) {
+	<p class="color-error">
 		<span class="lnr lnr-warning color-error"></span>
 		{{ 'project-creation.subdivide-result-empty-notice' | translate:{amountTasksAfterDividing: amountTasksAfterDividing} }}
 	</p>
-	<p class="color-error" *ngIf="estimatedResultTooLarge">
+} @if (estimatedResultTooLarge) {
+	<p class="color-error">
 		<span class="lnr lnr-warning color-error"></span>
 		{{ 'project-creation.subdivide-result-way-too-large-notice' | translate:{maxTasksPerProject: maxTasksPerProject} }}
 	</p>
-	<p *ngIf="canDivideTasks && !estimatedResultTooLarge"><span class="lnr lnr-checkmark-circle color-okay"></span>
+} @if (canDivideTasks && !estimatedResultTooLarge) {
+	<p><span class="lnr lnr-checkmark-circle color-okay"></span>
 		{{ 'project-creation.subdivide-result-notice' | translate:{amountTasksAfterDividing: amountTasksAfterDividing} }}
 	</p>
+}
 </form>

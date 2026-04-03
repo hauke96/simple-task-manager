@@ -1,10 +1,13 @@
-<div *ngFor="let u of users" class="list-item">
-	<div class="item-content">
-		<span [class.user-without-name]="!u.hasName">{{ u.name }}</span>
-		<button class="remove-button"
-				*ngIf="canRemove(u.uid)"
-				(click)="onRemoveUserClicked(u.uid)">
-			{{ 'user.remove-button' | translate }}
-		</button>
+@for (u of users; track u) {
+	<div class="list-item">
+		<div class="item-content">
+			<span [class.user-without-name]="!u.hasName">{{ u.name }}</span>
+			@if (canRemove(u.uid)) {
+				<button class="remove-button"
+						(click)="onRemoveUserClicked(u.uid)">
+					{{ 'user.remove-button' | translate }}
+				</button>
+			}
+		</div>
 	</div>
-</div>
+}

@@ -17,15 +17,17 @@ describe(ConfigProvider.name, () => {
     config.sourceRepoUrl = 'http://my.repo/project';
     config.maxTasksPerProject = 123;
     config.maxDescriptionLength = 234;
+    config.maxCommentLength = 345;
     config.testEnvironment = true;
     config.osmApiUrl = 'https://test.api.org';
-    expect(Object.keys(config).length).toEqual(5); // All fields filled
+    expect(Object.keys(config).length).toEqual(6); // All fields filled
 
     provider.apply(config);
 
     expect(provider.sourceRepoUrl).toEqual(config.sourceRepoUrl);
     expect(provider.maxTasksPerProject).toEqual(config.maxTasksPerProject);
     expect(provider.maxDescriptionLength).toEqual(config.maxDescriptionLength);
+    expect(provider.maxCommentLength).toEqual(config.maxCommentLength);
     expect(provider.testEnvironment).toEqual(config.testEnvironment);
     expect(provider.osmApiUrl).toEqual(config.osmApiUrl);
   });

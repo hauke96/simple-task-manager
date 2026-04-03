@@ -13,46 +13,52 @@
 					  (tabSelected)="onTabSelected()">
 				<div class="tab-content">
 					<!-- Properties -->
-					<div *ngIf="rootTabs.selectedTabIndex === 0">
-						<h2 class="properties-label">{{ 'properties' | translate }}</h2>
-						<app-project-properties [projectProperties]="projectProperties"></app-project-properties>
-					</div>
+					@if (rootTabs.selectedTabIndex === 0) {
+						<div>
+							<h2 class="properties-label">{{ 'properties' | translate }}</h2>
+							<app-project-properties [projectProperties]="projectProperties"></app-project-properties>
+						</div>
+					}
 
 					<!-- Tasks -->
-					<div *ngIf="rootTabs.selectedTabIndex === 1" class="tab-container">
-						<div class="task-head">
-							<h2 class="properties-label">{{ 'tasks' | translate }}</h2>
-							<span>{{ taskDrafts.length }} / {{ config.maxTasksPerProject }}</span>
+					@if (rootTabs.selectedTabIndex === 1) {
+						<div class="tab-container">
+							<div class="task-head">
+								<h2 class="properties-label">{{ 'tasks' | translate }}</h2>
+								<span>{{ taskDrafts.length }} / {{ config.maxTasksPerProject }}</span>
+							</div>
+							<app-task-draft-list [tasks]="taskDrafts"
+												 [selectedTask]="selectedTask"></app-task-draft-list>
+							@if (selectedTask) {
+								<div>
+									<h2>{{ 'properties' | translate }}</h2>
+									<app-task-edit [task]="selectedTask"></app-task-edit>
+									<h2>{{ 'project-creation.subdivide' | translate }}</h2>
+									<app-shape-divide [selectedTask]="selectedTask"
+													  (previewClicked)="onDividePreviewClicked($event)"></app-shape-divide>
+								</div>
+							}
 						</div>
-						<app-task-draft-list [tasks]="taskDrafts"
-											 [selectedTask]="selectedTask"></app-task-draft-list>
-
-						<div *ngIf="selectedTask">
-							<h2>{{ 'properties' | translate }}</h2>
-							<app-task-edit [task]="selectedTask"></app-task-edit>
-
-							<h2>{{ 'project-creation.subdivide' | translate }}</h2>
-							<app-shape-divide [selectedTask]="selectedTask"
-											  (previewClicked)="onDividePreviewClicked($event)"></app-shape-divide>
-						</div>
-					</div>
+					}
 
 					<!-- Import -->
-					<div *ngIf="rootTabs.selectedTabIndex === 2">
-						<h2 class="properties-label">{{ 'project-creation.title' | translate }}</h2>
-						<p>{{ 'project-creation.description' | translate }}</p>
-						<div class="hline"></div>
-						<div class="tab-container">
-							<app-shape-upload></app-shape-upload>
+					@if (rootTabs.selectedTabIndex === 2) {
+						<div>
+							<h2 class="properties-label">{{ 'project-creation.title' | translate }}</h2>
+							<p>{{ 'project-creation.description' | translate }}</p>
 							<div class="hline"></div>
-							<app-shape-remote></app-shape-remote>
-							<div class="hline"></div>
-							<app-project-import></app-project-import>
-							<div class="hline"></div>
-							<app-copy-project [projects]="(existingProjects | async)!"
-											  [loading]="loadingProjects"></app-copy-project>
+							<div class="tab-container">
+								<app-shape-upload></app-shape-upload>
+								<div class="hline"></div>
+								<app-shape-remote></app-shape-remote>
+								<div class="hline"></div>
+								<app-project-import></app-project-import>
+								<div class="hline"></div>
+								<app-copy-project [projects]="(existingProjects | async)!"
+												  [loading]="loadingProjects"></app-copy-project>
+							</div>
 						</div>
-					</div>
+					}
 				</div>
 			</app-tabs>
 		</form>

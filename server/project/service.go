@@ -3,7 +3,6 @@ package project
 import (
 	"database/sql"
 	"fmt"
-	"github.com/pkg/errors"
 	"stm/comment"
 	"stm/config"
 	"stm/permission"
@@ -11,6 +10,9 @@ import (
 	"stm/util"
 	"strings"
 	"time"
+	"unicode/utf8"
+
+	"github.com/pkg/errors"
 )
 
 type Service struct {
@@ -34,7 +36,7 @@ func Init(tx *sql.Tx, logger *util.Logger, taskService *task.Service, permission
 func (s *Service) GetProjects(userId string) ([]*Project, error) {
 	projects, err := s.store.getAllProjectsOfUser(userId)
 	if err != nil {
-		s.Err(fmt.Sprintf("Error getting projects for user %s", userId))
+		s.Err("%s", fmt.Sprintf("Error getting projects for user %s", userId))
 		return nil, err
 	}
 
@@ -116,8 +118,8 @@ func (s *Service) AddProject(projectDraft *DraftDto) (*Project, error) {
 		return nil, errors.New("Project must have a title")
 	}
 
-	if len(projectDraft.Description) > config.Conf.MaxDescriptionLength {
-		return nil, errors.New(fmt.Sprintf("Description too long. Allowed are %d characters but found %d.", config.Conf.MaxDescriptionLength, len(projectDraft.Description)))
+	if utf8.RuneCountInString(projectDraft.Description) > config.Conf.MaxDescriptionLength {
+		return nil, errors.New(fmt.Sprintf("Description too long. Allowed are %d characters but found %d.", config.Conf.MaxDescriptionLength, utf8.RuneCountInString(projectDraft.Description)))
 	}
 
 	// Actually add project
@@ -300,8 +302,8 @@ func (s *Service) Update(projectId string, newName string, newDescription string
 	}
 
 	// Check Description
-	if len(newDescription) > config.Conf.MaxDescriptionLength {
-		return nil, errors.New(fmt.Sprintf("Description too long. Allowed are %d characters but found %d.", config.Conf.MaxDescriptionLength, len(newDescription)))
+	if utf8.RuneCountInString(newDescription) > config.Conf.MaxDescriptionLength {
+		return nil, errors.New(fmt.Sprintf("Description too long. Allowed are %d characters but found %d.", config.Conf.MaxDescriptionLength, utf8.RuneCountInString(newDescription)))
 	}
 
 	project, err := s.store.update(projectId, newName, newDescription, newJosmDataSource)

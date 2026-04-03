@@ -6,6 +6,7 @@ import { NotificationService } from '../../common/services/notification.service'
 import { User } from '../../user/user.material';
 import { TranslateService } from '@ngx-translate/core';
 import { JosmDataSource } from '../../common/entities/josm-data-source';
+import { ConfigProvider } from '../../config/config.provider';
 
 @Component({
     selector: 'app-project-settings',
@@ -33,7 +34,8 @@ export class ProjectSettingsComponent implements OnInit {
     private currentUserService: CurrentUserService,
     private notificationService: NotificationService,
     private router: Router,
-    private translationService: TranslateService
+    private translationService: TranslateService,
+    protected config: ConfigProvider
   ) {
   }
 

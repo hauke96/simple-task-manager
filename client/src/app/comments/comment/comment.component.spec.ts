@@ -4,17 +4,21 @@ import { Comment } from '../comment.material';
 import { User } from '../../user/user.material';
 import { TranslateService } from '@ngx-translate/core';
 import { AppModule } from '../../app.module';
+import { ConfigProvider } from '../../config/config.provider';
 
 describe(CommentComponent.name, () => {
   let component: CommentComponent;
   let fixture: MockedComponentFixture<CommentComponent, any>;
   let translationService: TranslateService;
+  let configProvider: ConfigProvider;
 
   beforeEach(() => {
     translationService = {} as TranslateService;
+    configProvider = {} as ConfigProvider;
 
     return MockBuilder(CommentComponent, AppModule)
-      .provide({provide: TranslateService, useFactory: () => translationService});
+      .provide({provide: TranslateService, useFactory: () => translationService})
+      .provide({provide: ConfigProvider, useFactory: () => configProvider});
   });
 
   beforeEach(() => {

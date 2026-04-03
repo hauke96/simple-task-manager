@@ -1,38 +1,52 @@
 <div class="assign-container">
-	<h2>{{'task-details.title' | translate}} {{task | taskTitle}}</h2>
-	<div class="assign-button-container" *ngIf="needUserAssignment">
-		<button *ngIf="!task?.assignedUser?.uid" (click)="onAssignButtonClicked()">{{'task-details.assign-to-me' | translate}}</button>
-		<button *ngIf="task?.assignedUser?.uid === currentUserId || task?.assignedUser?.uid && currentUserIsProjectOwner" (click)="onUnassignButtonClicked()">{{'task-details.unassign' | translate}}</button>
-	</div>
+	<h2>{{ 'task-details.title' | translate }} {{ task | taskTitle }}</h2>
+	@if (needUserAssignment) {
+		<div class="assign-button-container">
+			@if (!task?.assignedUser?.uid) {
+				<button (click)="onAssignButtonClicked()">{{ 'task-details.assign-to-me' | translate }}</button>
+			} @if (task?.assignedUser?.uid === currentUserId || task?.assignedUser?.uid && currentUserIsProjectOwner) {
+			<button (click)="onUnassignButtonClicked()">{{ 'task-details.unassign' | translate }}</button>
+		}
+		</div>
+	}
 </div>
 
 <!-- Process points row -->
 <div class="process-point-container">
-	<form class="flex-line" *ngIf="task?.assignedUser?.uid === currentUserId || !needUserAssignment; else currentUserElse" #processPointsForm="ngForm">
-		<span class="points-label">{{'task-details.points' | translate}}</span>
-		<input name="processPointInput"
-			   class="process-point-input"
-			   [(ngModel)]="newProcessPoints"
-			   type="number"
-			   required
-			   appMinValidator="0"
-			   appMaxValidator="{{task?.maxProcessPoints}}">
-		<span class="of-process-point-label">/ {{task?.maxProcessPoints}}</span>
-		<div class="save-button-row">
-			<button class="save-button" (click)="onSaveButtonClick()" [disabled]="!processPointsForm.form?.valid">{{'save-button' | translate}}</button>
-			<button class="done-button" (click)="onDoneButtonClick()" [disabled]="!processPointsForm.form?.valid">{{'done-button' | translate}}</button>
-		</div>
-	</form>
-	<ng-template #currentUserElse>
-		<div class="task-metadata-container">
-			<span>{{ 'task-details.points' | translate }} {{ task?.processPoints }} / {{ task?.maxProcessPoints }}</span>
-			<span *ngIf="!!task?.assignedUser?.uid && task?.assignedUser?.uid !== currentUserId">{{ 'task-details.assigned-to' | translate }} {{ assignedUserName }}</span>
-		</div>
-	</ng-template>
+	@if (task?.assignedUser?.uid === currentUserId || !needUserAssignment) {
+		<form class="flex-line" #processPointsForm="ngForm">
+			<span class="points-label">{{ 'task-details.points' | translate }}</span>
+			<input name="processPointInput"
+				   class="process-point-input"
+				   [(ngModel)]="newProcessPoints"
+				   type="number"
+				   required
+				   appMinValidator="0"
+				   appMaxValidator="{{task?.maxProcessPoints}}">
+			<span class="of-process-point-label">/ {{ task?.maxProcessPoints }}</span>
+			<div class="save-button-row">
+				<button class="save-button" (click)="onSaveButtonClick()"
+						[disabled]="!processPointsForm.form?.valid">{{ 'save-button' | translate }}
+				</button>
+				<button class="done-button" (click)="onDoneButtonClick()"
+						[disabled]="!processPointsForm.form?.valid">{{ 'done-button' | translate }}
+				</button>
+			</div>
+		</form>
+	} @else {
+	<div class="task-metadata-container">
+		<span>{{ 'task-details.points' | translate }} {{ task?.processPoints }} / {{ task?.maxProcessPoints }}</span>
+		@if (!!task?.assignedUser?.uid && task?.assignedUser?.uid !== currentUserId) {
+			<span>{{ 'task-details.assigned-to' | translate }} {{ assignedUserName }}</span>
+		}
+	</div>
+}
 </div>
 
 <!-- Open in JOSM row -->
 <div class="open-button-row">
-	<button (click)="onOpenJosmButtonClicked()">{{'task-details.open-in-josm-button' | translate}}</button>
-	<button (click)="onOpenOsmOrgButtonClicked()" class="open-osm-button">{{'task-details.open-in-id-button' | translate}}</button>
+	<button (click)="onOpenJosmButtonClicked()">{{ 'task-details.open-in-josm-button' | translate }}</button>
+	<button (click)="onOpenOsmOrgButtonClicked()"
+			class="open-osm-button">{{ 'task-details.open-in-id-button' | translate }}
+	</button>
 </div>

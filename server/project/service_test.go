@@ -3,9 +3,6 @@ package project
 import (
 	"database/sql"
 	"fmt"
-	"github.com/hauke96/sigolo"
-	_ "github.com/lib/pq" // Make driver "postgres" usable
-	"github.com/pkg/errors"
 	"stm/comment"
 	"stm/config"
 	"stm/permission"
@@ -14,6 +11,10 @@ import (
 	"stm/util"
 	"testing"
 	"time"
+
+	"github.com/hauke96/sigolo"
+	_ "github.com/lib/pq" // Make driver "postgres" usable
+	"github.com/pkg/errors"
 )
 
 var (
@@ -239,6 +240,26 @@ func TestAddAndGetProject(t *testing.T) {
 		if newProject.CreationDate == nil {
 			return errors.New("Creation date should be set but was NIL")
 		}
+		return nil
+	})
+}
+
+func TestAddAndGetProjectWithUnicodeDescription(t *testing.T) {
+	h.Run(t, func() error {
+		config.Conf.MaxDescriptionLength = 10
+		user := "Jack"
+		p := DraftDto{
+			Name:        "Test name",
+			Users:       []string{user, "user2"},
+			Description: "foo bar →→", // 10 characters but more than 10 bytes
+			Owner:       user,
+		}
+
+		_, err := s.AddProject(&p)
+		if err != nil {
+			return errors.New(fmt.Sprintf("Adding should work: %s", err.Error()))
+		}
+
 		return nil
 	})
 }
@@ -622,6 +643,28 @@ func TestUpdate(t *testing.T) {
 		_, err = s.Update("1", "name", newDescription, OSM, "Peter")
 		if err == nil {
 			return errors.New(fmt.Sprintf("Updating project description should not work. Allowed description length %d but was %d", config.Conf.MaxDescriptionLength, len(newDescription)))
+		}
+
+		return nil
+	})
+}
+
+func TestUpdateWithUnicodeDescription(t *testing.T) {
+	h.Run(t, func() error {
+		config.Conf.MaxDescriptionLength = 10
+
+		oldProject, err := s.GetProject("1", "Peter")
+		if err != nil {
+			return errors.New(fmt.Sprintf("Error getting project to update: %s", err))
+		}
+
+		newDescription := "foo bar →→" // 10 characters but more than 10 bytes
+		project, err := s.Update(oldProject.Id, oldProject.Name, newDescription, oldProject.JosmDataSource, "Peter")
+		if err != nil {
+			return errors.New(fmt.Sprintf("Error updating project wasn't expected: %s", err))
+		}
+		if project.Description != newDescription {
+			return errors.New(fmt.Sprintf("New description doesn't match with expected one: %s != %s", oldProject.Name, newDescription))
 		}
 
 		return nil

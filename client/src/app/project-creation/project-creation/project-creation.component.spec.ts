@@ -80,7 +80,7 @@ describe(ProjectCreationComponent.name, () => {
     expect(component).toBeTruthy();
   });
 
-  it('should remain loading until projects arrived', (done) => {
+  it('should remain loading until projects arrived', (done: jest.DoneCallback) => {
     expect(component.loadingProjects).toEqual(true);
 
     component.existingProjects.subscribe(() => {
@@ -91,7 +91,7 @@ describe(ProjectCreationComponent.name, () => {
     projectsSubject.next([createProject()]);
   });
 
-  it('should remain loading until error when retrieving projects', (done) => {
+  it('should remain loading until error when retrieving projects', (done: jest.DoneCallback) => {
     expect(component.loadingProjects).toEqual(true);
     notificationService.addError = jest.fn();
 

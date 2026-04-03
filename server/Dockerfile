@@ -3,7 +3,7 @@
 #
 # https://hub.docker.com/_/golang
 #
-FROM golang:1.25-alpine AS builder
+FROM golang:1.26-alpine3.23 AS builder
 
 COPY . /stm-server/
 WORKDIR /stm-server/
@@ -15,7 +15,7 @@ RUN go build -o ./server .
 #
 # https://hub.docker.com/_/alpine
 #
-FROM alpine:3.22
+FROM alpine:3.23
 
 RUN mkdir /stm-server
 WORKDIR /stm-server/

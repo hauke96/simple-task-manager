@@ -3,14 +3,15 @@ package task
 import (
 	"database/sql"
 	"fmt"
-	"github.com/hauke96/sigolo"
-	"github.com/pkg/errors"
 	"stm/comment"
 	"stm/config"
 	"stm/permission"
 	"stm/test"
 	"stm/util"
 	"testing"
+
+	"github.com/hauke96/sigolo"
+	"github.com/pkg/errors"
 
 	_ "github.com/lib/pq" // Make driver "postgres" usable
 )
@@ -125,7 +126,7 @@ func TestAddTasksInvalidProcessPoints(t *testing.T) {
 		if err == nil {
 			return errors.New(fmt.Sprintf("Adding task with maxProcessPoints=0 should not be possible"))
 		}
-		s.Log(err.Error())
+		s.Log("%s", err.Error())
 
 		// Negative numbers aren't allowed
 		rawTask.MaxProcessPoints = -5
@@ -171,7 +172,7 @@ func TestAddTasksInvalidGeometry(t *testing.T) {
 		if err == nil {
 			return errors.New("adding task with non-polygon geometry should fail")
 		}
-		s.Log(err.Error())
+		s.Log("%s", err.Error())
 
 		// very old format for the task geometry
 		t.Geometry = "[[0,1],[2,3],[4,0]"

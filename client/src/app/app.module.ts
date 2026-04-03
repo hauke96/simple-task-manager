@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -42,73 +42,76 @@ import { GlobalErrorHandler } from './error-handler';
 import { ProjectImportComponent } from './project-creation/project-import/project-import.component';
 import { CopyProjectComponent } from './project-creation/copy-project/copy-project.component';
 import { MapComponent } from './common/components/map/map.component';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { provideTranslateService, TranslatePipe } from '@ngx-translate/core';
+import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { IconButtonComponent } from './ui/icon-button/icon-button.component';
 import { CommentComponent } from './comments/comment/comment.component';
 
-@NgModule({ declarations: [
-        AppComponent,
-        DashboardComponent,
-        LoginComponent,
-        OauthLandingComponent,
-        ProjectListComponent,
-        ProjectComponent,
-        TaskListComponent,
-        TaskDetailsComponent,
-        TaskMapComponent,
-        FooterComponent,
-        ProjectCreationComponent,
-        TabsComponent,
-        UserListComponent,
-        UserInvitationComponent,
-        ProjectSettingsComponent,
-        NotificationComponent,
-        ToolbarComponent,
-        ShapeDivideComponent,
-        ShapeUploadComponent,
-        MaxValidatorDirective,
-        MinValidatorDirective,
-        ShapeRemoteComponent,
-        LanguageSelectionComponent,
-        DrawingToolbarComponent,
-        TaskDraftListComponent,
-        ProjectPropertiesComponent,
-        TaskEditComponent,
-        ZoomControlComponent,
-        ProgressBarComponent,
-        TaskTitlePipe,
-        ProjectImportComponent,
-        CopyProjectComponent,
-        MapComponent,
-        IconButtonComponent,
-        CommentComponent
-    ],
-    exports: [
-        IconButtonComponent
-    ],
-    bootstrap: [AppComponent], imports: [BrowserModule,
-        AppRoutingModule,
-        FormsModule,
-        TranslateModule.forRoot({
-            loader: {
-                provide: TranslateLoader,
-                useFactory: (httpClient: HttpClient) => new TranslateHttpLoader(httpClient),
-                deps: [HttpClient],
-            },
-        })], providers: [
-        SelectedLanguageGuard,
-        AuthGuard,
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: LoggedInInterceptor,
-            multi: true
-        },
-        {
-            provide: ErrorHandler,
-            useClass: GlobalErrorHandler
-        },
-        provideHttpClient(withInterceptorsFromDi())
-    ] })
+@NgModule({
+  declarations: [
+    AppComponent,
+    DashboardComponent,
+    LoginComponent,
+    OauthLandingComponent,
+    ProjectListComponent,
+    ProjectComponent,
+    TaskListComponent,
+    TaskDetailsComponent,
+    TaskMapComponent,
+    FooterComponent,
+    ProjectCreationComponent,
+    TabsComponent,
+    UserListComponent,
+    UserInvitationComponent,
+    ProjectSettingsComponent,
+    NotificationComponent,
+    ToolbarComponent,
+    ShapeDivideComponent,
+    ShapeUploadComponent,
+    MaxValidatorDirective,
+    MinValidatorDirective,
+    ShapeRemoteComponent,
+    LanguageSelectionComponent,
+    DrawingToolbarComponent,
+    TaskDraftListComponent,
+    ProjectPropertiesComponent,
+    TaskEditComponent,
+    ZoomControlComponent,
+    ProgressBarComponent,
+    TaskTitlePipe,
+    ProjectImportComponent,
+    CopyProjectComponent,
+    MapComponent,
+    IconButtonComponent,
+    CommentComponent
+  ],
+  exports: [
+    IconButtonComponent
+  ],
+  bootstrap: [AppComponent],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    TranslatePipe,
+  ],
+  providers: [
+    SelectedLanguageGuard,
+    AuthGuard,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LoggedInInterceptor,
+      multi: true
+    },
+    {
+      provide: ErrorHandler,
+      useClass: GlobalErrorHandler
+    },
+    provideHttpClient(withInterceptorsFromDi()),
+    provideTranslateService({
+      loader: provideTranslateHttpLoader()
+    })
+  ]
+})
 export class AppModule {
 }

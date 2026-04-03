@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { Feature, Map, MapBrowserEvent, View } from 'ol';
+import { Feature, Map, View } from 'ol';
 import { Attribution, ScaleLine } from 'ol/control';
 import TileLayer from 'ol/layer/Tile';
 import { OSM } from 'ol/source';
@@ -13,10 +13,10 @@ import { Interaction } from 'ol/interaction';
 import { Geometry } from 'ol/geom';
 
 @Component({
-    selector: 'app-map',
-    templateUrl: './map.component.html',
-    styleUrls: ['./map.component.scss'],
-    standalone: false
+  selector: 'app-map',
+  templateUrl: './map.component.html',
+  styleUrls: ['./map.component.scss'],
+  standalone: false
 })
 export class MapComponent extends Unsubscriber implements OnInit {
   @Output()
@@ -51,7 +51,6 @@ export class MapComponent extends Unsubscriber implements OnInit {
       })
     });
 
-    this.map.on('click', (event: MapBrowserEvent<UIEvent>) => this.mapClicked.next(this.map.getFeaturesAtPixel(event.pixel)));
     this.map.on('moveend', () => this.moveEnd.next(this.map.getView().getCenter()));
 
     this.unsubscribeLater(this.layerService.onLayerAdded.subscribe((layer: BaseLayer) => this.addLayer(layer)));
@@ -59,7 +58,7 @@ export class MapComponent extends Unsubscriber implements OnInit {
     this.unsubscribeLater(this.layerService.onInteractionAdded.subscribe((interaction: Interaction) => this.addInteraction(interaction)));
     this.unsubscribeLater(this.layerService.onInteractionRemoved.subscribe(
       (interaction: Interaction) => this.removeInteraction(interaction)));
-    this.unsubscribeLater(this.layerService.onFitView.subscribe((extent: Extent) => this.fitMapView(extent)));
+    this.unsubscribeLater(this.layerService.onFitView.subscribe((extent: Extent | null) => this.fitMapView(extent)));
     this.unsubscribeLater(this.layerService.onFitToFeatures.subscribe((features: Feature<Geometry>[]) => this.fitToFeatures(features)));
     this.unsubscribeLater(this.layerService.onCenterView.subscribe((coordinate: Coordinate) => this.centerMapView(coordinate)));
     this.unsubscribeLater(this.layerService.onMoveToOutsideGeometry.subscribe((extent: Extent) => this.moveToOutsideGeometry(extent)));
@@ -83,6 +82,11 @@ export class MapComponent extends Unsubscriber implements OnInit {
     this.map?.getView().animate({zoom: zoom - 0.5, duration: 250});
   }
 
+  protected onMapClicked(event: MouseEvent): void {
+    const pixel = this.map.getEventPixel(event);
+    this.mapClicked.next(this.map.getFeaturesAtPixel(pixel));
+  }
+
   private addLayer(layer: BaseLayer): void {
     this.map.addLayer(layer);
   }
@@ -99,7 +103,11 @@ export class MapComponent extends Unsubscriber implements OnInit {
     return this.map.removeInteraction(interaction);
   }
 
-  private fitMapView(extent: number[]): void {
+  private fitMapView(extent: Extent | null): void {
+    if (extent == null) {
+      return;
+    }
+
     this.map.getView().fit(
       extent, {
         size: this.map.getSize(),
@@ -111,7 +119,7 @@ export class MapComponent extends Unsubscriber implements OnInit {
     this.map.getView().setCenter(coordinate);
   }
 
-  private moveToOutsideGeometry(extent: number[]): void {
+  private moveToOutsideGeometry(extent: Extent): void {
     const geometryVisible = intersects(this.map.getView().calculateExtent(), extent);
     if (!geometryVisible) {
       const center = [extent[0] + (extent[2] - extent[0]) / 2, extent[1] + (extent[3] - extent[1]) / 2];

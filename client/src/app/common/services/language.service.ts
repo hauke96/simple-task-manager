@@ -38,7 +38,7 @@ export class LanguageService {
   }
 
   public getSelectedLanguage(): Language | undefined {
-    return this.getLanguageByCode(this.translationService.currentLang);
+    return this.getLanguageByCode(this.translationService.getCurrentLang());
   }
 
   /**

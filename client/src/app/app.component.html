@@ -1,6 +1,8 @@
 <div [class.host-in-test-mode]="isInTestMode" [class.host-in-prod-mode]="!isInTestMode">
-	<div *ngIf="isInTestMode" class="test-label">
-		<span [innerHTML]="'test-instance-notice' | translate"></span>
-	</div>
+	@if (isInTestMode) {
+		<div class="test-label">
+			<span [innerHTML]="'test-instance-notice' | translate"></span>
+		</div>
+	}
 	<router-outlet></router-outlet>
 </div>

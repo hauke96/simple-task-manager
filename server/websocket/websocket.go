@@ -1,9 +1,10 @@
 package websocket
 
 import (
-	"github.com/gorilla/websocket"
 	"net/http"
 	"stm/util"
+
+	"github.com/gorilla/websocket"
 )
 
 const (
@@ -77,7 +78,7 @@ func (s *Sender) SendAll(messages []Message, uids ...string) {
 			if err != nil {
 				// Use Debug logging because this will happen a lot (e.g. every time someone reloads the web client)
 				s.Debug("ERROR: Unable to send to websocket")
-				s.Debug("ERROR: " + err.Error())
+				s.Debug("ERROR: %s", err.Error())
 
 				//sigolo.Error("Unable to send to websocket, close it. Error: %s", err.Error())
 				s.Stack(err)
@@ -85,7 +86,7 @@ func (s *Sender) SendAll(messages []Message, uids ...string) {
 				err := conn.Close()
 				if err != nil {
 					s.Debug("ERROR: Wasn't even able to close it")
-					s.Debug("ERROR: " + err.Error())
+					s.Debug("ERROR: %s", err.Error())
 					//sigolo.Error("Wasn't even able to close it: %s", err.Error())
 					s.Stack(err)
 

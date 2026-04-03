@@ -1,10 +1,13 @@
-<div *ngIf="!tasks || tasks.length === 0">
-	<span>{{'project-creation.no-task-yet-notice' | translate}}</span>
-</div>
-<div *ngFor="let t of tasks" class="list-item"
-	 [class.list-item-selected]="t.id === selectedTask?.id"
-	 (click)="onTaskClicked(t.id)">
+@if (!tasks || tasks.length === 0) {
 	<div>
-		{{t.name}}
+		<span>{{ 'project-creation.no-task-yet-notice' | translate }}</span>
 	</div>
-</div>
+} @for (t of tasks; track t) {
+	<div class="list-item"
+		 [class.list-item-selected]="t.id === selectedTask?.id"
+		 (click)="onTaskClicked(t.id)">
+		<div>
+			{{ t.name }}
+		</div>
+	</div>
+}

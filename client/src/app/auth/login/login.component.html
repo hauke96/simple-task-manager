@@ -9,7 +9,7 @@
 </div>
 <div class="white-transparent language-selection">
 	<span class="lnr lnr-earth language-selection-label"></span>
-	<span class="language-selection-label">{{"language-selection" | translate}}</span>
+	<span class="language-selection-label">{{ "language-selection" | translate }}</span>
 	<app-language-selection></app-language-selection>
 </div>
 <div class="centered-content">
@@ -19,15 +19,19 @@
 	<div class="heading" [innerHTML]="'login.welcome' | translate"></div>
 	<div class="sub-heading" [innerHTML]="'login.welcome-subtitle' | translate"></div>
 	<div class="white-transparent login-button-container">
-		<app-icon-button (clicked)="onLoginButtonClick()" icon="lnr-enter" textKey="login.login-button"></app-icon-button>
+		<app-icon-button (clicked)="onLoginButtonClick()" icon="lnr-enter"
+						 textKey="login.login-button"></app-icon-button>
 	</div>
 	<div class="notice-container white-transparent">
-		<div class="warning-centered" *ngIf="noticeTemplate">
-			<p [innerHTML]="noticeTemplate"></p>
-		</div>
-		<div class="notice-centered" *ngIf="changelogTemplate">
+		@if (noticeTemplate) {
+			<div class="warning-centered">
+				<p [innerHTML]="noticeTemplate"></p>
+			</div>
+		} @if (changelogTemplate) {
+		<div class="notice-centered">
 			<p [innerHTML]="changelogTemplate"></p>
 		</div>
+	}
 	</div>
 	<app-footer></app-footer>
 </div>

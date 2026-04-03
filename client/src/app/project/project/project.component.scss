@@ -57,6 +57,7 @@ app-progress-bar {
 	justify-content: flex-start;
 	border-right: 1px solid colors.$color-light;
 	padding-top: styles.$space-base;
+	overflow-y: auto;
 }
 
 .description-container {
@@ -99,8 +100,6 @@ app-progress-bar {
 
 .comment-list {
 	flex-grow: 1;
-	overflow-y: hidden;
-	height: 100%;
 }
 
 .map-container {

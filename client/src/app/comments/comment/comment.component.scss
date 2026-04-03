@@ -81,10 +81,25 @@
 	text-align: center;
 }
 
-.input-container {
+.input-area {
+	display: flex;
+	flex-direction: column;
+	padding: styles.$space-base;
+	row-gap: styles.$space-small;
+}
+
+.input-field-row {
 	display: flex;
 	flex-direction: row;
-	padding: styles.$space-base;
+}
+
+.input-length-label-row {
+	display: flex;
+	flex-direction: row;
+	align-items: baseline;
+	margin-top: styles.$space-small;
+	margin-right: calc(#{styles.$space-base} * 2.5 + #{styles.$space-base} + 1px); // Button size + margin + border thickness
+	align-self: flex-end;
 }
 
 .send-button {

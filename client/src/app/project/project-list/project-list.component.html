@@ -1,19 +1,26 @@
-<h1>{{'project-list.projects' | translate}}</h1>
-<div *ngIf="projects?.length !== 0">
-	<div *ngFor="let p of projects" class="list-item" (click)="onProjectListItemClicked(p.id)">
-		<span class="wrap-label">{{p.name}}</span>
-		<div class="list-item-column no-wrap">
-			<span class="light-label">({{p.doneProcessPoints}} / {{p.totalProcessPoints}})</span>
-			<app-progress-bar class="progress-bar" [progressPoints]="p.doneProcessPoints" [totalPoints]="p.totalProcessPoints"></app-progress-bar>
-			<div class="admin-label">
-				<span class="light-label" *ngIf="p.owner.uid === currentUserId">*</span>
+<h1>{{ 'project-list.projects' | translate }}</h1>
+@if (projects?.length !== 0) {
+	<div>
+		@for (p of projects; track p) {
+			<div class="list-item" (click)="onProjectListItemClicked(p.id)">
+				<span class="wrap-label">{{ p.name }}</span>
+				<div class="list-item-column no-wrap">
+					<span class="light-label">({{ p.doneProcessPoints }} / {{ p.totalProcessPoints }})</span>
+					<app-progress-bar class="progress-bar" [progressPoints]="p.doneProcessPoints"
+									  [totalPoints]="p.totalProcessPoints"></app-progress-bar>
+					<div class="admin-label">
+						@if (p.owner.uid === currentUserId) {
+							<span class="light-label">*</span>
+						}
+					</div>
+				</div>
 			</div>
-		</div>
+		}
 	</div>
-</div>
-
-<div *ngIf="projects?.length === 0">
-	<p class="light-label">{{'project-list.no-project-notice' | translate}}</p>
-</div>
-
-<span *ngIf="projects?.length !== 0" class="light-label ownership-notice">{{'project-list.you-own-this-project-notice' | translate}}</span>
+} @if (projects?.length === 0) {
+	<div>
+		<p class="light-label">{{ 'project-list.no-project-notice' | translate }}</p>
+	</div>
+} @if (projects?.length !== 0) {
+	<span class="light-label ownership-notice">{{ 'project-list.you-own-this-project-notice' | translate }}</span>
+}

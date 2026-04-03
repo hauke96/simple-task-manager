@@ -1,7 +1,6 @@
-import { Inject, Injectable } from '@angular/core';
+import { DOCUMENT, Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { EventManager } from '@angular/platform-browser';
-import { DOCUMENT } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'

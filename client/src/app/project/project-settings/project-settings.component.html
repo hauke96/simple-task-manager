@@ -1,31 +1,43 @@
-<div *ngIf="isOwner">
-	<div *ngIf="!requestConfirmation">
-		<button (click)="onDeleteButtonClicked()" class="space-right">{{'project-settings.delete-button' | translate}}</button>
+@if (isOwner) {
+	<div>
+		@if (!requestConfirmation) {
+			<div>
+				<button (click)="onDeleteButtonClicked()"
+						class="space-right">{{ 'project-settings.delete-button' | translate }}
+				</button>
+			</div>
+		}
+		@if (requestConfirmation) {
+			<div>
+				<span class="space-right">{{ 'project-settings.really-delete-notice' | translate }}</span>
+				<button (click)="onNoButtonClicked()" class="space-right">{{ 'no' | translate }}</button>
+				<button (click)="onYesButtonClicked()">{{ 'yes' | translate }}</button>
+			</div>
+		}
 	</div>
-
-	<div *ngIf="requestConfirmation">
-		<span class="space-right">{{'project-settings.really-delete-notice' | translate}}</span>
-		<button (click)="onNoButtonClicked()" class="space-right">{{'no' | translate}}</button>
-		<button (click)="onYesButtonClicked()">{{'yes' | translate}}</button>
+}
+@if (!isOwner) {
+	<div>
+		@if (!requestConfirmation) {
+			<div>
+				<button (click)="onLeaveProjectClicked()">{{ 'project-settings.leave-button' | translate }}</button>
+			</div>
+		}
+		@if (requestConfirmation) {
+			<div>
+				<span class="space-right">{{ 'project-settings.really-leave-notice' | translate }}</span>
+				<button (click)="onNoButtonClicked()" class="space-right">{{ 'no' | translate }}</button>
+				<button (click)="onYesButtonClicked()">{{ 'yes' | translate }}</button>
+			</div>
+		}
 	</div>
-</div>
-<div *ngIf="!isOwner">
-	<div *ngIf="!requestConfirmation">
-	<button (click)="onLeaveProjectClicked()">{{'project-settings.leave-button' | translate}}</button>
-	</div>
+}
 
-	<div *ngIf="requestConfirmation">
-		<span class="space-right">{{'project-settings.really-leave-notice' | translate}}</span>
-		<button (click)="onNoButtonClicked()" class="space-right">{{'no' | translate}}</button>
-		<button (click)="onYesButtonClicked()">{{'yes' | translate}}</button>
-	</div>
-</div>
+<app-icon-button (clicked)="onExportButtonClicked()" class="export-project-button" icon="lnr-download"
+				 textKey="project-settings.export-button"></app-icon-button>
 
-<app-icon-button (clicked)="onExportButtonClicked()" class="export-project-button" icon="lnr-download" textKey="project-settings.export-button"></app-icon-button>
-
-<ng-container *ngIf="isOwner">
+@if (isOwner) {
 	<div class="hline"></div>
-
 	<div>
 		<form #creationForm="ngForm">
 			<h2>{{ 'settings' | translate }}</h2>
@@ -34,7 +46,7 @@
 				<input class="name-input" [(ngModel)]="newProjectName" required name="nameField">
 			</div>
 			<div class="form-entry">
-				<p class="input-field-label">{{'project-creation.josm-data-source-label' | translate}}</p>
+				<p class="input-field-label">{{ 'project-creation.josm-data-source-label' | translate }}</p>
 				<select [(ngModel)]="newJosmDataSource"
 						required
 						name="josmDataSourceField"
@@ -43,13 +55,18 @@
 					<option value="OVERPASS">Overpass</option>
 				</select>
 			</div>
-			<div class="form-entry">
-				<p class="input-field-label">{{ 'description' | translate }}</p>
+			<div class="form-entry description-container">
+				<div class="description-text-area-head">
+					<p>{{ 'description' | translate }}</p>
+				</div>
 				<textarea name="description-text-area" class="description-text-area"
-						  [(ngModel)]="newProjectDescription"></textarea>
+                          #descriptionInput
+						  [(ngModel)]="newProjectDescription"
+						  [maxLength]="config.maxDescriptionLength"></textarea>
+				<span class="description-length-label">{{ 'length' | translate }}: {{ descriptionInput.textLength }} / {{ config.maxDescriptionLength }}</span>
 			</div>
 		</form>
-
-		<app-icon-button (clicked)="onSaveButtonClicked()" class="save-button" icon="lnr-checkmark-circle" [disabled]="!creationForm.form?.valid" textKey="save-button"></app-icon-button>
+		<app-icon-button (clicked)="onSaveButtonClicked()" class="save-button" icon="lnr-checkmark-circle"
+						 [disabled]="!creationForm.form?.valid" textKey="save-button"></app-icon-button>
 	</div>
-</ng-container>
+}
