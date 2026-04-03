@@ -16,7 +16,7 @@ export class MapLayerService {
   private $onLayerRemoved: Subject<BaseLayer> = new Subject();
   private $onInteractionAdded: Subject<Interaction> = new Subject();
   private $onInteractionRemoved: Subject<Interaction> = new Subject();
-  private $onFitView: Subject<Extent> = new Subject();
+  private $onFitView: Subject<Extent | null> = new Subject();
   private $onFitToFeatures: Subject<Feature<Geometry>[]> = new Subject();
   private $onCenterView: Subject<Coordinate> = new Subject();
   private $onMoveToOutsideGeometry: Subject<Extent> = new Subject();
@@ -37,7 +37,7 @@ export class MapLayerService {
     return this.$onInteractionRemoved.asObservable();
   }
 
-  get onFitView(): Observable<Extent> {
+  get onFitView(): Observable<Extent | null> {
     return this.$onFitView.asObservable();
   }
 
@@ -69,7 +69,7 @@ export class MapLayerService {
     this.$onInteractionRemoved.next(interaction);
   }
 
-  public fitView(extent: Extent): void {
+  public fitView(extent: Extent | null): void {
     this.$onFitView.next(extent);
   }
 

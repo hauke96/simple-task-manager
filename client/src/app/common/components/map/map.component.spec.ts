@@ -20,20 +20,20 @@ describe(MapComponent.name, () => {
   let layerRemovedSubject: Subject<BaseLayer>;
   let interactionAddedSubject: Subject<Interaction>;
   let interactionRemovedSubject: Subject<Interaction>;
-  let firViewSubject: Subject<Extent>;
+  let firViewSubject: Subject<Extent | null>;
   let fitToFeatureSubject: Subject<Feature<Geometry>[]>;
   let centerViewSubject: Subject<Coordinate>;
-  let moveToOutsideGeometrySubject: Subject<Extent>;
+  let moveToOutsideGeometrySubject: Subject<Extent | null>;
 
   beforeEach(() => {
     layerAddedSubject = new Subject<BaseLayer>();
     layerRemovedSubject = new Subject<BaseLayer>();
     interactionAddedSubject = new Subject<Interaction>();
     interactionRemovedSubject = new Subject<Interaction>();
-    firViewSubject = new Subject<Extent>();
+    firViewSubject = new Subject<Extent | null>();
     fitToFeatureSubject = new Subject<Feature<Geometry>[]>();
     centerViewSubject = new Subject<Coordinate>();
-    moveToOutsideGeometrySubject = new Subject<Extent>();
+    moveToOutsideGeometrySubject = new Subject<Extent | null>();
 
     mapLayerService = {
       onLayerAdded: layerAddedSubject.asObservable(),
