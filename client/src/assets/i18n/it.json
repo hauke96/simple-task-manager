@@ -134,7 +134,7 @@
     "unable-assign-user": "Impossibile assegnare a utente",
     "unable-unassign-user": "Impossibile annullare l’assegnazione a utente",
     "unable-set-process-points": "Impossibile impostare i punti del processo",
-    "unable-load-josm": "Impossibile aprire JOSM. È in esecuzione?"
+    "unable-load-josm": "Impossibile aprire JOSM. Assicurati che sia in esecuzione e configurato correttamente."
   },
   "task-list": {
     "you": "(tu)"

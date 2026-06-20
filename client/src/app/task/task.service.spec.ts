@@ -23,7 +23,7 @@ describe(TaskService.name, () => {
       toCommentsWithUserMap(dtos: CommentDto[], userMap: Map<string, User>): Comment[] {
         return [] as Comment[];
       }
-    } as CommentService;
+    };
 
     service = new TaskService(httpClient, userService, commentService);
   });

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { ShortcutService } from '../../common/services/shortcut.service';
 import { Unsubscriber } from '../../common/unsubscriber';
@@ -7,6 +7,7 @@ import { Unsubscriber } from '../../common/unsubscriber';
     selector: 'app-drawing-toolbar',
     templateUrl: './drawing-toolbar.component.html',
     styleUrls: ['./drawing-toolbar.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class DrawingToolbarComponent extends Unsubscriber implements OnInit {

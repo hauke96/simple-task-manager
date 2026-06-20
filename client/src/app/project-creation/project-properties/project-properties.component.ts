@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ProjectProperties } from '../project-properties';
 import { ControlContainer, NgForm } from '@angular/forms';
 import { ConfigProvider } from '../../config/config.provider';
@@ -8,6 +8,7 @@ import { ConfigProvider } from '../../config/config.provider';
     templateUrl: './project-properties.component.html',
     styleUrls: ['./project-properties.component.scss'],
     viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ProjectPropertiesComponent {

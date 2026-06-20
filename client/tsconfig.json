@@ -2,7 +2,6 @@
   "compileOnSave": false,
   "compilerOptions": {
     "resolveJsonModule": true,
-    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "esModuleInterop": true,
@@ -12,13 +11,13 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
-    "lib": [
-      "ES2021",
-      "dom"
-    ],
     "strict": true,
     "strictPropertyInitialization": false,
     "skipLibCheck": true,
+    "types": [
+      "jest",
+      "node"
+    ],
     "useDefineForClassFields": false
   },
   "angularCompilerOptions": {

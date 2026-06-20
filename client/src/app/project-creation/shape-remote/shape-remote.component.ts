@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { NotificationService } from '../../common/services/notification.service';
 import { GeometryService } from '../../common/services/geometry.service';
@@ -10,6 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
     selector: 'app-shape-remote',
     templateUrl: './shape-remote.component.html',
     styleUrls: ['./shape-remote.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ShapeRemoteComponent {

@@ -2,14 +2,15 @@ package util
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/pkg/errors"
 )
 
 const (
-	VERSION = "1.7.1"
+	VERSION = "1.7.2"
 )
 
 func GetParam(param string, r *http.Request) (string, error) {

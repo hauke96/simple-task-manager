@@ -40,7 +40,7 @@ describe(ProjectService.name, () => {
       toCommentsWithUserMap(dtos: CommentDto[], userMap: Map<string, User>): Comment[] {
         return [] as Comment[];
       }
-    } as CommentService;
+    };
 
     service = new ProjectService(
       taskService,

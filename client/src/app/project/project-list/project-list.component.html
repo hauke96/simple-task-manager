@@ -1,7 +1,7 @@
 <h1>{{ 'project-list.projects' | translate }}</h1>
 @if (projects?.length !== 0) {
 	<div>
-		@for (p of projects; track p) {
+		@for (p of projects; track p.id) {
 			<div class="list-item" (click)="onProjectListItemClicked(p.id)">
 				<span class="wrap-label">{{ p.name }}</span>
 				<div class="list-item-column no-wrap">

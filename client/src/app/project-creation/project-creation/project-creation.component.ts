@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProjectService } from '../../project/project.service';
 import { Feature } from 'ol';
@@ -37,6 +37,7 @@ import { JosmDataSource } from '../../common/entities/josm-data-source';
     styleUrls: ['./project-creation.component.scss'],
     // Provide services here to automatically reset the services when the project has been created.
     providers: [TaskDraftService, ProjectImportService],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ProjectCreationComponent extends Unsubscriber implements OnInit, OnDestroy, AfterViewInit {

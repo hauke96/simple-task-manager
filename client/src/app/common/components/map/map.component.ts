@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Feature, Map, View } from 'ol';
 import { Attribution, ScaleLine } from 'ol/control';
 import TileLayer from 'ol/layer/Tile';
@@ -16,6 +16,7 @@ import { Geometry } from 'ol/geom';
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class MapComponent extends Unsubscriber implements OnInit {

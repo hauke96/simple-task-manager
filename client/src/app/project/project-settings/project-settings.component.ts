@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ProjectService } from '../project.service';
 import { Router } from '@angular/router';
 import { CurrentUserService } from '../../user/current-user.service';
@@ -12,6 +12,7 @@ import { ConfigProvider } from '../../config/config.provider';
     selector: 'app-project-settings',
     templateUrl: './project-settings.component.html',
     styleUrls: ['./project-settings.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ProjectSettingsComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { LoadingService } from '../../common/services/loading.service';
 import { NotificationService } from '../../common/services/notification.service';
 
@@ -6,6 +6,7 @@ import { NotificationService } from '../../common/services/notification.service'
     selector: 'app-notification',
     templateUrl: './notification.component.html',
     styleUrls: ['./notification.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class NotificationComponent {

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Project } from '../../project/project.material';
 import { ProjectService } from '../../project/project.service';
 import { NotificationService } from '../../common/services/notification.service';
@@ -9,6 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
     selector: 'app-copy-project',
     templateUrl: './copy-project.component.html',
     styleUrls: ['./copy-project.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CopyProjectComponent {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CurrentUserService } from '../user/current-user.service';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
@@ -11,6 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class DashboardComponent {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ConfigProvider } from './config/config.provider';
 import { TranslateService } from '@ngx-translate/core';
 import { registerLocaleData } from '@angular/common';
@@ -11,6 +11,7 @@ import localeFr from '@angular/common/locales/fr';
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AppComponent {

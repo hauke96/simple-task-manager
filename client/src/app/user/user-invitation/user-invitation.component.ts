@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { NotificationService } from '../../common/services/notification.service';
 import { UserService } from '../user.service';
 import { User } from '../user.material';
@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
     selector: 'app-user-invitation',
     templateUrl: './user-invitation.component.html',
     styleUrls: ['./user-invitation.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class UserInvitationComponent {

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 
 export interface TabItem {
   index: number;
@@ -9,6 +9,7 @@ export interface TabItem {
     selector: 'app-tabs',
     templateUrl: './tabs.component.html',
     styleUrls: ['./tabs.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class TabsComponent {
@@ -29,7 +30,7 @@ export class TabsComponent {
 
   @Input()
   public set tabs(titles: string[]) {
-    this.currentTabs = titles.map((title, index) => ({index, title} as TabItem));
+    this.currentTabs = titles.map((title, index) => ({index, title}));
   }
 
   public selectTab(tabIndex: number): void {

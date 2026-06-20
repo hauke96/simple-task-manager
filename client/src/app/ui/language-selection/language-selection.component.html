@@ -1,5 +1,5 @@
 <select class="selection" [ngModel]="selectedLanguage?.code" (change)="onLanguageChange($event)">
-	@for (l of languages; track l) {
+	@for (l of languages; track l.code) {
 		<option [value]="l.code">{{ l.name }}</option>
 	}
 </select>

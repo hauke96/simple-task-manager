@@ -134,7 +134,7 @@
     "unable-assign-user": "Nutzer konnte nicht zugewiesen werden",
     "unable-unassign-user": "Nutzer Zuweisung konnte nicht zurückgesetzt werden",
     "unable-set-process-points": "Fortschrittspunkte konnten nicht gesetzt werden",
-    "unable-load-josm": "JOSM konnte nicht geöffnet werden. Ist JOSM gestartet?"
+    "unable-load-josm": "JOSM konnte nicht geöffnet werden. Stelle sicher, dass JOSM gestartet und korrekt konfiguriert ist."
   },
   "task-list": {
     "you": "(du)"

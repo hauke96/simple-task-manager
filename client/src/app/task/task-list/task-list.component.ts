@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Task } from '../task.material';
 import { TaskService } from '../task.service';
 import { CurrentUserService } from '../../user/current-user.service';
@@ -8,6 +8,7 @@ import { Unsubscriber } from '../../common/unsubscriber';
     selector: 'app-task-list',
     templateUrl: './task-list.component.html',
     styleUrls: ['./task-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class TaskListComponent extends Unsubscriber implements AfterViewInit {

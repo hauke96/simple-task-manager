@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { TaskService } from '../task.service';
 import { CurrentUserService } from '../../user/current-user.service';
 import { Task } from '../task.material';
@@ -18,6 +18,7 @@ import { TranslateService } from '@ngx-translate/core';
     selector: 'app-task-map',
     templateUrl: './task-map.component.html',
     styleUrls: ['./task-map.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class TaskMapComponent extends Unsubscriber implements AfterViewInit, OnDestroy {

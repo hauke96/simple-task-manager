@@ -86,10 +86,10 @@ export class GeometryService {
   private expandToPolygonLike(geometry: Geometry): Geometry[] {
     switch (geometry.getType()) {
       case 'Polygon':
-        return [geometry as Polygon];
+        return [geometry];
 
       case 'MultiPolygon':
-        return [geometry as MultiPolygon];
+        return [geometry];
 
       case 'GeometryCollection':
         const geomCollection = geometry as GeometryCollection;
