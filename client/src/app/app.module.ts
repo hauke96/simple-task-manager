@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { ErrorHandler, NgModule } from '@angular/core';
+import { ErrorHandler, NgModule, provideZoneChangeDetection } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
@@ -110,7 +110,8 @@ import { CommentComponent } from './comments/comment/comment.component';
     provideHttpClient(withInterceptorsFromDi()),
     provideTranslateService({
       loader: provideTranslateHttpLoader()
-    })
+    }),
+    provideZoneChangeDetection() // Suggested by the Angular upgrade guide to add this
   ]
 })
 export class AppModule {
