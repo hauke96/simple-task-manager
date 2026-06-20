@@ -1,11 +1,10 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CurrentUserService } from '../../user/current-user.service';
-import { Project, ProjectExport } from '../project.material';
+import { Project } from '../project.material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectService } from '../project.service';
 import { Unsubscriber } from '../../common/unsubscriber';
 import { NotificationService } from '../../common/services/notification.service';
-import { ProjectImportService } from '../../project-creation/project-import.service';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -24,7 +23,8 @@ export class ProjectListComponent extends Unsubscriber implements OnInit {
     private currentUserService: CurrentUserService,
     private projectService: ProjectService,
     private notificationService: NotificationService,
-    private translationService: TranslateService
+    private translationService: TranslateService,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
     super();
   }

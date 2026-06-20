@@ -15,7 +15,7 @@ export class WebsocketClientService extends Unsubscriber {
 
   public messageReceived: EventEmitter<WebsocketMessage> = new EventEmitter<WebsocketMessage>();
 
-  constructor(currentUserService: CurrentUserService, ngZone: NgZone) {
+  constructor(currentUserService: CurrentUserService, private ngZone: NgZone) {
     super();
 
     this.unsubscribeLater(
@@ -61,7 +61,8 @@ export class WebsocketClientService extends Unsubscriber {
         this.websocketSubscription = this.websocket?.subscribe({
           next: (messages: WebsocketMessage[]) => {
             for (const msg of messages) {
-              this.messageReceived.emit(msg);
+              // Run in zone to support change detection in components, which subscribe to this subject.
+              this.ngZone.run(() => this.messageReceived.emit(msg));
             }
           },
           error: err => {
