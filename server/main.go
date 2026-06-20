@@ -2,16 +2,18 @@ package main
 
 import (
 	"fmt"
-	"github.com/alecthomas/kong"
-	_ "github.com/lib/pq" // Make driver "postgres" usable
 	"os"
 	"stm/oauth2"
 
-	"github.com/hauke96/sigolo"
+	"github.com/alecthomas/kong"
+	_ "github.com/lib/pq" // Make driver "postgres" usable
+
 	"stm/api"
 	"stm/config"
 	_ "stm/docs"
 	"stm/util"
+
+	"github.com/hauke96/sigolo"
 )
 
 var cli struct {
@@ -34,7 +36,7 @@ func configureLogging() {
 }
 
 // @title SimpleTaskManager Server
-// @version 1.7.1
+// @version 1.7.2
 // @description This is the SimpleTaskManager (STM) Server. See the GitHub repo '/doc/api/' for further details on authentication, websockets and changelogs.
 
 // @contact.name STM issue tracker
