@@ -1,7 +1,7 @@
 <h2>{{ 'tasks' | translate }}</h2>
 
 <div class="list-container">
-	@for (t of tasks; track t) {
+	@for (t of tasks; track t.id) {
 		<div class="list-item" [class.selected]="t.id === selectedTaskId">
 			<div (click)="onListItemClicked(t.id)" class="list-item-inner">
 				<div>

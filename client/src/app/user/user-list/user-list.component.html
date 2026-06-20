@@ -1,4 +1,4 @@
-@for (u of users; track u) {
+@for (u of users; track u.uid) {
 	<div class="list-item">
 		<div class="item-content">
 			<span [class.user-without-name]="!u.hasName">{{ u.name }}</span>

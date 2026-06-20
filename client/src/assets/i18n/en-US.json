@@ -134,7 +134,7 @@
     "unable-assign-user": "Could not assign user",
     "unable-unassign-user": "Could not unassign user",
     "unable-set-process-points": "Could not set process points",
-    "unable-load-josm": "Unable to open JOSM. Is it running?"
+    "unable-load-josm": "Unable to open JOSM. Make sure it is running and correctly configured."
   },
   "task-list": {
     "you": "(you)"

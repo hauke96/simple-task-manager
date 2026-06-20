@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { TaskService } from '../task.service';
 import { Task } from '../task.material';
 import { CurrentUserService } from '../../user/current-user.service';
@@ -10,13 +10,14 @@ import { ShortcutService } from '../../common/services/shortcut.service';
 import { TranslateService } from '@ngx-translate/core';
 
 import { JosmDataSource } from '../../common/entities/josm-data-source';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
-    selector: 'app-task-details',
-    templateUrl: './task-details.component.html',
-    styleUrls: ['./task-details.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+  selector: 'app-task-details',
+  templateUrl: './task-details.component.html',
+  styleUrls: ['./task-details.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false
 })
 export class TaskDetailsComponent extends Unsubscriber implements OnInit {
   @Input() public projectId: string;
@@ -173,9 +174,9 @@ export class TaskDetailsComponent extends Unsubscriber implements OnInit {
 
     this.taskService.openInJosm(this.task, this.josmDataSource)
       .subscribe({
-        error: err => {
+        error: (err: HttpErrorResponse) => {
           console.error('Error opening JOSM:', err);
-          this.notificationService.addError(this.translationService.instant('task-details.unable-load-josm') + ' ' + err);
+          this.notificationService.addError(this.translationService.instant('task-details.unable-load-josm'));
         }
       });
   }

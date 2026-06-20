@@ -13,7 +13,7 @@
 		<div>
 			<p>{{ 'project-creation.available-projects' | translate }}</p>
 			<div class="project-list">
-				@for (p of projects; track p) {
+				@for (p of projects; track p.id) {
 					<div class="list-item project-list-row"
 						 [class.list-item-selected]="p.id === selectedProject?.id"
 						 (click)="onProjectClicked(p)">

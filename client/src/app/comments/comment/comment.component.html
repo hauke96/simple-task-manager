@@ -3,7 +3,7 @@
 }
 
 <div class="comment-list-container">
-	@for (c of currentComments; track c) {
+	@for (c of currentComments; track c.id) {
 		<div class="comment" [class.own-comment]="isFromCurrentUser(c)">
 			<div>{{ c.text }}</div>
 			<div class="comment-metadata">

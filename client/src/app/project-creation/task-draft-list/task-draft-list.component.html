@@ -2,7 +2,7 @@
 	<div>
 		<span>{{ 'project-creation.no-task-yet-notice' | translate }}</span>
 	</div>
-} @for (t of tasks; track t) {
+} @for (t of tasks; track t.id) {
 	<div class="list-item"
 		 [class.list-item-selected]="t.id === selectedTask?.id"
 		 (click)="onTaskClicked(t.id)">
