@@ -111,7 +111,6 @@ import { CommentComponent } from './comments/comment/comment.component';
     provideTranslateService({
       loader: provideTranslateHttpLoader()
     }),
-    provideZoneChangeDetection() // Suggested by the Angular upgrade guide to add this
   ]
 })
 export class AppModule {
