@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ProjectExport } from '../../project/project.material';
 import { ProjectImportService } from '../project-import.service';
 import { NotificationService } from '../../common/services/notification.service';
@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
     selector: 'app-project-import',
     templateUrl: './project-import.component.html',
     styleUrls: ['./project-import.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ProjectImportComponent {

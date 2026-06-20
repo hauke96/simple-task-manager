@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Comment } from '../comment.material';
 import { CurrentUserService } from '../../user/current-user.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -8,6 +8,7 @@ import { ConfigProvider } from '../../config/config.provider';
     selector: 'app-comment',
     templateUrl: './comment.component.html',
     styleUrl: './comment.component.scss',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CommentComponent {

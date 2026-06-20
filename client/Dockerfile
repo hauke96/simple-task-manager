@@ -3,7 +3,7 @@
 #
 # https://hub.docker.com/_/node
 #
-FROM node:24-alpine3.23 AS builder
+FROM node:26-alpine AS builder
 
 COPY . /stm-client
 WORKDIR /stm-client/
@@ -20,7 +20,7 @@ RUN NODE_OPTIONS="--max_old_space_size=4096" npm run build
 #
 # https://hub.docker.com/_/nginx
 #
-FROM nginx:1.29-alpine3.23
+FROM nginx:1.31-alpine
 
 RUN rm -rf /usr/share/nginx/html/*
 COPY --from=builder /stm-client/dist/simple-task-manager/browser /usr/share/nginx/html

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TaskService } from '../task.service';
 import { Task } from '../task.material';
 import { CurrentUserService } from '../../user/current-user.service';
@@ -15,6 +15,7 @@ import { JosmDataSource } from '../../common/entities/josm-data-source';
     selector: 'app-task-details',
     templateUrl: './task-details.component.html',
     styleUrls: ['./task-details.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class TaskDetailsComponent extends Unsubscriber implements OnInit {

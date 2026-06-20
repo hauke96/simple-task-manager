@@ -45,7 +45,7 @@
 									class="user-tab comment-list"
 									[title]="selectedTask?.name ?? ''"
 									[comments]="selectedTask?.comments ?? []"
-									(commentSendClicked)="onTaskCommentSendClicked(selectedTask?.id, $event)"></app-comment>
+									(commentSendClicked)="onTaskCommentSendClicked($safeNavigationMigration(selectedTask?.id), $event)"></app-comment>
 						}
 						</app-tabs>
 					}

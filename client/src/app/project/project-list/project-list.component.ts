@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CurrentUserService } from '../../user/current-user.service';
 import { Project, ProjectExport } from '../project.material';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -12,6 +12,7 @@ import { TranslateService } from '@ngx-translate/core';
     selector: 'app-project-list',
     templateUrl: './project-list.component.html',
     styleUrls: ['./project-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ProjectListComponent extends Unsubscriber implements OnInit {

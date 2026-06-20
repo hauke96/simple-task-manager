@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { multiPolygon as turfMultiPolygon, polygon as turfPolygon, Units } from '@turf/helpers';
 import squareGrid from '@turf/square-grid';
 import hexGrid from '@turf/hex-grid';
@@ -15,6 +15,7 @@ import { Feature } from 'geojson';
     selector: 'app-shape-divide',
     templateUrl: './shape-divide.component.html',
     styleUrls: ['./shape-divide.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ShapeDivideComponent implements OnInit {

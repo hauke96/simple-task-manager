@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Language } from '../../common/entities/language';
 import { LanguageService } from '../../common/services/language.service';
@@ -7,6 +7,7 @@ import { LanguageService } from '../../common/services/language.service';
     selector: 'app-language-selection',
     templateUrl: './language-selection.component.html',
     styleUrls: ['./language-selection.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class LanguageSelectionComponent implements OnInit {

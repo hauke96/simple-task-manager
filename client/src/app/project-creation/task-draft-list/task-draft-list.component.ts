@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { TaskDraft } from '../../task/task.material';
 import { TaskDraftService } from '../task-draft.service';
 
@@ -6,6 +6,7 @@ import { TaskDraftService } from '../task-draft.service';
     selector: 'app-task-draft-list',
     templateUrl: './task-draft-list.component.html',
     styleUrls: ['./task-draft-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class TaskDraftListComponent {
