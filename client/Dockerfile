@@ -1,5 +1,5 @@
 #
-# Stage 1: Buil
+# Stage 1: Build
 #
 # https://hub.docker.com/_/node
 #
