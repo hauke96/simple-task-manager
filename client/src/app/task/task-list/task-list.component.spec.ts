@@ -39,7 +39,7 @@ describe(TaskListComponent.name, () => {
     taskService.getSelectedTask = jest.fn().mockReturnValue(undefined);
     expect(component.selectedTaskId).toEqual('');
 
-    taskService.getSelectedTask = jest.fn().mockReturnValue({} as Task);
+    taskService.getSelectedTask = jest.fn().mockReturnValue({});
     expect(component.selectedTaskId).toEqual('');
   });
 

@@ -30,7 +30,7 @@ export class TabsComponent {
 
   @Input()
   public set tabs(titles: string[]) {
-    this.currentTabs = titles.map((title, index) => ({index, title} as TabItem));
+    this.currentTabs = titles.map((title, index) => ({index, title}));
   }
 
   public selectTab(tabIndex: number): void {

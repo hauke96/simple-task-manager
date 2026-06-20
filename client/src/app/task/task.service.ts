@@ -321,7 +321,7 @@ export class TaskService {
     let assignedUser: User | undefined;
 
     if (dto.assignedUser) {
-      assignedUser = userMap.get(dto.assignedUser) as User;
+      assignedUser = userMap.get(dto.assignedUser);
     }
 
     return new Task(
