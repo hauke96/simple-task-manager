@@ -186,3 +186,10 @@ At least for Let's Encrypt, you only need to set the following properties in you
 **Important:** The `server-url` property has to begin with `https` in order to activate HTTPS.
 
 For **further information**, take a look at the `doc/operation/ssl-cert.md` file.
+
+# SBOM creation
+
+With `cyclonedx-gomod`, a software bill of materials (SBOM) can be created to view dependencies and analyse them for vulnerabilities.
+
+1. `go install github.com/CycloneDX/cyclonedx-gomod/cmd/cyclonedx-gomod@latest`
+2. `cyclonedx-gomod app -packages=true -json=true -std=true -output ./sbom.json .`
